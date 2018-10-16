@@ -1,0 +1,36 @@
+<?php
+require "adm.inc";
+require "base.inc";
+
+$cat = $_REQUEST['cat'];
+$id = $_REQUEST['data_id'];
+
+switch ($cat) {
+
+	case 'awards':
+	$returl = 'awards.php?category=convent&data_id=';
+	break;
+
+	case 'sce':
+	$returl = 'scenarie.php?scenarie=';
+	break;
+
+	case 'conset':
+	$returl = 'conset.php?conset=';
+	break;
+
+	case 'sys':
+	$returl = 'system.php?system=';
+	break;
+
+	case 'convent':
+	$returl = 'convent.php?con=';
+	break;
+
+	case 'aut':
+	default:
+	$returl = 'person.php?person=';
+}
+
+header("Location: /adm/".$returl.$id);
+?>

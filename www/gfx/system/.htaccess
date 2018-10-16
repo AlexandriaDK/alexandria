@@ -1,0 +1,9 @@
+SetEnvIfNoCase Referer "^http://(www\.)?(livejournal|darkstarlings|[^.]+\.myspace|worldsbiggestchat|city\.boom\.co\.il|quizilla|spaces\.msn|kingzandqueenz\.ipbhost\.com|xanga|forums\.fark\.com|ozhiphop\.com|raonicrazytiger\.zip\.net)" steal=1
+SetEnvIfNoCase Referer "^http://[^.]+\.de\.colt\.net" steal=1
+SetEnvIfNoCase Referer "^http://(www\.)?[^.]+\.blogspot\.com" steal=1
+SetEnvIfNoCase Referer "^http://(www\.)?animersion\.net" steal=1
+SetEnvIfNoCase Referer "^http://(www\.)?angelfire\.com" steal=1
+Order Allow,Deny
+Allow from all
+Deny from env=steal
+ErrorDocument 403 http://alexandria.dk/gfx/spyware.gif

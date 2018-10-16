@@ -1,0 +1,22 @@
+# Options +MultiViews
+ErrorDocument 404 /error/404magic.php
+php_flag register_globals off
+AddDefaultCharset utf-8
+
+Redirect /gfx/english /gfx/scenarie/english
+
+<FilesMatch "\.(inc|tpl)$">
+        deny from all
+        allow from none
+</FilesMatch>
+
+Redirect /otto http://alexandria.dk/awards?cid=1
+
+<Files ~ "^apple-touch-icon">
+	deny from all
+</Files>
+
+<Files "wp-login.php">
+        deny from all
+</Files>
+	

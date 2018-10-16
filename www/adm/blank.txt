@@ -1,0 +1,3 @@
+Scenarier uden nogen tilknytninger overhovedet:
+
+SELECT COUNT(*), COALESCE(asrel.id, csrel.id, gsrel.id, scerun.id, trivia.id, links.id, alias.id, files.id, 'X') AS coal, sce.id, sce.title FROM sce LEFT JOIN asrel ON sce.id = asrel.sce_id LEFT JOIN csrel ON sce.id = csrel.sce_id LEFT JOIN gsrel ON sce.id = gsrel.sce_id LEFT JOIN scerun ON sce.id = scerun.sce_id LEFT JOIN trivia ON sce.id = trivia.data_id AND trivia.category = 'sce' LEFT JOIN links ON sce.id = links.data_id AND links.category = 'sce' LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' GROUP BY sce.id, sce.title HAVING coal = 'X';

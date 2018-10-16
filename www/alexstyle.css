@@ -1,0 +1,578 @@
+body {
+	background: top left no-repeat #fff;
+	margin: 0px;
+	padding: 0px;
+}
+
+#leftmenu {
+	background: #ebd7a2 url(gfx/textureback.jpg);	
+	padding: 2px;
+	width: 170px;
+	float: left;
+	border: 1px solid black;
+}
+
+#leftmenu p {
+	margin: 2px 2px 20px 10px;
+}
+
+div.leftmenucontent {
+	background: rgba(255,255,255,0.8);
+	border: 1px solid black;
+	padding: 4px;
+	margin: 10px;
+	margin-bottom: 15px;
+	overflow-x: hidden;
+}
+
+div.leftmenucontent:hover {
+	overflow-x: auto;
+}
+
+div.leftmenucontent .menulogin {
+	line-height: 140%;
+}
+
+div.leftmenucontent .mylinks {
+	padding-left: 10px;
+}
+
+#topmenu {
+	position: absolute;
+	clear: right;
+	left: 175px;
+	top: 0px;
+	border: 1px solid black;
+	background: rgb(255,255,255,0.8);
+}
+
+#topmenu form {
+	display: inline;
+}
+
+#resultbox {
+	position: absolute;
+	clear: right;
+	left: 535px;
+	top: 30px;
+	width: 150px;
+	border-color: black;
+	border-width: 1px 2px 2px 1px;
+	border-style: solid;
+	margin: 2px;
+	display: none;
+	z-index: 10;
+	background-color: #fff;
+}
+
+#resultbox .result {
+	text-indent: -6px;
+	padding: 2px 2px 2px 9px;
+}
+
+#content {
+	position: absolute;
+	left: 195px;
+	top: 55px;
+	width: 60em;
+}
+
+#contenttext {
+	position: absolute;
+	left: 195px;
+	top: 55px;
+	width: 40em;
+}
+
+#contentwide {
+	position: absolute;
+	left: 195px;
+	top: 55px;
+}
+
+div,p,th,td {
+	font-family: tahoma, verdana, arial, sans-serif;
+	font-size: 12px;
+}
+
+div.thumb {
+	float: right;
+}
+
+div.thumb img {
+	border: 1px solid black;
+	margin: 2px;
+	margin-left: 1em;
+}
+
+td.statleft {
+	padding-right: 20px;
+}
+
+.find {
+	border: 1px dashed;
+}
+
+.finderror {
+	color: red;
+	font-weight: bold;
+}
+
+.aspect {
+	font-family: 'times new roman', times, serif;
+	font-size: 14px;
+}
+
+
+.listresult {
+	background-color: #fffff8;
+	vertical-align: bottom;
+}
+
+
+.listhead {
+	font-size: 14px;
+	text-align: left;
+}
+
+.datatitle {
+	margin: 0px;
+	font-family: verdana, tahoma, arial, sans-serif;
+	font-size: 24px;
+}
+
+h3.findhead {
+	margin: 0px;
+	font-family: verdana, tahoma, arial, sans-serif;
+}
+
+.frontpagehead {
+	background-color: #fea;
+}
+
+h3 {
+	font-family: verdana, tahoma, arial, sans-serif;
+	font-size: 1.5em;
+}
+
+h2 {
+	font-family: verdana, tahoma, arial, sans-serif;
+	font-size: 2em;
+}
+
+
+.parttitle {
+	font-family: verdana, tahoma, arial, sans-serif;
+	font-size: 18px;
+	margin-bottom: 3px;
+}
+
+.indata {
+	margin-left: 10px;
+	margin-top: 3px;
+	margin-bottom: 12px;
+}
+
+td.filelist {
+	text-align: right;
+}
+
+.indatalist {
+	margin-top: 0px;
+	padding-top: 0px;
+}
+
+.lpad {
+	padding-left: 10px;
+}
+
+.pagetitle {
+	margin: 0px;
+	font-family: Verdana, Tahoma;
+}
+
+.oss {
+	font-weight: bold;
+}
+
+.topmenublock {
+	width: 80px;
+	height: 20px;
+	float: left;
+	text-align: center;
+	padding-top: 5px;
+	border-right: 1px solid black;
+}
+.topmenublock a {
+	display: block;
+}
+
+.topmenublockfind {
+	white-space: nowrap;
+	padding: 2px;
+	border: 0;
+	height: 20px;
+	float: left;
+	text-align: center;
+}
+
+.topmenublockfind::first-letter {
+	text-decoration: underline;
+}
+
+.intern {
+	color: #999;
+}
+
+.noteindtast {
+	font-size: 75%;
+}
+
+.highlightsearch {
+	font-weight: bold;
+}
+
+.updatelinktext {
+	font-size: 75%;
+	font-style: italic;
+}
+
+
+.rightblock {
+	border: 1px solid black;
+	padding: 4px 4px 4px 4px;
+	margin: 0px 0px 10px 0px;
+}
+
+table {
+	border-spacing: 1px;
+	padding: 1px;
+}
+
+table.tablestat, table.scenariolist, table.organizerlist {
+	border-spacing: 1px;
+	padding: 1px;
+}
+
+table.tablestatlist, table.people, table.conlist {
+	border-spacing: 0px;
+	padding: 1px;
+}
+
+table.tableoverview {
+	border-spacing: 1px;
+	padding: 0px;
+}
+
+table.tableoverview th {
+	text-align: left;
+}
+
+table.tableoverview td:first-child {
+	white-space: nowrap;
+}
+
+tr {
+	vertical-align: top;
+}
+
+td.statnumber {
+	text-align: right;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:link, a:visited {
+	color: #808;
+}
+
+div.scenarie a:link, a.scenarie:link {
+	color: #c60;
+}
+
+div.scenarie a:visited, a.scenarie:visited {
+	color: #930;
+}
+
+div.person a:link, a.person:link {
+	color: #b01;
+}
+
+div.person a:visited, a.person:visited {
+	color: #800;
+}
+
+div.con a:link, a.con:link {
+	color: #090;
+}
+
+div.con a:visited, a.con:visited {
+	color: #060;
+}
+
+div.system a:link, a.system:link {
+	color: #30c;
+}
+
+div.system a:visited, a.system:visited {
+	color: #009;
+}
+
+div.latestnews {
+	width: 190px;
+	padding-right: 10px;
+	border-right: 1px solid black;
+	float: left;
+}
+
+div.latestnews .topnote {
+	font-size: 0.8em;
+	font-style: italic;
+}
+
+div.frontpagedownloads {
+	float: left;
+	width: 200px;
+	padding-left: 10px;
+}
+
+div.frontpagedownloads ul li {
+	padding-bottom: 2px;
+}
+
+div.conblock {
+	-webkit-column-break-inside: avoid;
+	-moz-break-inside: avoid;
+	page-break-inside: avoid;
+	break-inside: avoid;
+	margin-bottom: 5px;
+}
+
+div.leftmenuad {
+	margin: 10px;
+}
+
+div.rightad {
+	float: right;
+	margin: 10px;
+}
+
+div.topbanner {
+	position: absolute;
+	clear: right;
+	left: 175px;
+	top: 50px;
+}
+
+div.achievement {
+	margin-bottom: 8px;
+	width: 300px;
+	height: 50px;
+	overflow: auto;
+	clear: right;
+	border-style: solid;
+	border-width: 1px 1px 1px 10px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+div.achievement.completed {
+	border-color: black;
+	color: black;
+}
+
+div.achievement.completed:hover {
+	outline: none;
+	box-shadow: 0 0 15px #ace;
+}
+
+div.achievement.incomplete {
+	border-color: #999;
+	color: #999;
+
+}
+
+div.achshow {
+	position: fixed;
+	right: -350px;
+	margin-bottom: 8px;
+	margin-right: 8px;
+	width: 300px;
+	height: 50px;
+	border-style: solid;
+	border-width: 1px 1px 1px 10px;
+	background-color: #fff;
+	padding-left: 4px;
+	padding-right: 4px;
+	-webkit-animation: hitAndRun 30s;
+	animation: hitAndRun 30s;
+}
+
+div.achshow:hover {
+	outline: none;
+	box-shadow: 0 0 15px #ace;
+}
+
+@-webkit-keyframes hitAndRun {
+	0%   { right: -350px; }
+	10%  { right: 0px; }
+	90%  { right: 0px; }
+	100% { right: -350px; }
+}
+
+@keyframes hitAndRun {
+	0%   { right: -350px; }
+	10%  { right: 0px; }
+	90%  { right: 0px; }
+	100% { right: -350px; }
+}
+
+span.label {
+	font-weight: bold;
+	font-style: italic;
+
+}
+
+p.addorganizersyourself {
+	font-style: italic;
+
+}
+
+p.addorganizersyourself a {
+	font-weight: bold;
+}
+
+div.allawards h4 {
+	margin-bottom: 0;
+}
+
+ul.awardlist {
+	list-style-type: none;
+	clear: both;
+}
+ul.awardlist li {
+	float: left;
+	background-color: #ebd7a2;
+	border-radius: 4px;
+	padding: 3px;
+	font-size: 0.8em;
+	margin: 2px;
+	cursor: pointer;
+}
+
+div.clear {
+	clear: both;
+}
+
+div.winner, div.nominee {
+	margin-left: 3em;
+	margin-bottom: 2px;
+	margin-top: 0;
+	padding: 0;
+}
+
+h5.winner span.winner {
+	text-decoration: underline;
+}
+
+h5.winner, h5.nominee {
+	margin: 0;
+	padding: 0;
+}
+
+div.calendar {
+	column-count: 2;
+	column-gap: 40px;
+}
+
+h3.calendarhead {
+	margin: 0;
+	padding: 0;
+}
+
+p.calendarmonth {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+
+div.concolumns {
+	column-count: 2;
+	column-gap: 40px;
+}
+
+.awardblock {
+	column-count: 3;
+	-moz-column-count: 3;
+	-webkit-column-count: 3;
+	-webkit-column-gap: 40px;
+	-moz-column-gap: 40px;
+	column-gap: 40px;
+}
+
+.awardcategory {
+	break-inside: avoid;
+	-moz-break-inside: avoid;
+	-webkit-break-inside: avoid;
+	 -webkit-column-break-inside: avoid; 
+	page-break-inside: avoid;
+	display: table;
+	
+}
+
+span.urltext {
+	font-family: monospace;
+}
+
+div.ranking {
+	font-size: 0.8em;
+}
+
+div.nomtext {
+	font-size: 0.9em;
+}
+
+span.authorlistextra {
+	display: none;
+}
+
+span.moreauthors {
+	cursor: pointer;
+	color: #b01;
+}
+
+h4.awardconventhead {
+	margin-top: 0.6em;
+	margin-bottom: 0;
+
+}
+
+#awards {
+	margin-bottom: 0;
+}
+
+span.atoggle {
+	cursor: pointer;
+}
+
+span.preicon, span.titicon {
+	font-size: 1em;
+}
+
+span.cancelled {
+	color: #999;
+	text-decoration: line-through;
+}
+
+ul.remotelogin {
+	list-style-type: none;
+	padding-left: 2em;
+	padding-top: 1em;
+	padding-bottom: 0em;
+	margin: 0px;
+}
+ul.remotelogin li {
+	padding-bottom: 1px;
+}

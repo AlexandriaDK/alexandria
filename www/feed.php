@@ -1,0 +1,11 @@
+<?php
+require("./connect.php");
+require("base.inc");
+require("template.inc");
+
+$news = getnews();
+
+foreach($news AS $data) {
+	print $data['published']."\t".textlinks($data['text'],TRUE)."\n";
+}
+?>

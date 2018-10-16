@@ -1,0 +1,55 @@
+GET /amazonmusic.cgi?q=Nice+Little+Penguins&maxDepth=2&initial=true HTTP/1.1
+User-Agent: Mozilla/4.0 (Windows XP 5.1)
+Host: www.pmbrowser.info
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Connection: keep-alive
+
+HTTP/1.1 200 OK
+Date: Mon, 17 Feb 2003 03:35:14 GMT
+Server: Apache/1.3.27 (Unix)
+Keep-Alive: timeout=2, max=200
+Connection: Keep-Alive
+Transfer-Encoding: chunked
+Content-Type: text/xml
+
+838
+<?xml version="1.0" encoding="ISO-8859-1"?>
+ <TGGB version="1.00">
+<EDGESET>
+<EDGE fromID="Nice Little Penguins" toID="B0000565LZ" linkNumber="1" length="200" lastEdge="false"/>
+<EDGE fromID="Nice Little Penguins" toID="B0000565M0" linkNumber="2" length="200" lastEdge="false"/>
+</EDGESET>
+<NODESET>
+<NODE nodeID="Nice Little Penguins">
+<NODE_LABEL label="Nice Little Penguins"/>
+<NODE_HINT isHTML="true" hint=""/>
+</NODE>
+<NODE nodeID="B0000565LZ">
+<NODE_LABEL label="Nice Little Penguins - Flying"/>
+<NODE_HINT isHTML="true" hint="&lt;p&gt;&lt;b&gt;Flying&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;&lt;i&gt;Nice Little Penguins&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;()&lt;/p&gt;
+&lt;p&gt;Price : $36.49&lt;/p&gt;
+&lt;p&gt;&lt;a target='_blank' href='http://www.pmbrowser.info/amazon.cgi?q=B0000565LZ&amp;mode=music'&gt;[international prices]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sales Rank : 289,596&lt;/p&gt;
+&lt;p&gt;Avg Customer Rating : 5&lt;/p&gt;
+&lt;p&gt;Customer Review : I know only one song of Nice Little Penguins. This is Flying. I like it. I'd like to listen more songs of Nice Little Penguins. If other they songs is good too I'd like have them.&lt;/p&gt;
+&lt;p&gt;&lt;a target='_blank' href='http://www.amazon.com/exec/obidos/ASIN/B0000565LZ/ref=nosim/amazonbrowser-20'&gt;more [amazon.com] ...&lt;/a&gt;&lt;/p&gt;"/>
+</NODE>
+<NODE nodeID="B0000565M0">
+<NODE_LABEL label="Nice Little Penguins - World You Can Live in"/>
+<NODE_HINT isHTML="true" hint="&lt;p&gt;&lt;b&gt;World You Can Live in&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;&lt;i&gt;Nice Little Penguins&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;()&lt;/p&gt;
+&lt;p&gt;Price : $36.49&lt;/p&gt;
+&lt;p&gt;&lt;a target='_blank' href='http://www.pmbrowser.info/amazon.cgi?q=B0000565M0&amp;mode=music'&gt;[international prices]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sales Rank : &lt;/p&gt;
+&lt;p&gt;Avg Customer Rating : 0&lt;/p&gt;
+&lt;p&gt;Customer Review : &lt;/p&gt;
+&lt;p&gt;&lt;a target='_blank' href='http://www.amazon.com/exec/obidos/ASIN/B0000565M0/ref=nosim/amazonbrowser-20'&gt;more [amazon.com] ...&lt;/a&gt;&lt;/p&gt;"/>
+</NODE>
+</NODESET>
+</TGGB>
+
+0
+

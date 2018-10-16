@@ -1,0 +1,63 @@
+body {
+	background-color: #fc9;
+	color: #000;
+}
+
+a:link {
+	color: #c03;
+}
+
+a:visited {
+	color: #900;
+}
+
+.headlink {
+	font-size: 20pt;
+	font-family: Garamond, Georgia, Times New Roman, Times, Serif;
+	color: #990000;
+}
+
+.personselect {
+	width: 270px;
+}
+
+.flytknap {
+	width: 120px;
+	text-align: left;
+}
+
+.flytknapright {
+	width: 120px;
+	text-align: right;
+}
+
+.ticketlist {
+	font-family: tahoma, verdana, sans-serif;
+	font-size: 80%;
+}
+
+input.delete {
+	border: 1px solid #e00; background: #f77;
+}
+
+td.mark {
+	text-align: center;
+}
+
+tr.headline th {
+	background-color: #feb;
+}
+
+input[type="number"] {
+	text-align: right;
+}
+
+div.nomtext {
+	font-size: 0.9em;
+	margin-left: 1em;
+}
+
+span.atoggle {
+	cursor: pointer;
+}
+

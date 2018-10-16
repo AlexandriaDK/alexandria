@@ -1,0 +1,17 @@
+<SEARCH
+    version = "7.1" 
+   name="alexandria.dk"
+   description="Alexandria Search"
+   method="GET"
+   action="http://alexandria.dk/find" 
+   searchform="http://alexandria.dk/"
+>
+
+<input name="q" user>
+</search>
+
+<browser
+ update          = "http://alexandria.dk/plugin/aleandriadk.src" 
+ updateIcon      = "http://alexandria.dk/plugin/alexandriadk.png" 
+ updateCheckDays = "7" 
+>

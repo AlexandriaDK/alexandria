@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Textarea autocomplete demo [Autocomplete with pictures & Rich HTML textarea] - by Algolia</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="textcomplete.css">
+    <link rel="stylesheet" href="alexstyle.css">
+
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+          <h3>Mention your favorite actors using the '@' key<br>
+          <small>For instance: <i>"Loved the last movie with <mark>@Tom</mark>..."</i></small>
+          </h3>
+          <div class="form-control" id="autocomplete-textarea" contenteditable="true"></div>
+          <p>
+            <br />
+            Read the 
+            <a href="https://www.algolia.com/doc/guides/search/autocomplete-textarea">full guide</a> or check the code on 
+            <a href="https://github.com/algolia/demo-textarea-autocomplete/blob/master/full-html-textarea-autocomplete.html">GitHub</a>.
+          </p>
+        </div>
+      </div>
+
+	    <div>
+	      <a href="#" onclick="document.getElementById('fresult').value=document.getElementById('autocomplete-textarea').innerHTML;">Check</a>
+	      <form><textarea cols="50" rows="20" id="fresult"></textarea></form>
+	    </div>
+
+    </div>
+
+
+    <script src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <!-- Text Autcomplete plugin -->
+    <script src="jquery.textcomplete.min.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+      var lastQuery = '';
+
+      var fakeResult = {
+	"hits": [
+		{ "name": "Peter Brodersen", "type": "aut", "data_id": 1, "display": "Pe<b>ter</b>"},
+		{ "name": "Testamentet", "type": "sce", "data_id": 4381, "display": "Testamentet"},
+		{ "name": "Fastaval - Otto i Eventyrland", "type": "convent", "data_id": 553, "display": "Fastaval 2018" }
+	]
+      };
+      $('#autocomplete-textarea').textcomplete([
+        {
+          // #3 - Regular experession used to trigger search
+          match: /(^|\s)@(\w*(?:\s*\w*)*)$/,
+
+          // #4 - Function called at every new keystroke
+          search: function(query, callback) {
+            lastQuery = query;
+            callback(fakeResult.hits);
+
+          },
+
+          // #5 - Template used to display each result obtained by the Algolia API
+          template: function (hit) {
+            // Returns the highlighted version of the name attribute
+            return '<div class="' + hit.type + '"><span class="name">' + hit.display + '</span></div>';
+          },
+
+          // #6 - Template used to display the selected result in the textarea
+          replace: function (hit) {
+            var html = '<a class="tag-item" href="">';
+            html += '<div class="picture-wrapper">'+ hit.type +'</div>';
+            html += '<span class="' + hit.type + '">';
+            html += '<span class="label">' + hit.name + '</span></a>';
+            html += '</span>';
+            return html;
+          }
+        }
+      ], {
+          // #7 - Special adapter to handle HTMLContentEditable divs
+          adapter: $.fn.textcomplete.HTMLContentEditable
+      });
+    
+    });
+    </script>
+  </body>
+</html>

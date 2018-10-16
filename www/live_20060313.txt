@@ -1,0 +1,42 @@
++------------------------------------------------+------------+------------+-----------------------------------------+
+| title                                          | begin      | end        | location                                |
++------------------------------------------------+------------+------------+-----------------------------------------+
+| Black Harvest                                  | 1998-08-29 | 1998-08-29 | Holmen (Ubådshal)                       |
+| Carpe Noctem I                                 | NULL       | NULL       | NULL                                    |
+| Carpe Noctem II                                | 1998-11-15 | 1998-11-15 | Svendborg                               |
+| John Doe                                       | 2001-09-21 | 2001-09-23 | Østerbrohuset, København                |
+| Kappestrid                                     | 2004-09-17 | 2004-09-19 | Egebjerg spejdercenter, Sydfyn          |
+| Khypris I                                      | NULL       | NULL       | NULL                                    |
+| Khypris II - Snigende Skygger                  | 2003-07-10 | 2003-07-13 | Spejercenteret Rosenholt, Dronninglund  |
+| Khypris III - Handel og Velstand               | 2004-07-15 | 2004-07-18 |                                         |
+| Khypris IV - Ære og undertrykkelse             | 2005-07-07 | 2005-07-10 | Thorup Hede Spejdercenter, Dronninglund |
+| Legendernes Tid 1                              | NULL       | NULL       | NULL                                    |
+| Legendernes Tid 2                              | NULL       | NULL       | NULL                                    |
+| Legendernes Tid 3                              | NULL       | NULL       | NULL                                    |
+| Legendernes Tid 4                              | NULL       | NULL       | NULL                                    |
+| Legendernes Tid 5                              | NULL       | NULL       | NULL                                    |
+| Legendernes Tid 6 - Hjerteblod                 | 2003-07-29 | 2003-08-02 | Hedeland, Høje Taastrup                 |
+| Legendernes Tid 7 - Grå er solen               | 2004-07-25 | 2004-08-01 | Hedeland, Høje Taastrup                 |
+| Matrix                                         | 1999-10-01 | 1999-10-03 | Århus                                   |
+| Morgendagens Orden                             | 1998-10-11 | 1998-10-17 | København (in-crowd)                    |
+| Nikhils Saga                                   | NULL       | NULL       | NULL                                    |
+| Pagten                                         | 1999-06-04 | 1999-06-06 | Nørrebro, København                     |
+| Paranoia-Live                                  | 2001-02-17 | 2001-02-18 | Aalborg                                 |
+| Shamhain                                       | NULL       | NULL       | NULL                                    |
+| Shamhain II                                    | NULL       | NULL       | NULL                                    |
+| Shamhain III                                   | NULL       | NULL       | NULL                                    |
+| Shamhain-slaget                                | NULL       | NULL       | NULL                                    |
+| Shradan                                        | 2000-08-04 | 2000-08-06 | Fyn                                     |
+| System Danmarc                                 | 2005-10-07 | 2005-10-09 | Toftegaards Plads, Valby                |
+| Søslottet 1                                    | NULL       | NULL       | NULL                                    |
+| Søslottet 2                                    | NULL       | NULL       | NULL                                    |
+| Søslottet 3                                    | NULL       | NULL       | NULL                                    |
+| Søslottet 4                                    | NULL       | NULL       | NULL                                    |
+| Søslottet 5 - Kongens sendebud                 | 2002-07-18 | 2002-07-21 | Radiomarken, Bagsværd Sø                |
+| Torden over Tortuga - Jan Niederländer         | 2002-11-08 | 2002-11-10 | Odense, Dalum Skolen                    |
+| Torden over Tortuga 2 - Døde mænd sladrer ikke | 2003-11-07 | 2003-11-09 | Odense                                  |
+| Torden over Tortuga 3 - El Tigre               | 2004-10-29 | 2004-10-31 | Odense                                  |
+| U-359 - Projekt 613                            | 2004-03-12 | 2004-03-22 | Ubåd                                    |
+| Yorktown                                       | 2003-11-07 | 2003-11-09 | Hillerød                                |
+| Yorktown                                       | 2001-10-05 | 2001-10-07 | Niels Steensens Gymnasium               |
++------------------------------------------------+------------+------------+-----------------------------------------+

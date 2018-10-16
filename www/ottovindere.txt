@@ -1,0 +1,171 @@
++--------+-----------+---------------+--------------------------------+
+| vundet | nomineret | vinderforhold | navn                           |
++--------+-----------+---------------+--------------------------------+
+|     10 |        34 |        0.2941 | Lars Kaos Andresen             | 
+|     10 |        30 |        0.3333 | Mikkel Bækgaard                | 
+|      7 |        22 |        0.3182 | Palle Schmidt                  | 
+|      7 |        16 |        0.4375 | Jacob Schmidt-Madsen           | 
+|      6 |        22 |        0.2727 | Kristoffer Apollo              | 
+|      6 |        17 |        0.3529 | Alex Uth                       | 
+|      5 |        17 |        0.2941 | Ask Agger                      | 
+|      5 |        15 |        0.3333 | Sebastian Flamant              | 
+|      5 |        11 |        0.4545 | Klaus Meier Olsen              | 
+|      4 |        17 |        0.2353 | Kristoffer Rudkjær             | 
+|      4 |        14 |        0.2857 | Frederik Berg Østergaard       | 
+|      4 |        12 |        0.3333 | Simon Steen Hansen             | 
+|      4 |         8 |        0.5000 | Fredrik Axelzon                | 
+|      3 |        10 |        0.3000 | Sanne Harder Flamant           | 
+|      3 |        10 |        0.3000 | Tobias Wrigstad                | 
+|      3 |         9 |        0.3333 | Anders Frost Bertelsen         | 
+|      3 |         9 |        0.3333 | Thomas Munkholt                | 
+|      3 |         8 |        0.3750 | Max Møller                     | 
+|      3 |         7 |        0.4286 | Morten Greis Petersen          | 
+|      3 |         4 |        0.7500 | Jonas Ellemand                 | 
+|      2 |        16 |        0.1250 | Michael Erik Næsby             | 
+|      2 |        16 |        0.1250 | Morten Jaeger                  | 
+|      2 |        13 |        0.1538 | Mette Finderup                 | 
+|      2 |         8 |        0.2500 | Morten Hougaard                | 
+|      2 |         8 |        0.2500 | Per von Fischer                | 
+|      2 |         8 |        0.2500 | Troels Chr. Jakobsen           | 
+|      2 |         6 |        0.3333 | Johannes Busted Larsen         | 
+|      2 |         6 |        0.3333 | Ryan Rohde Hansen              | 
+|      2 |         5 |        0.4000 | Anders Skovgaard-Petersen      | 
+|      2 |         5 |        0.4000 | Anette V. Petersen             | 
+|      2 |         5 |        0.4000 | Mads Lunau                     | 
+|      2 |         4 |        0.5000 | Anders Troelsen                | 
+|      2 |         4 |        0.5000 | Henrik Vagner                  | 
+|      2 |         4 |        0.5000 | Jorgo A. Larsen                | 
+|      2 |         4 |        0.5000 | Mads L. Brynnum                | 
+|      2 |         4 |        0.5000 | Malik Hyltoft                  | 
+|      2 |         4 |        0.5000 | Niels Jensen                   | 
+|      2 |         2 |        1.0000 | Daniel Benjamin Bjørn Clausen  | 
+|      2 |         2 |        1.0000 | Peter Cornelius Møller         | 
+|      1 |        11 |        0.0909 | Thomas Jakobsen                | 
+|      1 |        10 |        0.1000 | Jacob Berg                     | 
+|      1 |         7 |        0.1429 | Brian Rasmussen                | 
+|      1 |         7 |        0.1429 | Lars Kroll                     | 
+|      1 |         7 |        0.1429 | Nikolaj Lemche                 | 
+|      1 |         6 |        0.1667 | Lars Vilhelmsen                | 
+|      1 |         5 |        0.2000 | Anne Vinter Ratzer             | 
+|      1 |         5 |        0.2000 | Claus Kliplev Jacobsen         | 
+|      1 |         5 |        0.2000 | Frederik J. Jensen             | 
+|      1 |         5 |        0.2000 | Martin Svendsen                | 
+|      1 |         5 |        0.2000 | Morten Juul                    | 
+|      1 |         5 |        0.2000 | René Toft                      | 
+|      1 |         4 |        0.2500 | Anders Vestergaard Mortensen   | 
+|      1 |         4 |        0.2500 | Jesper Stein Sandal            | 
+|      1 |         4 |        0.2500 | Jonas Trier                    | 
+|      1 |         4 |        0.2500 | Jonas Breum Jensen             | 
+|      1 |         4 |        0.2500 | Martin W. Jürgensen            | 
+|      1 |         4 |        0.2500 | Olle Jonsson                   | 
+|      1 |         3 |        0.3333 | Anna Lawaetz                   | 
+|      1 |         3 |        0.3333 | Anton Sølvsten                 | 
+|      1 |         3 |        0.3333 | Christian Savioli              | 
+|      1 |         3 |        0.3333 | Jakob Ponsgård                 | 
+|      1 |         3 |        0.3333 | Jens Thorup Rasmussen          | 
+|      1 |         3 |        0.3333 | Kristian Bach Petersen         | 
+|      1 |         3 |        0.3333 | Louise Frellsen                | 
+|      1 |         3 |        0.3333 | Michael Sonne-Jørgensen        | 
+|      1 |         3 |        0.3333 | Sune Schmidt-Madsen            | 
+|      1 |         3 |        0.3333 | Thais Laursen Munk             | 
+|      1 |         3 |        0.3333 | Troels Ken Pedersen            | 
+|      1 |         2 |        0.5000 | Claus Ekstrøm                  | 
+|      1 |         2 |        0.5000 | Emily Care Boss                | 
+|      1 |         2 |        0.5000 | Flemming Lindblad              | 
+|      1 |         2 |        0.5000 | Flemming Sander Jensen         | 
+|      1 |         2 |        0.5000 | Jakob Ebbensgaard              | 
+|      1 |         2 |        0.5000 | Jakob Kirk                     | 
+|      1 |         2 |        0.5000 | Kasper Nørholm                 | 
+|      1 |         2 |        0.5000 | Klaus Dhiin                    | 
+|      1 |         2 |        0.5000 | Kresten Kjær Sørensen          | 
+|      1 |         2 |        0.5000 | Lars Vensild Hörnell           | 
+|      1 |         2 |        0.5000 | Lone Gram Larsen               | 
+|      1 |         2 |        0.5000 | Milton Felice Brambati Lund    | 
+|      1 |         2 |        0.5000 | Monica Traxl                   | 
+|      1 |         2 |        0.5000 | Per Wetterstrand               | 
+|      1 |         2 |        0.5000 | Peter Petersen                 | 
+|      1 |         2 |        0.5000 | Søren Høper                    | 
+|      1 |         2 |        0.5000 | Tobias Demediuk Bindslet       | 
+|      1 |         2 |        0.5000 | Troels Rohde Hansen            | 
+|      1 |         2 |        0.5000 | Ulrik Kold                     | 
+|      1 |         1 |        1.0000 | Benjamin Isar Jørgensen        | 
+|      1 |         1 |        1.0000 | Christian Møller Christensen   | 
+|      1 |         1 |        1.0000 | Eva Fog                        | 
+|      1 |         1 |        1.0000 | Hans Christian Molbech         | 
+|      1 |         1 |        1.0000 | Karsten Tonnesen               | 
+|      1 |         1 |        1.0000 | Maiken "Malle" Nielsen         | 
+|      1 |         1 |        1.0000 | Maria Bergmann                 | 
+|      1 |         1 |        1.0000 | Maya Krone                     | 
+|      1 |         1 |        1.0000 | Morten Malmros Jespersen       | 
+|      1 |         1 |        1.0000 | Mårten Krammer                 | 
+|      1 |         1 |        1.0000 | Nicholas Demidoff              | 
+|      1 |         1 |        1.0000 | Paul Hartvigson                | 
+|      1 |         1 |        1.0000 | Regitze Illum                  | 
+|      1 |         1 |        1.0000 | Sally Khallash                 | 
+|      1 |         1 |        1.0000 | Selina Kyle                    | 
+|      1 |         1 |        1.0000 | Sune Terkelsen                 | 
+|      1 |         1 |        1.0000 | Søren Koch Dalsgaard           | 
+|      1 |         1 |        1.0000 | Søren Maagaard Andersen        | 
+|      0 |         6 |        0.0000 | Gimle Larsen                   | 
+|      0 |         6 |        0.0000 | Lars Konzack                   | 
+|      0 |         6 |        0.0000 | Mike Ditlevsen                 | 
+|      0 |         5 |        0.0000 | Peter Fallesen                 | 
+|      0 |         4 |        0.0000 | Jeppe Norsker                  | 
+|      0 |         4 |        0.0000 | Olav Junker Kjær               | 
+|      0 |         4 |        0.0000 | Rasmus Knudsen                 | 
+|      0 |         3 |        0.0000 | Jacob Holm Krogsøe             | 
+|      0 |         3 |        0.0000 | Jonas Arboe Harild             | 
+|      0 |         3 |        0.0000 | Jost L. Hansen                 | 
+|      0 |         3 |        0.0000 | Merlin P. Mann                 | 
+|      0 |         3 |        0.0000 | Michael G. Schmidt             | 
+|      0 |         3 |        0.0000 | Morten Lund                    | 
+|      0 |         2 |        0.0000 | Andreas Lieberoth              | 
+|      0 |         2 |        0.0000 | Anja Kristensen                | 
+|      0 |         2 |        0.0000 | Cecilie Balling                | 
+|      0 |         2 |        0.0000 | Christian Andersen             | 
+|      0 |         2 |        0.0000 | Christian Otkjær               | 
+|      0 |         2 |        0.0000 | David Thorhauge                | 
+|      0 |         2 |        0.0000 | Dennis Gade Kofod              | 
+|      0 |         2 |        0.0000 | Jais Lytje                     | 
+|      0 |         2 |        0.0000 | Jesper Jühne                   | 
+|      0 |         2 |        0.0000 | Lisa Irene Hau                 | 
+|      0 |         2 |        0.0000 | Morten Fredberg-Holm           | 
+|      0 |         2 |        0.0000 | Peter K. Madsen                | 
+|      0 |         2 |        0.0000 | Rasmus Boldt                   | 
+|      0 |         2 |        0.0000 | Rasmus Høgdall Mølgaard        | 
+|      0 |         2 |        0.0000 | Simon James Pettitt            | 
+|      0 |         2 |        0.0000 | Tim Slumstrup Nielsen          | 
+|      0 |         2 |        0.0000 | Tina Arbjørn                   | 
+|      0 |         2 |        0.0000 | Ulrik Kristiansen              | 
+|      0 |         2 |        0.0000 | Yth Jedrzejczyk                | 
+|      0 |         1 |        0.0000 | Adam Bindslev                  | 
+|      0 |         1 |        0.0000 | Anders Bo Skov                 | 
+|      0 |         1 |        0.0000 | Andrej Tokarcik                | 
+|      0 |         1 |        0.0000 | Antonio Blazevic               | 
+|      0 |         1 |        0.0000 | Bjarne Fich                    | 
+|      0 |         1 |        0.0000 | Brian Møller                   | 
+|      0 |         1 |        0.0000 | Henrik Eriksen                 | 
+|      0 |         1 |        0.0000 | Jannie Holm                    | 
+|      0 |         1 |        0.0000 | Jens Hougaard Nielsen          | 
+|      0 |         1 |        0.0000 | Jesper Bisgaard                | 
+|      0 |         1 |        0.0000 | Jesper Skou Pedersen           | 
+|      0 |         1 |        0.0000 | Jonas Sanberg Jensen           | 
+|      0 |         1 |        0.0000 | Lars Christiansen              | 
+|      0 |         1 |        0.0000 | Lars Hess                      | 
+|      0 |         1 |        0.0000 | Lars Møller                    | 
+|      0 |         1 |        0.0000 | Lars Bech Nielsen              | 
+|      0 |         1 |        0.0000 | Lars Ræder Clausen             | 
+|      0 |         1 |        0.0000 | Louise Kusk                    | 
+|      0 |         1 |        0.0000 | Magnus Udbjørg                 | 
+|      0 |         1 |        0.0000 | Martha Cecilia Lassen          | 
+|      0 |         1 |        0.0000 | Niels Geckler                  | 
+|      0 |         1 |        0.0000 | Pelle Klit Christensen         | 
+|      0 |         1 |        0.0000 | Peter Brodersen                | 
+|      0 |         1 |        0.0000 | Ruddi Oliver Bodholdt Dal      | 
+|      0 |         1 |        0.0000 | Sigrid Svane                   | 
+|      0 |         1 |        0.0000 | Sigurd Rubech                  | 
+|      0 |         1 |        0.0000 | Thomas Frost                   | 
+|      0 |         1 |        0.0000 | Tine Kjær Nyeng                | 
++--------+-----------+---------------+--------------------------------+
+
+
