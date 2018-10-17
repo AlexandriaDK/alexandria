@@ -115,7 +115,7 @@ if ($data_id && $category) {
 		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
 		$mainlink = "person.php?person=$data_id";
 	}
-	list($title) = getone($q);
+	$title = getone($q);
 	
 	$query = "SELECT id, url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
 	$result = getall($query);
@@ -141,37 +141,33 @@ print "<table align=\"center\" border=0>".
       "<th>Beskrivelse</th>".
       "</tr>\n";
 
-if ($result) {
-	foreach($result AS $row) {
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-		      '<input type="hidden" name="action" value="changelink">'.
-		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
-		      '<input type="hidden" name="id" value="'.$row['id'].'">';
-		print "<tr>\n".
-		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
-		      "</tr>\n";
-		print "</form>\n\n";
-	}
-
+foreach($result AS $row) {
 	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="addlink">'.
+	      '<input type="hidden" name="action" value="changelink">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
+	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+	      '<input type="hidden" name="id" value="'.$row['id'].'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">'.$row['id'].'</td>'.
 	      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
 	      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td><input type="submit" name="do" value="Ret"></td>'.
+	      '<td><input type="submit" name="do" value="Slet"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
-
-
 }
+
+print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+      '<input type="hidden" name="action" value="addlink">'.
+      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
+      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
+print "<tr>\n".
+      '<td style="text-align:right;">Ny</td>'.
+      '<td><input type="text" name="url" value="" size=40 maxlength=100></td>'.
+      '<td><input type="text" name="description" value="" size=40 maxlength=100></td>'.
+      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+      "</tr>\n";
+print "</form>\n\n";
 
 print "</table>\n";
 print "</body>\n</html>\n";

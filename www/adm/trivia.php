@@ -119,36 +119,34 @@ print "<table align=\"center\" border=0>".
       "<th>Intern note</th>".
       "</tr>\n";
 
-if ($result) {
-	foreach($result AS $row) {
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-		      '<input type="hidden" name="action" value="changetrivia">'.
-		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
-		      '<input type="hidden" name="id" value="'.$row['id'].'">';
-		print "<tr valign=\"top\">\n".
-		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><textarea cols=40 rows=3 name="fact">'.htmlspecialchars($row['fact']).'</textarea></td>'.
-		      '<td><textarea cols=40 rows=3 name="hidden">'.htmlspecialchars($row['hidden']).'</textarea></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
-		      "</tr>\n";
-		print "</form>\n\n";
-	}
-
+foreach($result AS $row) {
 	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="addtrivia">'.
+	      '<input type="hidden" name="action" value="changetrivia">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
+	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+	      '<input type="hidden" name="id" value="'.$row['id'].'">';
 	print "<tr valign=\"top\">\n".
-	      '<td style="text-align:right;">Ny</td>'.
-		      '<td><textarea cols=40 rows=3 id="newfact" name="fact"></textarea></td>'.
-		      '<td><textarea cols=40 rows=3 name="hidden"></textarea></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td style="text-align:right;">'.$row['id'].'</td>'.
+	      '<td><textarea cols=40 rows=3 name="fact">'.htmlspecialchars($row['fact']).'</textarea></td>'.
+	      '<td><textarea cols=40 rows=3 name="hidden">'.htmlspecialchars($row['hidden']).'</textarea></td>'.
+	      '<td><input type="submit" name="do" value="Ret"></td>'.
+	      '<td><input type="submit" name="do" value="Slet"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
-
 }
+
+print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+      '<input type="hidden" name="action" value="addtrivia">'.
+      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
+      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
+print "<tr valign=\"top\">\n".
+      '<td style="text-align:right;">Ny</td>'.
+	      '<td><textarea cols=40 rows=3 id="newfact" name="fact"></textarea></td>'.
+	      '<td><textarea cols=40 rows=3 name="hidden"></textarea></td>'.
+      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+      "</tr>\n";
+print "</form>\n\n";
+
 foreach(array("Otto-vinder: ","Otto-nominering: ", "Novellescenarie", "Grind Night-scenarie") AS $text) {
 	print "<tr><td></td>";
 	print "<td><a href=\"#\" onclick=\"document.getElementById('newfact').value='".$text."';\">";

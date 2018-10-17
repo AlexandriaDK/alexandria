@@ -206,7 +206,7 @@ if ($category == 'convent') {
 	$q = "SELECT CONCAT(name, ' (', year, ')') FROM convent WHERE id = '$data_id'";
 	$mainlink = "convent.php?con=$data_id";
 
-	list($title) = getone($q);
+	$title = getone($q);
 	
 	$query = "SELECT a.id, a.name, a.description, SUM(b.winner = 1) AS winners, COUNT(b.id) AS nominees FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convent_id = '$data_id' GROUP BY a.id";
 	$result = getall($query);
