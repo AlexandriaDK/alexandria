@@ -19,6 +19,8 @@ if (!$data) $data = "1,1455,53,174,8,392,122";
 $dataset = explode(',',$data);
 $chainlen = ceil(count($dataset)/2);
 
+$fontpath = './gfx/arial.ttf';
+
 // Define everything
 $space = 70;
 $leftmargin = 80;
@@ -62,14 +64,14 @@ foreach($dataset AS $id) {
 	}
 	if (strlen($label) > 20) $label = substr($label,0,18)."...";
 
-	list(,,$txtw,,,$txth) = imagettfbbox($fontsize,0,'./arial.ttf',fixttftext($label));
+	list(,,$txtw,,,$txth) = imagettfbbox($fontsize,0, $fontpath, fixttftext($label));
 	$txty = abs($txty);
 
 	$x = ($type=='aut'?$leftmargin:($w-$leftmargin)) - ($txtw/2);
 	$y = ($i*$space*0.5) - ($txth/2);
 
 
-	imagettftext($im,$fontsize,0,$x,$y,$color,'./arial.ttf',fixttftext($label));
+	imagettftext($im,$fontsize,0,$x,$y,$color, $fontpath, fixttftext($label));
 
 }
 
