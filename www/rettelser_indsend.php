@@ -47,7 +47,7 @@ if (strtolower(trim($_REQUEST['human'])) != "a") {
 
 $query = "
 	INSERT INTO updates (id, data_id, category, title, description, submittime, user_name, user_email, user_id)
-	VALUES (NULL, '$data_id', '$cat', '".dbesc($data_label)."', '".dbesc($output)."', NOW(), '".dbesc(,$user_name)."', '".dbesc($user_email)."', '$user_id' )";
+	VALUES (NULL, '$data_id', '$cat', '".dbesc($data_label)."', '".dbesc($output)."', NOW(), '".dbesc($user_name)."', '".dbesc($user_email)."', '$user_id' )";
 $last_id = doquery($query);
 
 award_achievement(20);
