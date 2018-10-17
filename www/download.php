@@ -29,7 +29,7 @@ if (file_exists($fileondisk) ) {
 	}
 
 	// redirect
-	header("Location: http://download.alexandria.dk/files".$_SERVER['PATH_INFO']);
+	header("Location: https://download.alexandria.dk/files".$_SERVER['PATH_INFO']);
 
 } else {
 	header("HTTP/1.0 404 Not Found");

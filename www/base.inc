@@ -11,9 +11,6 @@ header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 
 
 // general
-#define('ALEXSALT_RPGFORUM','666KimHvidovre');
-#define('ALEXSALT_LIVEFORUM','123KajKageKast');
-
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
 
 setlocale(LC_TIME, "da_DK"); 
@@ -87,7 +84,6 @@ function get_redirect_url ($url) {
 
 
 function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
-	global $dblink;
 	$site = 'facebook';
 /*
 	if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
@@ -113,7 +109,7 @@ function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 
 	} else { // create user
 		doquery("INSERT INTO users (id, created, log, ip, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."\nRemote user: {$_SERVER['REMOTE_ADDR']}\n', '$ip', '" . dbesc($name) . "', NOW(), 0, 1)");
-		$user_id = mysqli_insert_id($dblink);
+		$user_id = dbid();
 		if ($user_id) {
 			doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime, ip) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time', '$ip')");
 		}
@@ -140,7 +136,6 @@ function do_steam_login($siteuserid, $name) {
 }
 
 function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
-	global $dblink;
 /*
 	if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
 		$ip = ip2long($_SERVER['REMOTE_ADDR']);
@@ -165,7 +160,7 @@ function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
 
 	} else { // create user
 		doquery("INSERT INTO users (id, created, log, ip, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."\nRemote user: {$_SERVER['REMOTE_ADDR']}\n', '$ip', '" . dbesc($name) . "', NOW(), 0, 1)");
-		$user_id = mysqli_insert_id($dblink);
+		$user_id = dbid();
 		if ($user_id) {
 			doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime, ip) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time', '$ip')");
 		}
@@ -192,7 +187,6 @@ function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
 }
 
 function validate_remote_login ($siteuserid,$hash,$time,$site,$name) {
-	global $dblink;
 	$siteuserid = intval($siteuserid);
 	$time = intval($time);
 	if (abs($time - time()) > 1200) return false; // check for timeout - both servers are currently (nov 2010) five minutes off in each direction
@@ -208,7 +202,7 @@ function validate_remote_login ($siteuserid,$hash,$time,$site,$name) {
 		return $user_id;
 	} else { // create user
 		doquery("INSERT INTO users (id, created, log) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."\nRemote user: {$_SERVER['REMOTE_ADDR']}\n')");
-		$user_id = mysqli_insert_id($dblink);
+		$user_id = dbid();
 		doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time')");
 		return $user_id;
 	}
