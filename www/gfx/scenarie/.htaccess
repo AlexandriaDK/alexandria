@@ -1,7 +1,0 @@
-<Files l_2420.jpg>
-	SetEnvIfNoCase Referer "^http://www\.myspace\.com/index\.cfm" steal=1
-	Order Allow,Deny
-	Allow from all
-	Deny from env=steal
-</Files>
-ErrorDocument 403 http://alexandria.dk/gfx/scenarie/cutebunny.gif
