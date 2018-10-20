@@ -83,8 +83,6 @@ if ($data_id && $category) {
 	];
 	if ($user_id) {
 		$query = "SELECT id, data_id, category, time, user, user_id, ip, ip_forward, note FROM log WHERE user_id = $user_id ORDER BY id DESC LIMIT $listlimit";
-	#	$user_result = mysql_query("SELECT name FROM users WHERE id = $user_id");
-#		list($user_name) = mysql_fetch_row($user_result);
 		$user_name = getone("SELECT name FROM users WHERE id = $user_id");
 	} else {
 		$query = "SELECT id, data_id, category, time, user, user_id, ip, ip_forward, note FROM log ORDER BY id DESC LIMIT $listlimit";

@@ -71,7 +71,7 @@ if ($action == "ret" && $con) {
 		     "conset_id = '".dbesc($conset_id)."', " .
 		     "confirmed = '".dbesc($confirmed)."' " .
 		     "WHERE id = '$con'";
-		$r = query($q);
+		$r = doquery($q);
 		print dberror();
 		if ($r) {
 			chlog($con,$this_type,"Con rettet");
@@ -130,7 +130,7 @@ if ($action == "opret") {
 			 "'".dbesc($intern)."', ".
 			 "'".dbesc($confirmed)."'".
 			 ")";
-		$r = query($q);
+		$r = doquery($q);
 		if ($r) {
 			$con = dbid();
 			chlog($con,$this_type,"Con oprettet");
