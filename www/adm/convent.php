@@ -287,7 +287,7 @@ if ($con) {
 	print dberror();
 	print "<tr valign=top><td>Scenarier herunder:</td><td>\n";
 	
-        foreach($result AS list($id, $title, $preid, $event) ) {
+        foreach($q AS list($id, $title, $preid, $event) ) {
 		print "<a href=\"scenarie.php?scenarie=$id\">$title</a>";
 		if ($preid > 1) print " ($event)";
 		print "<br>";
