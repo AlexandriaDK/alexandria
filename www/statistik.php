@@ -4,13 +4,13 @@ require("base.inc");
 require("template.inc");
 
 // Threshold:
-$akt_forfatter = 17;
-$eksponering = 24;
-$samarbejde = 30;
-$brugtsystem = 25;
-$flestcons = 6;
-$flestforfattere = 5;
-$flestscenarier = 28;
+$akt_forfatter = 25;
+$eksponering = 40;
+$samarbejde = 35;
+$brugtsystem = 50;
+$flestcons = 7;
+$flestforfattere = 10;
+$flestscenarier = 30;
 
 $live_id = 73;
 

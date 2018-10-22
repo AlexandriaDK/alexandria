@@ -3,15 +3,15 @@
    name="alexandria.dk"
    description="Alexandria Search"
    method="GET"
-   action="http://alexandria.dk/find" 
-   searchform="http://alexandria.dk/"
+   action="https://alexandria.dk/find" 
+   searchform="https://alexandria.dk/"
 >
 
 <input name="q" user>
 </search>
 
 <browser
- update          = "http://alexandria.dk/plugin/aleandriadk.src" 
- updateIcon      = "http://alexandria.dk/plugin/alexandriadk.png" 
+ update          = "https://alexandria.dk/plugin/aleandriadk.src" 
+ updateIcon      = "https://alexandria.dk/plugin/alexandriadk.png" 
  updateCheckDays = "7" 
 >
