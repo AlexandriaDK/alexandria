@@ -179,8 +179,8 @@ if ($action == "addfile") {
 	$target_subdir = $thumbpaths[$category];
 
 	$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" .$path;
-	$target = "../gfx/" . $target_subdir . "/l_" . $data_id . ".jpg";
-	$target_mini = "../gfx/" . $target_subdir . "/s_" . $data_id . ".jpg";
+	$target = "gfx/" . $target_subdir . "/l_" . $data_id . ".jpg";
+	$target_mini = "gfx/" . $target_subdir . "/s_" . $data_id . ".jpg";
 
 	if (!file_exists($path) ) {
 		$_SESSION['admin']['info'] = "Fil til thumbnail findes ikke!";
@@ -339,21 +339,21 @@ if ($result) {
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="addfile">'.
-	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
-	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
-	      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
-	      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
-	      '<td><input type="checkbox" name="downloadable" checked="checked"></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-	      '<td></td>'.
-	      "</tr>\n";
-	print "</form>\n\n";
-
 }
+
+print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+      '<input type="hidden" name="action" value="addfile">'.
+      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
+      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
+print "<tr>\n".
+      '<td style="text-align:right;">Ny</td>'.
+      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
+      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
+      '<td><input type="checkbox" name="downloadable" checked="checked"></td>'.
+      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+      '<td></td>'.
+      "</tr>\n";
+print "</form>\n\n";
 
 print "<tr valign=\"top\"><td></td><td>Mulige filer:</td><td>Standard-beskrivelser:</td></tr><tr valign=\"top\"><td></td><td>";
 

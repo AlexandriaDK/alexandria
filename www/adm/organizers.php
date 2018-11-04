@@ -157,19 +157,18 @@ if ($result) {
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
-
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="addorganizer">'.
-	      '<input type="hidden" name="data_id" value="'.$data_id.'">';
-	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
-	      '<td><input type="text" name="role" value="" size=40 maxlength=100 autofocus></td>'.
-	      '<td><input type="text" name="aut_text" value="" size=40 maxlength=100 class="tags"></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-	      "</tr>\n";
-	print "</form>\n\n";
-
 }
+
+print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+      '<input type="hidden" name="action" value="addorganizer">'.
+      '<input type="hidden" name="data_id" value="'.$data_id.'">';
+print "<tr>\n".
+      '<td style="text-align:right;">Ny</td>'.
+      '<td><input type="text" name="role" value="" size=40 maxlength=100 autofocus></td>'.
+      '<td><input type="text" name="aut_text" value="" size=40 maxlength=100 class="tags"></td>'.
+      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+      "</tr>\n";
+print "</form>\n\n";
 
 print "</table>\n";
 print "</body>\n</html>\n";
