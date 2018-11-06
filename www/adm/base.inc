@@ -50,8 +50,8 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 	return $label;
 }
 
-function tr($tekst, $name, $def="", $opt="", $placeholder = "", $type="text") {
-	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"".htmlspecialchars($def)."\" placeholder=\"" . htmlspecialchars($placeholder) . "\" size=50></td><td>$opt</td></tr>\n";
+function tr($tekst, $name, $def="", $opt="", $placeholder = "", $type="text", $autofocus = FALSE) {
+	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"".htmlspecialchars($def)."\" placeholder=\"" . htmlspecialchars($placeholder) . "\" size=50" . ($autofocus ? " autofocus" : "") . "></td><td>$opt</td></tr>\n";
 }
 
 function chlog($data_id, $category, $note="") {

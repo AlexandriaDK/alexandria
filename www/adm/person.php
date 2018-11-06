@@ -114,7 +114,7 @@ if ($person) {
 	print "</td></tr>\n";
 }
 
-tr("Fornavn:","firstname",$firstname);
+tr("Fornavn:","firstname",$firstname, "", "", "text", TRUE);
 tr("Efternavn:","surname",$surname);
 print "<tr valign=\"top\"><td>Intern note:</td><td><textarea name=\"description\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 tr("Fødselsdato:", "birth", $birth, "", "ÅÅÅÅ-MM-DD", "date");
