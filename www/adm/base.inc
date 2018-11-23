@@ -168,7 +168,8 @@ function getthumbnailpath($data_id, $category) {
 		case 'sys': $folder = "system"; break;
 		default: $folder = FALSE;
 	}
-	if ($folder === FALSE || !(file_exists($path = "../gfx/$folder/l_".$data_id.".jpg")) ) {
+	# assuming that script has chdir .. and is in webroot now
+	if ($folder === FALSE || !(file_exists($path = "./gfx/$folder/l_".$data_id.".jpg")) ) {
 		return FALSE;
 	} else {
 		return $path;

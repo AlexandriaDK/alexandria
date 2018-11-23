@@ -403,7 +403,7 @@ if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
 	      '<input type="hidden" name="action" value="deletethumbnail">' . 
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
 	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-	      '<p><a href="' . $path . '">Thumbnail</a><br>' .
+	      '<p><a href="/' . $path . '">Thumbnail</a><br>' .
 	      '<input type="submit" value="Slet thumbnail" />' .
 	      '</p>' .
 	      '</form>'
