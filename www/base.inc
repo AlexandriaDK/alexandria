@@ -481,14 +481,7 @@ function _textlink ($string, $absolute_url = 0) {
 }
 
 function textlinks ($text,$absolute_url = 0) {
-/*
-	$text = preg_replace(
-		"/\[\[\[([^]]+)\]\]\]/e",
-		"_textlink('\\1',$absolute_url)",
-		$text
-	);
-*/
-# :TODO: Bliver absolute_url ført med over?
+# :TODO: absolute_url bliver *ikke* ført med over, giver Notice
 	$text = preg_replace_callback(
 		'_\[\[\[([^]]+)\]\]\]_',
 		function ($matches) {
