@@ -107,9 +107,6 @@ foreach ($r AS $row) {
 		$scenarios[$sce_id]['userdata'] = ['read' => $row['read'], 'gmed' => $row['gmed'], 'played' => $row['played'] ]; 
 	}
 }
-print "<!--";
-print_r($scenarios);
-print "-->";
 
 foreach($scenarios AS $scenario_id => $scenario) {
 	$xscenlist .= "\t<tr>\n";
