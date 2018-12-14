@@ -1,28 +1,20 @@
 <?php
 require("./connect.php");
-$header = '<p align="center"><font style="font-size: 30pt" face="Garamond, georgia, times New Roman, times" size="7" color="#990000">
-<i><a href="'.$_SERVER['PHP_SELF'].'" style="text-decoration: none">Six Degrees of Jost L. Hansen...</a></i></font>
-</p>';
-#require("page.inc");
+require("./base.inc");
+require("template.inc");
 
-$t['start'] = time();
+$time = [];
+$gem = [];
+$time['start'] = time();
 
-unset($person);
-unset($qnums);
-unset($maxled);
-
-$q = mysql_query("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id");
-while ($row = mysql_fetch_row($q)) $person[$row[0]] = $row[1];
+$person = getcolid("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id");
 
 foreach ($person AS $key => $value) {
 
-	unset($check);
-	unset($checked);
+	$check = [];
+	$checked = [];
 
 	$mainperson = $key;
-	$hest++;
-
-#	if ($hest == 20) break;
 
 	$check[1][] = $mainperson;
 	$checked[] = $mainperson;
@@ -31,7 +23,6 @@ foreach ($person AS $key => $value) {
 	
 	// STARTKODE FOR LØKKE
 	// running in circles!
-	
 	
 	while($check[$i]) {
 	
@@ -58,9 +49,9 @@ foreach ($person AS $key => $value) {
 				link
 		";
 
-		$q = mysql_query($query);
+		$q = getall($query);
 		$qnums++;
-		while ($row = mysql_fetch_array($q)) {
+		foreach($q as $row) {
 			$personerialt++;
 #			if ($key == 1) print $person[$row['link']]."<br>\n";
 			$check[($i+1)][] = $row['link'];
@@ -84,7 +75,7 @@ foreach ($person AS $key => $value) {
 	$gem[$personerialt]++;
 }
 
-$t['end'] = time();
+$time['end'] = time();
 
 print "<hr>";
 
@@ -97,7 +88,7 @@ print "<pre>";
 print "Max led: $maxled[antal] af ".$person[$maxled['personid']]."\n\n";
 
 print "Queries i alt: $qnums\n";
-print "Samlet beregningstid: ".($t['end']-$t['start'])." sekunder\n\n";
+print "Samlet beregningstid: ".($time['end']-$time['start'])." sekunder\n\n";
 
 foreach($gem AS $key => $value) {
 	print "Antal ".$key."-personers-kæder: ".($value/$key)."\n";
