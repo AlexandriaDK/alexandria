@@ -47,9 +47,12 @@
 		{/section}
 		</ul>
 			
-		<h3>
+		<h3 style="margin-bottom: 0;">
 			Kommende arrangementer:
 		</h3>
+		<p style="margin-top: 2px;">
+			(tjek <a href="https://drive.google.com/open?id=1VTnF6jAhuhhMw43fJqzlaH1QFt8-7rzdLyP7muk1VVM&amp;fbclid=IwAR2z9SpFPQXfpmtvdgV52yq9fsSo1GlpTBwAiIr6wwZ-f4B0aFMMYQcgtdc">denne oversigt</a> for brætspil)
+		</p>
 			{$html_nextevents}
 		
 		
