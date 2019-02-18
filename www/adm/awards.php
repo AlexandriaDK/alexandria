@@ -236,19 +236,19 @@ if ($category == 'convent') {
 			print "</form>\n\n";
 		}
 
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-		      '<input type="hidden" name="action" value="addcategory">'.
-		      '<input type="hidden" name="category" value="'.$category.'">'.
-		      '<input type="hidden" name="data_id" value="'.$data_id.'">';
-		print "<tr valign=\"top\">\n".
-		      '<td style="text-align:right;">Ny</td>'.
-		      '<td><input type="text" name="name" value="" size=40 maxlength=150 autofocus></td>'.
-		      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
-		      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-		      "</tr>\n";
-		print "</form>\n\n";
-
 	}
+	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	      '<input type="hidden" name="action" value="addcategory">'.
+	      '<input type="hidden" name="category" value="'.$category.'">'.
+	      '<input type="hidden" name="data_id" value="'.$data_id.'">';
+	print "<tr valign=\"top\">\n".
+	      '<td style="text-align:right;">Ny</td>'.
+	      '<td><input type="text" name="name" value="" size=40 maxlength=150 autofocus></td>'.
+	      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      "</tr>\n";
+	print "</form>\n\n";
+
 
 } elseif ($category == "awardcategory" && $data_id) {
 	// get category
