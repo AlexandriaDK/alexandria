@@ -685,6 +685,18 @@ function getlinklist ($data_id, $cat) {
 	return $linklist;
 }
 
+function gettaglist ($data_id, $cat) {
+	$data_id = (int) $data_id;
+	$tags = getcol("SELECT tag FROM tags WHERE sce_id = $data_id");
+	return $tags;
+}
+
+function getalltags () {
+	$tags = getall("SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag ORDER BY tag");
+	return $tags;
+}
+
+
 function getorganizerlist ($data_id, $category, $order = FALSE) {
 	if (!$order) {
 		$order = "a.role";

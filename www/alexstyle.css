@@ -576,3 +576,26 @@ ul.remotelogin {
 ul.remotelogin li {
 	padding-bottom: 1px;
 }
+
+ul.taglist {
+	list-style-type: none;
+	float: right;
+}
+ul.taglist li {
+	background-color: #ddd;
+	border-radius: 4px;
+	padding: 3px;
+	font-size: 0.8em;
+	margin: 2px;
+}
+
+ul.taglist a {
+	color: black;
+	display: block;
+}
+
+ul.taglist li:hover {
+	background-color: #aaa;
+}
+
+

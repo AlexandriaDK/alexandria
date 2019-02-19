@@ -24,6 +24,7 @@ $search_download = $_REQUEST['search_download'];
 $search_players = (int) $_REQUEST['search_players'];
 $search_no_gm = $_REQUEST['search_no_gm'];
 $search_boardgames = $_REQUEST['search_boardgames'];
+$search_tag = (string) $_REQUEST['tag'];
 
 // achievements
 function check_search_achievements ($find) {
@@ -321,6 +322,21 @@ if ($find) {
 
 	}
 
+} elseif ($search_tag) {
+	$q = "
+		SELECT DISTINCT sce_id
+		FROM tags
+		WHERE tag = '" . dbesc($search_tag) . "'
+	";
+	$match['sce'] = getcol($q);
+
+	$id_data = [];
+	foreach(getall("
+			SELECT sce.id, sce.title FROM sce INNER JOIN tags ON sce.id = tags.sce_id
+			WHERE tag = '" . dbesc($search_tag) . "'
+		") AS $row) {
+		$id_data['sce'][$row['id']] = $row['title'];
+	}
 }
 
 $out = "";

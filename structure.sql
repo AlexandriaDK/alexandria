@@ -652,6 +652,24 @@ CREATE TABLE `sys` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tags`
+--
+
+DROP TABLE IF EXISTS `tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sce_id` int(11) NOT NULL,
+  `tag` tinytext COLLATE utf8mb4_danish_ci NOT NULL,
+  `added_by_user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sce_id` (`sce_id`),
+  KEY `tag` (`tag`(8))
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `title`
 --
 

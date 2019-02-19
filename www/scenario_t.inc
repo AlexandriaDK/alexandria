@@ -181,9 +181,10 @@ if ($r['id'] == 0) {
 	}
 	$genre = join(", ",$genre);
 
-// Links and trivia
+// Links, trivia, tags
 	$linklist = getlinklist($scenarie,$this_type);
 	$trivialist = gettrivialist($scenarie,$this_type);
+	$taglist = gettaglist($scenarie,$this_type);
 
 // Evt. forside-billede
 	$available_pic = 0;
@@ -238,6 +239,7 @@ if ($r['id'] == 0) {
 	$t->assign('genre',$genre);
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);
+	$t->assign('tags',$taglist);
 
 	$t->assign('user_read',in_array('read',$userlog));
 	$t->assign('user_read_html',getdynamicscehtml($scenarie,'read',in_array('read',$userlog)));
