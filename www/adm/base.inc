@@ -77,6 +77,31 @@ function changelinks($data_id, $category) {
 	return $html;
 }
 
+function changetags($data_id, $category) {
+	$tags = getcol("SELECT tag FROM tags WHERE sce_id = '$data_id'");
+	$numtags = count($tags);
+	$html  = "<tr valign=top><td>Tags:</td><td>\n";
+	$html .= sprintf("$numtags %s",($numtags == 1?"tag":"tags"));
+	if ($numtags) {
+		$html .= ": ";
+	}
+	$i = 0;
+	foreach($tags AS $tag) {
+		if ($i > 0) {
+			$html .= ", ";
+		}
+		$i++;
+		if ($i > 3) {
+			$html .= "...";
+			break;
+		}
+		$html .= htmlspecialchars($tag);
+	}
+	$html .= " - <a href=\"tags.php?category=$category&amp;data_id=$data_id\">Ret tags</a>";
+	$html .= "</td></tr>\n\n";
+	return $html;
+}
+
 function changetrivia($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM trivia WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Trivia:</td><td>\n";
@@ -279,6 +304,9 @@ function rexit($this_type, $dataset = [] ) {
 			break;
 		case 'awards':
 			$location = 'awards.php';
+			break;
+		case 'tags':
+			$location = 'tags.php';
 			break;
 		default:
 			$location = './';

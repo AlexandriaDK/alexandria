@@ -590,6 +590,9 @@ print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($scenarie ? "Ret" :
 
 if ($scenarie) {
 	// Mulighed for at rette links
+	print changetags($scenarie,$this_type);
+
+	// Mulighed for at rette links
 	print changelinks($scenarie,$this_type);
 	
 	// Mulighed for at rette trivia
