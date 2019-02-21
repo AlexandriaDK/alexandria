@@ -28,6 +28,8 @@ if ($_SESSION['user_admin'] ) {
 <a href="feeds.php" style="text-decoration: none">Feeds</a>
 ·
 <a href="users.php" accesskey="u" style="text-decoration: none">Users</a>
+·
+<a href="debug.php" accesskey="d" style="text-decoration: none">Debug</a>
 <?php
 }
 ?>
