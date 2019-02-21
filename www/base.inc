@@ -687,7 +687,7 @@ function getlinklist ($data_id, $cat) {
 
 function gettaglist ($data_id, $cat) {
 	$data_id = (int) $data_id;
-	$tags = getcol("SELECT tag FROM tags WHERE sce_id = $data_id");
+	$tags = getcolid("SELECT id, tag FROM tags WHERE sce_id = $data_id");
 	return $tags;
 }
 

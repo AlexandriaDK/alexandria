@@ -240,6 +240,7 @@ if ($r['id'] == 0) {
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);
 	$t->assign('tags',$taglist);
+	$t->assign('user_can_edit_tag',$_SESSION['can_edit_tag'] );
 
 	$t->assign('user_read',in_array('read',$userlog));
 	$t->assign('user_read_html',getdynamicscehtml($scenarie,'read',in_array('read',$userlog)));

@@ -20,11 +20,17 @@
 	{if $user_admin || $user_editor}
 		<form action="adm/user_tags.php" method="post">
 		<ul class="taglist">
-		{foreach from=$tags item=tag}
-		<li><a href="find?tag={$tag|rawurlencode}">{$tag|escape}</a></li>
+		{foreach $tags AS $tag_id => $tag}
+		<li>
+			{if $user_can_edit_tag[$tag_id]}
+				<span id="tagdelete_{$tag_id}" class="delete"> 
+				<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete" title="Slet tag">[Slet]</a></span>
+			{/if}
+		<a href="find?tag={$tag|rawurlencode}">{$tag|escape}</a>
+		</li>
 		{/foreach}
 		{* This part is really only for users logged in *}
-		<li style="text-align: center;"><a href="#" onclick="$('#tag_input_li').toggle(100).focus();$('#tag_input').focus();" title="Tilføj tag" accesskey="t">+</a></li>
+		<li><a href="#" onclick="$('#tag_input_li').toggle(100).focus();$('#tag_input').focus();" title="Tilføj tag" accesskey="t">+</a></li>
 		<li style="display: none;" id="tag_input_li"><input type="hidden" name="scenario" value="{$id}"><input type="hidden" name="action" value="add"><input type="text" name="tag" id="tag_input" placeholder="E.g. Grind Night"></li>
 		</ul>	
 		</form>
@@ -41,7 +47,7 @@
 	{if $participants != ""}
 		Deltagere: {$participants|escape}
 		{if $user_can_edit_participants || $user_admin || $user_editor}
-		<a href="#" onclick="document.getElementById('form_participants').style.display='block'; return false;">- ret antal spillere</a>
+		- <a href="#" onclick="$('#form_participants').toggle(); return false;">ret antal spillere</a>
 		{/if}
 	{/if}
 	{if ($user_id) && $participants == ""}

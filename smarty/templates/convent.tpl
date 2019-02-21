@@ -113,6 +113,7 @@
 		{foreach $user_can_edit_organizers AS $acrel_id => $true}
 		{if $organizerlist[i].id == $acrel_id}
 			<a href="adm/user_organizers.php?convent={$id}&amp;acrel_id={$acrel_id}&amp;action=delete">[Slet]</a>
+			{break}
 		{/if}
 		{/foreach}
 	</td>

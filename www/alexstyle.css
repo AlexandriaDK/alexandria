@@ -580,22 +580,29 @@ ul.remotelogin li {
 ul.taglist {
 	list-style-type: none;
 	float: right;
+	text-align: right;
 }
 ul.taglist li {
+	margin: 2px;
+}
+
+ul.taglist li a {
 	background-color: #ddd;
 	border-radius: 4px;
 	padding: 3px;
 	font-size: 0.8em;
-	margin: 2px;
-}
-
-ul.taglist a {
 	color: black;
-	display: block;
 }
 
-ul.taglist li:hover {
+ul.taglist li span.delete a {
+	background-color: #f99;
+}
+
+ul.taglist li a:hover {
 	background-color: #aaa;
 }
 
+ul.taglist li span.delete a:hover {
+	background-color: #f66;
+}
 
