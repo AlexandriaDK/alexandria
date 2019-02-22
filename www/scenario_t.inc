@@ -185,6 +185,8 @@ if ($r['id'] == 0) {
 	$linklist = getlinklist($scenarie,$this_type);
 	$trivialist = gettrivialist($scenarie,$this_type);
 	$taglist = gettaglist($scenarie,$this_type);
+	$alltags = getalltags();
+	$json_alltags = json_encode($alltags);
 
 // Evt. forside-billede
 	$available_pic = 0;
@@ -240,6 +242,7 @@ if ($r['id'] == 0) {
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);
 	$t->assign('tags',$taglist);
+	$t->assign('json_alltags',$json_alltags);
 	$t->assign('user_can_edit_tag',$_SESSION['can_edit_tag'] );
 
 	$t->assign('user_read',in_array('read',$userlog));

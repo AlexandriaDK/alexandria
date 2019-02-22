@@ -33,6 +33,20 @@
 			}
 			
 		</style>
+		{if $json_alltags}
+		<script>
+		$(function() {
+			var availableTags = {$json_alltags};
+			$( ".newtag" ).autocomplete({
+				source: availableTags,
+				autoFocus: true,
+				delay: 10
+			});
+		});
+		</script>
+
+		{/if}
+
 		{if $editmode || $type == 'jostgame' }
 		<script>
 		$(function() {

@@ -31,7 +31,7 @@
 		{/foreach}
 		{* This part is really only for users logged in *}
 		<li><a href="#" onclick="$('#tag_input_li').toggle(100).focus();$('#tag_input').focus();" title="Tilføj tag" accesskey="t">+</a></li>
-		<li style="display: none;" id="tag_input_li"><input type="hidden" name="scenario" value="{$id}"><input type="hidden" name="action" value="add"><input type="text" name="tag" id="tag_input" placeholder="E.g. Grind Night"></li>
+		<li style="display: none;" id="tag_input_li"><input type="hidden" name="scenario" value="{$id}"><input type="hidden" name="action" value="add"><input type="text" name="tag" id="tag_input" class="newtag" placeholder="E.g. Grind Night"></li>
 		</ul>	
 		</form>
 	{/if}

@@ -691,8 +691,12 @@ function gettaglist ($data_id, $cat) {
 	return $tags;
 }
 
-function getalltags () {
-	$tags = getall("SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag ORDER BY tag");
+function getalltags ($count = FALSE) {
+	if (!$count) {
+		$tags = getcol("SELECT DISTINCT tag FROM tags ORDER BY tag");
+	} else {
+		$tags = getall("SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag ORDER BY tag");
+	}
 	return $tags;
 }
 
