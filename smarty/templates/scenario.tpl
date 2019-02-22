@@ -26,7 +26,7 @@
 				<span id="tagdelete_{$tag_id}" class="delete"> 
 				<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete" title="Slet tag">[Slet]</a></span>
 			{/if}
-		<a href="find?tag={$tag|rawurlencode}">{$tag|escape}</a>
+		<a href="data?tag={$tag|rawurlencode}">{$tag|escape}</a>
 		</li>
 		{/foreach}
 		{* This part is really only for users logged in *}

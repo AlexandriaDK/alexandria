@@ -25,5 +25,8 @@
 {elseif $type eq "year"}
 {assign var="typename" value="År"}
 {include file="year.tpl"}
+{elseif $type eq "tag"}
+{assign var="typename" value="Tag"}
+{include file="tag.tpl"}
 {/if}
 {include file="end.tpl"}

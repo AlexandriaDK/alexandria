@@ -231,6 +231,8 @@ $con = isset($_REQUEST['con']) ? intval($_REQUEST['con']) : 0;
 $conset = isset($_REQUEST['conset']) ? intval($_REQUEST['conset']) : 0;
 $system = isset($_REQUEST['system']) ? intval($_REQUEST['system']) : 0;
 $year = isset($_REQUEST['year']) ? intval($_REQUEST['year']) : 0;
+$tag = isset($_REQUEST['tag']) ? (string) $_REQUEST['tag'] : NULL;
+
 /*
 if ($year < 1970 || $year > 2100) { // :TODO: Fix Y2K100-problem 
 	header("Location: calendar");
@@ -256,6 +258,8 @@ if ($person) {
 	include ("system_t.inc");
 } elseif ($year) {
 	include ("year_t.inc");
+} elseif ($tag) {
+	include ("tag_t.inc");
 } else {
 	include ("default.inc");
 }
