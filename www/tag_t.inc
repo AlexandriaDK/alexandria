@@ -1,7 +1,7 @@
 <?php
 $this_type = 'tag';
 
-list ($tag_id, $description) = getrow("SELECT id, description FROM tag WHERE tag = '" . dbesc($tag) . "'");
+list ($tag_id, $ttag, $description) = getrow("SELECT id, tag, description FROM tag WHERE tag = '" . dbesc($tag) . "'");
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
@@ -9,6 +9,9 @@ if (!$tag && !$tag_id) {
 	$t->assign('pagetitle',"Ikke fundet");
 	$t->display('default.tpl');
 } else {
+	if (!$tag) {
+		$tag = $ttag;
+	}
 	if ($_SESSION['user_id']) {
 		$q = getall("SELECT sce.id, title, name, convent.id AS con_id, convent.year, convent.begin, convent.end, aut_extra, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files FROM sce INNER JOIN tags ON sce.id = tags.sce_id LEFT JOIN csrel ON csrel.sce_id = sce.id AND csrel.pre_id = 1 LEFT JOIN convent ON csrel.convent_id = convent.id LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1 LEFT JOIN userlog ON sce.id = userlog.data_id AND userlog.category = 'sce' AND userlog.user_id = '{$_SESSION['user_id']}' WHERE tags.tag = '" . dbesc($tag). "'  GROUP BY sce.id, convent.id ORDER BY title");
 	} else {

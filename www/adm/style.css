@@ -61,3 +61,6 @@ span.atoggle {
 	cursor: pointer;
 }
 
+option.existing {
+	background-color: #afa;
+}

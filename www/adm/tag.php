@@ -11,6 +11,10 @@ $action = (string) $_REQUEST['action'];
 $tag = (string) $_REQUEST['tag'];
 $description = (string) $_REQUEST['description'];
 
+if ($tag && !$tag_id) {
+	$tag_id = getone("SELECT id FROM tag WHERE tag = '" . dbesc($tag) . "'");
+}
+
 if (!$action && $tag_id) {
 	list($tag, $description) = getrow("SELECT tag, description FROM tag WHERE id = $tag_id");
 }
@@ -42,7 +46,7 @@ if ($action == "ret" && $tag_id) {
 }
 
 if ($action == "opret") {
-	$tid = getone("SELECT id FROM tag WHERE name = '" . dbesc($tag) . "'");
+	$tid = getone("SELECT id FROM tag WHERE tag = '" . dbesc($tag) . "'");
 	if ($tid) {
 		$_SESSION['admin']['info'] = "Dette tag <a href=\"tag.php?tag_id=$tid\">findes allerede</a>";
 	} elseif (!$tag) {
@@ -175,9 +179,9 @@ foreach($q AS $r) {
 <select name="tag">
 
 <?php
-$q = getall("SELECT COUNT(tags.id) AS count, tags.tag FROM tags GROUP BY tags.tag ORDER BY tag");
+$q = getall("SELECT COUNT(tags.id) AS count, tags.tag, tag.id AS tag_id FROM tags LEFT JOIN tag ON tags.tag = tag.tag GROUP BY tags.tag ORDER BY tag");
 foreach($q AS $r) {
-	print "<option value=\"" . htmlspecialchars($r['tag']) . "\">" . htmlspecialchars($r['tag']) . " (" . $r['count'] . ")\n";
+	print "<option " . ($r['tag_id'] ? 'class="existing"' : '')  . " value=\"" . htmlspecialchars($r['tag']) . "\">" . htmlspecialchars($r['tag']) . " (" . $r['count'] . ")\n";
 }
 
 ?>
