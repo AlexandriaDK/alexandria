@@ -27,6 +27,10 @@ switch ($cat) {
 	$returl = 'convent.php?con=';
 	break;
 
+	case 'tag':
+	$returl = 'tag.php?tag_id=';
+	break;
+
 	case 'aut':
 	default:
 	$returl = 'person.php?person=';

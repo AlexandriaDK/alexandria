@@ -1,10 +1,10 @@
 <?php
 $this_type = 'tag';
 
-$description = getone("SELECT description FROM tag WHERE tag = '" . dbesc($tag) . "'");
+list ($tag_id, $description) = getrow("SELECT id, description FROM tag WHERE tag = '" . dbesc($tag) . "'");
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
-if (!$tag && !$description) {
+if (!$tag && !$tag_id) {
 	$t->assign('content',"Beklager - dette tag findes ikke!");
 	$t->assign('pagetitle',"Ikke fundet");
 	$t->display('default.tpl');
@@ -81,7 +81,7 @@ if (!$tag && !$description) {
 	$t->assign('pagetitle',$tag);
 	$t->assign('type',$this_type);
 
-	$t->assign('id',$system);
+	$t->assign('id',$tag_id);
 	$t->assign('tag',$tag);
 	$t->assign('description',$description);
 	$t->assign('alias',$aliaslist);

@@ -12,7 +12,20 @@ $tag = (string) $_REQUEST['tag'];
 $description = (string) $_REQUEST['description'];
 
 if (!$action && $tag_id) {
-	list($tag, $description) = getrow("SELECT tag, description FROM tag WHERE id = '$tag_id'");
+	list($tag, $description) = getrow("SELECT tag, description FROM tag WHERE id = $tag_id");
+}
+
+if ($action == "Slet" && $tag_id) {
+	$tag = getone("SELECT tag FROM tag WHERE id = $tag_id");
+	$q = "DELETE FROM tag WHERE id = $tag_id";
+	$r = doquery($q);
+
+	if ($r) {
+		chlog($tag_id,$this_type,"Tag-beskrivelse slettet: $tag");
+	}
+	$_SESSION['admin']['info'] = "Tag-beskrivelse slettet! " . dberror();
+	rexit($this_type);
+
 }
 
 if ($action == "ret" && $tag_id) {
@@ -87,26 +100,20 @@ tr("Tag:","tag",$tag);
 print "<tr valign=top><td>Info om dette tag:</td><td><textarea name=description cols=100 rows=25>\n" . htmlspecialchars($description) . "</textarea></td></tr>\n";
 
 
-$ror = ($tag_id) ? "Ret" : "Opret";
-
-?>
-
-<tr><td>&nbsp;</td><td><INPUT TYPE="submit" VALUE="<?php print $ror; ?> tag-beskrivelse"></td></tr>
-
-<?php
+print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($tag_id ? "Ret" : "Opret").' tag-beskrivelse">' . ($tag_id ? ' <input type="submit" name="action" value="Slet" onclick="return confirm(\'Slet tag-beskrivelse?\n\nDet er kun beskrivelses-teksten af tagget, som slettes. Tagget vil stadigvæk eksistere for evt. tilknyttede scenarier.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($tag_id) {
 // Mulighed for at rette links
-	print changelinks($tag_id,$this_type);
+//	print changelinks($tag_id,$this_type);
 
 // Mulighed for at rette trivia
-	print changetrivia($tag_id,$this_type);
+//	print changetrivia($tag_id,$this_type);
 
 // Mulighed for at rette alias
-	print changealias($tag_id,$this_type);
+//	print changealias($tag_id,$this_type);
 
 // Vis evt. billede
-	print showpicture($tag_id,$this_type);
+//	print showpicture($tag_id,$this_type);
 
 // Vis tickets
 	print showtickets($tag_id,$this_type);
@@ -140,12 +147,39 @@ if ($tag_id) {
 <select name="tag_id">
 
 <?php
-$q = getall("SELECT tag.id, tag FROM tag ORDER BY tag");
+$q = getall("SELECT COUNT(tags.id) AS count, tag.id, tag.tag FROM tag LEFT JOIN tags ON tag.tag = tags.tag GROUP BY tag.id, tag.tag ORDER BY tag");
 foreach($q AS $r) {
 	print "<option value=$r[id]";
 	if ($r[id] == $tag_id) print " SELECTED";
-	print ">" . htmlspecialchars($r['tag']) . "\n";
+	print ">" . htmlspecialchars($r['tag']) . " (" . $r['count'] . ")\n";
 }
+
+?>
+</select>
+<br>
+<input type=submit value="Rediger">
+
+</td>
+</tr>
+</table>
+</form>
+
+<form action="tag.php" method="get">
+<table border=0>
+<tr valign="baseline">
+<td>
+<big>Alle tags:</big>
+</td>
+
+<td>
+<select name="tag">
+
+<?php
+$q = getall("SELECT COUNT(tags.id) AS count, tags.tag FROM tags GROUP BY tags.tag ORDER BY tag");
+foreach($q AS $r) {
+	print "<option value=\"" . htmlspecialchars($r['tag']) . "\">" . htmlspecialchars($r['tag']) . " (" . $r['count'] . ")\n";
+}
+
 ?>
 </select>
 <br>

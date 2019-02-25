@@ -53,4 +53,6 @@
 </p>
 {/if}
 
+{include file="updatelink.tpl"}
+
 </div>

@@ -2,15 +2,17 @@
 <form action="find.php">
 <a href="./" accesskey="i" style="text-decoration: none">Info</a>
 ·
-<a href="person.php" accesskey="p" style="text-decoration: none">Personer</a>
+<a href="person.php" accesskey="p" style="text-decoration: none">Person</a>
 ·
-<a href="scenarie.php" accesskey="s" style="text-decoration: none">Scenarier</a>
+<a href="scenarie.php" accesskey="s" style="text-decoration: none">Scenarie</a>
 ·
 <a href="convent.php" accesskey="c" style="text-decoration: none">Con</a>
 ·
 <a href="conset.php" style="text-decoration: none">Con-serie</a>
 ·
 <a href="system.php" accesskey="y" style="text-decoration: none">System</a>
+·
+<a href="tag.php" style="text-decoration: none">Tag</a>
 ·
 <a href="showlog.php" accesskey="l" style="text-decoration: none">Log</a>
 ·

@@ -836,6 +836,11 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 		$fullcat = "System";
 		break;
 	
+		case 'tag':
+		$value = "tag";
+		$fullcat = "Tag";
+		break;
+	
 		case 'convent':
 		$value = "CONCAT(name,' (',COALESCE(year,'?'),')')";
 		$fullcat = "Con";
