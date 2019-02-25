@@ -308,6 +308,9 @@ function rexit($this_type, $dataset = [] ) {
 		case 'tags':
 			$location = 'tags.php';
 			break;
+		case 'tag':
+			$location = 'tag.php';
+			break;
 		default:
 			$location = './';
 	}

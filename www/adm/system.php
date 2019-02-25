@@ -12,7 +12,7 @@ $name = $_REQUEST['name'];
 $description = $_REQUEST['description'];
 
 if (!$action && $system) {
-	list($name, $description) = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
+	list($id, $name, $description) = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
 }
 
 if ($action == "ret" && $system) {
@@ -119,10 +119,10 @@ if ($system) {
 // Scenarier under dette system
 	$q = getall("SELECT id, title FROM sce WHERE sys_id = '$system' ORDER BY title, id");
 	print "<tr valign=top><td align=right>Indeholder følgende<br>scenarier:</td><td>\n";
-	foreach($result AS list($id, $title) ) {
+	foreach($q AS list($id, $title) ) {
 		print "<a href=\"scenarie.php?scenarie=$id\">$title</a><br>";
 	}
-	if (!$result) print "[Ingen]";
+	if (!$q) print "[Ingen]";
 	print "</td></tr>\n";
 }
 
