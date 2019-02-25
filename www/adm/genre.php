@@ -35,22 +35,27 @@ include("links.inc");
 
 printinfo();
 
-print "<form action=\"genre.php\" method=\"post\">\n";
-print "<table align=\"center\" border=0>".
-      "<tr><th colspan=3>Ret genrer for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n";
-
 $result = getall("SELECT gen.id, gen.name, gsrel.sce_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.gen_id AND sce_id = '$id' ORDER BY name");
-foreach($result AS $row) {
-	print "<tr>";
-	print "<td><label for=\"gen_{$row['id']}\">".$row['name']."</label></td>";
-	print "<td><input id=\"gen_{$row['id']}\" type=\"checkbox\" name=\"genid[".$row['id']."]\" ".($row['sce_id']?'checked="checked"':'')." /></td>";
-	print "</tr>\n";
+
+if ($id) {
+	print "<form action=\"genre.php\" method=\"post\">\n";
+	print "<table align=\"center\" border=0>".
+	      "<tr><th colspan=3>Ret genrer for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n";
+
+	foreach($result AS $row) {
+		print "<tr>";
+		print "<td><label for=\"gen_{$row['id']}\">".$row['name']."</label></td>";
+		print "<td><input id=\"gen_{$row['id']}\" type=\"checkbox\" name=\"genid[".$row['id']."]\" ".($row['sce_id']?'checked="checked"':'')." /></td>";
+		print "</tr>\n";
+	}
+
+	print "<tr><td></td><td><input type=\"submit\" value=\"Gem genrer\" /><input type=\"hidden\" name=\"action\" value=\"changegenre\" /><input type=\"hidden\" name=\"id\" value=\"$id\" /></td></tr>\n";
+
+	print "</table>\n";
+	print "</form>\n\n";
+} else {
+	print "Fejl: Intet data-id angivet.";
 }
-
-print "<tr><td></td><td><input type=\"submit\" value=\"Gem genrer\" /><input type=\"hidden\" name=\"action\" value=\"changegenre\" /><input type=\"hidden\" name=\"id\" value=\"$id\" /></td></tr>\n";
-
-print "</table>\n";
-print "</form>\n\n";
 
 print "</body>\n</html>\n";
 

@@ -86,54 +86,56 @@ include("links.inc");
 
 printinfo();
 
-print "<table align=\"center\" border=0>".
-      "<tr><th colspan=6>Ret afvikling for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n".
-      "<tr>\n".
-      "<th>ID</th>".
-      "<th>Startdato</th>".
-      "<th>Slutdato</th>".
-      "<th>Lokalitet</th>".
-      "<th>Evt. note</th>".
-      "<th>Afvikling aflyst?</th>".
-      "</tr>\n";
+if ($id) {
 
-foreach($result AS $row) {
+	print "<table align=\"center\" border=0>".
+	      "<tr><th colspan=6>Ret afvikling for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr>\n".
+	      "<th>ID</th>".
+	      "<th>Startdato</th>".
+	      "<th>Slutdato</th>".
+	      "<th>Lokalitet</th>".
+	      "<th>Evt. note</th>".
+	      "<th>Afvikling aflyst?</th>".
+	      "</tr>\n";
+
+	foreach($result AS $row) {
+		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		      '<input type="hidden" name="action" value="changerun">'.
+		      '<input type="hidden" name="id" value="'.$id.'">'.
+		      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
+		print "<tr>\n".
+		      '<td style="text-align:right;">'.$row['id'].'</td>'.
+		      '<td><input type="date" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
+		      '<td><input type="date" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
+		      '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
+		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="30" ></td>'.
+		      '<td align="center"><input type="checkbox" name="cancelled" value="yes" ' . ($row['cancelled'] ? 'checked' : '' ) . '></td>'.
+		      '<td><input type="submit" name="do" value="Ret"></td>'.
+		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      "</tr>\n";
+		print "</form>\n\n";
+	}
+
 	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="changerun">'.
-	      '<input type="hidden" name="id" value="'.$id.'">'.
-	      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
+	      '<input type="hidden" name="action" value="addrun">'.
+	      '<input type="hidden" name="id" value="'.$id.'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">'.$row['id'].'</td>'.
-	      '<td><input type="date" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
-	      '<td><input type="date" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
-	      '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
-	      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="30" ></td>'.
-	      '<td align="center"><input type="checkbox" name="cancelled" value="yes" ' . ($row['cancelled'] ? 'checked' : '' ) . '></td>'.
-	      '<td><input type="submit" name="do" value="Ret"></td>'.
-	      '<td><input type="submit" name="do" value="Slet"></td>'.
+	      '<td style="text-align:right;">Ny</td>'.
+	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
+	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
+	      '<td><input type="text" name="location" value="" size="30" maxlength="80"></td>'.
+	      '<td><input type="text" name="description" value="" size="30" ></td>'.
+	      '<td align="center"><input type="checkbox" name="cancelled" value="yes"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
+
+
+	print "</table>\n";
+} else {
+	print "Fejl: Intet data-id angivet.";
 }
-
-print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-      '<input type="hidden" name="action" value="addrun">'.
-      '<input type="hidden" name="id" value="'.$id.'">';
-print "<tr>\n".
-      '<td style="text-align:right;">Ny</td>'.
-      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
-      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
-      '<td><input type="text" name="location" value="" size="30" maxlength="80"></td>'.
-      '<td><input type="text" name="description" value="" size="30" ></td>'.
-      '<td align="center"><input type="checkbox" name="cancelled" value="yes"></td>'.
-      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-      "</tr>\n";
-print "</form>\n\n";
-
-
-print "</table>\n";
-
+print "</body>\n</html>\n";
 
 ?>
-
-</body>
-</html>

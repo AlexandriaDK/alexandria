@@ -109,44 +109,49 @@ include("links.inc");
 
 printinfo();
 
-print "<table align=\"center\" border=0>".
-      "<tr><th colspan=5>Ret aliaser for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
-      "<tr>\n".
-      "<th>ID</th>".
-      "<th>Alias</th>".
-      "<th>Vis</th>".
-      "</tr>\n";
+if ($result) {
 
-foreach($result AS $row) {
-	$selected = ($row['visible'] == 1 ? 'checked="checked"' : '');
+	print "<table align=\"center\" border=0>".
+	      "<tr><th colspan=5>Ret aliaser for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr>\n".
+	      "<th>ID</th>".
+	      "<th>Alias</th>".
+	      "<th>Vis</th>".
+	      "</tr>\n";
+
+	foreach($result AS $row) {
+		$selected = ($row['visible'] == 1 ? 'checked="checked"' : '');
+		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		      '<input type="hidden" name="action" value="changealias">'.
+		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
+		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+		      '<input type="hidden" name="id" value="'.$row['id'].'">';
+		print "<tr>\n".
+		      '<td style="text-align:right;">'.$row['id'].'</td>'.
+		      '<td><input type="text" name="label" value="'.htmlspecialchars($row['label']).'" size="40" maxlength="150"></td>'.
+		      '<td><input type="checkbox" name="visible" '.$selected.'></td>'.
+		      '<td><input type="submit" name="do" value="Ret"></td>'.
+		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      "</tr>\n";
+		print "</form>\n\n";
+	}
+
 	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="changealias">'.
+	      '<input type="hidden" name="action" value="addalias">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
-	      '<input type="hidden" name="id" value="'.$row['id'].'">';
+	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">'.$row['id'].'</td>'.
-	      '<td><input type="text" name="label" value="'.htmlspecialchars($row['label']).'" size="40" maxlength="150"></td>'.
-	      '<td><input type="checkbox" name="visible" '.$selected.'></td>'.
-	      '<td><input type="submit" name="do" value="Ret"></td>'.
-	      '<td><input type="submit" name="do" value="Slet"></td>'.
+	      '<td style="text-align:right;">Ny</td>'.
+	      '<td><input type="text" name="label" value="" size="40" maxlength="150"></td>'.
+	      '<td><input type="checkbox" name="visible"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
+
+	print "</table>\n";
+} else {
+	print "Fejl: Intet data-id angivet.";
 }
-
-print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-      '<input type="hidden" name="action" value="addalias">'.
-      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
-print "<tr>\n".
-      '<td style="text-align:right;">Ny</td>'.
-      '<td><input type="text" name="label" value="" size="40" maxlength="150"></td>'.
-      '<td><input type="checkbox" name="visible"></td>'.
-      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-      "</tr>\n";
-print "</form>\n\n";
-
-print "</table>\n";
 print "</body>\n</html>\n";
 
 ?>

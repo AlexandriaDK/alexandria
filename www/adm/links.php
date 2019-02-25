@@ -133,43 +133,49 @@ include("links.inc");
 
 printinfo();
 
-print "<table align=\"center\" border=0>".
-      "<tr><th colspan=5>Ret links for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
-      "<tr>\n".
-      "<th>ID</th>".
-      "<th>URL</th>".
-      "<th>Beskrivelse</th>".
-      "</tr>\n";
+if ($data_id && $category) {
+	print "<table align=\"center\" border=0>".
+	      "<tr><th colspan=5>Ret links for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr>\n".
+	      "<th>ID</th>".
+	      "<th>URL</th>".
+	      "<th>Beskrivelse</th>".
+	      "</tr>\n";
 
-foreach($result AS $row) {
+	foreach($result AS $row) {
+		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		      '<input type="hidden" name="action" value="changelink">'.
+		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
+		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+		      '<input type="hidden" name="id" value="'.$row['id'].'">';
+		print "<tr>\n".
+		      '<td style="text-align:right;">'.$row['id'].'</td>'.
+		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
+		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
+		      '<td><input type="submit" name="do" value="Ret"></td>'.
+		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      "</tr>\n";
+		print "</form>\n\n";
+	}
+
 	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-	      '<input type="hidden" name="action" value="changelink">'.
+	      '<input type="hidden" name="action" value="addlink">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
-	      '<input type="hidden" name="id" value="'.$row['id'].'">';
+	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">'.$row['id'].'</td>'.
-	      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
-	      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
-	      '<td><input type="submit" name="do" value="Ret"></td>'.
-	      '<td><input type="submit" name="do" value="Slet"></td>'.
+	      '<td style="text-align:right;">Ny</td>'.
+	      '<td><input type="text" name="url" value="" size=40 maxlength=100></td>'.
+	      '<td><input type="text" name="description" value="" size=40 maxlength=100></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
+
+	print "</table>\n";
+} else {
+	print "Fejl: Intet data-id angivet.";
 }
 
-print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-      '<input type="hidden" name="action" value="addlink">'.
-      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
-print "<tr>\n".
-      '<td style="text-align:right;">Ny</td>'.
-      '<td><input type="text" name="url" value="" size=40 maxlength=100></td>'.
-      '<td><input type="text" name="description" value="" size=40 maxlength=100></td>'.
-      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-      "</tr>\n";
-print "</form>\n\n";
 
-print "</table>\n";
 print "</body>\n</html>\n";
 
 ?>

@@ -107,7 +107,7 @@ include("links.inc");
 
 printinfo();
 
-if ($result) {
+if ($data_id && $category) {
 	print "<table align=\"center\" border=0>".
 	      "<tr><th colspan=5>Ret tags for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".

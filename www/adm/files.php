@@ -307,21 +307,21 @@ include("links.inc");
 
 printinfo();
 
-print "<div align=\"center\" style=\"margin: auto; padding: auto;\">\n";
+if ($data_id && $category) {
+	print "<div align=\"center\" style=\"margin: auto; padding: auto;\">\n";
 
-print "<table align=\"center\" border=\"0\">".
-//      "<tr><th colspan=5>Ret filer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a> (#" . (int) $data_id . ")</th></tr>\n".
-      "<tr><th colspan=5>Ret filer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
-      "<tr>\n".
-      "<th>ID</th>".
-      "<th>Filnavn</th>".
-      "<th>Beskrivelse</th>".
-      "<th>Offentlig</th>".
-      "<th>Ret</th>".
-      "<th>Hent</th>".
-      "</tr>\n";
+	print "<table align=\"center\" border=\"0\">".
+	//      "<tr><th colspan=5>Ret filer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a> (#" . (int) $data_id . ")</th></tr>\n".
+	      "<tr><th colspan=5>Ret filer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr>\n".
+	      "<th>ID</th>".
+	      "<th>Filnavn</th>".
+	      "<th>Beskrivelse</th>".
+	      "<th>Offentlig</th>".
+	      "<th>Ret</th>".
+	      "<th>Hent</th>".
+	      "</tr>\n";
 
-if ($result) {
         foreach($result AS $row) {
 		$selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
 		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
@@ -339,79 +339,81 @@ if ($result) {
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
-}
 
-print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
-      '<input type="hidden" name="action" value="addfile">'.
-      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
-print "<tr>\n".
-      '<td style="text-align:right;">Ny</td>'.
-      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
-      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
-      '<td><input type="checkbox" name="downloadable" checked="checked"></td>'.
-      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
-      '<td></td>'.
-      "</tr>\n";
-print "</form>\n\n";
+	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	      '<input type="hidden" name="action" value="addfile">'.
+	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
+	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
+	print "<tr>\n".
+	      '<td style="text-align:right;">Ny</td>'.
+	      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
+	      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
+	      '<td><input type="checkbox" name="downloadable" checked="checked"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td></td>'.
+	      "</tr>\n";
+	print "</form>\n\n";
 
-print "<tr valign=\"top\"><td></td><td>Mulige filer:</td><td>Standard-beskrivelser:</td></tr><tr valign=\"top\"><td></td><td>";
+	print "<tr valign=\"top\"><td></td><td>Mulige filer:</td><td>Standard-beskrivelser:</td></tr><tr valign=\"top\"><td></td><td>";
 
-foreach(glob( DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/*") AS $file) {
-	print '<a href="http://download.alexandria.dk/files/' . $paths[$category] . '/' . $data_id . '/' . rawurlencode(basename($file)) . '" title="Download file">💾</a>&nbsp;';
-	print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode(basename($file)) . "\" title=\"Make thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
-	print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
-	print basename($file);
-	print "</a>";
-	print "<br />\n";
-}
-print "</td><td>";
-foreach( ["Scenariet","Scenariet (English)","Spilpersoner","Handouts","Regler","Programmet"] AS $label) {
-	print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.innerHTML;\">";
-	print $label;
-	print "</a><br />\n";
-}
+	foreach(glob( DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/*") AS $file) {
+		print '<a href="http://download.alexandria.dk/files/' . $paths[$category] . '/' . $data_id . '/' . rawurlencode(basename($file)) . '" title="Download file">💾</a>&nbsp;';
+		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode(basename($file)) . "\" title=\"Make thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
+		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
+		print basename($file);
+		print "</a>";
+		print "<br />\n";
+	}
+	print "</td><td>";
+	foreach( ["Scenariet","Scenariet (English)","Spilpersoner","Handouts","Regler","Programmet"] AS $label) {
+		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.innerHTML;\">";
+		print $label;
+		print "</a><br />\n";
+	}
 
-print "</tr>\n";
+	print "</tr>\n";
 
-print "</table>\n";
+	print "</table>\n";
 
-// upload file
-print '<form action="files.php" method="post" enctype="multipart/form-data">' .
-      '<input type="hidden" name="action" value="uploadfile">' . 
-      '<input type="hidden" name="' . ini_get("session.upload_progress.name") . '" value="file" /> '.
-      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
-      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-      '<p>Upload: <input type="file" name="file" />' .
-      '<input type="submit" value="Upload" />' .
-      '</p>' .
-      '</form>'
-      ;
-
-print '<form action="files.php" method="post">' .
-      '<input type="hidden" name="action" value="uploadremotefile">' . 
-      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
-      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-      '<p>Upload fra URL: <input type="text" name="remoteurl" size="60" placeholder="http://www.eksempel.dk/blog/scenarie.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
-      '<input type="submit" value="Upload" />' .
-      '</p>' .
-      '</form>'
-;
-
-if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
-	print '<form action="files.php" method="post" onsubmit="return confirm(\'Delete thumbnail?\');">' .
-	      '<input type="hidden" name="action" value="deletethumbnail">' . 
+	// upload file
+	print '<form action="files.php" method="post" enctype="multipart/form-data">' .
+	      '<input type="hidden" name="action" value="uploadfile">' . 
+	      '<input type="hidden" name="' . ini_get("session.upload_progress.name") . '" value="file" /> '.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
 	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-	      '<p><a href="/' . $path . '">Thumbnail</a><br>' .
-	      '<input type="submit" value="Slet thumbnail" />' .
+	      '<p>Upload: <input type="file" name="file" />' .
+	      '<input type="submit" value="Upload" />' .
+	      '</p>' .
+	      '</form>'
+	      ;
+
+	print '<form action="files.php" method="post">' .
+	      '<input type="hidden" name="action" value="uploadremotefile">' . 
+	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
+	      '<p>Upload fra URL: <input type="text" name="remoteurl" size="60" placeholder="http://www.eksempel.dk/blog/scenarie.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
+	      '<input type="submit" value="Upload" />' .
 	      '</p>' .
 	      '</form>'
 	;
-	
-}
-print "\n\n</div>\n";
 
+	if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
+		print '<form action="files.php" method="post" onsubmit="return confirm(\'Delete thumbnail?\');">' .
+		      '<input type="hidden" name="action" value="deletethumbnail">' . 
+		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+		      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
+		      '<p><a href="/' . $path . '">Thumbnail</a><br>' .
+		      '<input type="submit" value="Slet thumbnail" />' .
+		      '</p>' .
+		      '</form>'
+		;
+		
+	}
+	print "\n\n</div>\n";
+
+} else {
+	print "Fejl: Intet data-id angivet.";
+}
 print "</body>\n</html>\n";
 
 ?>
