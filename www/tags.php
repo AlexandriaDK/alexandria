@@ -3,16 +3,29 @@ require("./connect.php");
 require("base.inc");
 require("template.inc");
 
-$tags = getcol("
-	SELECT DISTINCT tag
+$order = ($_SERVER['QUERY_STRING'] == "popular" || isset($_REQUEST['popular']) ? "count desc" : "tag");
+
+$totaltags = getone("SELECT COUNT(*) FROM tags");
+$articles = getcol("SELECT tag FROM tag");
+
+$tags = getall("
+	SELECT COUNT(*) AS count, tag
 	FROM tags
-	ORDER BY tag
+	GROUP BY tag
+	ORDER BY $order
 ");
 
 $list = "";
 
 foreach($tags AS $tag) {
-	$list .= "<a href=\"/data?tag=" . rawurlencode($tag) . "\">".htmlspecialchars($tag)."</a><br />\n";
+	$htmltag = "";
+	$htmltag = "<a href=\"/data?tag=" . rawurlencode($tag['tag']) . "\">".htmlspecialchars($tag['tag'])."</a>";
+	if (in_array($tag['tag'], $articles) ) {
+		$htmltag = "<b>" . $htmltag . "</b>";
+	}
+	$htmltag .= " (" . $tag['count'] . ")";
+	$htmltag .= "<br />\n";
+	$list .= $htmltag;
 }
 
 // Smarty

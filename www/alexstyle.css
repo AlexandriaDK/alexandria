@@ -586,7 +586,7 @@ ul.taglist li {
 	margin: 2px;
 }
 
-ul.taglist li a {
+ul.taglist li a, a.tag {
 	background-color: #ddd;
 	border-radius: 4px;
 	padding: 3px;

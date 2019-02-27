@@ -75,6 +75,9 @@
 				<a href="kontakt">Kontakt os</a><br />
 				<br />
 				<a href="findspec">Søg efter scenarie</a><br />
+	{if $user_editor}
+				<a href="tags">Tags</a> (ny!)<br />
+	{/if}
 				<a href="statistik">Alexandria i tal</a><br />
 				<br />
 				<a href="calendar">Kalender</a><br />
