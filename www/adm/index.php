@@ -297,14 +297,7 @@ print "</table>";
 <p>
 	<b>Definition:</b> Et "scenarie" er ét selvstændigt, offentligt spillet, tidsbegrænset
 		scenarie. Dette inkluderer almindelige con-scenarier, con-live-scenarier, selvstændige
-		live-scenarier men <em>ikke</em>:
-	<ul>
-		<li>Helcon-scenarier (fx "Mafia Helcon Live", "MIDAS - Det Store Spil")</li>
-		<li>Brætspil, tabletop, kortspil, m.m. (fx "Cykelspillet")</li>
-<!--
-		<li>Egentlige kampagner (fx "I En God Sags Tjeneste")</li>
--->
-	</ul>
+		live-scenarier.
 
 	<b>Felter:</b>
 	<ul>

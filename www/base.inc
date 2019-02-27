@@ -456,7 +456,7 @@ function shortweekday ($dato) {
 
 function _textlink ($string, $absolute_url = 0) {
 	$urlpart = "/find";
-	if (preg_match("/^(c|s|p|cs|sys)(\d*)\|(.*)$/i",$string,$regs)) {
+	if (preg_match("/^(c|s|p|cs|sys|t|tag)(\d*)\|(.*)$/i",$string,$regs)) {
 		$pref = $regs[1];
 		$data_id = $regs[2];
 		$text = $regs[3];
@@ -466,11 +466,17 @@ function _textlink ($string, $absolute_url = 0) {
 			case "p": $cat = "aut"; $class = "person"; $search = "aut"; break;
 			case "cs": $cat = "conset"; $class = "con"; $search = "conset"; break;
 			case "sys": $cat = "sys"; $class = "system"; $search = "sys"; break;
+			case "t": 
+			case "tag": $cat = "tag"; $class = "tag"; $search = "tag"; break;
 		}
 		if ($data_id) {
 			$link = getdatalink($cat,$data_id);
 			if ($absolute_url) $link = "https://alexandria.dk".$link;
 			$html = "<a href=\"$link\" class=\"$class\">$text</a>";
+			return $html;
+		}
+		if ($cat == "tag") {
+			$html = "<a href=\"data?tag=" . rawurlencode($text) . "\" class=\"tag\">" . htmlspecialchars($text) . "</a>";
 			return $html;
 		}
 		$html = "<a href=\"/find?find=".rawurlencode($text)."&amp;cat=$search\" class=\"$class\">$text</a>";
