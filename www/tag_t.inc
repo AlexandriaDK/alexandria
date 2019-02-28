@@ -76,8 +76,8 @@ if (!$tag && !$tag_id) {
 	}
 
 // Links and trivia
-	$linklist = getlinklist($system,$this_type);
-	$trivialist = gettrivialist($system,$this_type);
+	$linklist = getlinklist($tag_id,$this_type);
+	$trivialist = gettrivialist($tag_id,$this_type);
 
 // Smarty
 

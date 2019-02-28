@@ -110,6 +110,11 @@ if ($data_id && $category) {
 		$q = "SELECT name FROM sys WHERE id = '$data_id'";
 		$mainlink = "system.php?system=$data_id";
 		break;
+	case 'tag':
+		$cat = 'tag';
+		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
+		$mainlink = "tag.php?tag_id=$data_id";
+		break;
 	default:
 		$cat = 'aut';
 		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";

@@ -108,10 +108,10 @@ print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($tag_id ? "Ret" : "
 
 if ($tag_id) {
 // Mulighed for at rette links
-//	print changelinks($tag_id,$this_type);
+	print changelinks($tag_id,$this_type);
 
 // Mulighed for at rette trivia
-//	print changetrivia($tag_id,$this_type);
+	print changetrivia($tag_id,$this_type);
 
 // Mulighed for at rette alias
 //	print changealias($tag_id,$this_type);
