@@ -634,6 +634,11 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 		$value = ($admin ? "/adm/convent.php?con=$data_id" : "/data?con=$data_id");
 		break;
 	
+		case 'tag':
+		$tag = getone("SELECT tag FROM tag WHERE id = $data_id");
+		$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "/data?tag=" . rawurlencode($tag) );
+		break;
+	
 		default:
 		case 'aut':
 		$value = ($admin ? "/adm/person.php?person=$data_id" : "/data?person=$data_id");

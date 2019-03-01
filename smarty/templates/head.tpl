@@ -87,17 +87,10 @@
 				<a href="awards">Priser</a><br />
 				<br />
 				<a href="english">In English</a><br />
-				{*
-				<br />
-				<a href="http://flattr.com/thing/1992/Rollespilsbiblioteket-Alexandria" target="_blank"><img src="http://api.flattr.com/button/button-compact-static-100x17.png" title="Flattr this" border="0" /></a>
-				*}
 			</div>
 
 			<div class="leftmenucontent">
 {if not $user_id}
-{*
-				<a href="login?remote=liveforum">Log ind [via LiveForum]</a><br />
-*}
 				<span class="menulogin">
 				Log ind:
 				</span>
@@ -110,9 +103,6 @@
 				<br />
 {else}
 				Du er logget på som:<br /><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br />
-{*
-				(via {$user_site})<br />
-*}
 				<br />
 				<div class="mylinks">
 				<a href="myhistory">Min oversigt</a><br />
