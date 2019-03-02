@@ -141,15 +141,8 @@ if ($tag_id) {
 <hr size=1>
 
 <form action="tag.php" method="get">
-<table border=0>
-<tr valign="baseline">
-<td>
-<big>Vælg tag:</big>
-</td>
-
-<td>
+Tags med beskrivelser:
 <select name="tag_id">
-
 <?php
 $q = getall("SELECT COUNT(tags.id) AS count, tag.id, tag.tag FROM tag LEFT JOIN tags ON tag.tag = tags.tag GROUP BY tag.id, tag.tag ORDER BY tag");
 foreach($q AS $r) {
@@ -157,27 +150,14 @@ foreach($q AS $r) {
 	if ($r[id] == $tag_id) print " SELECTED";
 	print ">" . htmlspecialchars($r['tag']) . " (" . $r['count'] . ")\n";
 }
-
 ?>
 </select>
-<br>
 <input type=submit value="Rediger">
-
-</td>
-</tr>
-</table>
 </form>
 
 <form action="tag.php" method="get">
-<table border=0>
-<tr valign="baseline">
-<td>
-<big>Alle tags:</big>
-</td>
-
-<td>
+Alle tags:
 <select name="tag">
-
 <?php
 $q = getall("SELECT COUNT(tags.id) AS count, tags.tag, tag.id AS tag_id FROM tags LEFT JOIN tag ON tags.tag = tag.tag GROUP BY tags.tag ORDER BY tag");
 foreach($q AS $r) {
@@ -186,12 +166,7 @@ foreach($q AS $r) {
 
 ?>
 </select>
-<br>
 <input type=submit value="Rediger">
-
-</td>
-</tr>
-</table>
 </form>
 
 </body>
