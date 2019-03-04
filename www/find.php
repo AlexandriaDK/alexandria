@@ -133,6 +133,28 @@ function search_blogposts ($find) {
 	return $output;
 }
 
+function search_tags ($find) {
+	$output = "";
+
+	$sql = "
+		SELECT tags.tag, tag.description
+		FROM tags
+		LEFT JOIN tag ON tags.tag = tag.tag
+		WHERE tags.tag LIKE '%" . dbesc($find) . "%'
+		GROUP BY tags.tag, tag.description
+		ORDER BY tags.tag
+	";
+	$result = getall($sql);
+	if (!$result) return false;
+	$output = "<ul>";
+	foreach($result AS $row) {
+		$output .= "<li><a href=\"data?tag=" . rawurlencode($row['tag']) . "\" class=\"tag\">" . htmlspecialchars($row['tag']) . "</a>";
+		$output .= "</li>";
+	}
+	$output .= "</ul>";
+	return $output;
+}
+
 
 function display_result ($match,$linkpart,$class,$short) {
 	$html = "";
@@ -233,6 +255,7 @@ if ($find) {
 		}
 	}
 
+	$tagsearch = search_tags($find);
 	$filesearch = search_files($find);
 	$blogsearch = search_blogposts($find);
 
@@ -353,6 +376,7 @@ $t->assign('find_aut', display_result($match['aut'], "person", "person", "aut") 
 $t->assign('find_sce', display_result($match['sce'], "scenarie", "scenarie", "sce") );
 $t->assign('find_convent', display_result($match['convent'], "con", "con", "convent") );
 $t->assign('find_sys', display_result($match['sys'], "system", "system", "sys") );
+$t->assign('find_tags', $tagsearch );
 $t->assign('find_files', $filesearch );
 $t->assign('find_blogposts', $blogsearch );
 $t->assign('search_boardgames', $search_boardgames );

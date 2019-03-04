@@ -9,7 +9,7 @@
 
 {if $find_aut}
 	<h3 class="findhead">
-		Personer fundet:
+		Personer:
 	</h3>
 	{$find_aut}
 {/if}
@@ -17,9 +17,9 @@
 {if $find_sce}
 	<h3 class="findhead">
 		{if $search_boardgames}
-		Brætspil fundet:
+		Brætspil:
 		{else}
-		Scenarier fundet:	
+		Scenarier:	
 		{/if}
 	</h3>
 	{$find_sce}
@@ -27,28 +27,35 @@
 
 {if $find_convent}
 	<h3 class="findhead">
-		Cons fundet:
+		Cons:
 	</h3>
 	{$find_convent}
 {/if}
 
 {if $find_sys}
 	<h3 class="findhead">
-		Systemer fundet:
+		Systemer:
 	</h3>
 	{$find_sys}
 {/if}
 
+{if $find_tags}
+	<h3 class="findhead">
+		Tags:
+	</h3>
+	{$find_tags}
+{/if}
+
 {if $find_files}
 	<h3 class="findhead">
-		Filer fundet:
+		Filer:
 	</h3>
 	{$find_files}
 {/if}
 
 {if $find_blogposts}
 	<h3 class="findhead">
-		Blogindlæg fundet:
+		Blogindlæg:
 	</h3>
 	{$find_blogposts}
 {/if}
