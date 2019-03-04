@@ -606,3 +606,6 @@ ul.taglist li span.delete a:hover {
 	background-color: #f66;
 }
 
+a.highlight {
+	font-weight: bold;
+}

@@ -17,7 +17,15 @@ $tags = getall("
 
 $list = "";
 
+$taglist = [];
 foreach($tags AS $tag) {
+	$url = "/data?tag=" . rawurlencode($tag['tag']);
+	$tagname = $tag['tag'];
+	$has_article = in_array($tag['tag'], $articles);
+	$count = $tag['count'];
+	$dataset = ['url' => $url, 'tagname' => $tagname, 'has_article' => $has_article, 'count' => $count];
+	$taglist[] = $dataset;
+
 	$htmltag = "";
 	$htmltag = "<a href=\"/data?tag=" . rawurlencode($tag['tag']) . "\">".htmlspecialchars($tag['tag'])."</a>";
 	if (in_array($tag['tag'], $articles) ) {
@@ -30,6 +38,7 @@ foreach($tags AS $tag) {
 
 // Smarty
 $t->assign('list',$list);
+$t->assign('taglist',$taglist);
 
 $t->display('tags.tpl');
 
