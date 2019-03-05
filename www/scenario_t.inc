@@ -185,6 +185,11 @@ if ($r['id'] == 0) {
 	$linklist = getlinklist($scenarie,$this_type);
 	$trivialist = gettrivialist($scenarie,$this_type);
 	$taglist = gettaglist($scenarie,$this_type);
+	if ($_SESSION['can_edit_participant'][$scenarie] == TRUE) {
+		foreach($taglist AS $tag_id => $tag) {
+			$_SESSION['can_edit_tag'][$tag_id] = TRUE;
+		}
+	}
 	$alltags = getalltags();
 	$json_alltags = json_encode($alltags);
 
