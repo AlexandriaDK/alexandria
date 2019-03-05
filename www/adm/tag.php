@@ -130,6 +130,15 @@ if ($tag_id) {
 	}
 	if (!$q) print "[Ingen]";
 	print "</td></tr>\n";
+} elseif ($tag) {
+	$q = getall("SELECT sce.id, sce.title FROM sce INNER JOIN tags ON sce.id = tags.sce_id WHERE tag = '" . dbesc($tag) . "' ORDER BY sce.title, sce.id");
+	print "<tr valign=top><td align=right>Indeholder følgende<br>scenarier:</td><td>\n";
+	foreach($q AS list($id, $title) ) {
+		print "<a href=\"scenarie.php?scenarie=$id\">$title</a><br>";
+	}
+	if (!$q) print "[Ingen]";
+	print "</td></tr>\n";
+
 }
 
 ?>
