@@ -698,7 +698,7 @@ function getlinklist ($data_id, $cat) {
 
 function gettaglist ($data_id, $cat) {
 	$data_id = (int) $data_id;
-	$tags = getcolid("SELECT id, tag FROM tags WHERE sce_id = $data_id ORDER BY tag");
+	$tags = getcolid("SELECT tags.id, tags.tag, c.count FROM tags INNER JOIN (SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag) c ON tags.tag = c.tag WHERE tags.sce_id = $data_id ORDER BY c.count DESC");
 	return $tags;
 }
 
