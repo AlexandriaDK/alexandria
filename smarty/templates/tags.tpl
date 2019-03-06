@@ -7,6 +7,10 @@
 		Tags:
 	</h2>
 
+	<p>
+		Sortér: <a href="tags">Alfabetisk</a> - <a href="tags?popular">Mest populære</a>
+	</p>
+
 	<div style="column-count: 3; -moz-column-count: 3; -webkit-column-count: 3;">
 	{foreach from=$taglist item=tag}
 	<a href="{$tag.url}"{if $tag.has_article} class="highlight"{/if}>{$tag.tagname|escape}</a>

@@ -2,10 +2,6 @@
 $admonly = TRUE;
 require "adm.inc";
 require "base.inc";
-chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc";
-$this_type = 'news';
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
