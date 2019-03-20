@@ -175,11 +175,11 @@ function changeuserlog($data_id, $category) {
 }
 
 function showpicture($data_id, $category) {
-	$html = "<tr valign=\"top\"><td>Billede:</td><td>";
+	$html = "<tr><td>Billede:</td><td>";
 	if (($path = getthumbnailpath($data_id, $category)) === FALSE) {
 		$html .= "Nej";
 	} else {
-		$html .= "<a href=\"$path\">Ja</a>";
+		$html .= "<a href=\"../$path\">Ja</a>";
 	}
 	$html .= "</td></tr>\n\n";
 	return $html;

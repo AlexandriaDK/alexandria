@@ -38,7 +38,7 @@
 	</h3>
 	
 	<p class="indata">
-		{$description|escape|textlinks|nl2br}
+		{$description|textlinks|nl2br}
 	</p>
 {/if}
 

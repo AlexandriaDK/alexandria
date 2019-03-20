@@ -235,13 +235,23 @@ if ($action == "addfile") {
 		case 'sys': $folder = "system"; break;
 		default: $folder = FALSE;
 	}
-	if (file_exists($path = "../gfx/$folder/l_".$data_id.".jpg")) {
-		unlink($path);
+	$deleted = FALSE;
+	// Ingen ../ idet vi har chdir()'et et trin ud fra adm-mappen
+	$path_large = "gfx/$folder/l_".$data_id.".jpg";
+	$path_small = "gfx/$folder/s_".$data_id.".jpg";
+	if (file_exists($path_large)) {
+		unlink($path_large);
+		$deleted = TRUE;
 	}
-	if (file_exists($path = "../gfx/$folder/s_".$data_id.".jpg")) {
-		unlink($path);
+	if (file_exists($path_small)) {
+		unlink($path_small);
+		$deleted = TRUE;
 	}
-	$_SESSION['admin']['info'] = "Thumbnail slettet! ";
+	if ($deleted) {
+		$_SESSION['admin']['info'] = "Thumbnail slettet! ";
+	} else {
+		$_SESSION['admin']['info'] = "Thumbnail kunne ikke slettes!\nPath large: $path_large\nPath small: $path_small ";
+	}
 	chlog($data_id,$category,"Thumbnail slettet");
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 }
@@ -402,7 +412,7 @@ if ($data_id && $category) {
 		      '<input type="hidden" name="action" value="deletethumbnail">' . 
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
 		      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-		      '<p><a href="/' . $path . '">Thumbnail</a><br>' .
+		      '<p><a href="../' . $path . '">Thumbnail</a><br>' .
 		      '<input type="submit" value="Slet thumbnail" />' .
 		      '</p>' .
 		      '</form>'
