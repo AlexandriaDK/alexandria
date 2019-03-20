@@ -249,10 +249,10 @@ if ($action == "addfile") {
 	}
 	if ($deleted) {
 		$_SESSION['admin']['info'] = "Thumbnail slettet! ";
+		chlog($data_id,$category,"Thumbnail slettet");
 	} else {
 		$_SESSION['admin']['info'] = "Thumbnail kunne ikke slettes!\nPath large: $path_large\nPath small: $path_small ";
 	}
-	chlog($data_id,$category,"Thumbnail slettet");
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 }
 
