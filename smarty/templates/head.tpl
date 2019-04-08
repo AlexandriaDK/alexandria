@@ -215,6 +215,22 @@
 			</div>
 	{/if}
 
+	{if $user_scenario_missing_tags}
+			<div class="leftmenucontent">
+				Hey - giv et tag!
+				<br><br>
+				Du har lavet scenarier, som vi ikke har nogen tags på:
+				<br><br>
+				{section name=s loop=$user_scenario_missing_tags}
+				<a href="data?scenarie={$user_scenario_missing_tags[s].id}" class="scenarie">{$user_scenario_missing_tags[s].title|escape}</a><br>
+				{/section}
+				<br>
+				Tags er nøgleord, som gør det lettere for folk at finde scenariet.
+				<br><br>
+				Klik ind på et scenarie og derefter på "+"-tegnet øverst til højre. 
+			</div>
+	{/if}
+
 {/if}
 
 

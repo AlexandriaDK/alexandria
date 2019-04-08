@@ -56,8 +56,19 @@ if ($_SESSION['user_id']) { // set last active
 		WHERE id = " . $_SESSION['user_id']
 	);
 	if ($_SESSION['user_author_id']) {
-		$missing_scenarios = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) INNER JOIN csrel c ON a.id = c.sce_id AND c.pre_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
-		$t->assign('user_scenario_missing_players', $missing_scenarios);
+		$scenario_missing_participants = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) INNER JOIN csrel c ON a.id = c.sce_id AND c.pre_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+		$scenario_missing_tags = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) LEFT JOIN tags c ON a.id = c.sce_id WHERE c.sce_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+		if ($scenario_missing_participants && $scenario_missing_tags) {
+			// choose random set to display
+			if (rand(0,1) ) {
+				$t->assign('user_scenario_missing_players', $scenario_missing_participants);
+			} else {
+				$t->assign('user_scenario_missing_tags', $scenario_missing_tags);
+			}
+		} else {
+			$t->assign('user_scenario_missing_players', $scenario_missing_participants);
+			$t->assign('user_scenario_missing_tags', $scenario_missing_tags);
+		}
 	}
 
 	$active_days_in_row = getone("SELECT active_days_in_row FROM users WHERE id = '" . $_SESSION['user_id'] . "'");
