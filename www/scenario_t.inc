@@ -12,7 +12,7 @@ $r = getrow("
 if ($scenarie == 161)      award_achievement(55); // De Professionelle
 if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
 if ($scenarie == 3827)     award_achievement(57); // Paninaro
-if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98);
+if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Cykling
 if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario
 

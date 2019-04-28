@@ -4,7 +4,7 @@
 		<title>
 			{if $typename != ""}{$typename|escape} - {/if}{if $pagetitle != ""}{$pagetitle|escape} - {/if}Alexandria
 		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=1024">
 		<meta name="robots" content="index, follow" />
 {if $ogimage}
 		<meta property="og:image" content="https://alexandria.dk/{$ogimage}" />
@@ -258,7 +258,7 @@
 					<a href="systemer" class="system">Systemer</a>
 				</div>
 				<div class="topmenublockfind">
-					<label for="ffind" accesskey="s">Søg: <input id="ffind" type="text" name="find" value="{$find|escape}" size="15" class="find" itemprop="query-input" /></label>
+					<label for="ffind" accesskey="s">Søg: <input id="ffind" type="text" name="find" value="{$find|escape}" size="15" class="find" itemprop="query-input"></label>
 				</div>
 			</form>
 		</div>
