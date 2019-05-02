@@ -47,7 +47,7 @@
 					<td>Genre<br><span style="font-size: 0.8em;">(bemærk, at kun en del af scenarierne har genrer angivet)</span></td>
 					<td style="column-count: 2;">
 {section name=g loop=$genres}
-						<input type="checkbox" name="search_genre[]" value="{$genres[g].id}" id="search_genre_{$genres[g].id}" /><label for="search_genre_{$genres[g].id}">{$genres[g].name}</label>{if ! $smarty.section.g.last}<br />{/if}
+						<input type="checkbox" name="search_genre[]" value="{$genres[g].id}" id="search_genre_{$genres[g].id}" /><label for="search_genre_{$genres[g].id}">{$genres[g].name}</label>{if ! $smarty.section.g.last}<br>{/if}
 
 {/section}
 					</td>
@@ -57,7 +57,7 @@
 					<td>Øvrig kategori</span></td>
 					<td style="column-count: 2;">
 {section name=c loop=$categories}
-						<input type="checkbox" name="search_genre[]" value="{$categories[c].id}" id="search_genre_{$categories[c].id}" /><label for="search_genre_{$categories[c].id}">{$categories[c].name}</label>{if ! $smarty.section.c.last}<br />{/if}
+						<input type="checkbox" name="search_genre[]" value="{$categories[c].id}" id="search_genre_{$categories[c].id}" /><label for="search_genre_{$categories[c].id}">{$categories[c].name}</label>{if ! $smarty.section.c.last}<br>{/if}
 
 {/section}
 					</td>

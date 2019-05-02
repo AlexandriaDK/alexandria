@@ -8,7 +8,7 @@
 	</h2>
 
 		<p>
-			Feeds fra diverse danske rollespilsblogs - opdateres en gang i timen.<br />
+			Feeds fra diverse danske rollespilsblogs - opdateres en gang i timen.<br>
 			Det er også muligt at hente et <a href="feedrss.php">meta-feed for alle blogs</a> (RSS) til sin egen feed-læser.
 		</p>
 	
@@ -42,7 +42,7 @@
 		
 		<p>
 			{section name=i loop=$feedlist}
-			<a href="{$feedlist[i].pageurl|escape}">{$feedlist[i].owner|escape}: {$feedlist[i].name|escape}</a><br />
+			<a href="{$feedlist[i].pageurl|escape}">{$feedlist[i].owner|escape}: {$feedlist[i].name|escape}</a><br>
 			{/section}
 		</p>
 

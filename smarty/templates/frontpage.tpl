@@ -18,7 +18,7 @@
 
 		{section name=i loop=$newslist}
 		<p>
-			<a id="{$newslist[i].anchor}">{$newslist[i].date}</a>:<br />
+			<a id="{$newslist[i].anchor}">{$newslist[i].date}</a>:<br>
 			{$newslist[i].news}
 		</p>
 		{/section}

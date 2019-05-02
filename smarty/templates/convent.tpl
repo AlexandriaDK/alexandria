@@ -20,7 +20,7 @@
 {if $place || $dateset}
 	<p class="indata">
 	{if $place}
-		Sted: {$place}<br />
+		Sted: {$place}<br>
 	{/if}
 	{if $dateset}
 		Dato: {$dateset}	
@@ -48,7 +48,7 @@
 	<p class="indata">
 		<i>
 			Vi har ikke haft noget program for denne kongres, så oversigten over spil er blot baseret på eksterne
-			referencer, hukommelse, tidlige rygter, etc., og er derfor måske ikke komplet.<br />
+			referencer, hukommelse, tidlige rygter, etc., og er derfor måske ikke komplet.<br>
 			Har du en ændring, eller ligger du inde med et program, så
 			<a href="rettelser?cat=convent&amp;data_id={$id}">send os en rettelse</a>.
 		</i>

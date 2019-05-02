@@ -8,7 +8,7 @@
 	</h2>
 
 	<p style="font-size: 16px;"><a href="personer?b={$b}&amp;s=f">Sortér pr. fornavn</a> &nbsp; <a href="personer?b={$b}">Sortér pr. efternavn</a>
-	<br /><br />
+	<br><br>
 	{$chars}
 	</p>
 

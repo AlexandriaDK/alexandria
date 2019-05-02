@@ -25,12 +25,12 @@
 		</p>	
 
 		<p>
-			Peter Brodersen<br />
-			Svinget 2, 5.th<br />
-			2300 København S<br />
-			<br />
+			Peter Brodersen<br>
+			Svinget 2, 5.th<br>
+			2300 København S<br>
+			<br>
 
-			Telefon: 30 22 29 55<br />
+			Telefon: 30 22 29 55<br>
 			E-mail: <a href="mailto:peter@alexandria.dk">peter@alexandria.dk</a>
 		</p>
 </div>

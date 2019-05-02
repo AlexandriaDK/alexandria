@@ -38,11 +38,11 @@
 	<p class="indata">
 	{if $sysstring != ""}
 		System: {$sysstring}
-		<br />
+		<br>
 	{/if}
 	{if $genre != ""}
 		Genre: {$genre}
-		<br />
+		<br>
 	{/if}
 	{if $participants != ""}
 		Deltagere: {$participants|escape}

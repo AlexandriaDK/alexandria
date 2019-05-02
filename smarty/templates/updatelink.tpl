@@ -1,4 +1,4 @@
-<br /><br />
+<br><br>
 {if $user_id && $type == 'convent'}
 <a href="data?con={$id}&amp;edit=organizers#organizers"><span class="updatelinktext">Tilføj arrangører for denne kongres</span></a>
 -

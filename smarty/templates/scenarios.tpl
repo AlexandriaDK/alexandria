@@ -13,10 +13,10 @@
 	</h2>
 
 	<p style="font-size: 14px;">
-		Vælg begyndelsesbogstav:<br />
+		Vælg begyndelsesbogstav:<br>
 		{$keys}
-		<br /><br />
-		Eller genre:<br />
+		<br><br>
+		Eller genre:<br>
 		{$genre}
 	</p>
 {else}

@@ -22,7 +22,7 @@
 	Født: {$birth}
 {/if}
 {if $birth != "" && $death != ""}
-	<br />
+	<br>
 {/if}
 {if $death != ""}
 	Død: {$death}

@@ -70,21 +70,21 @@
 				<a href="./"><img src="gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
 			</p>
 			<div class="leftmenucontent">
-				<a href="oss">Om Alexandria</a><br />
-				<a href="rettelser">Indsend rettelser</a><br />
-				<a href="kontakt">Kontakt os</a><br />
-				<br />
-				<a href="findspec">Søg efter scenarie</a><br />
-				<a href="tags">Tags</a> (ny!)<br />
-				<a href="statistik">Alexandria i tal</a><br />
-				<br />
-				<a href="calendar">Kalender</a><br />
-				<a href="jostspil">Jost-spillet</a><br />
-				<a href="feeds">Blog-feeds</a><br />
-				<br />
-				<a href="awards">Priser</a><br />
-				<br />
-				<a href="english">In English</a><br />
+				<a href="oss">Om Alexandria</a><br>
+				<a href="rettelser">Indsend rettelser</a><br>
+				<a href="kontakt">Kontakt os</a><br>
+				<br>
+				<a href="findspec">Søg efter scenarie</a><br>
+				<a href="tags">Tags</a><br>
+				<a href="statistik">Alexandria i tal</a><br>
+				<br>
+				<a href="calendar">Kalender</a><br>
+				<a href="jostspil">Jost-spillet</a><br>
+				<a href="feeds">Blog-feeds</a><br>
+				<br>
+				<a href="awards">Priser</a><br>
+				<br>
+				<a href="english">In English</a><br>
 			</div>
 
 			<div class="leftmenucontent">
@@ -98,22 +98,22 @@
 				<li><a href="steamlogin" accesskey="e">[Steam]</a></li>
 				<li><a href="login/twitch/" accesskey="e">[Twitch]</a></li>
 				</ul>
-				<br />
+				<br>
 {else}
-				Du er logget på som:<br /><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br />
-				<br />
+				Du er logget på som:<br><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br>
+				<br>
 				<div class="mylinks">
-				<a href="myhistory">Min oversigt</a><br />
+				<a href="myhistory">Min oversigt</a><br>
 	{if $user_editor}
-				<a href="settings">Indstillinger</a><br />
+				<a href="settings">Indstillinger</a><br>
 	{/if}
-				<a href="login?logout">Log ud</a><br />
+				<a href="login?logout">Log ud</a><br>
 	{if $user_admin}
-				<br />
-				<a href="adm/" accesskey="a">Admin</a><br />
+				<br>
+				<a href="adm/" accesskey="a">Admin</a><br>
 	{elseif $user_editor}
-				<br />
-				<a href="adm/" accesskey="a">Redaktør</a><br />
+				<br>
+				<a href="adm/" accesskey="a">Redaktør</a><br>
 	{/if}
 				</div>
 {/if}				
@@ -124,16 +124,16 @@
 
 	{if $type eq "sce"}
 			<div class="leftmenucontent">
-				Dette {if $boardgame}brætspil{else}scenarie{/if} har jeg:<br /><br />
+				Dette {if $boardgame}brætspil{else}scenarie{/if} har jeg:<br><br>
 				<span id="data_read">
 				{if $user_read}- Læst <a href="javascript:changedata('data_read','remove','sce','{$id}','read')">(skift)</a>{/if}
 				{if not $user_read}- Ikke læst <a href="javascript:changedata('data_read','add','sce','{$id}','read')">(skift)</a>{/if}
-				</span><br />
+				</span><br>
 				{if !$boardgame}
 				<span id="data_gmed">
 				{if $user_gmed}- Kørt <a href="javascript:changedata('data_gmed','remove','sce','{$id}','gmed')">(skift)</a>{/if}
 				{if not $user_gmed}- Ikke kørt <a href="javascript:changedata('data_gmed','add','sce','{$id}','gmed')">(skift)</a>{/if}
-				</span><br />
+				</span><br>
 				{/if}
 				<span id="data_played">
 				{if $user_played}- Spillet <a href="javascript:changedata('data_played','remove','sce','{$id}','played')">(skift)</a>{/if}
@@ -143,11 +143,11 @@
 
 		{if $user_admin || $user_editor}
 			<div class="leftmenucontent">
-				Popularitet:<br /><br />
+				Popularitet:<br><br>
 
-				Læst: {$users_entries.read + 0} brugere<br />
+				Læst: {$users_entries.read + 0} brugere<br>
 				{if ! $boardgame}
-				Kørt: {$users_entries.gmed + 0} brugere<br />
+				Kørt: {$users_entries.gmed + 0} brugere<br>
 				{/if}
 				Spillet: {$users_entries.played + 0} brugere
 				<br><br>
@@ -161,7 +161,7 @@
 
 	{if $type eq "convent"}
 			<div class="leftmenucontent">
-				Denne kongres har jeg:<br /><br />
+				Denne kongres har jeg:<br><br>
 				<span id="data_visited">
 				{if $user_visited}
 				- Besøgt <a href="javascript:changedata('data_visited','remove','convent','{$id}','visited')">(skift)</a>
@@ -188,11 +188,11 @@
 			Seneste ændringer:
 			<br><br>
 			{section name=l loop=$recentlog}
-			{$recentlog[l].linkhtml}<br />
+			{$recentlog[l].linkhtml}<br>
 			<span class="noteindtast">
-			{$recentlog[l].note|escape}<br />
-			{$recentlog[l].pubtime}<br />
-			af {$recentlog[l].user|escape}<br />
+			{$recentlog[l].note|escape}<br>
+			{$recentlog[l].pubtime}<br>
+			af {$recentlog[l].user|escape}<br>
 			<br></span>
 			{/section}
 			<a href="adm/showlog.php" accesskey="l">Alle ændringer</a>
@@ -203,14 +203,14 @@
 	{if $user_scenario_missing_players}
 			<div class="leftmenucontent">
 				Hey - giv en hånd!
-				<br /><br />
+				<br><br>
 				Du har lavet scenarier, som vi mangler informationer om
 				spillerantal på:
-				<br /><br />
+				<br><br>
 				{section name=s loop=$user_scenario_missing_players}
-				<a href="data?scenarie={$user_scenario_missing_players[s].id}" class="scenarie">{$user_scenario_missing_players[s].title|escape}</a><br />
+				<a href="data?scenarie={$user_scenario_missing_players[s].id}" class="scenarie">{$user_scenario_missing_players[s].title|escape}</a><br>
 				{/section}
-				<br />
+				<br>
 				Klik ind på et scenarie og derefter på "Tilføj antal spillere" i toppen.
 			</div>
 	{/if}

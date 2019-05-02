@@ -45,35 +45,35 @@
 				<a href="./"><img src="gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" style="border: 0px;"/></a>
 			</p>
 			<div class="leftmenucontent">
-				<a href="oss">Om Alexandria</a><br />
-				<a href="rettelser">Indsend rettelser</a><br />
-				<a href="kontakt">Kontakt os</a><br />
-				<br />
-				<a href="findspec">Søg efter scenarie</a><br />
-				<a href="statistik">Alexandria i tal</a><br />
-				<br />
-				<a href="calendar">Kalender</a><br />
-				<a href="jostspil">Jost-spillet</a><br />
-				<a href="feeds">Blog-feeds</a><br />
-				<br />
-				<a href="english">In English</a><br />
+				<a href="oss">Om Alexandria</a><br>
+				<a href="rettelser">Indsend rettelser</a><br>
+				<a href="kontakt">Kontakt os</a><br>
+				<br>
+				<a href="findspec">Søg efter scenarie</a><br>
+				<a href="statistik">Alexandria i tal</a><br>
+				<br>
+				<a href="calendar">Kalender</a><br>
+				<a href="jostspil">Jost-spillet</a><br>
+				<a href="feeds">Blog-feeds</a><br>
+				<br>
+				<a href="english">In English</a><br>
 				{*
-				<br />
+				<br>
 				<a href="http://flattr.com/thing/1992/Rollespilsbiblioteket-Alexandria" target="_blank"><img src="http://api.flattr.com/button/button-compact-static-100x17.png" title="Flattr this" border="0" /></a>
 				*}
 			</div>
 
 			<div class="leftmenucontent">
 {if not $user_id}
-				<a href="login?remote=liveforum">Log ind [via LiveForum]</a><br />
+				<a href="login?remote=liveforum">Log ind [via LiveForum]</a><br>
 {else}
-				Du er logget på som:<br /><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br />
-				(via {$user_site|strtoupper})<br />
-				<span style="padding-left: 10px;"><a href="myhistory">Min oversigt</a></span><br />
-				<span style="padding-left: 10px;"><a href="login?logout">Log ud</a></span><br />
+				Du er logget på som:<br><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br>
+				(via {$user_site|strtoupper})<br>
+				<span style="padding-left: 10px;"><a href="myhistory">Min oversigt</a></span><br>
+				<span style="padding-left: 10px;"><a href="login?logout">Log ud</a></span><br>
 	{if $user_admin}
-				<br />
-				<span style="padding-left: 10px;"><a href="adm/">Admin</a></span><br />
+				<br>
+				<span style="padding-left: 10px;"><a href="adm/">Admin</a></span><br>
 	{/if}
 {/if}				
 			</div>
@@ -83,15 +83,15 @@
 
 	{if $type eq "sce"}
 			<div class="leftmenucontent">
-				Dette scenarie har jeg:<br /><br />
+				Dette scenarie har jeg:<br><br>
 				<span id="data_seen">
 				{if $user_seen}- Læst <a href="javascript:changedata('data_seen','remove','sce','{$id}','seen')">(skift)</a>{/if}
 				{if not $user_seen}- Ikke læst <a href="javascript:changedata('data_seen','add','sce','{$id}','seen')">(skift)</a>{/if}
-				</span><br />
+				</span><br>
 				<span id="data_gmed">
 				{if $user_gmed}- Kørt <a href="javascript:changedata('data_gmed','remove','sce','{$id}','gmed')">(skift)</a>{/if}
 				{if not $user_gmed}- Ikke kørt <a href="javascript:changedata('data_gmed','add','sce','{$id}','gmed')">(skift)</a>{/if}
-				</span><br />
+				</span><br>
 				<span id="data_played">
 				{if $user_played}- Spillet <a href="javascript:changedata('data_played','remove','sce','{$id}','played')">(skift)</a>{/if}
 				{if not $user_played}- Ikke spillet <a href="javascript:changedata('data_played','add','sce','{$id}','played')">(skift)</a>{/if}
@@ -100,7 +100,7 @@
 
 		{*
 			<div class="leftmenucontent">
-				Dette scenarie har jeg:<br /><br />
+				Dette scenarie har jeg:<br><br>
 				<span id="data_seen">
 				{$user_seen_html}
 				</span>
@@ -116,7 +116,7 @@
 
 	{if $type eq "convent"}
 			<div class="leftmenucontent">
-				Denne kongres har jeg:<br /><br />
+				Denne kongres har jeg:<br><br>
 				<span id="data_visited">
 				{if $user_visited}
 				- Besøgt <a href="javascript:changedata('data_visited','remove','convent','{$id}','visited')">(skift)</a>
