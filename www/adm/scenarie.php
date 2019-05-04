@@ -58,6 +58,9 @@ if (!$action && $scenarie) {
 		$title = $row['title'];
 		$description = $row['description'];
 		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY priority, language");
+		if (!$descriptions) {
+			$descriptions = [1 => [ 'id' => 1, 'language' => 'da', 'description' => '', 'note' => '' ] ];
+		}
 		$intern = $row['intern'];
 		$sys_id = $row['sys_id'];
 		$sys_ext = $row['sys_ext'];
@@ -199,6 +202,12 @@ if ($action == "opret") {
 		$r = doquery($q);
 		if ($r) {
 			$scenarie = dbid();
+			$inserts = [];
+			foreach($descriptions AS $d) {
+				$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+			}
+			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
+			$r = doquery($sql);
 			chlog($scenarie,$this_type,"Scenarie oprettet");
 		}
 		$_SESSION['admin']['info'] = "Scenarie oprettet! " . dberror();
