@@ -1,5 +1,6 @@
 <?php
 $this_type = 'sce';
+$scenarie = $game;
 
 $r = getrow("
 	SELECT sce.id, title, sce.description, intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname FROM sce
@@ -24,7 +25,7 @@ if ($r['id'] == 0) {
 } else {
 //	$description = $r['description'];
 	$description = getone("SELECT description FROM game_description WHERE game_id = $scenarie LIMIT 1");
-	$descriptions = getone("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY priority, language");
+	$descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY priority, language");
 
 // Beskrivelse af deltagere:
 	$participants = [];
@@ -224,6 +225,7 @@ if ($r['id'] == 0) {
 // Smarty
 	$t->assign('pagetitle',$r['title']);
 	$t->assign('type',$this_type);
+	$t->assign('type2','game');
 
 	$t->assign('id',$scenarie);
 	$t->assign('title',$r['title']);
@@ -238,6 +240,7 @@ if ($r['id'] == 0) {
 	$t->assign('aut_extra',$r['aut_extra']);
 	$t->assign('description',$description);
 	$t->assign('descriptions',$descriptions);
+	$t->assign('descriptionscount', count($descriptions) );
 	$t->assign('gms',$gms);
 	$t->assign('players',$players);
 	$t->assign('participants',$participants);

@@ -13,9 +13,13 @@
 		<link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
 		<link rel="SHORTCUT ICON" href="favicon.ico" />
 		<link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-		<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
+		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script src="quicksearch.js"></script>
 		<style>
 			.ui-autocomplete {

@@ -25,7 +25,7 @@ if ($q != 1) { // check if scenario exists - should probably redirect somewhere 
 }
 
 if ($action == 'add') {
-	$q = getone("SELECT 1 FROM sce WHERE id = $scenario AND tag = '" . dbesc($tag) . "'");
+	$q = getone("SELECT 1 FROM tags WHERE sce_id = $scenario AND tag = '" . dbesc($tag) . "'");
 	if ($q == 1) { // check if scenario already has tag
 		header("Location: /data?scenarie=$scenario");
 		exit;

@@ -6,6 +6,13 @@
 {if $type eq "aut"}
 {assign var="typename" value="Person"}
 {include file="person.tpl"}
+{elseif $type2 eq "game"}
+{if $boardgame}
+{assign var="typename" value="Brætspil"}
+{else}
+{assign var="typename" value="Scenarie"}
+{/if}
+{include file="game.tpl"}
 {elseif $type eq "sce"}
 {if $boardgame}
 {assign var="typename" value="Brætspil"}

@@ -33,6 +33,10 @@ $jsenabled = $_REQUEST['jsenabled'];
 $scenarie = (int) $_REQUEST['scenarie'];
 $title = $_REQUEST['title'];
 $description = $_REQUEST['description'];
+$descriptions = (array) $_REQUEST['descriptions'];
+if (!$descriptions) {
+	$descriptions = [1 => [ 'language' => 'da', 'description' => '', 'note' => '' ] ];
+}
 $intern = $_REQUEST['intern'];
 $sys_id = (int) $_REQUEST['sys_id'];
 $sys_ext = $_REQUEST['sys_ext'];
@@ -53,6 +57,7 @@ if (!$action && $scenarie) {
 	if ($row) {
 		$title = $row['title'];
 		$description = $row['description'];
+		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY priority, language");
 		$intern = $row['intern'];
 		$sys_id = $row['sys_id'];
 		$sys_ext = $row['sys_ext'];
@@ -86,7 +91,6 @@ if ($action == "ret" && $scenarie) {
 		     "sys_id = $sys_id, " .
 		     "sys_ext = '".dbesc($sys_ext)."', " .
 		     "aut_extra = '".dbesc($aut_extra)."', " .
-		     "description = '".dbesc($description)."', " .
 		     "intern = '".dbesc($intern)."', " .
 		     "gms_min = " . strNullEscape($gms_min).", " .
 		     "gms_max = " . strNullEscape($gms_max).", " .
@@ -96,6 +100,15 @@ if ($action == "ret" && $scenarie) {
 		     "boardgame = $boardgame " .
 		     "WHERE id = $scenarie";
 		$r = doquery($q);
+		if ($r) {
+			doquery("DELETE FROM game_description WHERE game_id = $scenarie");
+			$inserts = [];
+			foreach($descriptions AS $d) {
+				$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+			}
+			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
+			$r = doquery($sql);
+		}
 		print dberror();
 		if ($r) {
 			chlog($scenarie,$this_type,"Scenarie rettet");
@@ -319,9 +332,13 @@ foreach($q AS $r) {
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - scenarie</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
-<!--
 function removefrom(mm) {
 	mmlen = mm.length ;
 	for ( i=(mmlen-1); i>=0; i--) {
@@ -395,9 +412,12 @@ function doSubmit() {
 		m4.options[i].selected = true;
 	}
 }
-//-->
 </script>
-
+<script>
+$( function() {
+	$( "#tabs" ).tabs();
+} );
+</script>
 </head>
 
 <body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
@@ -428,12 +448,28 @@ if ($scenarie) {
 
 print "<tr><td>Titel:</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
 # tr("Titel:","title",$title);
-print "<tr valign=top><td>Foromtale:</td><td style=\"width: 100%\"><textarea name=description style=\"width: 100%\" rows=10>\n" . htmlspecialchars($description) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Foromtale:</td><td style=\"width: 100%\">";
+print "<div id=\"tabs\">";
+print "<ul>";
+foreach($descriptions AS $d) {
+	print "<li><a href=\"#" . $d['id'] . "\">" . htmlspecialchars($d['language']) . ($d['note'] != '' ? " (" . htmlspecialchars($d['note']) . ")" : "") . "</a></li>";
+}
+print "</ul>" . PHP_EOL;
+$dcount = 0;
+foreach($descriptions AS $d) {
+	$dcount++;
+	print "<div id=\"" . $d['id'] . "\">" . PHP_EOL;
+	print "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][language]\" value=\"" . htmlspecialchars($d['language']) . "\">" . PHP_EOL;
+	print "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][note]\" value=\"" . htmlspecialchars($d['note']) . "\">" . PHP_EOL;
+	print "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>\n" . htmlspecialchars($d['description']) . "</textarea>" . PHP_EOL;
+	print "</div>" . PHP_EOL . PHP_EOL;
+}
+print "</div>";
+print "</td></tr>\n";
 print "<tr valign=top><td>Intern note:</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
 
 
 ### Deltagere ###
-
 
 print "<tr valign=top><td>Deltagere:</td>";
 print "<td>\n";

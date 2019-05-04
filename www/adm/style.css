@@ -64,3 +64,28 @@ span.atoggle {
 option.existing {
 	background-color: #afa;
 }
+
+#tabs {
+	background: transparent;
+	border: none;
+}
+#tabs .ui-widget-header {
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid #000;
+	border-radius: 0px;
+}
+#tabs .ui-tabs-nav .ui-state-default {
+	background: transparent;
+	border: none;
+}
+#tabs .ui-tabs-nav .ui-state-active {
+	background: transparent url(gfx/uiTabsArrow.png) no-repeat bottom center;
+	border: none;
+}
+#tabs .ui-tabs-nav .ui-state-default a {
+	color: #a99;
+}
+#tabs .ui-tabs-nav .ui-state-active a {
+	color: #000;
+}
