@@ -35,7 +35,7 @@ $title = $_REQUEST['title'];
 $description = $_REQUEST['description'];
 $descriptions = (array) $_REQUEST['descriptions'];
 if (!$descriptions) {
-	$descriptions = [1 => [ 'language' => 'da', 'description' => '', 'note' => '' ] ];
+	$descriptions = [1 => [ 'id' => 1, 'language' => 'da', 'description' => '', 'note' => '' ] ];
 }
 $intern = $_REQUEST['intern'];
 $sys_id = (int) $_REQUEST['sys_id'];
@@ -452,13 +452,13 @@ print "<tr valign=top><td>Foromtale:</td><td style=\"width: 100%\">";
 print "<div id=\"tabs\">";
 print "<ul>";
 foreach($descriptions AS $d) {
-	print "<li><a href=\"#" . $d['id'] . "\">" . htmlspecialchars($d['language']) . ($d['note'] != '' ? " (" . htmlspecialchars($d['note']) . ")" : "") . "</a></li>";
+	print "<li><a href=\"#d-" . $d['id'] . "\">" . htmlspecialchars($d['language']) . ($d['note'] != '' ? " (" . htmlspecialchars($d['note']) . ")" : "") . "</a></li>";
 }
 print "</ul>" . PHP_EOL;
 $dcount = 0;
 foreach($descriptions AS $d) {
 	$dcount++;
-	print "<div id=\"" . $d['id'] . "\">" . PHP_EOL;
+	print "<div id=\"d-" . $d['id'] . "\">" . PHP_EOL;
 	print "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][language]\" value=\"" . htmlspecialchars($d['language']) . "\">" . PHP_EOL;
 	print "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][note]\" value=\"" . htmlspecialchars($d['note']) . "\">" . PHP_EOL;
 	print "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>\n" . htmlspecialchars($d['description']) . "</textarea>" . PHP_EOL;
