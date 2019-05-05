@@ -181,6 +181,7 @@ if ($action == "Slet" && $scenarie) { // burde tjekke om scenarie findes
 		$r = doquery($q);
 
 		if ($r) {
+			doquery("DELETE FROM game_description WHERE game_id = $scenarie");
 			chlog($scenarie,$this_type,"Scenarie slettet: $title");
 		}
 		$_SESSION['admin']['info'] = "Scenarie slettet! " . dberror();
