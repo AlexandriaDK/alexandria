@@ -1,6 +1,8 @@
 <?php
 $this_type = 'sce';
-$scenarie = $game;
+if ($game) {
+	$scenarie = $game;
+}
 
 $r = getrow("
 	SELECT sce.id, title, sce.description, intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname FROM sce

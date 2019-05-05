@@ -250,7 +250,8 @@ $t->assign('penguin_ip',isset($_ENV['PenguinIP']) ? $_ENV['PenguinIP'] : NULL);
 if ($person) {
 	include ("person_t.inc");
 } elseif ($scenarie) {
-	include ("scenario_t.inc");
+	include ("game_t.inc");
+//	include ("scenario_t.inc");
 } elseif ($game) {
 	include ("game_t.inc");
 } elseif ($con) {
