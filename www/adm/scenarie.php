@@ -208,7 +208,9 @@ if ($action == "opret") {
 			$scenarie = dbid();
 			$inserts = [];
 			foreach($descriptions AS $d) {
-				$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+				if ($d['description'] !== "") {
+					$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+				}
 			}
 			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
 			$r = doquery($sql);
@@ -436,81 +438,22 @@ function doSubmit() {
 </script>
 <script>
 var countTabs = <?php print count($descriptions); ?>;
+var tabs;
 
   $( function() {
     var tabTitle = $( "#tab_title" ),
       tabContent = $( "#tab_content" ),
-      tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",
+      tabTemplate = "<li><a href='#{href}'>#{label}</a></li>",
       tabCounter = countTabs,
       tabContentTemplate = '<input type="hidden" name="descriptions[NUMBER][language]" value="MYLANGUAGE">' +
                            '<input type="hidden" name="descriptions[NUMBER][note]" value="">' +
                            '<textarea name="descriptions[NUMBER][description]" style="width: 100%;" rows=10></textarea>';
  
-    var tabs = $( "#tabs" ).tabs();
+    tabs = $( "#tabs" ).tabs();
  
-    // Modal dialog init: custom buttons and a "close" callback resetting the form inside
-    var dialog = $( "#dialog" ).dialog({
-      autoOpen: false,
-      modal: true,
-      buttons: {
-        Add: function() {
-          addTab();
-          $( this ).dialog( "close" );
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      },
-      close: function() {
-        form[ 0 ].reset();
-      }
-    });
- 
-    // AddTab form: calls addTab function on submit and closes the dialog
-    var form = dialog.find( "#dialog" ).on( "submit", function( event ) {
-      addTab();
-      dialog.dialog( "close" );
-      event.preventDefault();
-    });
- 
-    // Actual addTab function: adds new tab using the input from the form above
-    function addTab() {
-      var label = tabTitle.val() || "Tab " + tabCounter,
-        id = "tabs-" + tabCounter,
-        li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) ),
-        tabContentHtml = tabContent.val() || "Tab " + tabCounter + " content.";
- 
-      tabs.find( ".ui-tabs-nav" ).append( li );
-      tabs.append( "<div id='" + id + "'><p>" + tabContentHtml + "</p></div>" );
-      tabs.tabs( "refresh" );
-      tabCounter++;
-    }
- 
-    // AddTab button: just opens the dialog
-    $( "#add_tab" )
-      .button()
-      .on( "click", function() {
-        dialog.dialog( "open" );
-      });
- 
-    // Close icon: removing the tab on click
-    tabs.on( "click", "span.ui-icon-close", function() {
-      var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
-      $( "#" + panelId ).remove();
-      tabs.tabs( "refresh" );
-    });
- 
-    tabs.on( "keyup", function( event ) {
-      if ( event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE ) {
-        var panelId = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
-        $( "#" + panelId ).remove();
-        tabs.tabs( "refresh" );
-      }
-    });
-
     $( "#add_my_tab" )
       .on( "click", function() {
-	var language = prompt("Sprog", "da");
+	var language = prompt("Sprog", "en");
 	if (language) {
 		tabCounter++;
 		var label = language || "Tab " + tabCounter,
@@ -519,10 +462,13 @@ var countTabs = <?php print count($descriptions); ?>;
 			content = tabContentTemplate.replace( /NUMBER/g, tabCounter ).replace( /MYLANGUAGE/, language),
 			tabContentHtml = "Tab " + tabCounter + " content.";
 
-		console.log(content);
 		tabs.find( ".ui-tabs-nav" ).append( li );
 		tabs.append( "<div id='" + id + "'>" + content + "</div>" );
 		tabs.tabs( "refresh" );
+		tabs.tabs("option", "active", (tabCounter - 1) );
+		var selector = '#' + id + ' textarea';
+		$(selector).focus();
+		
 
 	}
 	return false;
@@ -546,6 +492,7 @@ printinfo();
 
 <?php
 
+/*
 print '
 <div id="dialog" title="Foromtale">
   <form>
@@ -559,6 +506,8 @@ print '
   </form>
 </div>
 ';
+*/
+
 
 print "<form action=\"scenarie.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
 if (!$scenarie) print "<input type=\"hidden\" name=\"action\" value=\"opret\">\n";
@@ -582,7 +531,7 @@ if ($scenarie) {
 print "<tr><td>Titel:</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
 # tr("Titel:","title",$title);
 #print "<tr><td>Foromtale:<br><button id=\"add_tab\">+</button></td><td style=\"width: 100%\">";
-print "<tr><td>Foromtale:<br><a href='#' id='add_my_tab'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
+print "<tr><td>Foromtale:<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
 print "<div id=\"tabs\" style=\"margin-top: 0;\">";
 print "<ul>";
 foreach($descriptions AS $d) {
