@@ -47,6 +47,9 @@ td.mark {
 tr.headline th {
 	background-color: #feb;
 }
+tr {
+	vertical-align: top;
+}
 
 input[type="number"] {
 	text-align: right;
