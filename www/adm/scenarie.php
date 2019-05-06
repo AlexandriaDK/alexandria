@@ -435,15 +435,15 @@ function doSubmit() {
 		m4.options[i].selected = true;
 	}
 }
-</script>
-<script>
+
+// tabs
 var countTabs = <?php print count($descriptions); ?>;
 var tabs;
 
   $( function() {
     var tabTitle = $( "#tab_title" ),
       tabContent = $( "#tab_content" ),
-      tabTemplate = "<li><a href='#{href}'>#{label}</a></li>",
+      tabTemplate = "<li><a href='#{href}' data-id='#{id}' ondblclick='changeLanguage(this)' >#{label}</a></li>",
       tabCounter = countTabs,
       tabContentTemplate = '<input type="hidden" name="descriptions[NUMBER][language]" value="MYLANGUAGE">' +
                            '<input type="hidden" name="descriptions[NUMBER][note]" value="">' +
@@ -457,8 +457,8 @@ var tabs;
 	if (language) {
 		tabCounter++;
 		var label = language || "Tab " + tabCounter,
-			id = "tabs-" + tabCounter,
-			li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) ),
+			id = "d-" + tabCounter,
+			li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, tabCounter ) ) ,
 			content = tabContentTemplate.replace( /NUMBER/g, tabCounter ).replace( /MYLANGUAGE/, language),
 			tabContentHtml = "Tab " + tabCounter + " content.";
 
@@ -476,6 +476,19 @@ var tabs;
     
   } );
 
+function changeLanguage( elem ) {
+	dcount = elem.getAttribute( 'data-id' );
+	language = elem.innerHTML;
+	var language = prompt("Sprog", language);
+	if ( language ) {
+		var id = '#ui-id-' + dcount;
+		var lid = '#d-' + dcount + ' input:first-child';
+		$(id).text( language );
+		$(lid).attr( 'value', language )
+		
+	}
+}
+
 </script>
 </head>
 
@@ -485,28 +498,6 @@ var tabs;
 include("links.inc");
 
 printinfo();
-
-
-?>
-
-
-<?php
-
-/*
-print '
-<div id="dialog" title="Foromtale">
-  <form>
-    <fieldset class="ui-helper-reset">
-      <label for="tab_title">Sprog</label>
-      <input type="text" name="tab_title" id="tab_title" value="" class="ui-widget-content ui-corner-all" placeholder="da, en, etc.">
-      <label for="tab_note">Evt. note</label>
-      <input type="text" name="tab_note" id="tab_note" value="" class="ui-widget-content ui-corner-all" placeholder="Fx alternativ foromtale">
-      <textarea name="tab_content" id="tab_content" class="ui-widget-content ui-corner-all">Tab content</textarea>
-    </fieldset>
-  </form>
-</div>
-';
-*/
 
 
 print "<form action=\"scenarie.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
@@ -532,22 +523,21 @@ print "<tr><td>Titel:</td><td><input type=text name=\"title\" id=\"title\" value
 # tr("Titel:","title",$title);
 #print "<tr><td>Foromtale:<br><button id=\"add_tab\">+</button></td><td style=\"width: 100%\">";
 print "<tr><td>Foromtale:<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
-print "<div id=\"tabs\" style=\"margin-top: 0;\">";
-print "<ul>";
-foreach($descriptions AS $d) {
-	print "<li><a href=\"#d-" . $d['id'] . "\">" . htmlspecialchars($d['language']) . ($d['note'] != '' ? " (" . htmlspecialchars($d['note']) . ")" : "") . "</a></li>";
-}
-#print '<li><button id="add_tab">+</button></li>';
-print "</ul>" . PHP_EOL;
 $dcount = 0;
+$lihtml = $inputhtml = '';
 foreach($descriptions AS $d) {
 	$dcount++;
-	print "<div id=\"d-" . $d['id'] . "\">" . PHP_EOL;
-	print "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][language]\" value=\"" . htmlspecialchars($d['language']) . "\">" . PHP_EOL;
-	print "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][note]\" value=\"" . htmlspecialchars($d['note']) . "\">" . PHP_EOL;
-	print "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>\n" . htmlspecialchars($d['description']) . "</textarea>" . PHP_EOL;
-	print "</div>" . PHP_EOL . PHP_EOL;
+	$lihtml .= "<li><a href=\"#d-" . $dcount . "\" data-id=\"" . $dcount . "\" ondblclick=\"changeLanguage(this)\">" . htmlspecialchars($d['language']) . ($d['note'] != '' ? " (" . htmlspecialchars($d['note']) . ")" : "") . "</a></li>" . PHP_EOL;
+	$inputhtml .= "<div id=\"d-" . $dcount . "\">" . PHP_EOL;
+	$inputhtml .= "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][language]\" value=\"" . htmlspecialchars($d['language']) . "\">" . PHP_EOL;
+	$inputhtml .= "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][note]\" value=\"" . htmlspecialchars($d['note']) . "\">" . PHP_EOL;
+	$inputhtml .= "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>\n" . htmlspecialchars($d['description']) . "</textarea>" . PHP_EOL;
+	$inputhtml .= "</div>" . PHP_EOL . PHP_EOL;
+
 }
+print "<div id=\"tabs\" style=\"margin-top: 0;\">" . PHP_EOL;
+print "<ul>" . $lihtml . "</ul>" . PHP_EOL;
+print $inputhtml;
 print "</div>";
 print "</td></tr>\n";
 print "<tr valign=top><td>Intern note:</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
