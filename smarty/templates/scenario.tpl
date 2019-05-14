@@ -1,3 +1,4 @@
+{* This file is not used anymore! Use game.tpl instead *}
 <div id="content">
 
 	<h2 class="datatitle">{$title|escape}</h2>

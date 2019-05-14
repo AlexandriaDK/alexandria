@@ -132,7 +132,10 @@ if ($r['id'] == 0) {
 		$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
 		$runlist .= nicedateset($rs['begin'],$rs['end']);
 		if ($rs['location']) {
-			$runlist .= ", ".htmlspecialchars($rs['location']);
+			if ( nicedateset($rs['begin'],$rs['end']) ) {
+				$runlist .= ", ";
+			}
+			$runlist .= htmlspecialchars($rs['location']);
 		}
 		if ($rs['description']) {
 			$runlist .= ": ".htmlspecialchars($rs['description']);
