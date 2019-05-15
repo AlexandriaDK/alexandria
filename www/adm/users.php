@@ -86,6 +86,8 @@ if ($achievement_id) {
 }
 $result = getall($query);
 
+$userlogins = getcolid("SELECT user_id, COUNT(*) AS logins FROM loginmap GROUP BY user_id");
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML><HEAD><TITLE>Administration - Users</TITLE>
@@ -110,6 +112,7 @@ print "<table align=\"center\" border=0>".
       "<th><a href=\"users.php?order=name\">Name</a></th>".
       "<th>Author ID</th>".
       "<th><a href=\"users.php?order=editor\">Editor</a></th>".
+      "<th>Accounts</th>".
       "<th><a href=\"users.php?order=logincount\">Logins</a></th>".
       "<th><a href=\"users.php?order=lastlogin\">Last login</a></th>".
       "<th><a href=\"users.php?order=lastactive\">Last active</a></th>".
@@ -130,6 +133,7 @@ if ($result) {
 		      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=50 maxlength=100></td>'.
 		      '<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size=2 maxlength=1></td>'.
 		      '<td align="center"><input type="checkbox" name="editor" value="yes" ' . ($row['editor'] ? 'checked' : '' ) . '></td>'.
+		      '<td align="right">' . (int) $userlogins[$row['id']] . '</td>'.
 		      '<td align="right" title="' . $row['login_days_in_row'] . '">' . $row['login_count'] . '</td>'.
 		      '<td align="right">'.($row['last_login'] ? pubdateprint($row['last_login']) : '-') . '</td>'.
 		      '<td align="right">'.($row['last_active'] ? pubdateprint($row['last_active']) : '-') . '</td>'.
