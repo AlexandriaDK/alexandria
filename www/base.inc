@@ -6,9 +6,13 @@ session_cache_limiter('none');
 session_start();
 
 header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiinterfaceusingvisualbasic");
-// header("X-Clacks-Overhead: GNU Terry Pratchett");
 header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 
+// detect language
+$lang = "";
+if (preg_match( '_^/(da|en)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+	$lang = $matches[1];
+}
 
 // general
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
@@ -44,7 +48,9 @@ if (!defined('DBERROR') ) {
 	$t->assign('user_editor',$_SESSION['user_editor']);
 	$t->assign('user_admin',$_SESSION['user_admin']);
 	$t->assign('user_achievements_to_display', get_achievements_to_display() );
-
+	if ($lang) {
+		$t->assign('LANG', $lang);
+	}
 }
 
 if ($_SESSION['user_id']) { // set last active
@@ -96,13 +102,6 @@ function get_redirect_url ($url) {
 
 function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 	$site = 'facebook';
-/*
-	if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-		$ip = ip2long($_SERVER['REMOTE_ADDR']);
-	} else {
-		$ip = 0;
-	}
-*/
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$time = time();
 	$login_today_allusers = getone("SELECT COUNT(*) FROM users WHERE last_login >= CURDATE()");
@@ -147,13 +146,6 @@ function do_steam_login($siteuserid, $name) {
 }
 
 function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
-/*
-	if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-		$ip = ip2long($_SERVER['REMOTE_ADDR']);
-	} else {
-		$ip = 0;
-	}
-*/
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$time = time();
 	$login_today_allusers = getone("SELECT COUNT(*) FROM users WHERE last_login >= CURDATE()");
@@ -241,13 +233,6 @@ function award_user_achievement ($user_id, $achievement_id, $shown = 0) {
 	$_SESSION['user_achievements'][] = $achievement_id;
 	$id = getone("SELECT id FROM user_achievements where user_id = $user_id AND achievement_id = $achievement_id"); // check if already got achievement - not transaction safe
 	if (!$id) {
-/*
-		if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-			$ip = ip2long($_SERVER['REMOTE_ADDR']);
-		} else {
-			$ip = 0;
-		}
-*/
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$id = doquery("INSERT INTO user_achievements (user_id, achievement_id, completed, shown, ip) VALUES ($user_id, $achievement_id, NOW(), $shown, '$ip')");
 		// update current list
@@ -328,9 +313,6 @@ function create_login_url ($id,$site = "rpgforum") {
 	$time = time();
 	$salt = getsitesalt($site);
 	if (!$salt) return false; // remote site not found
-#	if ($site == "rpgforum") $salt = ALEXSALT_RPGFORUM;
-#	elseif ($site == "liveforum") $salt = ALEXSALT_LIVEFORUM;
-#	else return false;
 	$hash = md5($id.$time.$salt);
 	$url = "login?id=$id&hash=$hash&time=$time&site=$site";
 	return $url;
@@ -344,15 +326,6 @@ function getsitesalt ($site) {
 function getuserlog($user_id,$category,$data_id) {
 	return getcol("SELECT type FROM userlog WHERE user_id = '$user_id' AND category = '$category' AND data_id = '$data_id'");
 
-/*
-	if ($type == 'sce') {
-		return getrow("SELECT read, gmed, played FROM history WHERE user_id = '$user_id' AND data_id = '$data_id' AND category = 'sce'");
-	} elseif ($type == 'convent') {
-		return getrow("SELECT 1 AS visited FROM history_convent WHERE user_id = '$user_id' AND data_id = '$data_id'");
-	} else {
-		return false;
-	}
-*/
 }
 
 function adduserlog($user_id,$category,$data_id,$type) {
@@ -681,7 +654,6 @@ function getfilelist ($data_id, $cat) {
 		$files[$id]['extension'] = strtolower(substr(strrchr($file['filename'], "."), 1));
 		if (file_exists($path)) {
 			$files[$id]['filesize'] = filesize($path);
-#			$files[$id]['filesizetext'] = number_format($files[$id]['filesize']/1024/1024,1,',','.');
 			$files[$id]['filesizetext'] = number_format(max(0.1,round($files[$id]['filesize']/1024/1024*10)/10),1,',','.');
 		}
 	}
@@ -768,36 +740,6 @@ function getnexteventstable () { // both cons and scenarios
 	$calout .= '<table class="tableoverview" id="eventsscenario" style="display: none;">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
 	return $calout;
-/*
-	$calout = "";
-	$lastbegin = "";
-	foreach($r AS $nextevent) {
-		list($type, $id, $name, $year, $description, $begin, $end) = $nextevent;
-		if ($end == '0000-00-00' || !$end) {
-			$end = $begin;
-		}
-		$beginpart = substr($begin,0,7);
-		if ($lastbegin != $beginpart) {
-			$lastbegin = $beginpart;
-			list($conyear,$conmonth) = explode("-",$beginpart);
-			$calout .= "<tr><th style=\"text-align: left;\" colspan=\"2\">".ucfirst(nicemonth($conmonth))." $conyear</th></tr>\n";
-		}
-		$coninfo = nicedateset($begin,$end);
-		if ($begin == $end) {
-			$daypart = intval(substr($begin,8,2)).": ";
-		} else {
-			$daypart = intval(substr($begin,8,2)).".-".intval(substr($end,8,2)).": ";
-		}
-		$calout .= "<tr>\n<td style=\"white-space: nowrap;\">$daypart</td>\n";
-		if ($type == 'convent') {
-			$calout .= "<td><a href=\"/data?con=$id\" title=\"$coninfo\" class=\"con\">$name</a></td>\n";
-		} elseif ($type == 'sce') {
-			$calout .= "<td><a href=\"/data?scenarie=$id\" title=\"$coninfo\" class=\"scenarie\">$name</a></td>\n";
-		}
-		$calout .= "</tr>\n";
-	}
-	return $calout;
-*/
 }
 
 function parseupcomingevents($eventset) {
