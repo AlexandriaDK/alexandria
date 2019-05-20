@@ -128,7 +128,7 @@
 
 	{if $type eq "sce"}
 			<div class="leftmenucontent">
-				I have:<br><br>
+				I have<br><br>
 				<span id="data_read">
 				{if $user_read}- Read <a href="javascript:changedata('data_read','remove','sce','{$id}','read')">(switch)</a>{/if}
 				{if not $user_read}- Not read <a href="javascript:changedata('data_read','add','sce','{$id}','read')">(switch)</a>{/if}
@@ -165,7 +165,7 @@
 
 	{if $type eq "convent"}
 			<div class="leftmenucontent">
-				I have:<br><br>
+				I have<br><br>
 				<span id="data_visited">
 				{if $user_visited}
 				- Visited <a href="javascript:changedata('data_visited','remove','convent','{$id}','visited')">(switch)</a>
