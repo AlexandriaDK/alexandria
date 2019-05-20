@@ -1,23 +1,23 @@
 {if ! $csname}
-{assign var="pagetitle" value="Priser - vindere og nominerede"}
+{assign var="pagetitle" value="Awards - winners and nominated"}
 {else}
-{assign var="pagetitle" value="Priser - vindere og nominerede - $csname"}
+{assign var="pagetitle" value="Awards - winners and nominated - $csname"}
 {/if}
 {include file="head.tpl"}
 
 <div id="content">
 
 	<h2 class="pagetitle">
-		Priser og præmier:
+		Awards and prizes:
 	</h2>
 
 {if ! $cid}
 	<p>
-		Vælg en kongres-serie:
+		Choose a convention:
 	</p>
 {else}
 	<p>
-		Oversigt over vindere og nominerede for <a href="data?conset={$cid}" class="con">{$csname|escape}</a>. Vindere er angivet med <span style="text-decoration: underline;">understregning</span>.
+		Winners and nominees for <a href="data?conset={$cid}" class="con">{$csname|escape}</a>. Winners are marked with <span style="text-decoration: underline;">underline</span>.
 	</p>
 {/if}
 

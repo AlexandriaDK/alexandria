@@ -27,7 +27,8 @@ if ($r['id'] == 0) {
 } else {
 //	$description = $r['description'];
 	$description = getone("SELECT description FROM game_description WHERE game_id = $scenarie LIMIT 1");
-	$descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY priority, language");
+	$descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY (LEFT(language, 2) = '" . LANG . "') DESC, LENGTH(language), priority, language");
+	#$descriptions = getone("SELECT description, language, note, (LEFT(language, 2) = '" . LANG . "') AS languagematch FROM game_description WHERE game_id = $scenarie ORDER BY languagematch DESC, LENGTH(language), priority, language");
 
 // Beskrivelse af deltagere:
 	$participants = [];

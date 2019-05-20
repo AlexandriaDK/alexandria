@@ -10,10 +10,12 @@ header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 
 // detect language
 $lang = "";
-if (preg_match( '_^/(da|en)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+if (preg_match( '_^/(da|en|no)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $matches[1];
-	define( 'LANG', $lang );
+} else {
+	$lang = 'da';
 }
+define( 'LANG', $lang );
 
 // general
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');

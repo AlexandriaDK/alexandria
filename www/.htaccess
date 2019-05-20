@@ -1,6 +1,6 @@
 # Options +MultiViews
 RewriteEngine On
-RewriteRule "^(da|en)/(.*)" "/$2"
+RewriteRule "^(da|en|no)/(.*)" "/$2"
 
 ErrorDocument 404 /error/404magic.php
 php_flag register_globals off

@@ -1,4 +1,5 @@
 <?php
+// THIS FILE IS NOT USED! USE game_t.inc INSTEAD!
 $this_type = 'sce';
 
 $r = getrow("
