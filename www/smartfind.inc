@@ -1,9 +1,9 @@
 <?php
 
-define("URLAUT","/data?person=");
-define("URLSCE","/data?scenarie=");
-define("URLSYS","/data?system=");
-define("URLCON","/data?con=");
+define("URLAUT","data?person=");
+define("URLSCE","data?scenarie=");
+define("URLSYS","data?system=");
+define("URLCON","data?con=");
 
 function log_search($find, $found="") {
 	$referer = dbesc($_SERVER['HTTP_REFERER']);

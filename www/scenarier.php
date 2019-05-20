@@ -15,7 +15,7 @@ $chars[] = "1";
 
 $keys = "";
 foreach($chars AS $char) {
-	$keys .= "\n\t\t<a href=\"".$_SERVER['PHP_SELF']."?b=".rawurlencode($char)."\">".mb_strtoupper($char == "1" ? "0-9" : $char)."</a>";
+	$keys .= "\n\t\t<a href=\"scenarier?b=".rawurlencode($char)."\">".mb_strtoupper($char == "1" ? "0-9" : $char)."</a>";
 }
 
 // fetch genres
@@ -23,7 +23,7 @@ $genre = array();
 $genres = getcolid("SELECT gen.id, gen.name FROM gen ORDER BY gen.name");
 foreach($genres AS $gid => $gname) {
 	#$genre[] = '<a href="'.$_SERVER['PHP_SELF'].'?g='.$g['id'].'">'.htmlspecialchars($g['name']).'</a>';
-	$genre[] = '<a href="'.$_SERVER['PHP_SELF'].'?g='.$gid.'">'.htmlspecialchars($gname).'</a>';
+	$genre[] = '<a href="scenarier?g='.$gid.'">'.htmlspecialchars($gname).'</a>';
 }
 $genre = join(", ",$genre);
 
@@ -127,17 +127,17 @@ foreach($scenarios AS $scenario_id => $scenario) {
 		$xscenlist .= "<td style=\"width: 10px;\">&nbsp;</td>";
 		}
 	if ($scenario['downloadable']) {
-		$xscenlist .= "<td><a href=\"/data?scenarie=" . $scenario_id . "\" title=\"Dette scenarie kan downloades\">💾</a></td>";
+		$xscenlist .= "<td><a href=\"data?scenarie=" . $scenario_id . "\" title=\"Dette scenarie kan downloades\">💾</a></td>";
 	} else {
 		$xscenlist .= "<td></td>";
 	}
-	$xscenlist .= "\t\t<td><a href=\"/data?scenarie=" . $scenario_id . "\" class=\"scenarie\">".htmlspecialchars($scenario['title'])."</a></td>\n";
+	$xscenlist .= "\t\t<td><a href=\"data?scenarie=" . $scenario_id . "\" class=\"scenarie\">".htmlspecialchars($scenario['title'])."</a></td>\n";
 
 	// authors
 	$xscenlist .= "\t\t<td>";
 	foreach ($scenario['aut'] AS $aut_id => $person) {
 		if ($aut_id) {
-			$xscenlist .= "<a href=\"/data?person=" . $aut_id . "\" class=\"person\">" . htmlspecialchars($person['name']) . "</a><br>\n";
+			$xscenlist .= "<a href=\"data?person=" . $aut_id . "\" class=\"person\">" . htmlspecialchars($person['name']) . "</a><br>\n";
 		}
 	}
 	$xscenlist .= "</td>\n";
@@ -146,7 +146,7 @@ foreach($scenarios AS $scenario_id => $scenario) {
 	$xscenlist .= "\t\t<td>";
 	foreach ($scenario['con'] AS $con_id => $convent) {
 		if ($con_id) {
-			$xscenlist .= "<a href=\"/data?con=" . $con_id . "\" class=\"con\">".htmlspecialchars($convent['name'])." (" . $convent['year'] . ")</a><br>\n";
+			$xscenlist .= "<a href=\"data?con=" . $con_id . "\" class=\"con\">".htmlspecialchars($convent['name'])." (" . $convent['year'] . ")</a><br>\n";
 		}
 	}
 	$xscenlist .= "</td>\n";
@@ -185,19 +185,19 @@ foreach($r AS $row) {
 		$scenlist .= "<td></td>";
 	}
 	if ($sce_id != $last_sce_id) {
-		$scenlist .= "\t\t<td><a href=\"/data?scenarie={$sce_id}\" class=\"scenarie\">".htmlspecialchars($row['title'])."</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?scenarie={$sce_id}\" class=\"scenarie\">".htmlspecialchars($row['title'])."</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
 
 	if ($row['autid']) {
-		$scenlist .= "\t\t<td><a href=\"/data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
 
 	if ($sce_id != $last_sce_id && $row['convent_id']) {
-		$scenlist .= "\t\t<td><a href=\"/data?con={$row['convent_id']}\" class=\"con\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"con\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}

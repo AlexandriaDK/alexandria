@@ -14,7 +14,7 @@ $result = getall("
 $list = "";
 
 foreach($result AS $r) {
-	$list .= "<a href=\"/data?system={$r['id']}\">".htmlspecialchars($r['name'])."</a><br />\n";
+	$list .= "<a href=\"data?system={$r['id']}\">".htmlspecialchars($r['name'])."</a><br />\n";
 }
 
 // Smarty

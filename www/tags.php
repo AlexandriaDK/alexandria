@@ -19,7 +19,7 @@ $list = "";
 
 $taglist = [];
 foreach($tags AS $tag) {
-	$url = "/data?tag=" . rawurlencode($tag['tag']);
+	$url = "data?tag=" . rawurlencode($tag['tag']);
 	$tagname = $tag['tag'];
 	$has_article = in_array($tag['tag'], $articles);
 	$count = $tag['count'];
@@ -27,7 +27,7 @@ foreach($tags AS $tag) {
 	$taglist[] = $dataset;
 
 	$htmltag = "";
-	$htmltag = "<a href=\"/data?tag=" . rawurlencode($tag['tag']) . "\">".htmlspecialchars($tag['tag'])."</a>";
+	$htmltag = "<a href=\"data?tag=" . rawurlencode($tag['tag']) . "\">".htmlspecialchars($tag['tag'])."</a>";
 	if (in_array($tag['tag'], $articles) ) {
 		$htmltag = "<b>" . $htmltag . "</b>";
 	}

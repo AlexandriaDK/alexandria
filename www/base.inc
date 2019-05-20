@@ -12,6 +12,7 @@ header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 $lang = "";
 if (preg_match( '_^/(da|en)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $matches[1];
+	define( 'LANG', $lang );
 }
 
 // general
@@ -30,6 +31,12 @@ $t->compile_dir = '../smarty/templates_c/';
 $t->config_dir = '../smarty/configs/';
 $t->cache_dir = '../smarty/cache/';
 $t->registerPlugin("function","achievements_shown","achievements_shown"); 
+
+// language template folder?
+$template_dir = '../smarty/templates/';
+if (is_dir($template_dir . LANG) ) {
+	$t->template_dir = $template_dir . LANG . '/';
+}
 
 // variables used all over the place
 
@@ -599,33 +606,33 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 
 	switch ($cat) {
 		case 'aut':
-		$value = ($admin ? "/adm/person.php?person=$data_id" : "/data?person=$data_id");
+		$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
 		break;
 	
 		case 'sce':
-		$value = ($admin ? "/adm/scenarie.php?scenarie=$data_id" : "/data?scenarie=$data_id");
+		$value = ($admin ? "/adm/scenarie.php?scenarie=$data_id" : "data?scenarie=$data_id");
 		break;
 	
 		case 'conset':
-		$value = ($admin ? "/adm/conset.php?conset=$data_id" : "/data?conset=$data_id");
+		$value = ($admin ? "/adm/conset.php?conset=$data_id" : "data?conset=$data_id");
 		break;
 
 		case 'sys':
-		$value = ($admin ? "/adm/system.php?system=$data_id" : "/data?system=$data_id");
+		$value = ($admin ? "/adm/system.php?system=$data_id" : "data?system=$data_id");
 		break;
 	
 		case 'convent':
-		$value = ($admin ? "/adm/convent.php?con=$data_id" : "/data?con=$data_id");
+		$value = ($admin ? "/adm/convent.php?con=$data_id" : "data?con=$data_id");
 		break;
 	
 		case 'tag':
 		$tag = getone("SELECT tag FROM tag WHERE id = $data_id");
-		$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "/data?tag=" . rawurlencode($tag) );
+		$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "data?tag=" . rawurlencode($tag) );
 		break;
 	
 		default:
 		case 'aut':
-		$value = ($admin ? "/adm/person.php?person=$data_id" : "/data?person=$data_id");
+		$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
 		break;
 	}
 
@@ -764,9 +771,9 @@ function parseupcomingevents($eventset) {
 		}
 		$calout .= "<tr>\n<td>$daypart</td>\n";
 		if ($type == 'convent') {
-			$calout .= "<td><a href=\"/data?con=$id\" title=\"$coninfo\" class=\"con\">$name</a></td>\n";
+			$calout .= "<td><a href=\"data?con=$id\" title=\"$coninfo\" class=\"con\">$name</a></td>\n";
 		} elseif ($type == 'sce') {
-			$calout .= "<td><a href=\"/data?scenarie=$id\" title=\"$coninfo\" class=\"scenarie\">$name</a></td>\n";
+			$calout .= "<td><a href=\"data?scenarie=$id\" title=\"$coninfo\" class=\"scenarie\">$name</a></td>\n";
 		}
 		$calout .= "</tr>\n";
 	}

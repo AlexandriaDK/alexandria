@@ -6,7 +6,7 @@ list($startyear,$endyear) = getrow("SELECT MIN(year), MAX(year) FROM convent");
 
 for ($i = $startyear; $i <= $endyear; $i++) {
 	if ($i == $year) $yearlist .= "<b>$i</b>";
-	else $yearlist .= "<a href=\"{$_SERVER['PHP_SELF']}?year=$i\">$i</a>";
+	else $yearlist .= "<a href=\"data?year=$i\">$i</a>";
 	if ($i < $endyear) {
 		if ($i % 10 == 0) {
 			$yearlist .= "<br>";
@@ -60,9 +60,9 @@ foreach($q AS $row) {
 		
 	}
 	if ($row['type'] == 'convent') {
-		$output .= " $timeinfo<a href=\"/data?con={$row['id']}\" class=\"con\">{$row['name']}</a><br>\n";
+		$output .= " $timeinfo<a href=\"data?con={$row['id']}\" class=\"con\">{$row['name']}</a><br>\n";
 	} elseif ($row['type'] == 'sce') {
-		$output .= " $timeinfo<a href=\"/data?scenarie={$row['id']}\" class=\"scenarie\">{$row['name']}</a><br>\n";
+		$output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['name']}</a><br>\n";
 	}
 }
 if ($output) {

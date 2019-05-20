@@ -133,15 +133,15 @@ if ($r['id'] == 0) {
 			$slist[$sl]['iconwidth'] = $rs['iconwidth'];
 			$slist[$sl]['iconheight'] = $rs['iconheight'];
 			
-			$scenlist .= "<td><a href=\"{$_SERVER['PHP_SELF']}?scenarie={$rs['id']}\" class=\"scenarie\">{$rs['title']}</a></td>";
-			$slist[$sl]['link'] = $_SERVER['PHP_SELF']."?scenarie=".$rs['id'];
+			$scenlist .= "<td><a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">{$rs['title']}</a></td>";
+			$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 			$slist[$sl]['title'] = $rs['title'];
 	
 			unset($conlist);
 			$qq = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end FROM convent, csrel WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = '{$rs['id']}' ORDER BY convent.name");
 			foreach($qq AS $rrs) {
 				$coninfo = nicedateset($rrs['begin'],$rrs['end']);
-				$conlist[] = "<a href=\"{$_SERVER['PHP_SELF']}?con={$rrs['id']}\" class=\"con\" title=\"$coninfo\">".htmlspecialchars($rrs['name'])." ({$rrs['year']})</a>";
+				$conlist[] = "<a href=\"data?con={$rrs['id']}\" class=\"con\" title=\"$coninfo\">".htmlspecialchars($rrs['name'])." ({$rrs['year']})</a>";
 			}
 			if ($conlist) {
 				$scenlist .= "<td style=\"padding-left: 10px;\">".join("<br />",$conlist)."</td>";

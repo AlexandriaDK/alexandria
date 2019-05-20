@@ -34,16 +34,16 @@ if ($r['id'] == 0) {
 			$sce_id = $rs['id'];
 			// query-i-løkke... skal optimeres!
 			$slist[$sl]['files'] = $rs['files'];
-			$slist[$sl]['link'] = $_SERVER['PHP_SELF']."?scenarie=".$rs['id'];
+			$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 			$slist[$sl]['title'] = $rs['title'];
-			$scenlist .= "<a href=\"{$_SERVER['PHP_SELF']}?scenarie={$rs['id']}\" class=\"scenarie\">".htmlspecialchars($rs['title'])."</a>";
+			$scenlist .= "<a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">".htmlspecialchars($rs['title'])."</a>";
 			$scenlist .= "</td>";
 
 			$forflist = array();
 			$qq = getall("SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut, asrel WHERE asrel.sce_id = '$sce_id' AND asrel.aut_id = aut.id AND asrel.tit_id = '1' ORDER BY firstname, surname");
 			foreach($qq AS $thisforfatter) {
 				list($forfid,$forfname) = $thisforfatter;
-				$forflist[] = "<a href=\"{$_SERVER['PHP_SELF']}?person={$forfid}\" class=\"person\">$forfname</a>";
+				$forflist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
 			}
 			if (!$forflist && $rs['aut_extra']) {
 				$forflist[] = $rs['aut_extra'];
@@ -58,9 +58,9 @@ if ($r['id'] == 0) {
 
 			if ($rs['con_id']) {
 		    $coninfo = nicedateset($rs['begin'],$rs['end']);
-				$scenlist .= "<td class=\"lpad\"><a href=\"{$_SERVER['PHP_SELF']}?con={$rs['con_id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a></td>";
+				$scenlist .= "<td class=\"lpad\"><a href=\"data?con={$rs['con_id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a></td>";
 				$slist[$sl]['coninfo'] = $coninfo;
-				$slist[$sl]['conlink'] = $_SERVER['PHP_SELF']."?con=".$rs['con_id'];
+				$slist[$sl]['conlink'] = "data?con=".$rs['con_id'];
 				$slist[$sl]['conname'] = "{$rs['name']} ({$rs['year']})";
 			} else {
 				$scenlist .= "<td>&nbsp;</td>";

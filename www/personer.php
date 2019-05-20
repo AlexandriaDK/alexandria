@@ -52,17 +52,10 @@ $list = "";
 
 foreach ($persons AS $r) {
 	if ($orderfield == "surname") {
-		$list .= "<a href=\"/data?person={$r['id']}\">{$r['surname']}, {$r['firstname']}</a><br />\n";
+		$list .= "<a href=\"data?person={$r['id']}\">{$r['surname']}, {$r['firstname']}</a><br />\n";
 	} elseif ($orderfield == "firstname") {
-		$list .= "<a href=\"/data?person={$r['id']}\">{$r['firstname']} {$r['surname']}</a><br />\n";
+		$list .= "<a href=\"data?person={$r['id']}\">{$r['firstname']} {$r['surname']}</a><br />\n";
 	}
-	// Opdeling i kolonner
-/*
-	$no++;
-	if ($no%10==0) {
-		$data[$part] .= "<br />\n";
-	}
-*/
 
 }
 

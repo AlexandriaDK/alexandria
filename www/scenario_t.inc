@@ -77,8 +77,8 @@ if ($r['id'] == 0) {
 			$forflist .= " ";
 		}
 		$forflist .= "</td>";
-		$scenlist .= "<td><a href=\"{$_SERVER['PHP_SELF']}?scenarie={$rs['id']}\" class=\"scenarie\">{$rs['title']}</a></td>";
-		$forflist .= "<td><a href=\"{$_SERVER['PHP_SELF']}?person=$rs[id]\" class=\"person\">{$rs['name']}</a></td>";
+		$scenlist .= "<td><a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">{$rs['title']}</a></td>";
+		$forflist .= "<td><a href=\"data?person=$rs[id]\" class=\"person\">{$rs['name']}</a></td>";
 		$forflist .= "</tr>\n";
 	}
 
@@ -94,7 +94,7 @@ if ($r['id'] == 0) {
 
 // System:
 	if ($r['sysname']) {
-		$syspart = "<a href=\"{$_SERVER['PHP_SELF']}?system={$r['sys_id']}\" class=\"system\">".htmlspecialchars($r['sysname'])."</a>";
+		$syspart = "<a href=\"data?system={$r['sys_id']}\" class=\"system\">".htmlspecialchars($r['sysname'])."</a>";
 		if ($r['sys_ext']) $syspart .= " ".htmlspecialchars($r['sys_ext']);
 		$sysstring = $syspart;
 	} elseif ($r['sys_ext']) {
@@ -117,7 +117,7 @@ if ($r['id'] == 0) {
 			$conlist .= " ";
 		}
 		$conlist .= "</td><td>";
-		$conlist .= "<a href=\"{$_SERVER['PHP_SELF']}?con={$rs['id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a>";
+		$conlist .= "<a href=\"data?con={$rs['id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a>";
 #		if ($rs['event']) $conlist .= " ({$rs['event']})";
 		$conlist .= "</td></tr>" . PHP_EOL;
 	}

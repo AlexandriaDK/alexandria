@@ -43,7 +43,7 @@ if ($r['id'] == 0) {
 
 // I så fald, find næste og forrige
 	if ($r['conset_id'] && $serieantal > 1) {
-		$delafout = "<a href=\"{$_SERVER['PHP_SELF']}?conset={$r['conset_id']}\" class=\"con\">{$r['cname']}</a>";
+		$delafout = "<a href=\"data?conset={$r['conset_id']}\" class=\"con\">{$r['cname']}</a>";
 		$qq = getall("
 			SELECT id, name, year, begin, end
 			FROM convent 
@@ -63,13 +63,13 @@ if ($r['id'] == 0) {
 		if ($seriethis) {
 			if ($seriedata['id'][($seriethis-1)]) {
 				$coninfo = nicedateset($seriedata['begin'][($seriethis-1)],$seriedata['end'][($seriethis-1)]);
-				$seriepnpil[] = "<a href=\"{$_SERVER['PHP_SELF']}?con=".$seriedata['id'][($seriethis-1)]."\" title=\"".htmlspecialchars($seriedata['name'][($seriethis-1)])." (".$seriedata['year'][($seriethis-1)].")\"><img src=\"/gfx/ikon_vpil.gif\" style=\"border: 0px;\" alt=\"Pil: forrige\" /></a>";
+				$seriepnpil[] = "<a href=\"data?con=".$seriedata['id'][($seriethis-1)]."\" title=\"".htmlspecialchars($seriedata['name'][($seriethis-1)])." (".$seriedata['year'][($seriethis-1)].")\"><img src=\"/gfx/ikon_vpil.gif\" style=\"border: 0px;\" alt=\"Pil: forrige\" /></a>";
 			} else {
 				$seriepnpil[] = "<img src=\"/gfx/ikon_vpil_inaktiv.gif\" alt=\"Inaktiv pil: forrige\" />";
 			}
 			if ($seriedata['id'][($seriethis+1)]) {
 				$coninfo = nicedateset($seriedata['begin'][($seriethis+1)],$seriedata['end'][($seriethis+1)]);
-				$seriepnpil[] = "<a href=\"{$_SERVER['PHP_SELF']}?con=".$seriedata['id'][($seriethis+1)]."\" title=\"".htmlspecialchars($seriedata['name'][($seriethis+1)])." (".$seriedata['year'][($seriethis+1)].")\"><img src=\"/gfx/ikon_hpil.gif\" style=\"border: 0px;\" alt=\"Pil: næste\" /></a>";
+				$seriepnpil[] = "<a href=\"data?con=".$seriedata['id'][($seriethis+1)]."\" title=\"".htmlspecialchars($seriedata['name'][($seriethis+1)])." (".$seriedata['year'][($seriethis+1)].")\"><img src=\"/gfx/ikon_hpil.gif\" style=\"border: 0px;\" alt=\"Pil: næste\" /></a>";
 			} else {
 				$seriepnpil[] = "<img src=\"/gfx/ikon_hpil_inaktiv.gif\" alt=\"Inaktiv pil: næste\" />";
 			}
@@ -147,7 +147,7 @@ if ($r['id'] == 0) {
 
 			$datalist .= "<td>";
 			$sce_id = $rs['id'];
-			$datalist .= "<a href=\"{$_SERVER['PHP_SELF']}?scenarie={$rs['id']}\" class=\"scenarie\">".htmlspecialchars($rs['title'])."</a>";
+			$datalist .= "<a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">".htmlspecialchars($rs['title'])."</a>";
 			if ($rs['boardgame'] == 0) {
 				if ($rs['preid'] == 1) {
 					$new++;
@@ -179,7 +179,7 @@ if ($r['id'] == 0) {
 			foreach($qq AS $thisforfatter) {
 				list($forfid,$forfname) = $thisforfatter;
 				$author_count++;
-				$forfhtml = "<a href=\"{$_SERVER['PHP_SELF']}?person={$forfid}\" class=\"person\">$forfname</a>";
+				$forfhtml = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
 				if ($author_count < $authors_limit || count($qq) == $authors_limit) {
 					$forflist[] = $forfhtml;
 				} else {
@@ -201,7 +201,7 @@ if ($r['id'] == 0) {
 // System
 			unset($sysstring);
 			if ($rs['sys_name']) {
-				$syspart = "<a href=\"{$_SERVER['PHP_SELF']}?system={$rs['sys_id']}\" class=\"system\">".htmlspecialchars($rs['sys_name'])."</a>";
+				$syspart = "<a href=\"data?system={$rs['sys_id']}\" class=\"system\">".htmlspecialchars($rs['sys_name'])."</a>";
 				if ($rs['sys_ext']) $syspart .= " ".htmlspecialchars($rs['sys_ext']);
 				$sysstring = $syspart;
 			} elseif ($rs['sys_ext']) {

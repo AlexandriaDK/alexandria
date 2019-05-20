@@ -68,24 +68,24 @@ foreach($r AS $row) {
 	if ($sce_id != $last_sce_id && $row['files'] > 0) {
 		//$scenlist .= '<td><img src="/gfx/ikon_download.gif" alt="Download" title="Dette scenarie kan downloades" width="15" height="15" /></td>';
 //		$scenlist .= "<td><span title=\"Regler til dette brætspil kan downloades\">💾</span></td>";
-		$scenlist .= "<td><span title=\"Regler til dette brætspil kan downloades\"><a href=\"/data?scenarie=" . $sce_id . "\">💾</a></span></td>";
+		$scenlist .= "<td><span title=\"Regler til dette brætspil kan downloades\"><a href=\"data?scenarie=" . $sce_id . "\">💾</a></span></td>";
 	} else {
 		$scenlist .= "<td></td>";
 	}
 	if ($sce_id != $last_sce_id) {
-		$scenlist .= "\t\t<td><a href=\"/data?scenarie={$sce_id}\" class=\"scenarie\">".htmlspecialchars($row['title'])."</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?scenarie={$sce_id}\" class=\"scenarie\">".htmlspecialchars($row['title'])."</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
 
 	if ($row['autid']) {
-		$scenlist .= "\t\t<td><a href=\"/data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
 
 	if ($sce_id != $last_sce_id && $row['convent_id']) {
-		$scenlist .= "\t\t<td><a href=\"/data?con={$row['convent_id']}\" class=\"con\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"con\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
