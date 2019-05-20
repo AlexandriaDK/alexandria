@@ -1,4 +1,4 @@
-{assign var="pagetitle" value="Rollespil - Scenarier - Brætspil"}
+{assign var="pagetitle" value="Role-playing Games - Scenarios - Board games - LARP"}
 {if $user_admin}
 {include file="head.tpl"}
 {else}
