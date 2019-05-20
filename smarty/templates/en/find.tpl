@@ -4,12 +4,12 @@
 <div id="contentwide">
 
 	<h2 class="pagetitle" style="margin-bottom: 5px;">
-		Søgeresultat:
+		Search result:
 	</h2>
 
 {if $find_aut}
 	<h3 class="findhead">
-		Personer:
+		Persons:
 	</h3>
 	{$find_aut}
 {/if}
@@ -17,9 +17,9 @@
 {if $find_sce}
 	<h3 class="findhead">
 		{if $search_boardgames}
-		Brætspil:
+		Board games:
 		{else}
-		Scenarier:	
+		Scenarios:	
 		{/if}
 	</h3>
 	{$find_sce}
@@ -27,14 +27,14 @@
 
 {if $find_convent}
 	<h3 class="findhead">
-		Cons:
+		Conventions:
 	</h3>
 	{$find_convent}
 {/if}
 
 {if $find_sys}
 	<h3 class="findhead">
-		Systemer:
+		RPG systems:
 	</h3>
 	{$find_sys}
 {/if}
@@ -48,24 +48,24 @@
 
 {if $find_files}
 	<h3 class="findhead">
-		Filer:
+		Files:
 	</h3>
 	{$find_files}
 {/if}
 
 {if $find_blogposts}
 	<h3 class="findhead">
-		Blogindlæg:
+		Blog posts:
 	</h3>
 	{$find_blogposts}
 {/if}
 
 {if ! $find_aut && ! $find_sce && ! $find_convent && ! $find_sys && ! $find_files && ! $find_blogposts}
 	<p style="font-weight: bold;">
-		Intet fundet!
+		Nothing found!
 	</p>
 	<p>
-		Mangler vi noget? <a href="/rettelser">Send os gerne en rettelse!</a>
+		Are we missing something? <a href="rettelser">Please send a correction!</a>
 	</p>
 {/if}
 

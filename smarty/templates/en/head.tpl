@@ -104,7 +104,7 @@
 				</ul>
 				<br>
 {else}
-				You are logged on as:<br><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br>
+				You are logged in as:<br><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br>
 				<br>
 				<div class="mylinks">
 				<a href="myhistory">My page</a><br>

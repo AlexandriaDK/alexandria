@@ -41,6 +41,7 @@ foreach($q AS $row) {
 	$month = substr($row['begin'],5,2);
 	if ($month > $thismonth) {
 		$printmonth = ucfirst($months[intval($month)]);
+		$printmonth = ucfirst( monthname( intval($month) ) );
 		if ($month == 0) $printmonth = "(ukendt dato)";
 		if ($output) $output .= "</p>" . PHP_EOL;
 		$output .= "<h3 class=\"calendarhead\">$printmonth</h3>" . PHP_EOL . "<p class=\"calendarmonth\">" . PHP_EOL;
@@ -69,7 +70,7 @@ if ($output) {
 	$output .= "</p>" . PHP_EOL;
 }
 
-$t->assign('pagetitle',"Kongresser i ".$year);
+$t->assign('pagetitle',$year);
 $t->assign('type',$this_type);
 
 $t->assign('startyear',$startyear);
@@ -82,5 +83,4 @@ $t->assign('output',$output);
 #	$t->assign('type',$this_type);
 
 $t->display('data.tpl');
-
 ?>

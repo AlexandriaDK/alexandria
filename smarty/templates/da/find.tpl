@@ -65,7 +65,7 @@
 		Intet fundet!
 	</p>
 	<p>
-		Mangler vi noget? <a href="/rettelser">Send os gerne en rettelse!</a>
+		Mangler vi noget? <a href="rettelser">Send os gerne en rettelse!</a>
 	</p>
 {/if}
 

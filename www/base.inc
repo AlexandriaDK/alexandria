@@ -1,4 +1,5 @@
 <?php
+mb_internal_encoding("UTF-8");
 // enable session for all pages
 // set cache_limiter to 'private' for sake of Firefox
 // update: set cache_limiter to 'none' for sake of Firefox *and* IE
@@ -8,20 +9,38 @@ session_start();
 header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiinterfaceusingvisualbasic");
 header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 
+
 // detect language
 $lang = "";
-if (preg_match( '_^/(da|en|no)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+if (preg_match( '_^/(da|en|no|nb|de|sv|es|ru|fr|be)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $matches[1];
 } else {
 	$lang = 'da';
 }
 define( 'LANG', $lang );
 
+if ( LANG == 'da') {
+	setlocale(LC_TIME, "da_DK.UTF-8"); 
+} elseif ( LANG == 'en' ) {
+	setlocale(LC_TIME, "en_GB.UTF-8"); 
+} elseif ( LANG == 'sv' ) {
+	setlocale(LC_TIME, "sv_SE.UTF-8"); 
+} elseif ( LANG == 'no' || LANG == 'nb' ) {
+	setlocale(LC_TIME, "nb_NO.UTF-8"); 
+} elseif ( LANG == 'de' ) {
+	setlocale(LC_TIME, "de_DE.UTF-8"); 
+} elseif ( LANG == 'fr' ) {
+	setlocale(LC_TIME, "fr_FR.UTF-8"); 
+} elseif ( LANG == 'es' ) {
+	setlocale(LC_TIME, "es_ES.UTF-8"); 
+} elseif ( LANG == 'ru' ) {
+	setlocale(LC_TIME, "ru_RU.UTF-8");
+} elseif ( LANG == 'be' ) {
+	setlocale(LC_TIME, "be_BY.UTF-8");
+}
+
 // general
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
-
-setlocale(LC_TIME, "da_DK"); 
-mb_internal_encoding("UTF-8");
 
 // Smarty 
 define('SMARTY_DIR', '../smarty/libs/');
@@ -411,15 +430,10 @@ function pubdateprint($datetime) {
 }
 
 
-function birthlong ($dato, $day = FALSE) {
-	$maaned = array("","januar","februar","marts","april","maj","juni","juli","august","september","oktober","november","december");
-	list($aar, $maa, $dag) = explode("-",$dato);
-	$nydato = intval($dag) . ". " . $maaned[intval($maa)] . " " . $aar;
-	if ($day !== FALSE) {
-		$dage = array("Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag");
-		$nydato = $dage[$day]." d. $nydato";
-	}
-	return $nydato;
+function birthlong ($date, $day = FALSE) {
+	$time = strtotime($date);
+	$date_format = strftime('%e. %B %Y',$time);
+	return $date_format;
 }
 
 function birthshort ($dato) {
@@ -445,6 +459,15 @@ function shortweekday ($dato) {
 	list($my, $mm, $md) = explode("-",$dato);
 	$weekday = $week[date("w",mktime(0,0,0,$mm,$md,$my))];
 	return date("w",mktime(0,0,0,$mm,$md,$my));
+}
+
+function monthname ( $monthNo ) {
+	$monthNo = (int) $monthNo;
+	if ( $monthNo < 1 || $monthNo > 12) {
+		return false;
+	}
+	$month = strftime('%B', mktime(0,0,0,$monthNo,10) );
+	return $month;
 }
 
 function _textlink ($string, $absolute_url = 0) {
@@ -524,12 +547,6 @@ function nicedateset ($begin, $end) {
 		}
 	}
 	return $out;
-}
-
-function nicemonth ($monthid) {
-	$monthid = intval($monthid);
-	$months = array("","januar","februar","marts","april","maj","juni","juli","august","september","oktober","november","december");
-	return $months[$monthid];
 }
 
 function getuserlogoptions($type) {
@@ -763,7 +780,7 @@ function parseupcomingevents($eventset) {
 		if ($lastbegin != $beginpart) {
 			$lastbegin = $beginpart;
 			list($conyear,$conmonth) = explode("-",$beginpart);
-			$calout .= "<tr><th colspan=\"2\">".ucfirst(nicemonth($conmonth))." $conyear</th></tr>\n";
+			$calout .= "<tr><th colspan=\"2\">".ucfirst(monthname($conmonth))." $conyear</th></tr>\n";
 		}
 		$coninfo = nicedateset($begin,$end);
 		if ($begin == $end) {
