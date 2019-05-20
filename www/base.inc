@@ -525,7 +525,6 @@ function datalink ($url, $description) {
 }
 
 function nicedateset ($begin, $end) {
-	$months = array("","januar","februar","marts","april","maj","juni","juli","august","september","oktober","november","december");
 	if ( ($begin && $begin != "0000-00-00") || ($end && $end != "0000-00-00") ) {
 		list($y1,$m1,$d1) = explode("-",$begin);
 		list($y2,$m2,$d2) = explode("-",$end);
@@ -533,17 +532,17 @@ function nicedateset ($begin, $end) {
 		if ($m1 == "00" && $d1 == "00") {
 			$out = sprintf("%d",$y1);
 		} elseif ($d1 == "00") {
-			$out = sprintf("%s %d",$months[intval($m1)],$y1);
+			$out = sprintf("%s %d", monthname( intval($m1) ), $y1);
 		} elseif (!$end || ($begin == $end)) {
-			$out = sprintf("%d. %s %d", $d1, $months[intval($m1)], $y1);
+			$out = sprintf("%d. %s %d", $d1, monthname ( intval($m1) ), $y1);
 		} elseif (!$begin) {
-			$out = sprintf("%d. %s %d (sluttidspunkt)", $d2, $months[intval($m2)], $y2);
+			$out = sprintf("%d. %s %d", $d2, monthname ( intval($m2) ), $y2);
 		} elseif ($y1 == $y2 && $m1 == $m2) {
-			$out = sprintf("%d. - %d. %s %d", $d1, $d2, $months[intval($m2)], $y2);
+			$out = sprintf("%d. - %d. %s %d", $d1, $d2, monthname( intval($m2) ), $y2);
 		} elseif ($y1 == $y2) {
-			$out = sprintf("%d. %s - %d. %s %d", $d1, $months[intval($m1)], $d2, $months[intval($m2)], $y2);
+			$out = sprintf("%d. %s - %d. %s %d", $d1, monthname( intval($m1) ), $d2, monthname( intval($m2) ), $y2);
 		} else {
-			$out = sprintf("%d. %s %d - %d. %s %d", $d1, $months[intval($m1)], $y1, $d2, $months[intval($m2)], $y2);
+			$out = sprintf("%d. %s %d - %d. %s %d", $d1, monthname( intval($m1) ), $y1, $d2, monthname( intval($m2) ), $y2);
 		}
 	}
 	return $out;

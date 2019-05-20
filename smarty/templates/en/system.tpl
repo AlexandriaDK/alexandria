@@ -30,7 +30,7 @@
 {*
 {if $scenlist != ""}
 	<h3 class="parttitle">
-		Scenarier:
+		Scenarios:
 	</h3>
 		{$scenlist}
 {/if}
@@ -38,7 +38,7 @@
 
 {if $slist}
 	<h3 class="parttitle">
-		Scenarier:
+		Scenarios:
 	</h3>
 
 	<table class="indata">

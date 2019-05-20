@@ -1,22 +1,22 @@
-{assign var="pagetitle" value="Min side"}
+{assign var="pagetitle" value="My page"}
 {include file="head.tpl"}
 
 <div id="contentwide">
 
 		<h2 class="pagetitle">
-			Min side:
+			My page:
 		</h2>
 		
 		{if $content_addentry}
-			<h3>Du kan ikke lige tilføje data i øjeblikket...</h3>
+			<h3>You can not add data at the moment...</h3>
 		{/if}
 		
 		<div id="kongres" style="float: left; margin-right: 30px;" >
 		{$content_myconvents}
 		{if not $content_myconvents}
-		<h3 class="parttitle">Kongresser:</h3>
+		<h3 class="parttitle">Conventions:</h3>
 		<p>
-			Du har ikke tilføjet nogen kongresser på din liste.
+			You haven't added any conventions to your list.
 		</p>
 		{/if}
 		</div>
@@ -24,9 +24,9 @@
 		<div id="scenarier" style="float: left; margin-right: 30px;" >
 		{$content_myscenarios}
 		{if not $content_myscenarios}
-		<h3 class="parttitle">Scenarier:</h3>
+		<h3 class="parttitle">Scenarios:</h3>
 		<p>
-			Du har ikke tilføjet nogen scenarier på din liste.
+			You haven't added any scenarios to your list.
 		</p>
 		{/if}
 		</div>		
