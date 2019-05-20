@@ -40,7 +40,7 @@ foreach($result AS $r) {
 		}
 		$list .= "<div class=\"conblock\">";
 		$conset = $r['setid'];
-		$list .= "<h3 style=\"display: inline;\"><a href=\"/data?conset={$r['setid']}\">".htmlspecialchars($r['setname'])."</a></h3><br />\n";
+		$list .= "<h3 style=\"display: inline;\"><a href=\"data?conset={$r['setid']}\">".htmlspecialchars($r['setname'])."</a></h3><br />\n";
 	}
 	$coninfo = nicedateset($r['begin'],$r['end']);
 	if ($_SESSION['user_id']) {
@@ -49,7 +49,7 @@ foreach($result AS $r) {
 		$list .= "&nbsp;&nbsp;";
 	}
 	
-	$list .= "<a href=\"/data?con={$r['id']}\" title=\"$coninfo\">".htmlspecialchars($r['conname'])."</a><br />\n";
+	$list .= "<a href=\"data?con={$r['id']}\" title=\"$coninfo\">".htmlspecialchars($r['conname'])."</a><br />\n";
 }
 $list .= "</div>";
 

@@ -91,7 +91,7 @@ foreach($r AS $row) {
 	$placering++;
 	$placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
 	$lastantal = $row['antal'];
-	$stat_aut_active .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"/data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_aut_active .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_aut_active .= "</table>\n";
@@ -129,7 +129,7 @@ foreach($r AS $row) {
 	$placering++;
 	$placeringout = ($lastantal != $row[antal] ? "$placering." : "");
 	$lastantal = $row[antal];
-	$stat_aut_exp .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"/data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_aut_exp .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 $stat_aut_exp .= '
 	</table>
@@ -163,7 +163,7 @@ $r = getall("
 		name
 ");
 foreach($r AS $row) {
-	$stat_aut_workwith .= "<tr><td><a href=\"/data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_aut_workwith .= "<tr><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_aut_workwith .= '
@@ -194,7 +194,7 @@ $r = getall("
 		name
 ");
 foreach($r AS $row) {
-	$stat_sys_used .= "<tr><td><a href=\"/data?system={$row['id']}\" class=\"system\">".htmlspecialchars($row['name'])."</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_sys_used .= "<tr><td><a href=\"data?system={$row['id']}\" class=\"system\">".htmlspecialchars($row['name'])."</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_sys_used .= '
@@ -225,7 +225,7 @@ $r = getall("
 		title
 ");
 foreach($r AS $row) {
-	$stat_sce_replay .= "<tr><td><a href=\"/data?scenarie={$row['id']}\" class=\"scenarie\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_sce_replay .= "<tr><td><a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_sce_replay .= '
@@ -258,7 +258,7 @@ $r = getall("
 		title
 ");
 foreach($r AS $row) {
-	$stat_sce_auts .= "<tr><td><a href=\"/data?scenarie={$row['id']}\" class=\"scenarie\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_sce_auts .= "<tr><td><a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_sce_auts .= '
@@ -298,7 +298,7 @@ foreach($r AS $row) {
 	$placering++;
 	$placeringout = ($lastantal != $row[antal] ? "$placering." : "");
 	$lastantal = $row[antal];
-	$stat_con_sce .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"/data?con={$row['id']}\" class=\"con\">{$row['name']} ({$row['year']})</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_con_sce .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?con={$row['id']}\" class=\"con\">{$row['name']} ({$row['year']})</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_con_sce .= '

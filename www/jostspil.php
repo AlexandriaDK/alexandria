@@ -225,11 +225,11 @@ if ($mainperson && $subperson) {
 				$scen = $scenarie[$find]['title'];
 				$scenid = $scenarie[$find]['sceid'];
 				$antal = $scenarie[$find]['antal'];
-				$content .= "$i: <a href=\"/data?person=$find\" class=\"person\">$person[$find]</a> ". 
+				$content .= "$i: <a href=\"data?person=$find\" class=\"person\">$person[$find]</a> ". 
 				            "har "."lavet ".
-				            "<a href=\"/data?scenarie=$scenid\" class=\"scenarie\">$scen</a> ".($antal>1?'m.fl. ':'').
+				            "<a href=\"data?scenarie=$scenid\" class=\"scenarie\">$scen</a> ".($antal>1?'m.fl. ':'').
 				            "med ".
-				            "<a href=\"/data?person={$kobling[$find]}\" class=\"person\">{$person[$kobling[$find]]}</a>". 
+				            "<a href=\"data?person={$kobling[$find]}\" class=\"person\">{$person[$kobling[$find]]}</a>". 
 				            "<br />\n";
 				// til graf
 				$graph[] = $find;
@@ -237,10 +237,10 @@ if ($mainperson && $subperson) {
 				// til ImageMap
 				$y1 = (($i - 0.5)*70) - 15;
 				$y2 = (($i - 0.5)*70) + 15;
-				$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"/data?person=$find\" title=\"".htmlspecialchars($person[$find])."\" alt=\"".htmlspecialchars($person[$find])."\"/>\n";
+				$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"".htmlspecialchars($person[$find])."\" alt=\"".htmlspecialchars($person[$find])."\"/>\n";
 				$y1 = ($i*70) - 15;
 				$y2 = ($i*70) + 15;
-				$map .= "<area shape=\"rect\" coords=\"100,$y1,240,$y2\" href=\"/data?scenarie=$scenid\" title=\"".htmlspecialchars($scen)."\" alt=\"".htmlspecialchars($scen)."\" />\n";
+				$map .= "<area shape=\"rect\" coords=\"100,$y1,240,$y2\" href=\"data?scenarie=$scenid\" title=\"".htmlspecialchars($scen)."\" alt=\"".htmlspecialchars($scen)."\" />\n";
 				// næste i rækken
 				$find = $kobling[$find];
 			}
@@ -249,7 +249,7 @@ if ($mainperson && $subperson) {
 			// til ImageMap
 			$y1 = (($i + 0.5)*70) - 15;
 			$y2 = (($i + 0.5)*70) + 15;
-			$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"/data?person=$find\" title=\"$person[$subperson]\" alt=\"$person[$subperson]\" />\n";
+			$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"$person[$subperson]\" alt=\"$person[$subperson]\" />\n";
 			$map .= "</map>\n";
 		}
 	

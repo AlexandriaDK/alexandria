@@ -168,7 +168,7 @@ function display_result ($match,$linkpart,$class,$short) {
 		}
 		asort($list);
 		foreach($list AS $key => $value) {
-			$html .= "<li><a href=\"/data?$linkpart=$key\" class=\"$class\">".htmlspecialchars($value)."</a></li>\n";
+			$html .= "<li><a href=\"data?$linkpart=$key\" class=\"$class\">".htmlspecialchars($value)."</a></li>\n";
 		}
 		$html .= "</ul>\n";
 	}
@@ -189,22 +189,22 @@ if ($find) {
 	
 		switch($pref) {
 			case "s":
-				header("Location: /data?scenarie=$id");
+				header("Location: data?scenarie=$id");
 				exit;
 				break;
 			
 			case "c":
-				header("Location: /data?con=$id");
+				header("Location: data?con=$id");
 				exit;
 				break;
 	
 			case "p":
 			case "f":
-				header("Location: /data?person=$id");
+				header("Location: data?person=$id");
 				exit;
 				break;
 			case "cs":
-				header("Location: /data?conset=$id");
+				header("Location: data?conset=$id");
 				exit;
 				break;
 
