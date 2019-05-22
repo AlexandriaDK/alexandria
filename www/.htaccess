@@ -20,7 +20,7 @@ RedirectPermanent /se /sv
 RedirectPermanent /us /en
 RedirectPermanent /uk /en
 RedirectPermanent /gb /en
-#Redirect /no /nb
+RedirectPermanent /no /nb
 
 
 
