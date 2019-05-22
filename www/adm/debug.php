@@ -2,20 +2,17 @@
 $admonly = TRUE;
 require "adm.inc";
 require "base.inc";
+chdir("..");
+require "rpgconnect.inc.php";
+require "base.inc";
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - debug</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
+htmladmstart("Debug");
 
-<body>
-<?php
-include("links.inc");
-
-if ($info) {
-	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";
-}
+print "<h1>Language</h1>";
+print "<pre>";
+print "LANG: " . htmlspecialchars( LANG ) . PHP_EOL;
+#print "PHP Locale, language: " . locale_get_display_language( 'da', 'da' );
+print "</pre>";
 
 print "<h1>Session:</h1>";
 print "<pre>";

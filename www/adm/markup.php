@@ -33,19 +33,8 @@ function linkfix ($matches) {
 	}
 	return $matches[0];
 }
-?>
-<!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - Markup-fixes</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
 
-<body>
-<?php
-include("links.inc");
-
-if ($info) {
-	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";
-}
+htmladmstart("Markup-fixes");
 
 print "<h1>Markup-fixes:</h1>" . PHP_EOL;
 

@@ -154,24 +154,7 @@ $conflist = array(
 	9 => "Scenarieliste bekræftet"
 );
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - con</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-
-<!--
-<p align="center"><font style="font-size: 30pt" face="Garamond, georgia, times New Roman, times" size="7" color="#990000">
-<i><a href="./" style="text-decoration: none">Con-administration</a></i></font>
-</p>
--->
-
-<?php
-include("links.inc");
-
-printinfo();
+htmladmstart("Con");
 
 print "<FORM ACTION=\"convent.php\" METHOD=\"post\">\n";
 if (!$con) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"opret\">\n";

@@ -7,14 +7,15 @@ require "base.inc";
 $this_type = 'files';
 unset($result);
 
-$category = $_REQUEST['category'];
-$id = $_REQUEST['id'];
+$category = (string) $_REQUEST['category'];
+$id = (int) $_REQUEST['id'];
 $data_id = (int) $_REQUEST['data_id'];
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$description = $_REQUEST['description'];
-$downloadable = $_REQUEST['downloadable'];
-$remoteurl = $_REQUEST['remoteurl'];
+$action = (string) $_REQUEST['action'];
+$do = (string) $_REQUEST['do'];
+$description = (string) $_REQUEST['description'];
+$downloadable = (string) $_REQUEST['downloadable'];
+$language = (string) $_REQUEST['language'];
+$remoteurl = (string) $_REQUEST['remoteurl'];
 $allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png"];
 $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
 
@@ -50,7 +51,7 @@ if ($action == "changefile" && $do == "Fjern") {
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == "changefile") { // Ret fil
 	$downloadable = ($downloadable?1:0);
-	$q = "UPDATE files SET description = '$description', downloadable = '$downloadable' WHERE id = '$id'";
+	$q = "UPDATE files SET description = '" . dbesc($description) . "', downloadable = '$downloadable', language = '" . dbesc($language) . "' WHERE id = '$id'";
 	$r = doquery($q);
 	$_SESSION['admin']['info'] = "Fil-data opdateret! " . dberror();
 	if ($r) {
@@ -169,7 +170,7 @@ if ($action == "addfile") {
 			$_SESSION['admin']['info'] = "Fil oprettet! ($numpages sider) " . dberror();
 		}
 */
-		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable', NOW() )");
+		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
 		$_SESSION['admin']['info'] = "Fil oprettet! " . dberror();
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
@@ -291,7 +292,7 @@ if ($data_id && $category) {
 	}
 	$title = getone($q);
 	
-	$query = "SELECT id, filename, description, downloadable FROM files WHERE data_id = '$data_id' AND category = '$category' ORDER BY id";
+	$query = "SELECT id, filename, description, downloadable, language FROM files WHERE data_id = '$data_id' AND category = '$category' ORDER BY id";
 	$result = getall($query);
 }
 
@@ -328,6 +329,7 @@ if ($data_id && $category) {
 	      "<th>Filnavn</th>".
 	      "<th>Beskrivelse</th>".
 	      "<th>Offentlig</th>".
+	      "<th>Sprogkode</th>".
 	      "<th>Ret</th>".
 	      "<th>Hent</th>".
 	      "</tr>\n";
@@ -343,7 +345,8 @@ if ($data_id && $category) {
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td >'.$row['filename'].'</td>'.
 		      '<td ><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="40"></td>'.
-	      	'<td><input type="checkbox" name="downloadable" '.$selected.'></td>'.
+	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
+		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="2" placeholder="da"></td>'.
 		      '<td><input type="submit" name="do" value="Ret"> <input type="submit" name="do" value="Fjern"></td>'.
 		      '<td ><a href="http://download.alexandria.dk/files/'.$paths[$category].'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
 		      "</tr>\n";
@@ -358,7 +361,8 @@ if ($data_id && $category) {
 	      '<td style="text-align:right;">Ny</td>'.
 	      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
 	      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
-	      '<td><input type="checkbox" name="downloadable" checked="checked"></td>'.
+	      '<td style="text-align: center"><input type="checkbox" name="downloadable" checked="checked"></td>'.
+	      '<td ><input type="text" name="language" value="" size="2" maxlength="2" placeholder="da"></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
 	      '<td></td>'.
 	      "</tr>\n";

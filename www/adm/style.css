@@ -16,6 +16,9 @@ a:visited {
 	font-family: Garamond, Georgia, Times New Roman, Times, Serif;
 	color: #990000;
 }
+div.headlink form > a {
+	text-decoration: none;
+}
 
 .personselect {
 	width: 270px;

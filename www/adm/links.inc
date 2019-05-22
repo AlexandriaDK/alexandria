@@ -1,37 +1,39 @@
 <div align="center" class="headlink">
 <form action="find.php">
-<a href="./" accesskey="i" style="text-decoration: none">Info</a>
+<a href="./" accesskey="i">Info</a>
 ·
-<a href="person.php" accesskey="p" style="text-decoration: none">Person</a>
+<a href="person.php" accesskey="p">Person</a>
 ·
-<a href="scenarie.php" accesskey="s" style="text-decoration: none">Scenarie</a>
+<a href="scenarie.php" accesskey="s">Scenarie</a>
 ·
-<a href="convent.php" accesskey="c" style="text-decoration: none">Con</a>
+<a href="convent.php" accesskey="c">Con</a>
 ·
-<a href="conset.php" style="text-decoration: none">Con-serie</a>
+<a href="conset.php">Con-serie</a>
 ·
-<a href="system.php" accesskey="y" style="text-decoration: none">System</a>
+<a href="system.php" accesskey="y">System</a>
 ·
-<a href="tag.php" style="text-decoration: none">Tag</a>
+<a href="tag.php">Tag</a>
 ·
-<a href="showlog.php" accesskey="l" style="text-decoration: none">Log</a>
+<a href="showlog.php" accesskey="l">Log</a>
 ·
-<a href="teknik.php" style="text-decoration: none">Teknik</a>
+<a href="teknik.php">Teknik</a>
 ·
-<a href="ticket.php" accesskey="t" style="text-decoration: none">Tickets</a>
+<a href="ticket.php" accesskey="t">Tickets</a>
 <?php
 if ($_SESSION['user_admin'] ) {
 ?>
 ·
-<a href="achievements.php" accesskey="a" style="text-decoration: none">Achievements</a>
+<a href="achievements.php" accesskey="a">Achievements</a>
 ·
-<a href="news.php" accesskey="n" style="text-decoration: none">Nyheder</a>
+<a href="news.php" accesskey="n">Nyheder</a>
 ·
-<a href="feeds.php" style="text-decoration: none">Feeds</a>
+<a href="feeds.php">Feeds</a>
 ·
-<a href="users.php" accesskey="u" style="text-decoration: none">Users</a>
+<a href="users.php" accesskey="u">Users</a>
 ·
-<a href="debug.php" accesskey="d" style="text-decoration: none">Debug</a>
+<a href="markup.php" accesskey="m">Markup</a>
+·
+<a href="debug.php" accesskey="d">Debug</a>
 <?php
 }
 ?>
@@ -42,6 +44,6 @@ $conlock = (int) $_COOKIE['conlock'];
 if ($conlock) {
 	print "<br>Default con: <a href=\"convent.php?con=$conlock\">#$conlock</a> <sup><a href=\"../data?con=$conlock\">(vis)</a></sup> - <a href=\"lock.php\">frigør</a>";
 }
-?></span></form>
+?></span><br></form>
 
 </div>
