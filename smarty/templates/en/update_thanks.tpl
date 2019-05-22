@@ -1,18 +1,18 @@
-{assign var="pagetitle" value="Indsend rettelse"}
+{assign var="pagetitle" value="Submit corrections - thanks"}
 {include file="head.tpl"}
 
 <div id="contenttext">
 
 	<h2 class="pagetitle">
-		Tak for din rettelse:
+		Thanks for your update:
 	</h2>
 
 		<p>
-			Vi takker for din rettelse, og vil kigge den igennem snarest muligt.
+			We thank you for your correction and we will check it out as soon as possible.
 		</p>
 		
 		<p>
-			Dit bidrag til Alexandria er et bidrag til hele rollespilsmiljøet.
+			Your contribution to Alexandria is a contribution to the whole scene.
 		</p>
 
 </div>

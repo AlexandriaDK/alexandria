@@ -7,7 +7,7 @@ require("template.inc");
 $value = "";
 
 $data_id = (int) $_REQUEST['data_id'];
-$cat = $_REQUEST['cat'];
+$cat = (string) $_REQUEST['cat'];
 $label = getentry($cat,$data_id);
 
 $content = "";

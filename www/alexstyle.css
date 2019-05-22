@@ -193,7 +193,7 @@ td.filelist {
 	font-family: Verdana, Tahoma;
 }
 
-.oss {
+.oss, .correctionlabel {
 	font-weight: bold;
 }
 

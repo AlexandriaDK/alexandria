@@ -31,9 +31,22 @@
 		<form action="rettelser_indsend" method="post">
 			<table>
 			
-			{$content}
+{if $label}
+			<tr><td>
+			<input type="hidden" name="cat" value="{$category|escape}" >
+			<input type="hidden" name="data_id" value="{$data_id|escape}" >
+			Indsend rettelse for:</td>
+			<td class="correctionlabel">{$label}</td></tr>
+{else}
+			<tr><td>Indtast navn eller titel:</td><td><input type="text" name="data_label" size="30" maxlength="250"><br><span class="noteindtast">Fx "Oculus Tertius" eller "Spiltræf XII"</span></td></tr>
+{/if}
+			<tr><td>Indtast din rettelse eller tilføjelse:</td><td><textarea name="data_description" cols="30" rows="8"></textarea></td></tr>
+			<tr><td>Dit navn?</td><td><input type="text" name="user_name" size="30" value="{$user_name|escape}"></td></tr>
+			<tr><td>Din e-mail-adresse?</td><td><input type="email" name="user_email" size="30"><br><span class="noteindtast">Vi skriver kun til dig, hvis vi har evt. spørgsmål</span></td></tr>
+			<tr><td>Hvad er din kilde?</td><td><textarea name="user_source" cols="30" rows="3"></textarea><br><span class="noteindtast">Angiv evt. en URL, et con-program, "mig selv", "fra hukommelsen" eller lignende</span></td></tr>
+			<tr><td>Indtast bogstavet <b>A</b>:<br>(for spamsikring)</td><td><input type="text" name="human" value="" size="3"></td></tr>
 
-				<tr><td></td><td><input type="submit" value="Indsend din rettelse" /></td></tr>
+			<tr><td></td><td><input type="submit" value="Indsend din rettelse"></td></tr>
 			</table>
 		</form>
 
