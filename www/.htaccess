@@ -13,7 +13,14 @@ Redirect /gfx/english /gfx/scenarie/english
         allow from none
 </FilesMatch>
 
-Redirect /otto http://alexandria.dk/awards?cid=1
+# redirects for convenience
+Redirect /otto /awards?cid=1
+
+RedirectPermanent /se /sv
+RedirectPermanent /us /en
+RedirectPermanent /uk /en
+RedirectPermanent /gb /en
+#Redirect /no /nb
 
 
 

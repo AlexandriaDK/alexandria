@@ -322,6 +322,12 @@ div.system a:visited, a.system:visited {
 	color: #009;
 }
 
+div.person div.list {
+	column-count: 3;
+	-moz-column-count: 3;
+	-webkit-column-count: 3;
+}
+
 div.latestnews {
 	width: 190px;
 	padding-right: 10px;
@@ -415,6 +421,10 @@ div.achshow {
 div.achshow:hover {
 	outline: none;
 	box-shadow: 0 0 15px #ace;
+}
+
+p.personslinks {
+	font-size: 16px;
 }
 
 @-webkit-keyframes hitAndRun {

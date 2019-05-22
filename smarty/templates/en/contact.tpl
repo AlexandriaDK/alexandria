@@ -4,7 +4,7 @@
 <div id="content">
 
 	<h2 class="pagetitle">
-		Contact os:
+		Contact us:
 	</h2>
 
 		<p>

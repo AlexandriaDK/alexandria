@@ -18,7 +18,7 @@
 
 {if $description != ""}
 	<h3 class="parttitle">
-		Om kongres-serien:
+		{$_conset_about}
 	</h3>
 	
 	<p class="indata">

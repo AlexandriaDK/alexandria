@@ -1,10 +1,10 @@
-{assign var="pagetitle" value="Oversigt over kongresser"}
+{assign var="pagetitle" value="{$_cons_title}"}
 {include file="head.tpl"}
 
 <div id="content">
 
 	<h2 class="pagetitle" style="margin-bottom: 1em;">
-		Kongres-oversigt:
+		{$_cons_list}
 	</h2>
 
 
