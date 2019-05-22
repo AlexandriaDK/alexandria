@@ -9,7 +9,7 @@
 {if $ogimage}
 		<meta property="og:image" content="https://alexandria.dk/{$ogimage}" />
 {/if}
-		<link rel="stylesheet" type="text/css" href="alexstyle.css" />
+		<link rel="stylesheet" type="text/css" href="/alexstyle.css" />
 		<link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
 		<link rel="SHORTCUT ICON" href="favicon.ico" />
 		<link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
@@ -21,22 +21,21 @@
 			  crossorigin="anonymous"></script>
 		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script src="/quicksearch.js"></script>
-		<style>
-			.ui-autocomplete {
-				max-height: 600px;
-				max-width: 400px;
-				overflow-y: auto;
-				/* prevent horizontal scrollbar */
-				overflow-x: hidden;
-				font-size: 0.9em;
-				margin-right: 30px;
-			}
+<style>
+.ui-autocomplete {
+	max-height: 600px;
+	max-width: 400px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+	font-size: 0.9em;
+	margin-right: 30px;
+}
 
-			.ui-autocomplete .note {
-				font-size: 0.7em;
-			}
-			
-		</style>
+.ui-autocomplete .note {
+	font-size: 0.7em;
+}
+</style>
 		{if $json_alltags}
 		<script>
 		$(function() {

@@ -9,7 +9,7 @@
 {if $ogimage}
 		<meta property="og:image" content="https://alexandria.dk/{$ogimage}" />
 {/if}
-		<link rel="stylesheet" type="text/css" href="alexstyle.css" />
+		<link rel="stylesheet" type="text/css" href="/alexstyle.css" />
 		<link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
 		<link rel="SHORTCUT ICON" href="favicon.ico" />
 		<link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />

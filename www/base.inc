@@ -77,9 +77,26 @@ if (!defined('DBERROR') ) {
 	$t->assign('user_admin',$_SESSION['user_admin']);
 	$t->assign('user_achievements_to_display', get_achievements_to_display() );
 	if ($lang) {
-		$t->assign('LANG', $lang);
+		$t->assign('LANG', LANG );
 	}
 }
+
+// Import language strings
+$import_languages = [ 'da' ];
+if ( LANG != 'da' ) {
+	$import_languages[] = LANG;
+}
+if ( LANG == 'sv' ) {
+	$import_languages[] = 'en'; //hack
+}
+foreach( $import_languages AS $language ) {
+	$strings = getall("SELECT label, text, language FROM weblanguages WHERE language = '" . dbesc( $language ) ."'");
+	foreach ( $strings AS $string ) {
+		$t->assign( '_' . $string['label'], $string['text'] );
+	}
+}
+
+// Startup variables
 
 if ($_SESSION['user_id']) { // set last active
 	doquery("

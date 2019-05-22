@@ -95,3 +95,7 @@ option.existing {
 #tabs .ui-tabs-nav .ui-state-active a {
 	color: #000;
 }
+
+tr.languagerow:hover {
+	background-color: #da7;
+}

@@ -528,7 +528,7 @@ span.urltext {
 	font-family: monospace;
 }
 
-div.ranking {
+div.ranking, span.participantshint {
 	font-size: 0.8em;
 }
 

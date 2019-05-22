@@ -15,7 +15,7 @@
 		
 		<p>
 			Alexandria is made possible by several contributors and editors. 
-			<a href="data?person=1" class="person">Peter Brodersen</a> is the main developer and type monkey.
+			<a href="data?person=1" class="person">Peter Brodersen</a> is the main developer and data feeder.
 		</p>
 
 		<p>
