@@ -2,6 +2,8 @@
 $this_type = 'convent';
 
 $authors_limit = 4;
+$scenlistdata = [];
+$boardlistdata = [];
 
 function antaltxt ($new, $rerun, $cancelled, $total, $type = 'sce') {
 		if ($total == 0) {
@@ -81,7 +83,7 @@ if ($r['id'] == 0) {
 
 // Lav liste over scenarier
 
-	$new = $rerun = $cancelled = $board_new = $board_rerun = $board_cancelled = 0;
+	$sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 	$scenlist = $boardlist = $datalist = "";
 
 	if ($_SESSION['user_id']) {
@@ -109,6 +111,8 @@ if ($r['id'] == 0) {
 	if (count($q) > 0) {
 		foreach($q AS $rs) {
 			$datalist = "";
+			$datalistdata = [];
+			$useroptions = [];
 			$datalist .= "<tr>";
 			if ($_SESSION['user_id']) {
 				if ($rs['boardgame']) {
@@ -120,7 +124,9 @@ if ($r['id'] == 0) {
 					$datalist .= "<td>";
 					if ($type != NULL) {
 						$datalist .= getdynamicscehtml($rs['id'],$type,$rs[$type]);
+						$useroptions[$type] = getdynamicscehtml($rs['id'],$type,$rs[$type]);
 					}
+					
 					$datalist .= "</td>";
 				}
 				$datalist .= "<td style=\"width: 10px;\">&nbsp;</td>";
@@ -137,11 +143,11 @@ if ($r['id'] == 0) {
 // Sæt evt. rerun/aflyst-ikoner på
 			$datalist .= "<td>";
 			if ($rs['textsymbol']) { // unicode-ikoner
-				$datalist .= "<span class=\"preicon\" title=\"{$rs['event']}\">{$rs['textsymbol']}</span>";
+				$datalist .= $runsymbol = "<span class=\"preicon\" title=\"{$rs['event']}\">{$rs['textsymbol']}</span>";
 			} elseif ($rs['iconfile']) {
-				$datalist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"{$rs['event']}\" title=\"{$rs['event']}\" width=\"14\" height=\"14\" />";
+				$datalist .= $runsymbol = "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"{$rs['event']}\" title=\"{$rs['event']}\" width=\"14\" height=\"14\" />";
 			} else {
-				$datalist .= "<img src=\"/gfx/spacer.gif\" width=\"14\" height=\"1\" alt=\"\" />";
+				$datalist .= $runsymbol = "<img src=\"/gfx/spacer.gif\" width=\"14\" height=\"1\" alt=\"\" />";
 			}
 			$datalist .= "</td>";
 
@@ -150,11 +156,11 @@ if ($r['id'] == 0) {
 			$datalist .= "<a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">".htmlspecialchars($rs['title'])."</a>";
 			if ($rs['boardgame'] == 0) {
 				if ($rs['preid'] == 1) {
-					$new++;
+					$sce_new++;
 				} elseif ($rs['preid'] == 2 || $rs['preid'] == 3) {
-					$rerun++;
+					$sce_rerun++;
 				} elseif ($rs['preid'] == 99) {
-					$cancelled++;
+					$sce_cancelled++;
 				}
 			} else {
 				if ($rs['preid'] == 1) {
@@ -186,11 +192,14 @@ if ($r['id'] == 0) {
 					$forflistextra[] = $forfhtml;
 				}
 			}
+			$authtml = "";
 			if ($forflist) {
+				$authtml = join("<br>", $forflist);
 				$datalist .= "<td style=\"padding-left: 10px;\">";
-				$datalist .= join("<br>",$forflist);
+				$datalist .= $authtml;
+				$autextrahtml =  join("<br>", $forflistextra);
 				if ($forflistextra) {
-					$datalist .= "<br><span onclick=\"this.nextSibling.style.display='inline';this.style.display='none';\" class=\"moreauthors\" title=\"" . count($forflistextra) . " yderligere forfatter" . (count($forflistextra) == 1 ? "" : "e") . "\">[…]</span><span class=\"authorlistextra\">" . join("<br>", $forflistextra);
+					$datalist .= "<br><span onclick=\"this.nextSibling.style.display='inline';this.style.display='none';\" class=\"moreauthors\" title=\"" . count($forflistextra) . " yderligere forfatter" . (count($forflistextra) == 1 ? "" : "e") . "\">[…]</span><span class=\"authorlistextra\">" . $autextrahtml;
 				}
 				$datalist .= "</td>";
 			} else {
@@ -199,7 +208,7 @@ if ($r['id'] == 0) {
 			
 
 // System
-			unset($sysstring);
+			$sysstring = "";
 			if ($rs['sys_name']) {
 				$syspart = "<a href=\"data?system={$rs['sys_id']}\" class=\"system\">".htmlspecialchars($rs['sys_name'])."</a>";
 				if ($rs['sys_ext']) $syspart .= " ".htmlspecialchars($rs['sys_ext']);
@@ -215,45 +224,35 @@ if ($r['id'] == 0) {
 			}
 
 			$datalist .= "</tr>\n";
+
+			$datalistdata = [
+				'id' => $rs['id'],
+				'userdyn' => $useroptions,
+				'filescount' => $rs['files'],
+				'runsymbol' => $runsymbol,
+				'title' => $rs['title'],
+				'authtml' => $authtml,
+				'autextracount' => count($forflistextra),
+				'autextrahtml' => $autextrahtml,
+				'systemhtml' => $sysstring,
+				'boardgame' => $rs['boardgame'],
+			];
+				
+
 			if ($rs['boardgame']) {
 				$boardlist .= $datalist;
+				$boardlistdata[] = $datalistdata;
 			} else {
 				$scenlist .= $datalist;
+				$scenlistdata[] = $datalistdata;
 			}
 		}
 // Tilføj antal scenarier, nye som reruns:
-		$total = $new + $rerun + $cancelled;
+		$total = $sce_new + $sce_rerun + $sce_cancelled;
 		$board_total = $board_new + $board_rerun + $board_cancelled;
 
-		$scen_antaltxt = antaltxt($new, $rerun, $cancelled, $total, 'sce');
+		$scen_antaltxt = antaltxt($sce_new, $sce_rerun, $sce_cancelled, $total, 'sce');
 		$board_antaltxt = antaltxt($board_new, $board_rerun, $board_cancelled, $board_total, 'board');
-		/*
-
-		$antaltxt = sprintf("%d %s",$total,($total == 1 ? "scenarie" : "scenarier"));
-		if ($rerun > 0 && $cancelled > 0) {
-			$antaltxt .= sprintf(", heraf %d %s, %d %s og %d %s",$new,($new == 1 ? "nyt" : "nye"),$rerun,($rerun == 1 ? "rerun" : "reruns"),$cancelled,($cancelled==1?"aflyst":"aflyste"));
-		} elseif ($rerun > 0 && $new > 0) {
-			$antaltxt .= sprintf(", heraf %d %s og %d %s",$new,($new == 1 ? "nyt" : "nye"),$rerun,($rerun == 1 ? "rerun" : "reruns") );
-		} elseif ($cancelled > 0 && $new > 0) {
-			$antaltxt .= sprintf(", heraf %d %s og %d %s",$new,($new == 1 ? "nyt" : "nye"),$cancelled,($cancelled==1?"aflyst":"aflyste") );
-		} elseif ($rerun == $total) {
-			$antaltxt .= ", udelukkende reruns";
-		} elseif ($cancelled == $total) {
-			$antaltxt .= ", udelukkende aflysninger";
-		}
-		$antaltxt = sprintf("%d %s",$total,($total == 1 ? "scenarie" : "scenarier"));
-		if ($rerun > 0 && $cancelled > 0) {
-			$antaltxt .= sprintf(", heraf %d %s, %d %s og %d %s",$new,($new == 1 ? "nyt" : "nye"),$rerun,($rerun == 1 ? "rerun" : "reruns"),$cancelled,($cancelled==1?"aflyst":"aflyste"));
-		} elseif ($rerun > 0 && $new > 0) {
-			$antaltxt .= sprintf(", heraf %d %s og %d %s",$new,($new == 1 ? "nyt" : "nye"),$rerun,($rerun == 1 ? "rerun" : "reruns") );
-		} elseif ($cancelled > 0 && $new > 0) {
-			$antaltxt .= sprintf(", heraf %d %s og %d %s",$new,($new == 1 ? "nyt" : "nye"),$cancelled,($cancelled==1?"aflyst":"aflyste") );
-		} elseif ($rerun == $total) {
-			$antaltxt .= ", udelukkende reruns";
-		} elseif ($cancelled == $total) {
-			$antaltxt .= ", udelukkende aflysninger";
-		}
-		*/	
 
 		$conflist = array(
 			0 => "scenarieliste mangler",
@@ -396,6 +395,8 @@ $json_people = json_encode($people);
 	$t->assign('description',$r['description']);
 	$t->assign('scenlist',$scenlist);
 	$t->assign('boardlist',$boardlist);
+	$t->assign('scenlistdata',$scenlistdata);
+	$t->assign('boardlistdata',$boardlistdata);
 	$t->assign('organizerlist',$organizerlist);
 	$t->assign('award',$awardlist);
 	$t->assign('trivia',$trivialist);

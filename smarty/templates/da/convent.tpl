@@ -67,7 +67,20 @@
 			Scenarier:
 		</h3>
 		</td></tr>
-	{$scenlist}
+	{section name=i loop=$scenlistdata}
+
+		<tr>
+		<td>{$scenlistdata[i].userdyn.read}</td>
+		<td>{$scenlistdata[i].userdyn.gmed}</td>
+		<td>{$scenlistdata[i].userdyn.played}</td>
+		<td style="width: 10px;"></td>
+		<td>{if $scenlistdata[i].filescount}<a href="data?scenarie={$scenlistdata[i].id}" alt="Download" title="Dette scenarie kan downloades">💾</a>{/if}</td>
+		<td>{$scenlistdata[i].runsymbol}</td>
+		<td><a href="data?scenarie={$scenlistdata[i].id}" class="scenarie">{$scenlistdata[i].title|escape}</a></td>
+		<td style="padding-left: 10px">{$scenlistdata[i].authtml}{if $scenlistdata[i].autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenlistdata[i].autextracount} yderligere personer">[…]</span><span class="authorlistextra">{$scenlistdata[i].autextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$scenlistdata[i].systemhtml}</td>
+		</tr>
+	{/section}
 	{/if}
 	{if $boardlist != "" }
 		<tr><td colspan="8">
@@ -75,7 +88,20 @@
 			Brætspil:
 		</h3>
 		</td></tr>
-	{$boardlist}
+	{section name=i loop=$boardlistdata}
+
+		<tr>
+		<td>{$boardlistdata[i].userdyn.read}</td>
+		<td>{$boardlistdata[i].userdyn.gmed}</td>
+		<td>{$boardlistdata[i].userdyn.played}</td>
+		<td style="width: 10px;"></td>
+		<td>{if $boardlistdata[i].filescount}<a href="data?scenarie={$boardlistdata[i].id}" alt="Download" title="Regler til dette brætspil kan downloades">💾</a>{/if}</td>
+		<td>{$boardlistdata[i].runsymbol}</td>
+		<td><a href="data?scenarie={$boardlistdata[i].id}" class="scenarie">{$boardlistdata[i].title|escape}</a></td>
+		<td style="padding-left: 10px">{$boardlistdata[i].authtml}{if $boardlistdata[i].autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardlistdata[i].autextracount} yderligere personer">[…]</span><span class="authorlistextra">{$boardlistdata[i].autextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$boardlistdata[i].systemhtml}</td>
+		</tr>
+	{/section}
 	{/if}
 
 	</table>
