@@ -11,9 +11,12 @@ header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 
 
 // detect language
+#$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
+$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|no|nb|de|sv|es|ru|fr|be)/_', $_SERVER["REQUEST_URI"], $matches) ) {
-	$lang = $matches[1];
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+	$lang = $urllang = $matches[1];
+	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } else {
 	$lang = 'da';
 }
@@ -25,7 +28,7 @@ if ( LANG == 'da') {
 	setlocale(LC_TIME, "en_GB.UTF-8"); 
 } elseif ( LANG == 'sv' ) {
 	setlocale(LC_TIME, "sv_SE.UTF-8"); 
-} elseif ( LANG == 'no' || LANG == 'nb' ) {
+} elseif ( LANG == 'nb' ) {
 	setlocale(LC_TIME, "nb_NO.UTF-8"); 
 } elseif ( LANG == 'de' ) {
 	setlocale(LC_TIME, "de_DE.UTF-8"); 
@@ -78,8 +81,13 @@ if (!defined('DBERROR') ) {
 	$t->assign('user_editor',$_SESSION['user_editor']);
 	$t->assign('user_admin',$_SESSION['user_admin']);
 	$t->assign('user_achievements_to_display', get_achievements_to_display() );
+	$t->assign('ALEXLANGUAGES', $alexlanguages );
 	if ($lang) {
 		$t->assign('LANG', LANG );
+	}
+	if ( $urllang ) {
+		$t->assign('URLLANG', $urllang );
+		$t->assign('BASEURI', $baseuri );
 	}
 }
 

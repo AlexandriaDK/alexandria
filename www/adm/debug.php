@@ -19,6 +19,7 @@ print "<pre>";
 print htmlspecialchars(print_r($_SESSION, TRUE));
 print "</pre>";
 
+
 print "</body>\n</html>\n";
 
 ?>

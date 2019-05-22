@@ -15,6 +15,13 @@
 		<link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+{if $URLLANG}
+{foreach from=$ALEXLANGUAGES item=altlanguage}
+{if $URLLANG != $altlanguage}
+		<link rel="alternate" hreflang="{$altlanguage}" href="https://alexandria.dk/{$altlanguage}/{$BASEURI}" />
+{/if}
+{/foreach}
+{/if}
 		<script
 			  src="https://code.jquery.com/jquery-3.4.1.min.js"
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
