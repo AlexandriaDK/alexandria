@@ -36,6 +36,7 @@ $chars = range('a','z');
 $chars[] = "æ";
 $chars[] = "ø";
 $chars[] = "å";
+$chars[] = "#";
 
 $charout = "";
 foreach($chars AS $char) {
@@ -46,7 +47,11 @@ foreach($chars AS $char) {
 	}
 }
 
-$persons = getall("SELECT id, firstname, surname FROM aut WHERE $orderfield LIKE '$b%' ORDER BY $orderby");
+if ( $b != '#') {
+	$persons = getall("SELECT id, firstname, surname FROM aut WHERE $orderfield LIKE '$b%' ORDER BY $orderby");
+} else {
+	$persons = getall("SELECT id, firstname, surname FROM aut WHERE $orderfield NOT REGEXP '^[A-ZÆØÅ]' ORDER BY $orderby");
+}
 $no = 0;
 $list = "";
 

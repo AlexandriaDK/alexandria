@@ -1,6 +1,8 @@
 <?php
 $this_type = 'conset';
 
+$condata = [];
+
 $r = getrow("SELECT id, name, description FROM conset WHERE id = '$conset'");
 if ($r['id'] == 0) {
 	$t->assign('content',"Beklager - ingen con-serie fundet!");
@@ -39,6 +41,16 @@ if ($r['id'] == 0) {
 		if ($rs['place']) $conlist .= "<td style=\"padding-left: 10px;\">{$rs['place']}</td>";
 		else $conlist .= "<td></td>";
 		$conlist .= "</tr>\n";
+
+		$condata[] = [
+			'id' => $rs['id'],
+			'dateset' => $coninfo,
+			'userdyn' => ( $_SESSION['user_id'] ? getdynamicconventhtml($rs['id'],'visited',$rs['visited']) : '' ),
+			'name' => $rs['name'],
+			'year' => $rs['year'],
+			'place' => $rs['place']
+		];
+
 	}
 	$conlist .= "</table>\n";
 
@@ -74,6 +86,7 @@ if ($r['id'] == 0) {
 	$t->assign('pic',$available_pic);
 	$t->assign('description',$r['description']);
 	$t->assign('conlist',$conlist);
+	$t->assign('condata',$condata);
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);
 	$t->assign('alias',$aliaslist);

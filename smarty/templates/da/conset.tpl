@@ -32,7 +32,15 @@
 	<h3 class="parttitle">
 		Kongresser:
 	</h3>
-	{$conlist}
+	<table class="conlist">
+	{section name=i loop=$condata}
+	<tr>
+		<td>{$condata[i].userdyn}</td>
+		<td><a href="data?con={$condata[i].id}" class="con" title="{$condata[i].dateset|escape}">{$condata[i].name} ({$condata[i].year})</a></td>
+                <td style="padding-left: 10px;">{$condata[i].place}</td>
+	</tr>
+	{/section}
+	</table>
 {/if}
 
 {if $trivia}

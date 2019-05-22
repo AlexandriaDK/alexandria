@@ -310,6 +310,7 @@ $stat_con_year = '
 ';
 
 $yearstat = array();
+$yearstatpart = [];
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
@@ -345,6 +346,7 @@ foreach($r AS $row) {
 }
 
 foreach($yearstat AS $year => $row) {
+	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => (int) $row['sce'] ];
 	$row['sce'] = intval($row['sce']);
 	$context = ($row['cons'] == 1 ? "kongres" : "kongresser");
 	$scetext = ($row['sce'] == 1 ? "scenarie" : "scenarier");
@@ -354,6 +356,7 @@ foreach($yearstat AS $year => $row) {
 $stat_con_year .= '
 	</table>
 ';
+
 
 award_achievement(51); // visit statistics page
 
@@ -365,35 +368,9 @@ $t->assign('stat_sys_used',$stat_sys_used);
 $t->assign('stat_sce_replay',$stat_sce_replay);
 $t->assign('stat_sce_auts',$stat_sce_auts);
 $t->assign('stat_con_sce',$stat_con_sce);
-$t->assign('stat_con_year',$stat_con_year);
+//$t->assign('stat_con_year',$stat_con_year);
+$t->assign('stat_con_year',$yearstatpart);
 
 $t->display('statistics.tpl');
 
-
-/*
-<td align=center>Mest populære con-år:<br />(mindst 3 cons)<br />
-
-<table cellspacing=1 cellpadding=1>
-<?
-$r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		year
-	FROM
-		convent
-	GROUP BY
-		year
-	HAVING
-		antal >= 3
-	ORDER BY
-		antal DESC,
-		year
-");
-foreach($r AS $row) {
-	print "<tr><td>{$row['year']}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td class=\"statnumber\">{$row['antal']} cons</td></tr>\n";
-}
-?>
-</table>
-
-*/
 ?>

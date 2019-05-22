@@ -50,8 +50,12 @@
 		{$stat_con_sce}
 	</td>
 	
-	<td>Conventions + new scenarios,<br>ordered by year:<br>
-		{$stat_con_year}
+	<td>Conventions + new games,<br>ordered by year:<br>
+		<table class="tablestat">
+		{section name=i loop=$stat_con_year}
+		<tr><td><a href="data?year={$stat_con_year[i].year}" class="con">{$stat_con_year[i].year}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td class="statnumber">{$stat_con_year[i].cons} </td><td>cons&nbsp;&nbsp;</td><td class="statnumber">{$stat_con_year[i].games}</td><td>games</td></tr>
+		{/section}
+		</table>
 	</td>
 	</tr>
 	
