@@ -13,13 +13,17 @@
 		ved at have skrevet scenarier med fælles bekendte. To personer er forbundet, hvis
 		de begge har skrevet scenarie med den samme tredje person - og så fremdeles.
 	</p>
-	<!--
-	<p style="width: 350px;">
-		Det er også muligt at <a href="applet/allpeople_2004jun.gif">hente et diagram over
-		alle større relationer</a>.
-	</p>
-	-->
 {/if}
+
+<form action="jostspil" method="get"><table><tr>
+<td>{$_jost_first}</td>
+<td><input type="text" name="from" class="tags" value="{$from|escape}" /></td></tr>
+<tr>
+<td>{$_jost_second}</td>
+<td><input type="text" name="to" class="tags" value="{$to|escape}" /></td></tr>
+<tr><td><input type="submit" value="{$_jost_connect|escape}" /></td></tr>
+</table>
+</form>
 
 	{$content}
 </div>

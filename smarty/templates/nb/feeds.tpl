@@ -1,23 +1,22 @@
-{assign var="pagetitle" value="Feeds"}
+{assign var="pagetitle" value="{$_feeds|ucfirst}"}
 {include file="head.tpl"}
 
 <div id="content">
 
 	<h2 class="pagetitle">
-		Feeds:
+		{$_feeds|ucfirst}
 	</h2>
 
 		<p>
-			Feeds fra diverse danske rollespilsblogs - opdateres en gang i timen.<br>
-			Det er også muligt at hente et <a href="feedrss.php">meta-feed for alle blogs</a> (RSS) til sin egen feed-læser.
+			{$_feeds_presentation|nl2br}
 		</p>
 	
 		<table>
-			<tr><th>Titel</th><th>Af</th><th>Kommentarer</th><th>Postet</th></tr>
+			<tr><th>{$_feeds_postdate}</th><th>{$_feeds_by}</th><th>{$_feeds_commentsno}</th><th>{$_feeds_postdate}</th></tr>
 			{section name=i loop=$feeddata}
 			<tr>
 			<td title="{$feeddata[i].title|escape}">
-				<a href="{$feeddata[i].link|escape}">{if $feeddata[i].title == ""}<i>(ingen titel)</i>{else}{$feeddata[i].title|truncate:55|escape}{/if}</a>
+				<a href="{$feeddata[i].link|escape}">{if $feeddata[i].title == ""}<i>({$_feeds_notitle})</i>{else}{$feeddata[i].title|truncate:55|escape}{/if}</a>
 			</td>
 			<td>
 				{if $feeddata[i].aut_id}
@@ -37,7 +36,7 @@
 		</table>
 
 		<h3>
-			Der hentes nyheder fra følgende sider:
+			{$_feeds_sources}
 		</h3>
 		
 		<p>
@@ -47,22 +46,12 @@
 		</p>
 
 		<h3>
-			Har du en rollespils-blog?
+			{$_feeds_yourblog}
 		</h3>
 		
 		<p>
-			Du kan få tilføjet nye indlæg fra din blog ved at <a href="kontakt">kontakte Alexandria</a>
-			og sende et link og en beskrivelse. Din side skal tilbyde et feed i RSS- eller Atom-formatet,
-			så Alexandria let kan hente overskrifter. Det understøtter langt de fleste blog-programmer
-			uden videre.
+			{$_feeds_yourblogdetails}
 		</p>
-		
-		<p>
-			Har du andet end rollespils-indhold på din blog, kan du benytte dig af tags,
-			kategorier eller andre opdelinger, så Alexandria kan nøjes med at hente det rollespils-relevante.
-		</p>
-
-
 </div>
 
 {include file="end.tpl"}

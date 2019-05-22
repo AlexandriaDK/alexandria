@@ -1,14 +1,14 @@
-{assign var="pagetitle" value="Oversigt over tags"}
+{assign var="pagetitle" value="{$_tags_title}"}
 {include file="head.tpl"}
 
 <div id="content">
 
 	<h2 class="pagetitle" style="margin-bottom: 1em;">
-		Tags:
+		{$_tags|ucfirst}
 	</h2>
 
 	<p>
-		Sortér: <a href="tags">Alfabetisk</a> - <a href="tags?popular">Mest populære</a>
+		{$_tags_order}: <a href="tags">{$_tags_alpha}</a> - <a href="tags?popular">{$_tags_popular}</a>
 	</p>
 
 	<div style="column-count: 3; -moz-column-count: 3; -webkit-column-count: 3;">

@@ -4,7 +4,7 @@
 
 {if $alias != ""}
 	<p class="indata">
-		(AKA: {$alias})
+		({$_aka}: {$alias})
 	</p>
 {/if}
 
@@ -20,7 +20,7 @@
 
 {if $slist}
 	<h3 class="parttitle">
-		Scenarier:
+		{$_scenarios|ucfirst}
 	</h3>
 
 	<table class="indata">
@@ -29,7 +29,7 @@
 			{if $slist[s].read}<td>{$slist[s].read}</td>{/if}
 			{if $slist[s].gmed}<td>{$slist[s].gmed}</td>{/if}
 			{if $slist[s].played}<td>{$slist[s].played}</td><td style="width: 5px;">&nbsp;</td>{/if}
-			<td>{if $slist[s].files}<img src="/gfx/ikon_download.gif" alt="Download" title="Dette scenarie kan downloades" width="15" height="15" />{/if}</td>
+			<td>{if $slist[s].files}<a href="{$slist[s].link}"  title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
 			<td><a href="{$slist[s].link}" class="scenarie">{$slist[s].title|escape}</a></td>
 			<td class="lpad">{$slist[s].forflist}</td>
 			<td>{if $slist[s].conlink}<a href="{$slist[s].conlink}" class="con" title="{$slist[s].coninfo}">{$slist[s].conname|escape}</a>{/if}</td>

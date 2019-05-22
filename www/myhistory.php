@@ -79,12 +79,12 @@ $content_myconvents = "";
 $content_myscenarios = "";
 $content_personal_achievements = "";
 
-$convents = getmyconvent($user_id,$_REQUEST['o']);
-if ($convents) {
-	$content_myconvents .= "<h3 class=\"parttitle\">Kongresser: (".count($convents).")</h3>\n";
+$conventions = getmyconvent($user_id,$_REQUEST['o']);
+if ($conventions) {
+#	$content_myconvents .= "<h3 class=\"parttitle\">Kongresser: (".count($conventions).")</h3>\n";
 
-	$content_myconvents .= "<table><tr><td></td><td><a href=\"myhistory?o=5\">Navn</a></td><td><a href=\"myhistory?o=7\">Serie</a></td><td><a href=\"myhistory?o=6\">År</a></td></tr>";
-	foreach ($convents AS $convent) {
+#	$content_myconvents .= "<table><tr><td></td><td><a href=\"myhistory?o=5\">Navn</a></td><td><a href=\"myhistory?o=7\">Serie</a></td><td><a href=\"myhistory?o=6\">År</a></td></tr>";
+	foreach ($conventions AS $convent) {
 		$spanid = "convent_".$convent['id']."_visited";
 		$content_myconvents .= "<tr>";
 		$content_myconvents .= "<td>".
@@ -142,19 +142,21 @@ if ($scenarios) {
 		if ($scenario['gmed'] == 1) $gmed++;
 		if ($scenario['played'] == 1) $played++;
 	}
-	$visited = count($convents);
+	$visited = count($conventions);
 	if ($read >= 100)   award_achievement(6);  // read +100 scenarios
 	if ($gmed >= 50)    award_achievement(7);  // gmed +50 scenarios
 	if ($played >= 100) award_achievement(70);  // played +100 scenarios
 	if ($visited >= 50) award_achievement(69); // visited +50 conventions
 
 	// assemble content
-	$content_myscenarios = "<div id=\"scenarier\" style=\"float: left;\" >" . 
+/*
+	$content_myscenarios = "<div style=\"float: left;\" >" . 
 	                       "<h3 class=\"parttitle\">Scenarier: (".count($scenarios) . ": $read/$gmed/$played)</h3>" .
 	                       "<table><tr><td><a href=\"myhistory?o=1\">Titel</a></td><td><a href=\"myhistory?o=2\">Læst</a></td><td><a href=\"myhistory?o=3\">Kørt</a></td><td><a href=\"myhistory?o=4\">Spillet</a></td></tr>" . 
 	                       $content_myscenarios .
 	                       "</table>\n" . 
 	                       "</div>\n";
+*/
 }
 
 $achievements = getmyachievements($user_id);
@@ -177,13 +179,19 @@ foreach ($achievements AS $achievement) {
 	$content_personal_achievements .= '</div>';
 	$content_personal_achievements .= "\n";
 }
-$content_personal_achievements = '<h3>Achievements: (' . $achievement_count . ')</h3>' . $content_personal_achievements;
+#$content_personal_achievements = '<h3>Achievements: (' . $achievement_count . ')</h3>' . $content_personal_achievements;
 
 
 $t->assign('content_addentry',$content_addentry);
 $t->assign('content_myconvents',$content_myconvents);
 $t->assign('content_myscenarios',$content_myscenarios);
 $t->assign('content_personal_achievements',$content_personal_achievements);
+$t->assign('con_count',count($conventions) );
+$t->assign('game_count',count($scenarios) );
+$t->assign('game_read',$read);
+$t->assign('game_gmed',$gmed);
+$t->assign('game_played',$played);
+$t->assign('achievement_count', $achievement_count );
 $t->display('myhistory.tpl');
 
 ?>

@@ -27,15 +27,6 @@
 	<div style="clear: both;">
 	</div>
 
-{*
-{if $scenlist != ""}
-	<h3 class="parttitle">
-		{$_scenarios|ucfirst}:
-	</h3>
-		{$scenlist}
-{/if}
-*}
-
 {if $slist}
 	<h3 class="parttitle">
 		{$_scenarios|ucfirst}

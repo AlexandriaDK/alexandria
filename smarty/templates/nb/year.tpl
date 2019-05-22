@@ -1,13 +1,13 @@
 <div id="content">
 
-	<h2 class="datatitle">Arrangementer i {$year}</h2>
+	<h2 class="datatitle">{$_year_eventsin} {$year}</h2>
 
 	{$yearlist}
 	
 	{if $num_cons == 0}
-	<p>Beklager - der blev ikke findet nogen arrangementer det år.</p>
+	<p>{$_year_nomatch}</p>
 	{else}
-	<p>{$num_cons} {if $num_cons == 1}arrangement{else}arrangementer{/if}:</p>
+	<p>{$num_cons} {if $num_cons == 1}{$_event}{else}{$_events}{/if}:</p>
 
 	<div class="calendar">	
 	{$output}

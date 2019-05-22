@@ -1,13 +1,13 @@
-{assign var="pagetitle" value="Oversigt over systemer"}
+{assign var="pagetitle" value="$_sys_title"}
 {include file="head.tpl"}
 
 <div id="content">
 
-	<h2 class="pagetitle" style="margin-bottom: 1em;">
-		System-oversigt:
+	<h2 class="pagetitle systemsselect">
+		{$_sys_head}
 	</h2>
 
-	<div class="system" style="column-count: 3; -moz-column-count: 3; -webkit-column-count: 3;">{$list}</div>
+	<div class="system"><div class="list">{$list}</div></div>
 
 </div>
 

@@ -215,7 +215,6 @@ $t->assign('keys',$keys);
 $t->assign('genre',$genre);
 $t->assign('scenlist',$xscenlist);
 $t->assign('titlepart',$titlepart);
-$t->display('scenarios.tpl');
-exit;
+$t->display('games.tpl');
 
 ?>

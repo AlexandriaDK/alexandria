@@ -57,6 +57,8 @@ $t->registerPlugin("function","achievements_shown","achievements_shown");
 $template_dir = '../smarty/templates/';
 if (is_dir($template_dir . LANG) ) {
 	$t->template_dir = $template_dir . LANG . '/';
+} else {
+	$t->template_dir = $template_dir .  'da/';
 }
 
 // variables used all over the place

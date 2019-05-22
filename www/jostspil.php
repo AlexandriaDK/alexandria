@@ -25,8 +25,8 @@ function getjostid ($name) {
 }
 
 // Hent personer, og prøv at slå dem op
-$from = stripslashes($_REQUEST['from']);
-$to = stripslashes($_REQUEST['to']);
+$from = (string) $_REQUEST['from'];
+$to = (string) $_REQUEST['to'];
 
 // Numre betragtes som id's - ellers find personerne ud fra navnet
 if (is_numeric($from)) {
@@ -60,11 +60,11 @@ $intro = 0;
 if (!$mainperson || !$subperson) {
 	$intro = 1;
 }
-$content .= '<form action="'.$_SERVER['PHP_SELF'].'" method="get"><table>';
-$content .= "<tr>\n<td>Indtast første forfatter:</td>\n<td><input type=\"text\" name=\"from\" class=\"tags\" value=\"".htmlspecialchars($from)."\" />".($from_error?' <span class="finderror">?</span> ':'')."</td></tr>\n";
-$content .= "<tr>\n<td>Indtast anden forfatter:</td>\n<td><input type=\"text\" name=\"to\" class=\"tags\" value=\"".htmlspecialchars($to)."\" />".($to_error?' <span class="finderror">?</span> ':'')."</td></tr>\n";
-$content .= "<tr><td><input type=\"submit\" value=\"Forbind!\" /></td></tr>\n";
-$content .= "</table>\n</form>\n";
+#$content .= '<form action="'.$_SERVER['PHP_SELF'].'" method="get"><table>';
+#$content .= "<tr>\n<td>Indtast første forfatter:</td>\n<td><input type=\"text\" name=\"from\" class=\"tags\" value=\"".htmlspecialchars($from)."\" />".($from_error?' <span class="finderror">?</span> ':'')."</td></tr>\n";
+#$content .= "<tr>\n<td>Indtast anden forfatter:</td>\n<td><input type=\"text\" name=\"to\" class=\"tags\" value=\"".htmlspecialchars($to)."\" />".($to_error?' <span class="finderror">?</span> ':'')."</td></tr>\n";
+#$content .= "<tr><td><input type=\"submit\" value=\"Forbind!\" /></td></tr>\n";
+#$content .= "</table>\n</form>\n";
 
 unset($person);
 unset($check);
@@ -271,8 +271,11 @@ $json_people = json_encode($people);
 $t->assign('type','jostgame');
 $t->assign('content',$content);
 $t->assign('intro',$intro);
+$t->assign('from',$from);
+$t->assign('to',$to);
 $t->assign('json_people', $json_people );
 
 $t->display('jostgame.tpl');
+
 
 ?>

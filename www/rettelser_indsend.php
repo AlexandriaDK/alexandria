@@ -37,11 +37,12 @@ if (stristr($cat,"Content-Type") ||
     stristr($user_source,"Content-Type")) {
 
 	header("HTTP/1.1 403 Forbidden");    	
+	die("Don't send input containing Content-Type");
 	exit;
 }
 
 if (strtolower(trim($_REQUEST['human'])) != "a") {
-	die("Forkert antispam-kode. Skriv <b>A</b> i nederste felt.");
+	die("Wrong anti-spam code. Type <b>A</b> in the field at the bottom.");
 }
 
 

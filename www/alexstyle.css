@@ -193,7 +193,7 @@ td.filelist {
 	font-family: Verdana, Tahoma;
 }
 
-.oss, .correctionlabel {
+.oss, .correctionlabel, .nomatch, .highlightsearch, .stathead, a.highlight, p.addorganizersyourself a {
 	font-weight: bold;
 }
 
@@ -228,10 +228,6 @@ td.filelist {
 
 .noteindtast {
 	font-size: 75%;
-}
-
-.highlightsearch {
-	font-weight: bold;
 }
 
 .updatelinktext {
@@ -322,7 +318,7 @@ div.system a:visited, a.system:visited {
 	color: #009;
 }
 
-div.person div.list {
+div.person div.list, div.system div.list {
 	column-count: 3;
 	-moz-column-count: 3;
 	-webkit-column-count: 3;
@@ -423,8 +419,25 @@ div.achshow:hover {
 	box-shadow: 0 0 15px #ace;
 }
 
+div.mylist {
+	float: left;
+	margin-right: 30px;
+}
+
 p.personslinks {
 	font-size: 16px;
+}
+
+p.gameslinks {
+	font-size: 14px;
+}
+
+h2.gamesselect, h2.systemsselect {
+	margin-bottom: 1em;
+}
+
+p.jostdescription {
+	width: 350px;
 }
 
 @-webkit-keyframes hitAndRun {
@@ -450,10 +463,6 @@ span.label {
 p.addorganizersyourself {
 	font-style: italic;
 
-}
-
-p.addorganizersyourself a {
-	font-weight: bold;
 }
 
 div.allawards h4 {
@@ -538,7 +547,7 @@ span.urltext {
 	font-family: monospace;
 }
 
-div.ranking, span.participantshint {
+div.ranking, span.participantshint, span.findhint {
 	font-size: 0.8em;
 }
 
@@ -616,10 +625,6 @@ ul.taglist li a:hover {
 
 ul.taglist li span.delete a:hover {
 	background-color: #f66;
-}
-
-a.highlight {
-	font-weight: bold;
 }
 
 #tabs {

@@ -98,7 +98,6 @@ $t->assign('ip',$_SERVER['REMOTE_ADDR']);
 // $t->assign('genre',$genre);
 $t->assign('scenlist',$scenlist);
 $t->assign('boardgamesonly',TRUE);
-$t->display('scenarios.tpl');
-exit;
+$t->display('games.tpl');
 
 ?>
