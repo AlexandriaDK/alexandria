@@ -14,6 +14,8 @@
 ·
 <a href="tag.php">Tag</a>
 ·
+<a href="language.php" accesskey="o">Oversættelser</a>
+·
 <a href="showlog.php" accesskey="l">Log</a>
 ·
 <a href="teknik.php">Teknik</a>

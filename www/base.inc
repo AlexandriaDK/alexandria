@@ -14,7 +14,7 @@ header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } else {
@@ -40,6 +40,8 @@ if ( LANG == 'da') {
 	setlocale(LC_TIME, "ru_RU.UTF-8");
 } elseif ( LANG == 'be' ) {
 	setlocale(LC_TIME, "be_BY.UTF-8");
+} elseif ( LANG == 'fi' ) {
+	setlocale(LC_TIME, "fi_FI.UTF-8");
 }
 
 // general
@@ -61,7 +63,7 @@ $template_dir = '../smarty/templates/';
 if (is_dir($template_dir . LANG) ) {
 	$t->template_dir = $template_dir . LANG . '/';
 } else {
-	$t->template_dir = $template_dir .  'da/';
+	$t->template_dir = $template_dir .  'generic/';
 }
 
 // variables used all over the place
@@ -92,12 +94,9 @@ if (!defined('DBERROR') ) {
 }
 
 // Import language strings
-$import_languages = [ 'da' ];
-if ( LANG != 'da' ) {
-	$import_languages[] = LANG;
-}
-if ( LANG == 'sv' ) {
-	$import_languages[] = 'en'; //hack
+$import_languages = array_unique( [ 'en', LANG ] );
+if ( LANG == 'nb' ) {
+	$import_languages[] = 'da'; //hack
 }
 foreach( $import_languages AS $language ) {
 	$strings = getall("SELECT label, text, language FROM weblanguages WHERE language = '" . dbesc( $language ) ."'");

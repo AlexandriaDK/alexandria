@@ -150,7 +150,10 @@ if ($result) {
 			$subject = $data[$row['category']][$row['data_id']];
 			$link = admLink($row['category'], $row['data_id']);
 		} else {
-			$subject = $row['category'] . ": #" . $row['data_id'];
+			$subject = $row['category'];
+			if ( $row['data_id'] != NULL ) {
+				$subject .= ": #" . $row['data_id'];
+			}
 			$link = "";
 		}
 		print "<tr>\n".

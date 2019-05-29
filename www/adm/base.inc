@@ -62,8 +62,9 @@ function chlog($data_id, $category, $note="") {
 	$ip_forward = addslashes($_SERVER['HTTP_X_FORWARDED_FOR']);
 	$user = addslashes($authuser);
 	$note = addslashes($note);
+	$data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
 	$query = "INSERT INTO log (data_id,category,time,user,user_id,ip,ip_forward,note) " .
-	         "VALUES ('$data_id','$category',NOW(),'$user','$authuserid','$ip','$ip_forward','$note')";
+	         "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$ip','$ip_forward','$note')";
 	$result = doquery($query);
 	return $result;
 }

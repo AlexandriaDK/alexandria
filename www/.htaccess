@@ -1,6 +1,6 @@
 # Options +MultiViews
 RewriteEngine On
-RewriteRule "^(da|en|sv|no|nb|de|fr|es|ru|be)/(.*)" "/$2"
+RewriteRule "^(da|en|sv|no|nb|de|fr|es|ru|be|fi)/(.*)" "/$2"
 
 ErrorDocument 404 /error/404magic.php
 php_flag register_globals off
@@ -16,6 +16,7 @@ Redirect /gfx/english /gfx/scenarie/english
 # redirects for convenience
 Redirect /otto /awards?cid=1
 
+RedirectPermanent /dk /da
 RedirectPermanent /se /sv
 RedirectPermanent /us /en
 RedirectPermanent /uk /en
