@@ -18,6 +18,18 @@ if ( ! $admin ) {
 
 $id = (int) $_REQUEST['id'];
 
+function findintemplates( $string ) {
+	$matches = [];
+	$filelist = glob("../../alexandria/smarty/templates/generic/*.tpl");
+	foreach( $filelist AS $file ) {
+		$content = file_get_contents( $file );
+		if ( preg_match( '/\$_' . $string . '\b/', $content ) ) {
+			$matches[] = basename( $file, '.tpl');
+		}
+	}
+	return $matches;
+}
+
 // Ret tekster
 if ($action == "update") {
 	$old = getcolid("SELECT language, text FROM weblanguages WHERE label = '".  dbesc( $label ) . "'");
@@ -65,6 +77,7 @@ htmladmstart("Sprog");
 // Edit?
 if ( $label ) {
 	// find next missing translation
+	$matches = findintemplates( $label );
 	$begin = $nextlabel = FALSE;
 	foreach( $overview AS $mylabel => $string ) {
 		if ($begin == TRUE) {
@@ -86,6 +99,7 @@ if ( $label ) {
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">";
 	print "<table>";
 	print "<tr><td>Label:</td><td><input type=\"text\" name=\"newlabel\" value=\"" . htmlspecialchars( $label ) ."\" " . ( $admin ? "autofocus" : "readonly style=\"background: #ccc\"" ) . " ></td></tr>";
+	print "<tr><td>Usage:</td><td>" . ( $matches ? implode(", ", $matches) : "[none]" ) . "</td></tr>";
 	foreach ( $languages AS $language => $dummy ) {
 		print "<tr><td>" . $language . ":</td>";
 		print "<td><textarea name=\"text[" . htmlspecialchars( $language ) . "]\" cols=\"100\">" . htmlspecialchars( $overview[$label][$language] ) . "</textarea></td>";
