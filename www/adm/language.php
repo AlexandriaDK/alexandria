@@ -20,7 +20,7 @@ $id = (int) $_REQUEST['id'];
 
 function findintemplates( $string ) {
 	$matches = [];
-	$filelist = glob("../../alexandria/smarty/templates/generic/*.tpl");
+	$filelist = glob("../smarty/templates/generic/*.tpl");
 	foreach( $filelist AS $file ) {
 		$content = file_get_contents( $file );
 		if ( preg_match( '/\$_' . $string . '\b/', $content ) ) {
