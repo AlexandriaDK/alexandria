@@ -20,17 +20,32 @@ $id = (int) $_REQUEST['id'];
 
 // Ret tekster
 if ($action == "update") {
+	$old = getcolid("SELECT language, text FROM weblanguages WHERE label = '".  dbesc( $label ) . "'");
 	$q = "DELETE FROM weblanguages WHERE label = '" . dbesc( $label ) . "'";
 	doquery($q);
+	$log = [];
 	foreach( $text AS $language => $string ) {
 		$string = trim( $string );
 		if ( strlen( $string ) > 0 ) {
+			if ($string != $old[$language]) {
+				if ($old[$language] == '') { //new
+					$log[] = '+' . $language;
+				} else { // edited
+					$log[] = '~' . $language;
+				}
+			}
 			$q = "INSERT INTO weblanguages (label, text, language) VALUES " .
 			     "('" . dbesc( $newlabel ) . "','" . dbesc( $string ) . "','" . dbesc( $language )."')";
 			doquery($q);
+		} elseif ( strlen( $old[$language] ) > 0 ) { // deleted
+			$log[] = '-' . $language;
 		}
 	}
-	chlog(NULL,$this_type,"Tekst rettet: " . $label );
+	$logtext = "Tekst rettet: " . $label;
+	if ( $log ) {
+		$logtext .= " (" . implode(", ", $log) . ")";
+	}
+	chlog(NULL,$this_type, $logtext);
 	$_SESSION['admin']['info'] = "Sprogtekster rettet! " . dberror();
 	rexit($this_type, ['label' => $newlabel] );
 }
