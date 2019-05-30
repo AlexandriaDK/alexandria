@@ -52,7 +52,7 @@ if ($r['id'] == 0) {
 			WHERE conset_id = '{$r['conset_id']}'
 			ORDER BY year, begin, name
 		");
-		unset($seriepnpil,$seriedata,$seriecount,$seriethis);
+		unset($seriedata,$seriecount,$seriethis);
 		foreach($qq AS $row) {
 			$seriecount++;
 			$seriedata['id'][$seriecount] = $row['id'];
@@ -62,21 +62,20 @@ if ($r['id'] == 0) {
 			$seriedata['end'][$seriecount] = $row['end'];
 			if ($row['id'] == $con) $seriethis = $seriecount;
 		}
+		$arrows = [];
 		if ($seriethis) {
 			if ($seriedata['id'][($seriethis-1)]) {
-				$coninfo = nicedateset($seriedata['begin'][($seriethis-1)],$seriedata['end'][($seriethis-1)]);
-				$seriepnpil[] = "<a href=\"data?con=".$seriedata['id'][($seriethis-1)]."\" title=\"".htmlspecialchars($seriedata['name'][($seriethis-1)])." (".$seriedata['year'][($seriethis-1)].")\"><img src=\"/gfx/ikon_vpil.gif\" style=\"border: 0px;\" alt=\"Pil: forrige\" /></a>";
+//				$coninfo = nicedateset($seriedata['begin'][($seriethis-1)],$seriedata['end'][($seriethis-1)]);
+				$arrows['prev'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis-1)], 'name' => $seriedata['name'][($seriethis-1)] . " (".$seriedata['year'][($seriethis-1)].")" ];
 			} else {
-				$seriepnpil[] = "<img src=\"/gfx/ikon_vpil_inaktiv.gif\" alt=\"Inaktiv pil: forrige\" />";
+				$arrows['prev'] = [ 'active' => FALSE ];
 			}
 			if ($seriedata['id'][($seriethis+1)]) {
-				$coninfo = nicedateset($seriedata['begin'][($seriethis+1)],$seriedata['end'][($seriethis+1)]);
-				$seriepnpil[] = "<a href=\"data?con=".$seriedata['id'][($seriethis+1)]."\" title=\"".htmlspecialchars($seriedata['name'][($seriethis+1)])." (".$seriedata['year'][($seriethis+1)].")\"><img src=\"/gfx/ikon_hpil.gif\" style=\"border: 0px;\" alt=\"Pil: næste\" /></a>";
+//				$coninfo = nicedateset($seriedata['begin'][($seriethis+1)],$seriedata['end'][($seriethis+1)]);
+				$arrows['next'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis+1)], 'name' => $seriedata['name'][($seriethis+1)] . " (".$seriedata['year'][($seriethis+1)].")" ];
 			} else {
-				$seriepnpil[] = "<img src=\"/gfx/ikon_hpil_inaktiv.gif\" alt=\"Inaktiv pil: næste\" />";
+				$arrows['next'] = [ 'active' => FALSE ];
 			}
-			if ($seriepnpil) $seriepile .= join(" ",$seriepnpil);
-#			if ($seriepnpil) $delafout .= " ".join(" ",$seriepnpil);
 		}
 		
 	}
@@ -385,7 +384,7 @@ $json_people = json_encode($people);
 	$t->assign('id',$con);
 	$t->assign('name',$r['name']);
 	$t->assign('year',($r['year'] ? $r['year'] : "?") );
-	$t->assign('arrows',$seriepile);
+	$t->assign('arrowset',$arrows);
 	$t->assign('pic',$available_pic);
 	$t->assign('ogimage', getimageifexists($con, 'convent') );
 	$t->assign('place',$r['place']);

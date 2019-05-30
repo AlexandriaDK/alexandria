@@ -1,8 +1,18 @@
 <div id="content">
 
 	<h2 class="datatitle">{$name|escape} ({$year})</h2>
-	{$arrows}
-
+	<div class="arrows">
+{if $arrowset.prev.active}
+	<a href="data?con={$arrowset.prev.conid}" title="{$arrowset.prev.name|escape}" rel="prev">⯇</a>
+{else}
+	<span class="inactive">⯇</span>
+{/if}
+{if $arrowset.next.active}
+	<a href="data?con={$arrowset.next.conid}" title="{$arrowset.next.name|escape}" rel="next">⯈</a>
+{else}
+	<span class="inactive">⯈</span>
+{/if}
+	</div>
 {if $pic}
 	<div style="float: right;">
 		<a href="/gfx/convent/l_{$id}.jpg">

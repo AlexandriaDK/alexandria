@@ -31,7 +31,7 @@ $( function() {
 			<span id="tagdelete_{$tag_id}" class="delete"> 
 			<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete" title="{$_sce_removetag|escape}">[{$_remove|ucfirst|escape}]</a></span>
 		{/if}
-	<a href="data?tag={$tag|rawurlencode}">{$tag|escape}</a>
+	<a href="data?tag={$tag|rawurlencode}" rel="tag">{$tag|escape}</a>
 	</li>
 	{/foreach}
 	{* This part is really only for users logged in *}

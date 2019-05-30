@@ -503,6 +503,17 @@ h5.winner, h5.nominee {
 	padding: 0;
 }
 
+div.arrows {
+	font-size: 1.8em;
+	font-weight: bold;
+}
+div.arrows a {
+	color: black;
+}
+div.arrows span.inactive {
+	color: #bbb;
+}
+
 div.calendar {
 	column-count: 2;
 	column-gap: 40px;
