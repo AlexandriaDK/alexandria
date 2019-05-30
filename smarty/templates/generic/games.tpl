@@ -1,5 +1,9 @@
 {if ! $boardgamesonly}
-{assign var="pagetitle" value="$_games_title_sce - $titlepart"}
+{if $beginchar eq "1"}
+{assign var="pagetitle" value="$_games_title_sce - $_games_beginwithno"}
+{else}
+{assign var="pagetitle" value="$_games_title_sce - $_games_beginwithchar $beginchar"}
+{/if}
 {else}
 {assign var="pagetitle" value="$_games_title_bg"}
 {/if}

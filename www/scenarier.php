@@ -44,12 +44,15 @@ if ($g) {
 	}
 } else {
 	if ($b == "1") {
+		$beginchar = "1";
 		$titlepart = "Begynder med tal eller specialtegn";	
 		$wherepart = "sce.title REGEXP '^[^a-zæøå]'";
 	} elseif (in_array($b,$chars)) {
+		$beginchar = $b;
 		$titlepart = "Begynder med bogstavet $b";
 		$wherepart = "sce.title LIKE '$b%'";
 	} else {
+		$beginchar = "a";
 		$titlepart = "Begynder med bogstavet a";
 		$wherepart = "sce.title LIKE 'a%'";
 	}
@@ -215,6 +218,7 @@ $t->assign('keys',$keys);
 $t->assign('genre',$genre);
 $t->assign('scenlist',$xscenlist);
 $t->assign('titlepart',$titlepart);
+$t->assign('beginchar',$beginchar);
 $t->display('games.tpl');
 
 ?>
