@@ -4,21 +4,21 @@
 ·
 <a href="person.php" accesskey="p">Person</a>
 ·
-<a href="scenarie.php" accesskey="s">Scenarie</a>
+<a href="scenarie.php" accesskey="s">Scenario</a>
 ·
 <a href="convent.php" accesskey="c">Con</a>
 ·
-<a href="conset.php">Con-serie</a>
+<a href="conset.php">Con series</a>
 ·
-<a href="system.php" accesskey="y">System</a>
+<a href="system.php" accesskey="y">RPG System</a>
 ·
 <a href="tag.php">Tag</a>
 ·
-<a href="language.php" accesskey="o">Oversættelser</a>
+<a href="language.php" accesskey="o">Translations</a>
 ·
 <a href="showlog.php" accesskey="l">Log</a>
 ·
-<a href="teknik.php">Teknik</a>
+<a href="teknik.php">Technical</a>
 ·
 <a href="ticket.php" accesskey="t">Tickets</a>
 <?php

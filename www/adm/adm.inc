@@ -16,11 +16,7 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || ($admonly && !$_S
 <body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
 
 <p align="center"><font style="font-size: 30pt" face="Garamond, georgia, times New Roman, times" size="7" color="#990000">
-<i><a href="./" style="text-decoration: none">Det Store Administrationssystem</a></i></font>
-</p>
-
-<p align="center">
-Kun adgang for Alexandria-brødre <small>(m/k/i)</small>
+<i><a href="./" style="text-decoration: none">Alexandria editors</a></i></font>
 </p>
 
 ';
@@ -36,7 +32,7 @@ Kun adgang for Alexandria-brødre <small>(m/k/i)</small>
 
 	print '
 	<p align="center">
-		Log ind via <a href="/fblogin">Facebook</a> eller <a href="/twitterlogin">Twitter</a>
+		Log in with <a href="../fblogin">Facebook</a> - <a href="../twitterlogin">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../login/twitch/">Twitch</a>
 	</p>
 	';
 	exit;

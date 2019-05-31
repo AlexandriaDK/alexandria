@@ -20,6 +20,9 @@ include("links.inc");
 ?>
 <div style="font-family: Verdana, Tahoma; font-size: 12px; width: 600px;">
 
+
+<p style="font-style: italic;">Translator? <a href="language.php">Over here!</a></p>
+
 <p>
 	Du er logget ind som: <b><?php print htmlspecialchars($authuser); ?></b>.
 </p>

@@ -107,11 +107,10 @@ if ( $label ) {
 	}
 	print "<tr><td></td><td><input type=\"submit\"></td></tr>";
 	if ( $nextlabel != FALSE ) {
-		print "<tr><td></td><td><a href=\"language.php?label=" . rawurlencode( $nextlabel ) . "\">Go to next label with missing translation</a></td></tr>";
+//		print "<tr><td></td><td><a href=\"language.php?label=" . rawurlencode( $nextlabel ) . "\">Go to next label with missing translation</a></td></tr>";
 	}
 	print "</table>";
 	print "</form>";
-#	print "<div><a href=\"language.php\">Tilbage</a></div>";
 } elseif ( $admin ) {
 	print "<form action=\"language.php\"><div>New label: <input type=\"text\" name=\"label\" autofocus><input type=\"submit\"></div></form>";
 }
