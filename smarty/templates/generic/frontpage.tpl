@@ -51,7 +51,7 @@
 			{$_fp_upcomingevents}
 		</h3>
 		<p style="margin-top: 2px;">
-			{$_fp_bgevents}
+			{$_fp_bgevents|sprintf:'https://drive.google.com/open?id=1VTnF6jAhuhhMw43fJqzlaH1QFt8-7rzdLyP7muk1VVM&amp;fbclid=IwAR2z9SpFPQXfpmtvdgV52yq9fsSo1GlpTBwAiIr6wwZ-f4B0aFMMYQcgtdc'}
 		</p>
 			{$html_nextevents}
 		
