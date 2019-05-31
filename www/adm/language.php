@@ -130,7 +130,7 @@ if ( $admin ) {
 	print "</tr>";
 }
 foreach( $overview AS $label => $string ) {
-	print "<tr>";
+	print "<tr onclick=\"location.href=this.firstChild.firstChild.href\">";
 	print "<td><a href=\"language.php?label=" . rawurlencode( $label ) ."\">" . $label . "</a></td>";
 	foreach ($languages AS $language => $dummy) {
 		print "<td>" . htmlspecialchars( $string[$language] ) . "</td>";
