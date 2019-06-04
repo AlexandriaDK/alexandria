@@ -3,14 +3,14 @@
 	<h2 class="datatitle">{$name|escape} ({$year})</h2>
 	<div class="arrows">
 {if $arrowset.prev.active}
-	<a href="data?con={$arrowset.prev.conid}" title="{$arrowset.prev.name|escape}" rel="prev">⯇</a>
+	<a href="data?con={$arrowset.prev.conid}" title="{$arrowset.prev.name|escape}" rel="prev">←</a>
 {else}
-	<span class="inactive">⯇</span>
+	<span class="inactive">←</span>
 {/if}
 {if $arrowset.next.active}
-	<a href="data?con={$arrowset.next.conid}" title="{$arrowset.next.name|escape}" rel="next">⯈</a>
+	<a href="data?con={$arrowset.next.conid}" title="{$arrowset.next.name|escape}" rel="next">→</a>
 {else}
-	<span class="inactive">⯈</span>
+	<span class="inactive">→</span>
 {/if}
 	</div>
 {if $pic}

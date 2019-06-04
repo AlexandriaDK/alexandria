@@ -142,7 +142,7 @@ $( function() {
 {/if}
 
 {if $award}
-<h3 id="awards">{$_awards|ucfirst}</h3>
+<h3 id="awards">{$_con_awards|ucfirst}</h3>
 		{$award}
 {/if}
 
