@@ -103,13 +103,13 @@ $( function() {
 <div id="tabs">
 <ul>
 {foreach $descriptions AS $d_id => $d}
-<li><a href="#description-{$d_id}">{$d.language|escape}{if $d.note} ({$d.note}){/if}</a>
+<li><a href="#description-{$d_id}">{$d.language|escape}{if $d.note} ({$d.note}){/if}</a></li>
 {/foreach}
 </ul>
 
 {foreach $descriptions AS $d_id => $d}
 	<div id="description-{$d_id}">
-	<p class="indata">
+	<p class="indata" lang="{$d.language|escape}">
 		{$d.description|escape|textlinks|nl2br}
 	</p>
 	</div>

@@ -12,7 +12,8 @@ header("X-Clacks-Overhead: GNU Michael Erik Næsby");
 
 // detect language
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
-$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv' ];
+#$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv' ];
+$alexlanguages = [ 'da', 'en', 'sv' ];
 $lang = "";
 if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $urllang = $matches[1];

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{$LANG|escape}">
 	<head>
 		<title>
 			{if $typename != ""}{$typename|escape} - {/if}{if $pagetitle != ""}{$pagetitle|escape} - {/if}Alexandria

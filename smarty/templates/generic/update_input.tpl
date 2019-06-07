@@ -13,7 +13,7 @@
 
 {if $category == 'convent' && $label != ""}
 		<p class="addorganizersyourself">
-			{$_update_add1} <a href="/data?con={$data_id}&amp;edit=organizers#organizers">{$_update_add2}</a> {$_update_add3}
+			{$_update_add|sprintf:"data?con=$data_id&amp;edit=organizer#organizers"}
 		</p>
 {/if}
 
