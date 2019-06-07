@@ -168,18 +168,11 @@ if ($r['id'] == 0) {
 		$awarddata[$rs['convent_id']]['conset_id'] = $rs['conset_id'];
 		$awarddata[$rs['convent_id']]['text'][] = $awardtext;
 	}
-	$awardlist = "";
+	$awards = [];
+
 	foreach($awarddata AS $convent_id => $data) {
-		$con_award_url = "/awards?cid=" . $data['conset_id'] . "#con" . $convent_id;
-		$awardlist .= "<h4 class=\"awardconventhead\"><a href=\"" . $con_award_url . "\" class=\"con\" title=\"Alle priser for " . htmlspecialchars($data['name']) . "\">" . htmlspecialchars($data['name']) . "</a></h4>" . PHP_EOL;
-		$awardlist .= "<div>";
-		$awardlist .= implode("<br>" . PHP_EOL, $data['text']);
-/*
-		foreach($data['text'] AS $text) {
-			$awardlist .= $text . "<br>";
-		}
-*/
-		$awardlist .= "</div>" . PHP_EOL;
+		$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convent_id;
+		$awards[] = [ 'con_award_url' => $con_award_url, 'con_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text']) ];
 	}
 
 // Genre:
@@ -254,7 +247,7 @@ if ($r['id'] == 0) {
 	$t->assign('user_can_edit_participants',$_SESSION['can_edit_participant'][$scenarie]);
 	$t->assign('conlist',$conlist);
 	$t->assign('runlist',$runlist);
-	$t->assign('award',$awardlist);
+	$t->assign('awards',$awards);
 	$t->assign('genre',$genre);
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);

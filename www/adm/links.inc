@@ -40,11 +40,15 @@ if ($_SESSION['user_admin'] ) {
 }
 ?>
 <br>
-<span style="font-size: 12px;"><label for="ffind" accesskey="k"><u>K</u>vik-find: <input id="ffind" type="text" name="find" value="<?php print stripslashes(htmlspecialchars($find));?>" size="20"></label>
+<span style="font-size: 12px;"><label for="ffind" accesskey="k">Quic<u>K</u> find: <input id="ffind" type="text" name="find" value="<?php print htmlspecialchars($find); ?>" size="20"></label>
 <?php
 $conlock = (int) $_COOKIE['conlock'];
+$langlock = (string) $_COOKIE['langlock'];
 if ($conlock) {
-	print "<br>Default con: <a href=\"convent.php?con=$conlock\">#$conlock</a> <sup><a href=\"../data?con=$conlock\">(vis)</a></sup> - <a href=\"lock.php\">frigør</a>";
+	print "<br>Default con: <a href=\"convent.php?con=$conlock\">#$conlock</a> <sup><a href=\"../data?con=$conlock\">(show)</a></sup> - <a href=\"lock.php\">release</a>";
+}
+if ($langlock) {
+	print "<br>Language: <a href=\"language.php\">" . htmlspecialchars( $langlock ). "</a> <sup><a href=\"/" . htmlspecialchars( $langlock ) ."/\">(show)</a></sup> - <a href=\"language.php?setlang=xx\">release</a>";
 }
 ?></span><br></form>
 

@@ -7,6 +7,8 @@ require "base.inc";
 $this_type = 'language';
 
 $admin = $_SESSION['user_admin'];
+$langlock = (string) $_COOKIE['langlock'];
+$setlang = (string) $_REQUEST['setlang'];
 $action = (string) $_REQUEST['action'];
 $do = (string) $_REQUEST['do'];
 $label = (string) $_REQUEST['label'];
@@ -28,6 +30,17 @@ function findintemplates( $string ) {
 		}
 	}
 	return $matches;
+}
+
+// Sæt sprog?
+if ( $setlang ) {
+	if ( $setlang == 'xx') {
+		setcookie( "langlock" );
+	} else {
+		setcookie( "langlock", $setlang );
+	}
+	header("Location: language.php");
+	exit;
 }
 
 // Ret tekster
@@ -65,35 +78,46 @@ if ($action == "update") {
 
 $overview = [];
 $languages = [];
+$languagecount = [];
 $alltext = getall("SELECT label, text, language FROM weblanguages ORDER BY LOCATE('_', label), label");
 foreach ( $alltext AS $text ) {
 	$overview[$text['label']][$text['language']] = $text['text'];
+	$languagecount[$text['language']]++;
 	$languages[$text['language']] = TRUE;
 }
-ksort($languages);
+ksort( $languages );
+$labelcount = count( $overview );
 
 htmladmstart("Sprog");
 
 // Edit?
+$begin = $nextlabel = FALSE;
+foreach( $overview AS $mylabel => $string ) {
+	if ( $label == '' ) {
+		$begin = TRUE;
+	}
+	if ($begin == TRUE) {
+		foreach ($languages AS $language => $dummy) {
+			if ( $langlock && $language != $langlock) {
+				continue;
+			}
+			if ( $string[$language] == '') {
+				$nextlabel = $mylabel;
+				break;
+			}
+		}
+	}
+	if ( $mylabel == $label ) {
+		$begin = TRUE;
+	}
+	if ( $nextlabel != FALSE) {
+		break;
+	}
+}
+
 if ( $label ) {
 	// find next missing translation
 	$matches = findintemplates( $label );
-	$begin = $nextlabel = FALSE;
-	foreach( $overview AS $mylabel => $string ) {
-		if ($begin == TRUE) {
-			foreach ($languages AS $language => $dummy) {
-				if ( $string[$language] == '') {
-					$nextlabel = $mylabel;
-				}
-			}
-		}
-		if ( $mylabel == $label ) {
-			$begin = TRUE;
-		}
-		if ( $nextlabel != FALSE) {
-			break;
-		}
-	}
 	print "<form action=\"language.php\" method=\"post\">";
 	print "<input type=\"hidden\" name=\"label\" value=\"" . htmlspecialchars( $label ) . "\">";
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">";
@@ -106,22 +130,22 @@ if ( $label ) {
 		print "</tr>";
 	}
 	print "<tr><td></td><td><input type=\"submit\"></td></tr>";
-	if ( $nextlabel != FALSE ) {
-//		print "<tr><td></td><td><a href=\"language.php?label=" . rawurlencode( $nextlabel ) . "\">Go to next label with missing translation</a></td></tr>";
-	}
 	print "</table>";
 	print "</form>";
 } elseif ( $admin ) {
 	print "<form action=\"language.php\"><div>New label: <input type=\"text\" name=\"label\" autofocus><input type=\"submit\"></div></form>";
 }
+if ( $nextlabel != FALSE ) {
+	print "<div><a href=\"language.php?label=" . rawurlencode( $nextlabel ) . "\">Go to next label with missing translation</a></div>";
+}
 
 // overview
-print "<table id=\"translations\">";
+print "<table id=\"translations\"><thead>";
 print "<tr><th>Label</th>";
 foreach($languages AS $language => $dummy) {
-	print "<th>" . $language . "</th>";
+	print "<th><a href=\"language.php?setlang=" . urlencode( $language ) ."\">" . htmlspecialchars( $language ) . "</a> (" . ( floor( $languagecount[$language] / $labelcount * 100 ) ) . "%)</th>";
 }
-print "</tr>" . PHP_EOL;
+print "</tr></thead><tbody>" . PHP_EOL;
 if ( $admin ) {
 	print "<tr><td><a href=\"language.php?newlabel=1\">New label</a></td>";
 	foreach ( $languages AS $dummy ) {
@@ -137,7 +161,7 @@ foreach( $overview AS $label => $string ) {
 	}
 	print "</tr>" . PHP_EOL;
 }
-print "</table>";
+print "</tbody></table>";
 
 
 print "</body>\n</html>\n";
