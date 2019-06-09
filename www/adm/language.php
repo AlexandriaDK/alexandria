@@ -155,7 +155,7 @@ if ( $admin ) {
 }
 foreach( $overview AS $label => $string ) {
 	print "<tr onclick=\"location.href=this.firstChild.firstChild.href\">";
-	print "<td><a href=\"language.php?label=" . rawurlencode( $label ) ."\">" . $label . "</a></td>";
+	print "<td><a href=\"language.php?label=" . rawurlencode( $label ) ."\" id=\"label_" . rawurlencode( $label ) ."\">" . $label . "</a></td>";
 	foreach ($languages AS $language => $dummy) {
 		print "<td>" . htmlspecialchars( $string[$language] ) . "</td>";
 	}
