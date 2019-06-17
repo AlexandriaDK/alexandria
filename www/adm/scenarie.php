@@ -322,7 +322,7 @@ foreach($q AS $r) {
 // Find alle personer
 
 unset($aut);
-$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY name");
+$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY name, id");
 foreach($q AS $r) {
 	$aut[$r[id]] = $r[name];
 }

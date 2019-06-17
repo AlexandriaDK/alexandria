@@ -34,9 +34,9 @@ function linkfix ($matches) {
 	return $matches[0];
 }
 
-htmladmstart("Markup-fixes");
+htmladmstart("Markup fixes");
 
-print "<h1>Markup-fixes:</h1>" . PHP_EOL;
+print "<h1>Markup fixes:</h1>" . PHP_EOL;
 
 $regexp_sql = '\\\[\\\[\\\[[^|]+\\\]\\\]\\\]';
 $regexp_php = '_\\\[\\\[\\\[([^|]+)\\\]\\\]\\\]_';
@@ -45,8 +45,9 @@ $trivias = getall("select id, fact, data_id, category from trivia where fact reg
 $tags = getall("select id, tag, description from tag where description regexp '$regexp_sql'");
 $scenarios = getall("select id, title, description from sce where description regexp '$regexp_sql'");
 $cons = getall("select id, description from convent where description regexp '$regexp_sql'");
+$syss = getall("select id, description from sys where description regexp '$regexp_sql'");
 
-$total = count($trivia) + count($tags);
+$total = count($trivias) + count($tags) + count($scenarios) + count($cons) + count($sys);
 print dberror();
 
 print "<table border=\"1\">" . PHP_EOL;
@@ -95,12 +96,12 @@ foreach($tags AS $tag) {
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
-print "<th colspan=\"2\">Scenarier</th>" . PHP_EOL;
+print "<th colspan=\"2\">Scenarios</th>" . PHP_EOL;
 foreach($scenarios AS $scenario) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sce\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
 	print "<tr>";
 	print "<td>" . htmlspecialchars($scenario['description']) . "<br>";
-	print "<a href=\"scenarie.php?scenarie=" . $scenario['id'] . "\">[scenarie]</a>";
+	print "<a href=\"scenarie.php?scenarie=" . $scenario['id'] . "\">[scenario]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -114,13 +115,14 @@ foreach($scenarios AS $scenario) {
 	print PHP_EOL;
 }
 print "</table>";
+
 print "<table border=\"1\">" . PHP_EOL;
 print "<th colspan=\"2\">Cons</th>" . PHP_EOL;
 foreach($cons AS $con) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convent\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
 	print "<tr>";
 	print "<td>" . htmlspecialchars($con['description']) . "<br>";
-	print "<a href=\"scenarie.php?scenarie=" . $con['id'] . "\">[scenarie]</a>";
+	print "<a href=\"convent.php?con=" . $con['id'] . "\">[convention]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -135,8 +137,29 @@ foreach($cons AS $con) {
 }
 print "</table>";
 
+print "<table border=\"1\">" . PHP_EOL;
+print "<th colspan=\"2\">RPG Systems</th>" . PHP_EOL;
+foreach($syss AS $sys) {
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sys\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
+	print "<tr>";
+	print "<td>" . htmlspecialchars($sys['description']) . "<br>";
+	print "<a href=\"system.php?system=" . $sys['id'] . "\">[RPG system]</a>";
+
+	print "</td>";
+	$fixedfact = preg_replace_callback(
+		'_\[\[\[([^]|]+)\]\]\]_',
+		'linkfix',
+		$sys['description']
+	);
+	print "<td>" . htmlspecialchars($fixedfact) . "<br><input type=\"hidden\" name=\"text\" value=\"" . htmlspecialchars($fixedfact) . "\"><input type=\"submit\"></td>";
+	print "</tr>";
+	print "</form>";
+	print PHP_EOL;
+}
+print "</table>";
+
 if ($total == 0) {
-	print "<p>Ingen flertydige links. Tillykke!</p>";
+	print "<p>No ambiguous links. Congratulations!</p>";
 }
 
 print "</body>\n</html>\n";

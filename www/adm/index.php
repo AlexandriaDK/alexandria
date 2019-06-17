@@ -130,42 +130,42 @@ print "</table>";
 	</tr>
 
 	<tr>
-		<th>|</th>
+		<th>⇕</th>
 	</tr>
 
 	<tr>
 		<td style="font-size: 10px" colspan=3>(mange-til-mange-relation)</td>
-		<th>-</th>
+		<th>⇔</th>
 		<th align="left" title="Fx &quot;Forfatter&quot;, &quot;Illustrator&quot;, &quot;Layouter&quot;">Stilling</th>
 	</tr>
 
 	<tr>
-		<th>|</th>
+		<th>⇕</th>
 	</tr>
 
 	<tr>
 		<th title="Fx &quot;Dødens Skygge&quot;, &quot;Dogme#1 - Pesten&quot;, &quot;De Professionelle&quot;">Scenarie</th>
-		<th>-</th>
+		<th>⇔</th>
 		<th align="left" title="Fx &quot;AD&amp;D&quot;, &quot;Paranoia&quot;, &quot;GURPS&quot;">System</th>
 	</tr>
 
 	<tr>
-		<th>|</th>
+		<th>⇕</th>
 	</tr>
 
 	<tr>
 		<td style="font-size: 10px" colspan=3>(mange-til-mange-relation)</td>
-		<th>-</th>
+		<th>⇔</th>
 		<th align="left" title="Fx &quot;Premiere&quot;, &quot;Re-run&quot;, &quot;Aflyst&quot;">Præsentation</th>
 	</tr>
 
 	<tr>
-		<th>|</th>
+		<th>⇕</th>
 	</tr>
 
 	<tr>
 		<th title="Fx &quot;Fastaval 1996&quot;, &quot;Viking Con 20&quot;">Con</th>
-		<th>-</th>
+		<th>⇔</th>
 		<th align="left" title="fx &quot;Fastaval&quot;, &quot;Viking Con&quot;">Con-serie</th>
 	</tr>
 
