@@ -177,7 +177,7 @@
 				{if $user_visited}
 				- {$_top_visited_pt} <a href="javascript:changedata('data_visited','remove','convent','{$id}','visited')">({$_switch})</a>
 				{else}
-				- {$_top_not_visited} <a href="javascript:changedata('data_visited','add','convent','{$id}','visited')">({$_switch})</a>
+				- {$_top_not_visited_pt} <a href="javascript:changedata('data_visited','add','convent','{$id}','visited')">({$_switch})</a>
 				{/if}
 				</span>
 
