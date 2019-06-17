@@ -56,6 +56,25 @@ if ($action == "opret") {
 	}
 }
 
+if ($action == "Slet" && $system) {
+	$error = [];
+	if (getCount('sce', $system, FALSE, 'sys') ) $error[] = "scenarie";
+	if ($error) {
+		$_SESSION['admin']['info'] = "Can't delete. The RPG system still has scenarios registered to it.";
+		rexit($this_type, ['system' => $system] );
+	} else {
+		$name = getone("SELECT name FROM sys WHERE id = $system");
+
+		$q = "DELETE FROM sys WHERE id = $system";
+		$r = doquery($q);
+
+		if ($r) {
+			chlog($person,$this_type,"System slettet: $name");
+		}
+		$_SESSION['admin']['info'] = "System slettet! " . dberror();
+		rexit($this_type, ['system' => $system] );
+	}
+}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML><HEAD><TITLE>Administration - system</TITLE>
@@ -92,13 +111,7 @@ tr("Navn:","name",$name);
 print "<tr valign=top><td>Info om systemet:</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 
 
-$ror = ($system) ? "Ret" : "Opret";
-
-?>
-
-<tr><td>&nbsp;</td><td><INPUT TYPE="submit" VALUE="<?php print $ror; ?> system"></td></tr>
-
-<?php
+print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($system ? "Ret" : "Opret").' system">' . ($system ? ' <input type="submit" name="action" value="Slet" onclick="return confirm(\'Slet system?\n\nFor en sikkerheds skyld tjekkes der, om alle tilknytninger er fjernet.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($system) {
 // Mulighed for at rette links
