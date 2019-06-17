@@ -16,7 +16,11 @@ if ($action == 'fix') {
 }
 
 function updatestuff ($table, $text, $id) {
-	$sql = "UPDATE $table SET description = '" . dbesc($text) . "' WHERE id = $id";
+	$field = 'description';
+	if ($table == 'trivia') {
+		$field = 'fact';
+	}
+	$sql = "UPDATE $table SET $field = '" . dbesc($text) . "' WHERE id = $id";
 	doquery($sql);
 	header("Location: markup.php");
 	exit;
