@@ -143,7 +143,10 @@ if ($_SESSION['user_id']) { // set last active
 
 // login and user specific functions
 
-function get_redirect_url ($url) {
+function get_redirect_url ($url = '') {
+	if ($url == '') {
+		$url = $_SERVER['HTTP_REFERER'];
+	}
 	// redirect to referer if alexandria.dk - or frontpage otherwise
 	$referer = parse_url($url);
 	if (preg_match('/^(.*\.)?alexandria\.dk$/i',$referer['host'])) {
@@ -195,6 +198,11 @@ function do_twitter_login($siteuserid, $name) {
 function do_twitch_login($siteuserid, $name) {
 	do_sso_login($siteuserid, $name, 'twitch');
 }
+
+function do_google_login($siteuserid, $name) {
+	do_sso_login($siteuserid, $name, 'google');
+}
+
 
 function do_steam_login($siteuserid, $name) {
 	do_sso_login($siteuserid, $name, 'steam');
