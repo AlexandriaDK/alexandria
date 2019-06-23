@@ -65,7 +65,8 @@
 			$( ".tags" ).autocomplete({
 				source: availableNames,
 				autoFocus: true,
-				delay: 10
+				delay: 10,
+				minLength: 3
 			});
 		});
 		</script>

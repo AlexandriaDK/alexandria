@@ -168,7 +168,7 @@ print "<a href=\"convent.php\">Ny con</a>";
 print "<table border=0>\n";
 
 if ($con) {
-	print "<tr><td>ID:</td><td>$con - <a href=\"/data?con=$con\" accesskey=\"q\">Vis con-side</a> - <a href=\"lock.php?con=$con\">Brug con som default con</a>";
+	print "<tr><td>ID:</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Vis con-side</a> - <a href=\"lock.php?con=$con\">Brug con som default con</a>";
 	if($con_prev) {
 		print " - <a href=\"convent.php?con=".$con_prev."\">Forrige</a>";
 	}

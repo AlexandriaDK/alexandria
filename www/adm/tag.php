@@ -93,7 +93,7 @@ print "<table border=0>\n";
 
 if ($tag_id) {
 	$tag = getone("SELECT tag FROM tag WHERE id = $tag_id");
-	print "<tr><td>ID:</td><td>$tag_id - <a href=\"/data?tag=" . rawurlencode($tag) . "\" accesskey=\"q\">Vis tag-side</a>";
+	print "<tr><td>ID:</td><td>$tag_id - <a href=\"../data?tag=" . rawurlencode($tag) . "\" accesskey=\"q\">Vis tag-side</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$tag_id\">Vis log</a>";
 	}

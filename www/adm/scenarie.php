@@ -512,7 +512,7 @@ print "<a href=\"./scenarie.php\">Nyt scenarie</a>";
 print "<table border=\"0\">\n";
 
 if ($scenarie) {
-	print "<tr><td>ID:</td><td>$scenarie - <a href=\"/data?scenarie=$scenarie\" accesskey=\"q\">Vis scenarieside</a>";
+	print "<tr><td>ID:</td><td>$scenarie - <a href=\"../data?scenarie=$scenarie\" accesskey=\"q\">Vis scenarieside</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$scenarie\">Vis log</a>";
 	}

@@ -123,7 +123,6 @@ $downloadable = $_REQUEST['downloadable'];
 
 if ($action == "addfile") {
 	$path = trim($path);
-	if (substr($path,0,2) == "r/") $path = "/home/penguin/web/trc.dk/rlyeh/scenarier/".substr($path,2);
 	if (substr($path,0,1) != "/") {
 		$subdir = $paths[$category];
 		$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" . $path;

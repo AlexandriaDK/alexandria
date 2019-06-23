@@ -84,7 +84,7 @@ print "<a href=\"conset.php\">Ny con-serie</a>";
 print "<table border=0>\n";
 
 if ($conset) {
-	print "<tr><td>ID:</td><td>$conset - <a href=\"/data?conset=$conset\" accesskey=\"q\">Vis con-serie</a>";
+	print "<tr><td>ID:</td><td>$conset - <a href=\"../data?conset=$conset\" accesskey=\"q\">Vis con-serie</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$conset\">Vis log</a>";
 	}

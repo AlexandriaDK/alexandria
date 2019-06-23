@@ -36,5 +36,5 @@ switch ($cat) {
 	$returl = 'person.php?person=';
 }
 
-header("Location: /adm/".$returl.$id);
+header("Location: ".$returl.$id);
 ?>

@@ -12,7 +12,7 @@ $user_id = $_SESSION['user_id'];
 $acrel_id = (int) $_REQUEST['acrel_id'];
 
 if (!$user_id) {
-	header("Location: /data?con=$convent");
+	header("Location: ../data?con=$convent");
 	exit;
 }
 
@@ -30,7 +30,7 @@ if (!$aut_id) {
 
 if (getone("SELECT 1 FROM convent WHERE id = $convent") != 1) { // check if congress exists
 	die("DB error");
-	header("Location: /");
+	header("Location: ../");
 	exit;
 }
 
@@ -51,6 +51,6 @@ if ($action == 'add' && ($aut_id || $aut_extra) ) {
 	}
 }
 
-header("Location: /data?con=$convent&edit=organizers#organizers");
+header("Location: ../data?con=$convent&edit=organizers#organizers");
 exit;
 ?>

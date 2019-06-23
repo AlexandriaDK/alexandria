@@ -107,7 +107,7 @@ print "<a href=\"person.php\">Ny person</a>";
 print "<table border=0>\n";
 
 if ($person) {
-	print "<tr><td>ID:</td><td>$person - <a href=\"/data?person=$person\" accesskey=\"q\">Vis personside</a>";
+	print "<tr><td>ID:</td><td>$person - <a href=\"../data?person=$person\" accesskey=\"q\">Vis personside</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$person\">Vis log</a>";
 	}

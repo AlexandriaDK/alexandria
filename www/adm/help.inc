@@ -452,7 +452,7 @@
 		<li>Du kan i de fleste indtastningsfelter lave links til andre data. Det gøres
 			blot ved at omramme den relevante tekst med klammer, fx: [[[Peter Brodersen]]].
 			På den offentlige side vil teksten så være blevet til et link,
-			fx: <a href="/find?find=Peter%20Brodersen">Peter Brodersen</a></li>
+			fx: <a href="../find?find=Peter%20Brodersen">Peter Brodersen</a></li>
 		<li>Det er endnu ikke muligt at slette data. Det skyldes at der
 			vil være for stor risiko for fx at slette et scenarie, der eksempelvis
 			har en masse personer og con'er tilknyttet. Har du vitterligt behov

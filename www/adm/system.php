@@ -100,7 +100,7 @@ print "<a href=\"system.php\">Nyt system</a>";
 print "<table border=0>\n";
 
 if ($system) {
-	print "<tr><td>ID:</td><td>$system - <a href=\"/data?system=$system\" accesskey=\"q\">Vis systemside</a>";
+	print "<tr><td>ID:</td><td>$system - <a href=\"../data?system=$system\" accesskey=\"q\">Vis systemside</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$system\">Vis log</a>";
 	}
