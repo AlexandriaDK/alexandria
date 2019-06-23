@@ -73,6 +73,9 @@ if ($r['id'] == 0) {
 		$scenlist = "<table border=\"0\" cellspacing=\"1\" cellpadding=\"1\" class=\"indata\">\n".$scenlist."</table>";
 	}
 
+// List of aliases
+	$aliaslist = getaliaslist($system,$this_type);
+
 // Links and trivia
 	$linklist = getlinklist($system,$this_type);
 	$trivialist = gettrivialist($system,$this_type);
