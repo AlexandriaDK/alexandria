@@ -105,6 +105,7 @@
 				</span>
 				<ul class="remotelogin">
 				<li><a href="fblogin" accesskey="l">[Facebook]</a></li>
+				<li><a href="login/google/" accesskey="g">[Google]</a></li>
 				<li><a href="twitterlogin" accesskey="t">[Twitter]</a></li>
 				<li><a href="steamlogin" accesskey="e">[Steam]</a></li>
 				<li><a href="login/twitch/" accesskey="e">[Twitch]</a></li>

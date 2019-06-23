@@ -170,7 +170,7 @@ if ($action == "addfile") {
 			$_SESSION['admin']['info'] = "Fil oprettet! ($numpages sider) " . dberror();
 		}
 */
-		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
+		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, language, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
 		$_SESSION['admin']['info'] = "Fil oprettet! " . dberror();
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );

@@ -32,7 +32,7 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || ($admonly && !$_S
 
 	print '
 	<p align="center">
-		Log in with <a href="../fblogin">Facebook</a> - <a href="../twitterlogin">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../login/twitch/">Twitch</a>
+		Log in with <a href="../fblogin">Facebook</a> - <a href="../login/google/">Google</a> - <a href="../twitterlogin">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../login/twitch/">Twitch</a>
 	</p>
 	';
 	exit;
