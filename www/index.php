@@ -5,7 +5,7 @@ if (isset($_SERVER['SERVER_NAME']) && in_array(strtolower($_SERVER['SERVER_NAME'
 	exit;
 }
 
-require("./connect.php");
+require("connect.php");
 require("base.inc");
 require("template.inc");
 

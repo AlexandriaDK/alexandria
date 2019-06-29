@@ -49,18 +49,18 @@ if ( LANG == 'da') {
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
 
 // Smarty 
-define('SMARTY_DIR', '../smarty/libs/');
-require(SMARTY_DIR . 'Smarty.class.php');
+define('SMARTY_DIR', __DIR__ . '/../smarty/libs/');
+require_once(SMARTY_DIR . 'Smarty.class.php');
 
 $t = new Smarty;
-$t->template_dir = '../smarty/templates/';
-$t->compile_dir = '../smarty/templates_c/';
-$t->config_dir = '../smarty/configs/';
-$t->cache_dir = '../smarty/cache/';
+$t->template_dir = __DIR__ . '/../smarty/templates/';
+$t->compile_dir =  __DIR__ . '/../smarty/templates_c/';
+$t->config_dir =   __DIR__ . '/../smarty/configs/';
+$t->cache_dir =    __DIR__ . '/../smarty/cache/';
 $t->registerPlugin("function","achievements_shown","achievements_shown"); 
 
 // language template folder?
-$template_dir = '../smarty/templates/';
+$template_dir = __DIR__ . '/../smarty/templates/';
 if (is_dir($template_dir . LANG) ) {
 	$t->template_dir = $template_dir . LANG . '/';
 } else {

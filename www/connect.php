@@ -1,3 +1,3 @@
 <?php
-require("./rpgconnect.inc.php");
+require("rpgconnect.inc.php");
 ?>
