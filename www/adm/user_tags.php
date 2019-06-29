@@ -10,7 +10,7 @@ $scenario = (int) $_REQUEST['scenario'];
 $action = (string) $_REQUEST['action'];
 $user_id = $_SESSION['user_id'];
 if (!$user_id || !$scenario) {
-	header("Location: /data?scenarie=$scenario");
+	header("Location: ../data?scenarie=$scenario");
 	exit;
 }
 
@@ -20,14 +20,14 @@ $tag_id = (int) $_REQUEST['tag_id'];
 
 $q = getone("SELECT 1 FROM sce WHERE id = $scenario");
 if ($q != 1) { // check if scenario exists - should probably redirect somewhere else
-	header("Location: /data?scenarie=$scenario");
+	header("Location: ../data?scenarie=$scenario");
 	exit;
 }
 
 if ($action == 'add') {
 	$q = getone("SELECT 1 FROM tags WHERE sce_id = $scenario AND tag = '" . dbesc($tag) . "'");
 	if ($q == 1) { // check if scenario already has tag
-		header("Location: /data?scenarie=$scenario");
+		header("Location: ../data?scenarie=$scenario");
 		exit;
 	}
 
@@ -50,6 +50,6 @@ if ($action == 'add') {
 	}
 } 
 
-header("Location: /data?scenarie=$scenario");
+header("Location: ../data?scenarie=$scenario");
 exit;
 ?>

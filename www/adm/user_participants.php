@@ -24,7 +24,7 @@ require "base.inc";
 $scenarie = (int) $_REQUEST['scenarie'];
 $user_id = $_SESSION['user_id'];
 if (!$user_id || !$scenarie) {
-	header("Location: /data?scenarie=$scenarie");
+	header("Location: ../data?scenarie=$scenarie");
 	exit;
 }
 
@@ -36,13 +36,13 @@ list ($players_min, $players_max) = strSplitParticipants($players);
 
 $q = getone("SELECT 1 FROM sce WHERE id = $scenarie");
 if ($q != 1) { // check if scenario exists
-	header("Location: /data?scenarie=$scenarie");
+	header("Location: ../data?scenarie=$scenarie");
 	exit;
 }
 $q = getone("SELECT 1 FROM sce WHERE id = $scenarie AND gms_min IS NULL AND gms_max IS NULL AND players_min IS NULL AND players_max IS NULL");
 
 if (!($_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_participant'][$scenarie] || $r) ) {
-	header("Location: /data?scenarie=$scenarie");
+	header("Location: ../data?scenarie=$scenarie");
 	exit;
 }
 
@@ -52,6 +52,6 @@ award_achievement(82);
 
 $_SESSION['can_edit_participant'][$scenarie] = TRUE;
 
-header("Location: /data?scenarie=$scenarie");
+header("Location: ../data?scenarie=$scenarie");
 exit;
 ?>

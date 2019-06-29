@@ -5,26 +5,26 @@ require("template.inc");
 
 // redirect if no user
 if (!$_SESSION['user_id']) {
-	header("Location: /");
+	header("Location: ./");
 	exit;
 }
 
 // achievements
 if ($_REQUEST['achievement'] == 'clickme') {
 	award_achievement(77);
-	header("Location: /myhistory");
+	header("Location: myhistory");
 	exit;
 }
 
 if ($_REQUEST['achievement'] == 'createaguiinterfaceusingvisualbasic') {
 	award_achievement(81);
-	header("Location: /myhistory");
+	header("Location: myhistory");
 	exit;
 }
 
 if ($_REQUEST['achievement'] == 'upupdowndownleftrightleftrightba') {
 	award_achievement(84);
-	header("Location: /myhistory");
+	header("Location: myhistory");
 	exit;
 }
 

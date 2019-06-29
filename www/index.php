@@ -1,7 +1,7 @@
 <?php
 // Viderestil evt. til adm-delen
 if (isset($_SERVER['SERVER_NAME']) && in_array(strtolower($_SERVER['SERVER_NAME']), ['adm.alexandria.dk','www.adm.alexandria.dk'] )) {
-	header("Location: /adm/");
+	header("Location: adm/");
 	exit;
 }
 

@@ -8,7 +8,7 @@ $user_id = (int) $_SESSION['user_id'];
 
 // redirect if no user
 if (!$user_id) {
-	header("Location: /");
+	header("Location: ./");
 	exit;
 }
 
