@@ -15,7 +15,7 @@ header("X-Clacks-Overhead: GNU Alex Uth, GNU Michael Erik Næsby");
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv' ];
 $alexlanguages = [ 'da', 'en', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|xx)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } else {
