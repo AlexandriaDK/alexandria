@@ -30,6 +30,7 @@ if ($r['id'] == 0) {
 				sce.title AS title,
 				sce.boardgame AS boardgame,
 				title.title AS auttitle,
+				title.title_label AS auttitlelabel,
 				title.iconfile,
 				title.iconwidth,
 				title.iconheight,
@@ -73,6 +74,7 @@ if ($r['id'] == 0) {
 				sce.title AS title,
 				sce.boardgame AS boardgame,
 				title.title AS auttitle,
+				title.title_label AS auttitlelabel,
 				title.iconfile,
 				title.iconwidth,
 				title.iconheight,
@@ -129,7 +131,8 @@ if ($r['id'] == 0) {
 			
 			$slist[$sl]['textsymbol'] = $rs['textsymbol'];
 			$slist[$sl]['iconfile'] = $rs['iconfile'];
-			$slist[$sl]['icontitle'] = $rs['auttitle'];
+//			$slist[$sl]['icontitle'] = $rs['auttitle'];
+			$slist[$sl]['icontitle'] = ucfirst($t->getTemplateVars('_' . $rs['auttitlelabel'] ) );
 			$slist[$sl]['iconwidth'] = $rs['iconwidth'];
 			$slist[$sl]['iconheight'] = $rs['iconheight'];
 			

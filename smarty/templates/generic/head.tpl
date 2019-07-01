@@ -239,8 +239,19 @@
 
 {/if}
 
+{if $URLLANG}
+			<div class="leftmenucontent">
+			{$_chooselanguage}
+			<br><br>
+{foreach from=$ALEXLANGUAGES item=altlanguage}
+{if $altlanguage != 'da'} • {/if}{* hack *}
+			<a href="/{$altlanguage}/{$BASEURI}">{$altlanguage}</a>
+{/foreach}
+			</div>
+{/if}
 
 		</div>
+
 
 		<div id="topmenu" itemscope itemtype="http://schema.org/WebSite">
 			<meta itemprop="url" content="https://alexandria.dk/" />

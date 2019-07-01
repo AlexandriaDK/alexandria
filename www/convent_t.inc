@@ -87,7 +87,7 @@ if ($r['id'] == 0) {
 
 	if ($_SESSION['user_id']) {
 		$q = getall("
-			SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
+			SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.event_label, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
 			FROM csrel, pre, sce
 			LEFT JOIN sys ON sce.sys_id = sys.id
 			LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
@@ -98,7 +98,7 @@ if ($r['id'] == 0) {
 		");
 	} else {
 		$q = getall("
-			SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, COUNT(files.id) AS files
+			SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.event_label, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, COUNT(files.id) AS files
 			FROM csrel, pre, sce
 			LEFT JOIN sys ON sce.sys_id = sys.id
 			LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
@@ -142,9 +142,9 @@ if ($r['id'] == 0) {
 // Sæt evt. rerun/aflyst-ikoner på
 			$datalist .= "<td>";
 			if ($rs['textsymbol']) { // unicode-ikoner
-				$datalist .= $runsymbol = "<span class=\"preicon\" title=\"{$rs['event']}\">{$rs['textsymbol']}</span>";
+				$datalist .= $runsymbol = "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\">{$rs['textsymbol']}</span>";
 			} elseif ($rs['iconfile']) {
-				$datalist .= $runsymbol = "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"{$rs['event']}\" title=\"{$rs['event']}\" width=\"14\" height=\"14\" />";
+				$datalist .= $runsymbol = "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\" width=\"14\" height=\"14\" />";
 			} else {
 				$datalist .= $runsymbol = "<img src=\"/gfx/spacer.gif\" width=\"14\" height=\"1\" alt=\"\" />";
 			}

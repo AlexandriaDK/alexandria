@@ -108,15 +108,15 @@ if ($r['id'] == 0) {
 // Liste over cons, scenariet har været spillet på:
 // Nu kan vi sortere efter cons' tidspunkt, så ingen grund til at sortere på pre.id, medmindre ingen dato er kendt på cons fra samme år.
 	$conlist = "";
-	$q = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, pre.event, pre.iconfile, pre.textsymbol FROM convent, csrel, pre WHERE convent.id = csrel.convent_id AND csrel.pre_id = pre.id AND csrel.sce_id = '$scenarie' ORDER BY convent.year, convent.begin, pre.id, convent.name");
+	$q = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, pre.event, pre.event_label, pre.iconfile, pre.textsymbol FROM convent, csrel, pre WHERE convent.id = csrel.convent_id AND csrel.pre_id = pre.id AND csrel.sce_id = '$scenarie' ORDER BY convent.year, convent.begin, pre.id, convent.name");
 	foreach($q AS $rs) {
 		$coninfo = nicedateset($rs['begin'],$rs['end']);
 		$conlist .= "<tr><td>";
 // Sæt evt. rerun/aflyst-ikoner på
 		if ($rs['textsymbol']) { // unicode-ikoner
-			$conlist .= "<span class=\"preicon\" title=\"{$rs['event']}\">{$rs['textsymbol']}</span>";
+			$conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\">{$rs['textsymbol']}</span>";
 		} elseif ($rs['iconfile']) {
-			$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"{$rs['event']}\" title=\"{$rs['event']}\" width=\"14\" height=\"14\" /> ";
+			$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" width=\"14\" height=\"14\" /> ";
 		} else {
 			$conlist .= " ";
 		}
@@ -143,7 +143,8 @@ if ($r['id'] == 0) {
 		}
 		$runlist .= "</span>";
 		if ($rs['cancelled']) {
-			$runlist .= " [aflyst]";
+			// $runlist .= " [aflyst]";
+			$runlist .= " [" . $t->getTemplateVars('_sce_cancelled') . "]";
 		}
 		$runlist .= "<br>\n";
 	}

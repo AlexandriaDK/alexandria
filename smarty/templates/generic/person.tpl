@@ -66,7 +66,7 @@
 {/if}
 
 {if $organizerlist}
-<h3 class="parttitle" id="organizer">{$_p_organizer}:</h3>
+<h3 class="parttitle" id="organizer">{$_p_organizerroles}:</h3>
 	<table class="organizerlist indata">
 	{section name=i loop=$organizerlist}
 	<tr>
