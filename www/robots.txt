@@ -1,8 +1,4 @@
 User-Agent: *
-Disallow: /da/
-Disallow: /en/
-Disallow: /sv/
-Disallow: /no/
 Disallow: /nb/
 Disallow: /nn/
 Disallow: /de/
@@ -10,4 +6,5 @@ Disallow: /fr/
 Disallow: /es/
 Disallow: /ru/
 Disallow: /be/
+Disallow: /xx/
 

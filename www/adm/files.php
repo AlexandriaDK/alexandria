@@ -16,7 +16,7 @@ $description = (string) $_REQUEST['description'];
 $downloadable = (string) $_REQUEST['downloadable'];
 $language = (string) $_REQUEST['language'];
 $remoteurl = (string) $_REQUEST['remoteurl'];
-$allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png"];
+$allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png","gif"];
 $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
 
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
