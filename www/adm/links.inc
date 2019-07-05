@@ -27,7 +27,7 @@ if ($_SESSION['user_admin'] ) {
 ·
 <a href="achievements.php" accesskey="a">Achievements</a>
 ·
-<a href="news.php" accesskey="n">Nyheder</a>
+<a href="news.php" accesskey="n">News</a>
 ·
 <a href="feeds.php">Feeds</a>
 ·

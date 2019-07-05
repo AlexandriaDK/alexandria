@@ -302,7 +302,7 @@ if ($scenarie) {
 
 // Find alle con'er
 
-unset($con);
+$con = [];
 #$con[0] = "[ingen eller ukendt con]";
 $q = getall("SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id ORDER BY setname, year, begin, end, name") OR die(dberror());
 foreach($q AS $r) {
@@ -311,7 +311,7 @@ foreach($q AS $r) {
 
 // Find alle systemer
 
-unset($aut);
+$sys = [];
 $sys[0] = "[ukendt eller uspecificeret system]";
 $q = getall("SELECT id, name FROM sys ORDER BY name");
 foreach($q AS $r) {
@@ -321,7 +321,13 @@ foreach($q AS $r) {
 
 // Find alle personer
 
-unset($aut);
+$autnew = [];
+$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id DESC LIMIT 5");
+foreach($q AS $r) {
+	$autnew[$r[id]] = $r[name];
+}
+
+$aut = [];
 $q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY name, id");
 foreach($q AS $r) {
 	$aut[$r[id]] = $r[name];
@@ -678,8 +684,13 @@ print '
 					<td>
 						<select name="bigselectaut" id="bigselectaut" multiple size="13">
 ';
+print "<option value=\"\">--- newest five persons ---\n";
+foreach($autnew AS $id =>$name) {
+	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
+}
+print "<option value=\"\">-----------\n";
 while (list($id, $name) = each($aut)) {
-	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">$name\n";
+	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
 }
 print '
 						</select>
