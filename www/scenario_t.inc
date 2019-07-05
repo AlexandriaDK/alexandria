@@ -1,5 +1,6 @@
 <?php
 // THIS FILE IS NOT USED! USE game_t.inc INSTEAD!
+exit;
 $this_type = 'sce';
 
 $r = getrow("
@@ -205,7 +206,6 @@ if ($r['id'] == 0) {
 	}
 
 	if (file_exists("gfx/scenarie/s_".$scenarie.".jpg")) {
-		$scenariepic = "<a href=\"gfx/scenarie/l_".$scenarie.".jpg\"><img src=\"gfx/scenarie/s_".$scenarie.".jpg\" alt=\"Forside til ".htmlspecialchars($r['title'])."\" style=\"float:right; border: 1px solid black; margin: 2px;\" /></a>";
 		$available_pic = 1;
 	}
 

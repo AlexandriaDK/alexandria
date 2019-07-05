@@ -91,7 +91,6 @@ if ($r['id'] == 0) {
 	}
 
 	if (file_exists("gfx/system/s_".$system.".jpg")) {
-		$systempic = "<a href=\"gfx/system/l_".$system.".jpg\"><img src=\"gfx/system/s_".$system.".jpg\" alt=\"Forside til ".htmlspecialchars($r['name'])."\" style=\"float:right; border: 1px solid black; margin: 2px;\" /></a>";
 		$available_pic = 1;
 	}
 

@@ -354,7 +354,6 @@ if ($r['id'] == 0) {
 	}
 
 	if (file_exists("gfx/convent/s_".$con.".jpg")) {
-		$conventpic = "<a href=\"gfx/convent/l_".$con.".jpg\"><img src=\"gfx/convent/s_".$con.".jpg\" alt=\"Forside til ".htmlspecialchars($r['name'])."\" style=\"float:right; border: 1px solid black; margin: 2px;\" /></a>";
 		$available_pic = 1;
 	}
 
