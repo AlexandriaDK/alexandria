@@ -66,9 +66,7 @@ foreach($r AS $row) {
 	}
 
 	if ($sce_id != $last_sce_id && $row['files'] > 0) {
-		//$scenlist .= '<td><img src="/gfx/ikon_download.gif" alt="Download" title="Dette scenarie kan downloades" width="15" height="15" /></td>';
-//		$scenlist .= "<td><span title=\"Regler til dette brætspil kan downloades\">💾</span></td>";
-		$scenlist .= "<td><span title=\"Regler til dette brætspil kan downloades\"><a href=\"data?scenarie=" . $sce_id . "\">💾</a></span></td>";
+		$scenlist .= "<td><span title=\"". htmlspecialchars($t->getTemplateVars('_sce_bgdownloadable' ) ) . "\"><a href=\"data?scenarie=" . $sce_id . "\">💾</a></span></td>";
 	} else {
 		$scenlist .= "<td></td>";
 	}
