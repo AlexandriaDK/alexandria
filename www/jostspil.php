@@ -206,12 +206,14 @@ if ($mainperson && $subperson) {
 		*/
 		
 		if ($found == TRUE) {
-			$content .= $person[$mainperson]." og ".$person[$subperson]." er forbundet i $qnums led:";
+			$content .= sprintf( $t->getTemplateVars( $qnums == 1 ? '_jost_connected' : '_jost_connected_pl' ), $person[$mainperson], $person[$subperson], $qnums );
+			// $content .= $person[$mainperson]." og ".$person[$subperson]." er forbundet i $qnums led:";
 			if ($qnums >= 6) award_achievement(29);
 			if ($qnums >= 10) award_achievement(30);
 			if ($qnums >= 15) award_achievement(31);
 		} else {
-			$content .= $person[$mainperson]." og ".$person[$subperson]." er ikke forbundet.";
+			$content .= sprintf( $t->getTemplateVars('_jost_notconnected'), $person[$mainperson], $person[$subperson] );
+			// $content .= $person[$mainperson]." og ".$person[$subperson]." er ikke forbundet.";
 		}
 		$content .= "<br /><br />\n";
 		
@@ -225,12 +227,15 @@ if ($mainperson && $subperson) {
 				$scen = $scenarie[$find]['title'];
 				$scenid = $scenarie[$find]['sceid'];
 				$antal = $scenarie[$find]['antal'];
+/*
 				$content .= "$i: <a href=\"data?person=$find\" class=\"person\">$person[$find]</a> ". 
-				            "har "."lavet ".
+				            "har lavet ".
 				            "<a href=\"data?scenarie=$scenid\" class=\"scenarie\">$scen</a> ".($antal>1?'m.fl. ':'').
 				            "med ".
 				            "<a href=\"data?person={$kobling[$find]}\" class=\"person\">{$person[$kobling[$find]]}</a>". 
 				            "<br />\n";
+*/
+				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $scenid, htmlspecialchars($scen), $kobling[$find], htmlspecialchars($person[$kobling[$find]]) ) );
 				// til graf
 				$graph[] = $find;
 				$graph[] = $scenid;
