@@ -84,13 +84,14 @@ if ($conventions) {
 #	$content_myconvents .= "<h3 class=\"parttitle\">Kongresser: (".count($conventions).")</h3>\n";
 
 #	$content_myconvents .= "<table><tr><td></td><td><a href=\"myhistory?o=5\">Navn</a></td><td><a href=\"myhistory?o=7\">Serie</a></td><td><a href=\"myhistory?o=6\">År</a></td></tr>";
+	$str_visited = $t->getTemplateVars('_top_visited_pt');
 	foreach ($conventions AS $convent) {
 		$spanid = "convent_".$convent['id']."_visited";
 		$content_myconvents .= "<tr>";
 		$content_myconvents .= "<td>".
 			                     "<span id=\"".$spanid."\">".
 			                     "<a href=\"javascript:switchicon('".$spanid."','remove','convent',".$convent['id'].",'visited')\">".
-			                     "<img src=\"gfx/visited_active.jpg\" alt=\"Besøgt active\" title=\"Besøgt\" border=\"0\" />".
+			                     "<img src=\"gfx/visited_active.jpg\" alt=\"" . htmlspecialchars($str_visited) . "\" title=\"" . htmlspecialchars($str_visited) . "\" border=\"0\" />".
 			                     "</a>".
 			                     "</span>".
 			                     "</td>";
@@ -107,7 +108,11 @@ if ($conventions) {
 
 $scenarios = getmysce($user_id,$_REQUEST['o']);
 if ($scenarios) {
-	$scenariotext = array("read" => "Læst", "gmed" => "Kørt", "played" => "Spillet");
+	$scenariotext = [
+		"read" => htmlspecialchars($t->getTemplateVars('_top_read_pt') ),
+		"gmed" => htmlspecialchars($t->getTemplateVars('_top_gmed_pt') ),
+		"played" => htmlspecialchars($t->getTemplateVars('_top_played_pt') ),
+	];
 
 	foreach ($scenarios AS $scenario) {
 		$content_myscenarios .= "<tr>";
@@ -124,7 +129,7 @@ if ($scenarios) {
 				$content_myscenarios .= "<td style=\"text-align: center\">".
 							"<span id=\"".$spanid."\">".
 							"<a href=\"javascript:switchicon('".$spanid."','".($scenario[$type]?'remove':'add')."','sce',".$scenario['id'].",'".$type."')\">".
-							"<img src=\"gfx/".$type."_".($scenario[$type]?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]." ".($scenario[$type]?'active':'passive')."\" title=\"".$scenariotext[$type]."\" border=\"0\" />".
+							"<img src=\"gfx/".$type."_".($scenario[$type]?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]."\" title=\"".$scenariotext[$type]."\" border=\"0\" />".
 							"</a>".
 							"</span>".
 							"</td>";

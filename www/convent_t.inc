@@ -134,8 +134,7 @@ if ($r['id'] == 0) {
 // Sæt evt. download-ikon på
 			$datalist .= "<td>";
 			if ($rs['files'] > 0) {
-			//	$datalist .= "<img src=\"/gfx/ikon_download.gif\" alt=\"Download\" title=\"Dette scenarie kan downloades\" width=\"15\" height=\"15\" />";
-				$datalist .= "<a href=\"data?scenarie=" . $rs['id'] . "\" title=\"Dette scenarie kan downloades\">💾</a>";
+				$datalist .= "<a href=\"data?scenarie=" . $rs['id'] . "\" title=\"" . htmlspecialchars($t->getTemplateVars('_sce_downloadable')) . "\">💾</a>";
 			}
 			$datalist .= "</td>";
 

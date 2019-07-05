@@ -402,7 +402,12 @@ function removeuserlog($user_id,$category,$data_id,$type) {
 }
 
 function getdynamicscehtml($sce_id,$type,$active) {
-	$scenariotext = array("read" => "Læst", "gmed" => "Kørt", "played" => "Spillet");
+	global $t;
+	$scenariotext = [
+		"read" => htmlspecialchars($t->getTemplateVars('_top_read_pt') ),
+		"gmed" => htmlspecialchars($t->getTemplateVars('_top_gmed_pt') ),
+		"played" => htmlspecialchars($t->getTemplateVars('_top_played_pt') ),
+	];
 	$span_id = "sce_".$sce_id."_".$type;
 	$html = 
 		"<span id=\"".$span_id."\">".
@@ -415,12 +420,13 @@ function getdynamicscehtml($sce_id,$type,$active) {
 }
 
 function getdynamicconventhtml($sce_id,$type,$active) {
-	$conventtext = array("visited" => "Besøgt");
+	global $t;
+	$conventtext = [ "visited" => htmlspecialchars( $t->getTemplateVars('_top_visited_pt') ) ];
 	$span_id = "convent_".$sce_id."_".$type;
 	$html = 
 		"<span id=\"".$span_id."\">".
 		"<a href=\"javascript:switchicon('".$span_id."','".($active?'remove':'add')."','convent',".$sce_id.",'".$type."')\">".
-		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$conventtext[$type]." ".($active?'active':'passive')."\" title=\"".$conventtext[$type]."\" border=\"0\" />".
+		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$conventtext[$type]."\" title=\"".$conventtext[$type]."\" border=\"0\" />".
 		"</a>".
 		"</span>"
 	;

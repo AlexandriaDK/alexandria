@@ -130,7 +130,7 @@ foreach($scenarios AS $scenario_id => $scenario) {
 		$xscenlist .= "<td style=\"width: 10px;\">&nbsp;</td>";
 		}
 	if ($scenario['downloadable']) {
-		$xscenlist .= "<td><a href=\"data?scenarie=" . $scenario_id . "\" title=\"Dette scenarie kan downloades\">💾</a></td>";
+		$xscenlist .= "<td><a href=\"data?scenarie=" . $scenario_id . "\" title=\"" . htmlspecialchars($t->getTemplateVars('_sce_downloadable')) . "\">💾</a></td>";
 	} else {
 		$xscenlist .= "<td></td>";
 	}
@@ -183,7 +183,7 @@ foreach($r AS $row) {
 
 	if ($sce_id != $last_sce_id && $row['files'] > 0) {
 //		$scenlist .= '<td><img src="/gfx/ikon_download.gif" alt="Download" title="Dette scenarie kan downloades" width="15" height="15" /></td>';
-		$scenlist .= "<td><span title=\"Dette scenarie kan downloades\">💾</span></td>";
+		$scenlist .= "<td><span title=\"" . htmlspecialchars($t->getTemplateVars('_sce_downloadable')) . "\">💾</span></td>";
 	} else {
 		$scenlist .= "<td></td>";
 	}
