@@ -38,11 +38,11 @@ $q = getall("
 $num_cons = count($q);
 $thismonth = -1;
 foreach($q AS $row) {
-	$month = substr($row['begin'],5,2);
+	$month = (int) substr($row['begin'],5,2);
 	if ($month > $thismonth) {
 		$printmonth = ucfirst($months[intval($month)]);
 		$printmonth = ucfirst( monthname( intval($month) ) );
-		if ($month == 0) $printmonth = "(ukendt dato)";
+		if ($month == 0) $printmonth = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
 		if ($output) $output .= "</p>" . PHP_EOL;
 		$output .= "<h3 class=\"calendarhead\">$printmonth</h3>" . PHP_EOL . "<p class=\"calendarmonth\">" . PHP_EOL;
 		$thismonth = $month;
