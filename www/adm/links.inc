@@ -48,7 +48,7 @@ if ($conlock) {
 	print "<br>Default con: <a href=\"convent.php?con=$conlock\">#$conlock</a> <sup><a href=\"../data?con=$conlock\">(show)</a></sup> - <a href=\"lock.php\">release</a>";
 }
 if ($langlock) {
-	print "<br>Language: <a href=\"language.php\">" . htmlspecialchars( $langlock ). "</a> <sup><a href=\"/" . htmlspecialchars( $langlock ) ."/\">(show)</a></sup> - <a href=\"language.php?setlang=xx\">release</a>";
+	print "<br>Language: <a href=\"language.php\">" . htmlspecialchars( $langlock ). "</a> <sup><a href=\"/" . htmlspecialchars( $langlock ) ."/\">(show)</a></sup> - <a href=\"language.php?setlang=none\">release</a>";
 }
 ?></span><br></form>
 

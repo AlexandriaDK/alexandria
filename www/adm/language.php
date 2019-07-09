@@ -34,7 +34,7 @@ function findintemplates( $string ) {
 
 // Sæt sprog?
 if ( $setlang ) {
-	if ( $setlang == 'xx') {
+	if ( $setlang == 'none') {
 		setcookie( "langlock" );
 	} else {
 		setcookie( "langlock", $setlang );
