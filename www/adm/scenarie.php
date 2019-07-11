@@ -35,7 +35,7 @@ $title = $_REQUEST['title'];
 $description = $_REQUEST['description'];
 $descriptions = (array) $_REQUEST['descriptions'];
 if (!$descriptions) {
-	$descriptions = [1 => [ 'id' => 1, 'language' => 'da', 'description' => '', 'note' => '' ] ];
+	$descriptions = [1 => [ 'id' => 1, 'language' => ($_COOKIE['langlock'] ? $_COOKIE['langlock'] : 'da'), 'description' => '', 'note' => '' ] ];
 }
 $intern = $_REQUEST['intern'];
 $sys_id = (int) $_REQUEST['sys_id'];
