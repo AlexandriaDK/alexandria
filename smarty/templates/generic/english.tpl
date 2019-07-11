@@ -7,15 +7,23 @@
 			Welcome til Alexandria
 		</h2>
 
+		<p style="font-weight: bold; font-style: italic;">We are translating Alexandria to other languages in these months. View the site <a href="/en/">in English</a> and check out <a href="/en/data?tag=English">the list of scenarios available in English</a>.
+		</p>
+
+		<p style="font-weight: bold;">The following information might be outdated:
+
 		<p>
-			Alexandria is an index of (pen-and-paper) role-playing games in Denmark. This includes
+			Alexandria is an index of (pen-and-paper) role-playing games in Denmark and other Nordic countries. This includes
 			several thousand authors and scenarios, and hundreds of conventions.
 		</p>
 
 		<p>
-			This site is in Danish as most of the scenarios are in Danish as well.
-			However a few scenarios have been written in or translated to English.
-			Those available for download are listed below:
+			Most of the scenarios are in Danish. However over a hundred scenarios have been written in or translated to English.
+			Those available for download can be found <a href="/en/data?tag=English">in this list of scenarios</a>.
+		</p>
+
+		<p>
+			 The original and outdated short list of English scenarios are listed below (as well as in the list mentioned above):
 		</p>	
 
 		<ul>
