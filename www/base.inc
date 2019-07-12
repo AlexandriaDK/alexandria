@@ -451,14 +451,15 @@ function getimageifexists($id, $category_dir) {
 }
 
 function pubdateprint($datetime) {
+	global $t;
 	$pubdatetime = strtotime($datetime);
 	$start = strftime('%e. %B, %R',$pubdatetime);
 	if (date("Y-m-d",$pubdatetime) == date("Y-m-d")) {
-		$start = "I dag, ".date("H:i",$pubdatetime);
+		$start = htmlspecialchars( $t->getTemplateVars('_year_today') ) . ", " . date("H:i",$pubdatetime);
 	} elseif (date("Y-m-d",$pubdatetime) == date("Y-m-d",strtotime("- 1 day")) ) {
-		$start = "I går, ".date("H:i",$pubdatetime);
+		$start = htmlspecialchars( $t->getTemplateVars('_year_yesterday') ) . ", " . date("H:i",$pubdatetime);
 	} elseif (date("Y-m-d",$pubdatetime) == date("Y-m-d",strtotime("- 2 days")) ) {
-		$start = "I forgårs, ".date("H:i",$pubdatetime);
+		$start = htmlspecialchars( $t->getTemplateVars('_year_twodaysago') ) . ", " . date("H:i",$pubdatetime);
 	} elseif (date("Y", $pubdatetime) != date("Y") ) {
 		$start = strftime('%e. %B %Y, %R',$pubdatetime);
 	} else {

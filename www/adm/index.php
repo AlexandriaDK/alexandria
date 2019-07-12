@@ -24,22 +24,22 @@ include("links.inc");
 <p style="font-style: italic;">Translator? <a href="language.php">Over here!</a></p>
 
 <p>
-	Du er logget ind som: <b><?php print htmlspecialchars($authuser); ?></b>.
+	You are logged in as: <b><?php print htmlspecialchars($authuser); ?></b>.
 </p>
 
 <p>
-	Velkommen til administrationssystemet for Alexandria. Kig gerne forbi <a href="https://www.facebook.com/groups/1602088646679278/">vores Facebook-gruppe</a>.
+	Welcome to the editor section of Alexandria. Feel free to join <a href="https://www.facebook.com/groups/1602088646679278/">our Facebook group</a>.
 </p>
 
 <h3>
-	Aktive brugere
+	Active users
 </h3>
 
 <?php
 $result = getall("SELECT COUNT(*) AS c, user, user_id, MAX(`time`) AS latest, SUM(note REGEXP '^(Con|System|Person|Scenarie|Conset) oprettet$') AS oprettet FROM log WHERE `time` >= CURDATE() - INTERVAL 7 DAY GROUP BY user, user_id ORDER BY c DESC, latest DESC, user");
 print "<table>";
-print "<tr style=\"font-size: 0.8em;\"><th>Navn</th><th>Oprettelser</th><th>Ændringer</th><th>Seneste ændring</th></tr>";
-print "<tr><th colspan=\"4\">Seneste uge</th></tr>\n";
+print "<tr style=\"font-size: 0.8em;\"><th>Name</th><th>New edits</th><th>Edits</th><th>Most recent edit</th></tr>";
+print "<tr><th colspan=\"4\">Last seven days</th></tr>\n";
 $rows = 0;
 foreach($result AS $row) {
 	$rows++;
@@ -54,7 +54,7 @@ if (!$rows) {
 	print "<tr><td colspan=\"5\" style=\"text-align: center; font-style: italic;\">(Ingen)</td></tr>\n";
 }
 $result = getall("SELECT COUNT(*) AS c, user, user_id, MAX(`time`) AS latest, SUM(note REGEXP '^(Con|System|Person|Scenarie|Conset) oprettet$') AS oprettet FROM log WHERE `time` >= CURDATE() - INTERVAL 1 YEAR GROUP BY user, user_id ORDER BY c DESC, latest DESC, user");
-print "<tr><th colspan=\"4\">Seneste år</th></tr>\n";
+print "<tr><th colspan=\"4\">Last year</th></tr>\n";
 foreach($result AS $row) {
 	print "<tr>" .
 	      "<td><a href=\"showlog.php?user_id=" . $row['user_id'] . "\">" . htmlspecialchars($row['user']) . "</a></td>" .

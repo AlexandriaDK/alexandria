@@ -113,11 +113,11 @@ if ($info) {
 
 if ($result) {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Log over: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Log for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
-	      "<th style=\"width: 180px\">Ændret af</th>".
-	      "<th style=\"width: 180px\">Tidspunkt</th>".
-	      "<th style=\"width: 160px\">Beskrivelse</th>".
+	      "<th style=\"width: 180px\">Edited by</th>".
+	      "<th style=\"width: 180px\">Time</th>".
+	      "<th style=\"width: 160px\">Description</th>".
 	      "<th style=\"width: 120px\">IP</th>".
 	      "</tr>\n";
 
@@ -135,12 +135,12 @@ if ($result) {
 	print "</table>\n";
 } else {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Seneste $listlimit ændringer" . ($user_name ? " af " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[vis 1000]</a>' : '') . "</th></tr>\n".
+	      "<tr><th colspan=5>$listlimit recent edits" . ($user_name ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n".
 	      "<tr>\n".
-	      "<th>Emne</th>".
-	      "<th style=\"width: 180px\">Ændret af</th>".
-	      "<th style=\"width: 180px\">Tidspunkt</th>".
-	      "<th style=\"width: 160px\">Beskrivelse</th>".
+	      "<th>Category</th>".
+	      "<th style=\"width: 180px\">Edited by</th>".
+	      "<th style=\"width: 180px\">Time</th>".
+	      "<th style=\"width: 160px\">Description</th>".
 	      "<th style=\"width: 120px\">IP</th>".
 	      "</tr>\n";
 
@@ -168,7 +168,6 @@ if ($result) {
 	print "</table>\n";
 	
 }
-
 
 print "<p>&nbsp;</p>\n<p style=\"text-align: center\">Logging blev først påbegyndt i marts 2002;<br />\nder kan derfor forefindes entries uden log-data.</p>\n";
 print "<p style=\"text-align: center\">Ændringer i hvilke personer, der er tilknyttet scenarier, samt<br />\nhvilke conner, et scenarie har været spillet på, logges<br />\nkun som en scenarie-ændring.</p>\n";
