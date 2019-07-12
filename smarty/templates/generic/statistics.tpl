@@ -10,7 +10,7 @@
 	<table class="tablestatlist">
 
 	<tr>
-	<td class="statleft"><span class="stathead">{$_stat_mostexposed|nl2br}</span><br>
+	<td class="statleft"><span class="stathead">{$_stat_mostprolific|nl2br}</span><br>
 		{$stat_aut_active}
 	</td>
 

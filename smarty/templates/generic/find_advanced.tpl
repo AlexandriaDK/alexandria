@@ -18,7 +18,7 @@
 					<td><input type="text" name="search_description" id="search_description" size="30" /></td>
 				</tr>
 				<tr>
-					<td>{$_system|ucfirst}</td>
+					<td>{$_rpgsystem|ucfirst}</td>
 					<td><select name="search_system">
 					<option value="">{$_find_notimportant}</option>
 {section name=s loop=$systems}
