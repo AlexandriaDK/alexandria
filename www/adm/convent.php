@@ -271,7 +271,10 @@ if ($con) {
 	print "<tr valign=top><td>Scenarier herunder:</td><td>\n";
 	
         foreach($q AS list($id, $title, $preid, $event) ) {
-		print "<a href=\"scenarie.php?scenarie=$id\">$title</a>";
+		if ($title == "") {
+			$title = "(fejl - ingen titel)";
+		}
+		print "<a href=\"scenarie.php?scenarie=$id\">$title</a>" . PHP_EOL;
 		if ($preid > 1) print " ($event)";
 		print "<br>";
 	}

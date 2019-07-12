@@ -237,7 +237,7 @@ foreach($result AS $row) {
 
 $htmlcondate = "<b>Kongresser uden præcis startdato:</b><br>\n";
 
-$query = "SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE begin IS NULL ORDER BY setname, year, begin, name";
+$query = "SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE begin IS NULL OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
 
 $result = getall($query);
 foreach($result AS $row) {
