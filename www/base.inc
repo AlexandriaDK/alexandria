@@ -7,8 +7,7 @@ session_cache_limiter('none');
 session_start();
 
 header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiinterfaceusingvisualbasic");
-header("X-Clacks-Overhead: GNU Alex Uth, GNU Michael Erik Næsby");
-
+header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næsby");
 
 // detect language
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
