@@ -234,19 +234,6 @@ $system = isset($_REQUEST['system']) ? intval($_REQUEST['system']) : 0;
 $year = isset($_REQUEST['year']) ? intval($_REQUEST['year']) : 0;
 $tag = isset($_REQUEST['tag']) ? (string) $_REQUEST['tag'] : NULL;
 
-/*
-if ($year < 1970 || $year > 2100) { // :TODO: Fix Y2K100-problem 
-	header("Location: calendar");
-	$year = date("Y");
-}
-*/
-
-#if (!$bgcolor) $bgcolor="#f4c8ff";
-#if (!$rammecolor) $rammecolor="#c000fb";
-
-$t->assign('ip',$_SERVER['REMOTE_ADDR']);
-$t->assign('penguin_ip',isset($_ENV['PenguinIP']) ? $_ENV['PenguinIP'] : NULL);
-
 if ($person) {
 	include ("person_t.inc");
 } elseif ($scenarie) {

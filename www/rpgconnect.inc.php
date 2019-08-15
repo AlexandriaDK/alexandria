@@ -8,6 +8,8 @@ require_once(__DIR__ . '/../includes/db.auth.php');
 
 	if (!@ ($dblink = mysqli_connect($db_host, $db_user, $db_pass) ) || @$_SERVER['QUERY_STRING'] == "crash") {
 		define('DBERROR',TRUE);
+		header("HTTP/1.1 500 Internal Server Error");
+		header("X-Error: Database");
 		require("base.inc");
 		require("template.inc");
 		$t->display('dberror.tpl');

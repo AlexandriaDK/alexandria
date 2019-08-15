@@ -99,6 +99,7 @@
 				<a href="english">{$_top_inenglish}</a><br>
 			</div>
 
+{if $dberror != TRUE}
 			<div class="leftmenucontent">
 {if not $user_id}
 				<span class="menulogin">
@@ -279,6 +280,7 @@
 				</div>
 			</form>
 		</div>
+{/if}
 
 <div id="resultbox">
 </div>

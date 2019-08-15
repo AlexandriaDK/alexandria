@@ -91,6 +91,9 @@ if (!defined('DBERROR') ) {
 		$t->assign('URLLANG', $urllang );
 		$t->assign('BASEURI', $baseuri );
 	}
+	$t->assign('ip',$_SERVER['REMOTE_ADDR']);
+} else {
+	$t->assign('dberror', TRUE);
 }
 
 // Import language strings
