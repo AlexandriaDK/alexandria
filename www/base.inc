@@ -11,14 +11,22 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 
 // detect language
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
-#$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv' ];
 $alexlanguages = [ 'da', 'en', 'nb', 'sv' ];
 $lang = "";
 if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|xx)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } else {
+	// redirect logic:
+	// if frontpage requested redirect to English page
+	// else redirect to Danish sub-page
 	$lang = 'da';
+	if ($_SERVER['REQUEST_URI'] == '/') {
+		header("Location: /en/");
+	} else {
+		header("HTTP/1.1 301 Redirect");
+		header("Location: /da" . $_SERVER['REQUEST_URI'] );
+	}
 }
 define( 'LANG', $lang );
 
