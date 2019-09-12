@@ -1,5 +1,6 @@
 <?php
 session_start();
+define('LANGNOREDIRECT', TRUE);
 require_once('./connect.php');
 require_once('base.inc');
 ini_set("display_errors",TRUE);

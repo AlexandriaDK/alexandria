@@ -21,11 +21,13 @@ if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|xx)/_', $_SERVER["REQUEST_URI
 	// if frontpage requested redirect to English page
 	// else redirect to Danish sub-page
 	$lang = 'da';
-	if ($_SERVER['REQUEST_URI'] == '/') {
-		header("Location: /en/");
-	} else {
-		header("HTTP/1.1 301 Redirect");
-		header("Location: /da" . $_SERVER['REQUEST_URI'] );
+	if ( ! defined('LANGNOREDIRECT') ) {
+		if ($_SERVER['REQUEST_URI'] == '/') {
+			header("Location: /en/");
+		} else {
+			header("HTTP/1.1 301 Redirect");
+			header("Location: /da" . $_SERVER['REQUEST_URI'] );
+		}
 	}
 }
 define( 'LANG', $lang );
