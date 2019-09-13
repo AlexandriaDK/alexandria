@@ -321,8 +321,9 @@ foreach($q AS $r) {
 
 // Find alle personer
 
+// Nyeste x personer først
 $autnew = [];
-$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id DESC LIMIT 5");
+$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id DESC LIMIT 10");
 foreach($q AS $r) {
 	$autnew[$r[id]] = $r[name];
 }
@@ -684,7 +685,7 @@ print '
 					<td>
 						<select name="bigselectaut" id="bigselectaut" multiple size="13">
 ';
-print "<option value=\"\">--- newest five persons ---\n";
+print "<option value=\"\">--- newest ten persons ---\n";
 foreach($autnew AS $id =>$name) {
 	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
 }

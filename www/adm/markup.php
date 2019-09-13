@@ -125,7 +125,7 @@ print "<th colspan=\"2\">Cons</th>" . PHP_EOL;
 foreach($cons AS $con) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convent\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
 	print "<tr>";
-	print "<td>" . htmlspecialchars($con['description']) . "<br>";
+	print "<td>" . nl2br(htmlspecialchars($con['description'])) . "<br>";
 	print "<a href=\"convent.php?con=" . $con['id'] . "\">[convention]</a>";
 
 	print "</td>";
@@ -134,7 +134,7 @@ foreach($cons AS $con) {
 		'linkfix',
 		$con['description']
 	);
-	print "<td>" . htmlspecialchars($fixedfact) . "<br><input type=\"hidden\" name=\"text\" value=\"" . htmlspecialchars($fixedfact) . "\"><input type=\"submit\"></td>";
+	print "<td>" . nl2br(htmlspecialchars($fixedfact)) . "<br><input type=\"hidden\" name=\"text\" value=\"" . htmlspecialchars($fixedfact) . "\"><input type=\"submit\"></td>";
 	print "</tr>";
 	print "</form>";
 	print PHP_EOL;

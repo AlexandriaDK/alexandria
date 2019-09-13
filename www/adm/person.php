@@ -74,6 +74,11 @@ if ($action == "Slet" && $person) { // burde tjekke om person findes
 if ($action == "opret") {
 	$firstname = trim($firstname);
 	$surname = trim($surname);
+	if (strpos($firstname, " ") !== FALSE && $surname === "") { // extract surname from firstname
+		$pos = strrpos($firstname, " ");
+		$surname = substr($firstname, $pos+1);
+		$firstname = substr($firstname, 0, $pos);
+	}
 	$rid = getone("SELECT id FROM aut WHERE firstname = '".dbesc($firstname)."' AND surname = '".dbesc($surname)."'");
 	if ($rid) {
 		$_SESSION['admin']['info'] = "En person med det navn <a href=\"person.php?person=$rid\">findes allerede</a>";
