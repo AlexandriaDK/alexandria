@@ -16,7 +16,7 @@ $description = (string) $_REQUEST['description'];
 $downloadable = (string) $_REQUEST['downloadable'];
 $language = (string) $_REQUEST['language'];
 $remoteurl = (string) $_REQUEST['remoteurl'];
-$allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png","gif"];
+$allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png","gif","webp"];
 $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
 
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
@@ -191,7 +191,7 @@ if ($action == "addfile") {
 		} else {
 			$file = $path;
 		}
-		$valid_extensions = [ "pdf", "jpg", "jpeg", "gif", "png" ];
+		$valid_extensions = [ "pdf", "jpg", "jpeg", "gif", "png", "webp" ];
 		if (!in_array($extension, $valid_extensions) ) {
 			$_SESSION['admin']['info'] = "Kan ikke genkende fil som billede.";
 		} else {
