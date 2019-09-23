@@ -62,7 +62,7 @@ foreach($dataset AS $id) {
 		$label = getentry('sce',$id);
 		$color = $yellow;
 	}
-	if (strlen($label) > 20) $label = substr($label,0,18)."...";
+	if (mb_strlen($label) > 20) $label = mb_substr($label,0,18)."...";
 
 	list(,,$txtw,,,$txth) = imagettfbbox($fontsize,0, $fontpath, fixttftext($label));
 	$txty = abs($txty);
