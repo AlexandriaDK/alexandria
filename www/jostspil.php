@@ -28,6 +28,9 @@ function getjostid ($name) {
 $from = (string) $_REQUEST['from'];
 $to = (string) $_REQUEST['to'];
 
+// Prepare for errors
+$from_error = $to_error = FALSE;
+
 // Numre betragtes som id's - ellers find personerne ud fra navnet
 if (is_numeric($from)) {
 	$from_id = intval($from);
@@ -278,6 +281,8 @@ $t->assign('content',$content);
 $t->assign('intro',$intro);
 $t->assign('from',$from);
 $t->assign('to',$to);
+$t->assign('from_error',$from_error);
+$t->assign('to_error',$to_error);
 $t->assign('json_people', $json_people );
 
 $t->display('jostgame.tpl');
