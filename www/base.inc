@@ -13,7 +13,7 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'en', 'nb', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|xx)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|xx)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } else {
@@ -52,6 +52,8 @@ if ( LANG == 'da') {
 	setlocale(LC_TIME, "be_BY.UTF-8");
 } elseif ( LANG == 'fi' ) {
 	setlocale(LC_TIME, "fi_FI.UTF-8");
+} elseif ( LANG == 'pl' ) {
+	setlocale(LC_TIME, "pl_PL.UTF-8");
 }
 
 // general
