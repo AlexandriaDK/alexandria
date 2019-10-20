@@ -20,10 +20,13 @@ if ($cat && $data_id) {
 	$data_label = getentry($cat,$data_id);
 }
 
-$output = "
+$mailoutput = "
 $data_description
 
 Kilde: $user_source
+";
+
+$output = $mailoutput . "
 IP: {$_SERVER['REMOTE_ADDR']}
 ";
 
@@ -66,7 +69,7 @@ if ($data_id && $cat) {
 $to = "peter@alexandria.dk";
 $subject = "[Alexandria] Rettelser (#$last_id)";
 $headers = "From: $from\r\nContent-Type: text/plain; charset=\"utf-8\"";
-$body = "Alexandria-rettelse:\r\n\r\n$label\r\n".wordwrap(stripslashes($output))."\r\n\r\n$link";
+$body = "Alexandria-rettelse:\r\n\r\n$label\r\n".wordwrap(stripslashes($mailoutput))."\r\n\r\n$link";
 mail($to,$subject,$body,$headers);
 
 $t->display('update_thanks.tpl');
