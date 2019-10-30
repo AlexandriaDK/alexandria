@@ -144,7 +144,7 @@ if ($conset) {
 -->
 <select name=conset>
 
-<?
+<?php
 $q = getall("SELECT id, name FROM conset ORDER BY name");
 foreach($q AS $r) {
 	print "<option value=$r[id]";
