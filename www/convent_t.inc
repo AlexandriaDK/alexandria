@@ -41,10 +41,11 @@ if ($r['id'] == 0) {
 
 // Del af større conset?
 
-	$serieantal = getone("SELECT COUNT(*) FROM convent WHERE '{$r['conset_id']}' = conset_id");
+//	$serieantal = getone("SELECT COUNT(*) FROM convent WHERE '{$r['conset_id']}' = conset_id");
 
 // I så fald, find næste og forrige
-	if ($r['conset_id'] && $serieantal > 1) {
+//	if ($r['conset_id'] && $serieantal > 1) {
+	if ($r['conset_id']) {
 		$delafout = "<a href=\"data?conset={$r['conset_id']}\" class=\"con\">{$r['cname']}</a>";
 		$qq = getall("
 			SELECT id, name, year, begin, end
