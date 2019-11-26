@@ -201,6 +201,8 @@ if ($action == "addfile") {
 					$_SESSION['admin']['info'] = "Kan ikke genkende fil som billede!";
 				} else {
 					$image->setImageFormat('jpg');
+					$image->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+					$image->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // flatten transparency to background, which is white per default
 					if ($image->writeImage($target) ) {
 						$_SESSION['admin']['info'] = "Thumbnail oprettet";
 						chlog($data_id,$category,"Thumbnail oprettet: " . $basename);
@@ -212,7 +214,7 @@ if ($action == "addfile") {
 					}
 				}
 			} else {
-				$command = "convert 2>&1 " . escapeshellarg($file) . " " . escapeshellarg($target); 
+				$command = "convert 2>&1 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
 				$content = `$command`;
 				chlog($data_id,$category,"Thumbnail oprettet: " . $basename);
 				$info = "Thumbnail oprettet.";
