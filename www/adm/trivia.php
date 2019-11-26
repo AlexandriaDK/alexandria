@@ -28,7 +28,7 @@ if ($action == "changetrivia" && $do != "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Trivia rettet");
 	}
-	$_SESSION['admin']['info'] = "Trivia rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Trivia edited! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
@@ -39,7 +39,7 @@ if ($action == "changetrivia" && $do == "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Trivia slettet");
 	}
-	$_SESSION['admin']['info'] = "Trivia slettet! " . dberror();
+	$_SESSION['admin']['info'] = "Trivia deleted! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
@@ -55,7 +55,7 @@ if ($action == "addtrivia") {
 		$id = dbid();
 		chlog($data_id,$category,"Trivia oprettet");
 	}
-	$_SESSION['admin']['info'] = "Trivia oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Trivia created! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
@@ -105,7 +105,7 @@ if ($data_id && $category) {
 }
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - trivia</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 </HEAD>
@@ -119,11 +119,11 @@ printinfo();
 if ($data_id && $category) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Ret trivia for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit trivia for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Trivia</th>".
-	      "<th>Intern note</th>".
+	      "<th>Internal note</th>".
 	      "</tr>\n";
 
 	foreach($result AS $row) {
@@ -136,8 +136,8 @@ if ($data_id && $category) {
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><textarea cols=40 rows=3 name="fact">'.htmlspecialchars($row['fact']).'</textarea></td>'.
 		      '<td><textarea cols=40 rows=3 name="hidden">'.htmlspecialchars($row['hidden']).'</textarea></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      '<td><input type="submit" name="do" value="Save"></td>'.
+		      '<td><input type="submit" name="do" value="Delete"></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -147,24 +147,17 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr valign=\"top\">\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">New</td>'.
 		      '<td><textarea cols=40 rows=3 id="newfact" name="fact"></textarea></td>'.
 		      '<td><textarea cols=40 rows=3 name="hidden"></textarea></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
-	foreach(array("Otto-vinder: ","Otto-nominering: ", "Novellescenarie", "Grind Night-scenarie") AS $text) {
-		print "<tr><td></td>";
-		print "<td><a href=\"#\" onclick=\"document.getElementById('newfact').value='".$text."';\">";
-		print $text;
-		print "</a></td>";
-		print "</tr>\n";
-	}
 	print "</table>";
 
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id.";
 }
 print "</body>\n</html>\n";
 ?>
