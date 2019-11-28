@@ -27,7 +27,7 @@ function antaltxt ($new, $rerun, $cancelled, $total, $type = 'sce') {
 
 // achievements
 if ($con == 26) award_achievement(79); // X-Con
-if ($con == 127) award_achievement(80); // 1. Copenhagen Gamecon
+if ($con == 127 || $con == 743) award_achievement(80); // 1. Copenhagen Gamecon (Viking Con I) or Konvent '77 (GothCon I)
 
 $r = getrow("SELECT convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, confirmed, conset.name AS cname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE convent.id = '$con'");
 if ($r['id'] == 0) {
