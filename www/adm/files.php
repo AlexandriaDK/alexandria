@@ -337,7 +337,7 @@ if ($data_id && $category) {
 
         foreach($result AS $row) {
 		$selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="files.php" method="post">'.
 		      '<input type="hidden" name="action" value="changefile">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
@@ -354,7 +354,7 @@ if ($data_id && $category) {
 		print "</form>\n\n";
 	}
 
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="files.php" method="post">'.
 	      '<input type="hidden" name="action" value="addfile">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';

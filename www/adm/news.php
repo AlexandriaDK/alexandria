@@ -69,7 +69,7 @@ if ($info) {
 
 if ($id) {
 	$selected = ($row['online'] == 1 ? 'checked="checked"' : '');
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="news.php" method="post">'.
 	      '<input type="hidden" name="action" value="changenews">'.
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print '<p>News ID #'.$id.'</p>';
@@ -80,7 +80,7 @@ if ($id) {
 		    '<p><input type="submit" name="do" value="Slet"></p>';
 	print "</form>\n\n";
 } else {
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="news.php" method="post">'.
 	      '<input type="hidden" name="action" value="addnews">';
 	print '<p>Ny nyhed:</p>';
 	print '<p><textarea name="text" cols="60" rows="5"></textarea></p>';

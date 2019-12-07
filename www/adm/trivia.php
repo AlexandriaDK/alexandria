@@ -17,7 +17,7 @@ $category = $_REQUEST['category'];
 unset($result);
 
 // Ret trivia
-if ($action == "changetrivia" && $do != "Slet") {
+if ($action == "changetrivia" && $do != "Delete") {
 	$fact = trim($fact);
 	$hidden = trim($hidden);
 	$q = "UPDATE trivia SET " .
@@ -33,7 +33,7 @@ if ($action == "changetrivia" && $do != "Slet") {
 }
 
 // Slet trivia
-if ($action == "changetrivia" && $do == "Slet") {
+if ($action == "changetrivia" && $do == "Delete") {
 	$q = "DELETE FROM trivia WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
@@ -127,7 +127,7 @@ if ($data_id && $category) {
 	      "</tr>\n";
 
 	foreach($result AS $row) {
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="trivia.php" method="post">'.
 		      '<input type="hidden" name="action" value="changetrivia">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
@@ -142,7 +142,7 @@ if ($data_id && $category) {
 		print "</form>\n\n";
 	}
 
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="trivia.php" method="post">'.
 	      '<input type="hidden" name="action" value="addtrivia">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';

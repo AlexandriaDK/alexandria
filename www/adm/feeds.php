@@ -106,7 +106,7 @@ print "<table align=\"center\" border=0>".
       "</tr>\n";
 
 foreach($result AS $row) {
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="feeds.php" method="post">'.
 	      '<input type="hidden" name="action" value="changelink">'.
 	      '<input type="hidden" name="id" value="'.$row['id'].'">';
 	print "<tr valign='top'>\n".
@@ -123,7 +123,7 @@ foreach($result AS $row) {
 	print "</form>\n\n";
 }
 
-print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+print '<form action="feeds.php" method="post">'.
       '<input type="hidden" name="action" value="addlink">';
 print "<tr>\n".
       '<td style="text-align:right;">Ny</td>'.

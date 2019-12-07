@@ -100,7 +100,7 @@ if ($id) {
 	      "</tr>\n";
 
 	foreach($result AS $row) {
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="run.php" method="post">'.
 		      '<input type="hidden" name="action" value="changerun">'.
 		      '<input type="hidden" name="id" value="'.$id.'">'.
 		      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
@@ -117,7 +117,7 @@ if ($id) {
 		print "</form>\n\n";
 	}
 
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="run.php" method="post">'.
 	      '<input type="hidden" name="action" value="addrun">'.
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print "<tr>\n".

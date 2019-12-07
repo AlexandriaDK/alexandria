@@ -116,7 +116,7 @@ if ($data_id && $category) {
 	      "</tr>\n";
 
 	foreach($result AS $row) {
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="tags.php" method="post">'.
 		      '<input type="hidden" name="action" value="changetag">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
@@ -130,7 +130,7 @@ if ($data_id && $category) {
 		print "</form>\n\n";
 	}
 
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="tags.php" method="post">'.
 	      '<input type="hidden" name="action" value="addtag">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';

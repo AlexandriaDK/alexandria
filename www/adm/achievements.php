@@ -78,7 +78,7 @@ print "<table align=\"center\" border=0>".
 if ($result) {
 	foreach($result AS $row) {
 		$totalpoints += $row['points'];
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="achievements.php" method="post">'.
 		      '<input type="hidden" name="action" value="update">'.
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
 		print "<tr valign='top'>\n".

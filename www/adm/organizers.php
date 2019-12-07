@@ -144,7 +144,7 @@ if ($result) {
 		if ($row['aut_id']) $aut_text .= $row['aut_id'] . " - ";
 		if ($row['fullname']) $aut_text .= $row['fullname'];
 		if ($row['aut_extra']) $aut_text .= $row['aut_extra'];
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="organizers.php" method="post">'.
 		      '<input type="hidden" name="action" value="changeorganizer">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
@@ -159,7 +159,7 @@ if ($result) {
 	}
 }
 
-print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+print '<form action="organizers.php" method="post">'.
       '<input type="hidden" name="action" value="addorganizer">'.
       '<input type="hidden" name="data_id" value="'.$data_id.'">';
 print "<tr>\n".

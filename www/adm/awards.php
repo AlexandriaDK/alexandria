@@ -221,7 +221,7 @@ if ($category == 'convent') {
 
 	if ($result) {
 	        foreach($result AS $row) {
-			print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+			print '<form action="awards.php" method="post">'.
 			      '<input type="hidden" name="action" value="changecategory">'.
 			      '<input type="hidden" name="category" value="'.$category.'">'.
 			      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
@@ -237,7 +237,7 @@ if ($category == 'convent') {
 		}
 
 	}
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="awards.php" method="post">'.
 	      '<input type="hidden" name="action" value="addcategory">'.
 	      '<input type="hidden" name="category" value="'.$category.'">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">';
@@ -296,7 +296,7 @@ if ($category == 'convent') {
 		}
 		$html_entity .= '</div>';
 
-		print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+		print '<form action="awards.php" method="post">'.
 		      '<input type="hidden" name="action" value="changenominee">'.
 		      '<input type="hidden" name="category" value="'.$category.'">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
@@ -317,7 +317,7 @@ if ($category == 'convent') {
 		print "</form>\n\n";
 		
 	}
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="post">'.
+	print '<form action="awards.php" method="post">'.
 	      '<input type="hidden" name="action" value="addnominee">'.
 	      '<input type="hidden" name="category" value="'.$category.'">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
