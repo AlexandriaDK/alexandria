@@ -29,9 +29,9 @@ if ($action == "ret" && $conset) {
 		$_SESSION['admin']['info'] = "Du mangler et navn!";
 	} else {
 		$q = "UPDATE conset SET " .
-		     "name = '$name', " .
-		     "description = '$description', " .
-		     "intern = '$intern' " .
+		     "name = '" . dbesc($name) . "', " .
+		     "description = '" . dbesc($description) . "', " .
+		     "intern = '" . dbesc($intern) . "' " .
 		     "WHERE id = '$conset'";
 		$r = doquery($q);
 		if ($r) {
@@ -47,7 +47,7 @@ if ($action == "opret") {
 		$_SESSION['admin']['info'] = "Du mangler et navn på con-serien!";
 	} else {
 		$q = "INSERT INTO conset (id, name, description, intern) " .
-		     "VALUES (NULL, '$name', '$description', '$intern')";
+		     "VALUES (NULL, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($intern) . "')";
 		$r = doquery($q);
 		if ($r) {
 			$conset = dbid();

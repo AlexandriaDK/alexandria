@@ -3,7 +3,6 @@ RewriteEngine On
 RewriteRule "^(da|en|sv|no|nb|de|fr|es|ru|be|fi|pl|xx)/(.*)" "/$2"
 
 ErrorDocument 404 /error/404magic.php
-php_flag register_globals off
 AddDefaultCharset utf-8
 
 Redirect /gfx/english /gfx/scenarie/english
