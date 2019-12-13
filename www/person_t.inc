@@ -95,7 +95,7 @@ if ($r['id'] == 0) {
 				asrel.tit_id = title.id AND
 				asrel.aut_id = '$person' 
 			GROUP BY
-				sce.id
+				sce.id, title.id
 			ORDER BY
 				firstyear,
 				firstbegin,
