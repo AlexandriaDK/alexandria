@@ -154,7 +154,7 @@ if ($action == "ret" && $scenarie) {
 		}
 
 // Færdig!
-		$_SESSION['admin']['info'] = "Scenarie rettet! " . dberror();
+		$_SESSION['admin']['info'] = "Game updated! " . dberror();
 		rexit($this_type, ['scenarie' => $scenarie] );
 	}
 }
@@ -163,19 +163,19 @@ if ($action == "ret" && $scenarie) {
 // Slet scenarie
 //
 
-if ($action == "Slet" && $scenarie) { // burde tjekke om scenarie findes
+if ($action == "Delete" && $scenarie) { // burde tjekke om scenarie findes
 	$error = [];
 	if (getCount('asrel', $scenarie, FALSE, 'sce') ) $error[] = "person";
-	if (getCount('csrel', $scenarie, FALSE, 'sce') ) $error[] = "kongres";
+	if (getCount('csrel', $scenarie, FALSE, 'sce') ) $error[] = "con";
 	if (getCount('gsrel', $scenarie, FALSE, 'sce') ) $error[] = "genre";
-	if (getCount('scerun', $scenarie, FALSE, 'sce') ) $error[] = "afvikling";
+	if (getCount('scerun', $scenarie, FALSE, 'sce') ) $error[] = "run";
 	if (getCount('trivia', $scenarie, TRUE, 'sce') ) $error[] = "trivia";
 	if (getCount('links', $scenarie, TRUE, 'sce') ) $error[] = "link";
 	if (getCount('alias', $scenarie, TRUE, 'sce') ) $error[] = "alias";
-	if (getCount('files', $scenarie, TRUE, 'sce') ) $error[] = "fil";
-	if (getCount('userlog', $scenarie, TRUE, 'sce') ) $error[] = "brugerlog (kræver admin)";
+	if (getCount('files', $scenarie, TRUE, 'sce') ) $error[] = "file";
+	if (getCount('userlog', $scenarie, TRUE, 'sce') ) $error[] = "user log (requires admin)";
 	if ($error) {
-		$_SESSION['admin']['info'] = "Kan ikke slette. Scenariet har stadigvæk tilknytninger: " . implode(", ",$error);
+		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['scenarie' => $scenarie] );
 	} else {
 		$title = getone("SELECT title FROM sce WHERE id = $scenarie");
@@ -187,7 +187,7 @@ if ($action == "Slet" && $scenarie) { // burde tjekke om scenarie findes
 			doquery("DELETE FROM game_description WHERE game_id = $scenarie");
 			chlog($scenarie,$this_type,"Scenarie slettet: $title");
 		}
-		$_SESSION['admin']['info'] = "Scenarie slettet! " . dberror();
+		$_SESSION['admin']['info'] = "Game deleted! " . dberror();
 		rexit($this_type, ['scenarie' => $scenarie] );
 	}
 }
@@ -216,7 +216,7 @@ if ($action == "opret") {
 			$r = doquery($sql);
 			chlog($scenarie,$this_type,"Scenarie oprettet");
 		}
-		$_SESSION['admin']['info'] = "Scenarie oprettet! " . dberror();
+		$_SESSION['admin']['info'] = "Game created! " . dberror();
 
 // Tilføj person-scenarie-relationer
 
@@ -382,7 +382,7 @@ function addto(mm,jobtype) {
 	m1len = m1.length;
 	if (jobtype == 1) {
 		prefix = '1_';
-		suffix = '(Forfatter)';
+		suffix = '(Author)';
 	} else if (jobtype == 2) {
 		prefix = '2_';
 		suffix = '(Illustrator)';
@@ -391,7 +391,7 @@ function addto(mm,jobtype) {
 		suffix = '(Layouter)';
 	} else if (jobtype == 4) {
 		prefix = '4_';
-		suffix = '(Arrangør)';
+		suffix = '(Organizer)';
 	} else if (jobtype == 5) {
 		prefix = '5_';
 		suffix = '(Designer)';
@@ -416,9 +416,12 @@ function addtocon(mm,contype) {
 	} else if (contype == 3) {
 		prefix = '3_';
 		suffix = '(Re-run, mod)';
+	} else if (contype == 42) {
+		prefix = '42_';
+		suffix = '(Test run)';
 	} else if (contype == 99) {
 		prefix = '99_';
-		suffix = '(Aflyst)';
+		suffix = '(Cancelled)';
 	}
 	for ( i=0; i<m3len ; i++){
 		if (m3.options[i].selected == true ) {
@@ -514,22 +517,20 @@ else {
 	print "<input type=\"hidden\" name=\"scenarie\" value=\"$scenarie\">\n";
 }
 
-print "<a href=\"./scenarie.php\">Nyt scenarie</a>";
+print "<a href=\"./scenarie.php\">New game</a>";
 
 print "<table border=\"0\">\n";
 
 if ($scenarie) {
-	print "<tr><td>ID:</td><td>$scenarie - <a href=\"../data?scenarie=$scenarie\" accesskey=\"q\">Vis scenarieside</a>";
+	print "<tr><td>ID:</td><td>$scenarie - <a href=\"../data?scenarie=$scenarie\" accesskey=\"q\">Show game page</a>";
 	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$scenarie\">Vis log</a>";
+		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$scenarie\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
 
-print "<tr><td>Titel:</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
-# tr("Titel:","title",$title);
-#print "<tr><td>Foromtale:<br><button id=\"add_tab\">+</button></td><td style=\"width: 100%\">";
-print "<tr><td>Foromtale:<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
+print "<tr><td>Title:</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
+print "<tr><td>Description:<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
 $dcount = 0;
 $lihtml = $inputhtml = '';
 foreach($descriptions AS $d) {
@@ -547,23 +548,23 @@ print "<ul>" . $lihtml . "</ul>" . PHP_EOL;
 print $inputhtml;
 print "</div>";
 print "</td></tr>\n";
-print "<tr valign=top><td>Intern note:</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note:</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
 
 
-### Deltagere ###
+### Participants ###
 
-print "<tr valign=top><td>Deltagere:</td>";
+print "<tr valign=top><td>Participants:</td>";
 print "<td>\n";
-print "GM's: <input type=\"text\" name=\"gms\" value=\"" . $gms . "\" size=\"2\" \> - ";
-print "Spillere: <input type=\"text\" name=\"players\" value=\"" . $players . "\" size=\"2\" \> - ";
-print "evt. yderligere detaljer : <input type=text name=\"participants_extra\" value=\"".htmlspecialchars($participants_extra)."\" size=30>\n";
-print "<br /><span style=\"font-size: 0.8em;\">Mulighed for variabelt antal spillere: Angiv fx <i>4-6</i> for 4 til 6 spillere</span>\n";
+print "GMs: <input type=\"text\" name=\"gms\" value=\"" . $gms . "\" size=\"2\" \> - ";
+print "Players: <input type=\"text\" name=\"players\" value=\"" . $players . "\" size=\"2\" \> - ";
+print "possible more details: <input type=text name=\"participants_extra\" value=\"".htmlspecialchars($participants_extra)."\" size=30>\n";
+print "<br /><span style=\"font-size: 0.8em;\">You can enter a range of players. E.g. type <i>4-6</i> for 4 to 6 players</span>\n";
 print "</td>";
 print "</tr>\n\n";
 
-### Brætspil? ###
+### Board game? ###
 
-print "<tr valign=top><td>Brætspil?</td>";
+print "<tr valign=top><td>Board&nbsp;game?</td>";
 print "<td>\n";
 print "<input type=\"checkbox\" name=\"boardgame\" " . ($boardgame ? "checked=\"checked\"" : "") . "/>\n";
 
@@ -580,7 +581,7 @@ foreach ($sys AS $id => $name) {
 	print ">$name\n";
 }
 print "</select>\n";
-print "- evt. systemnote: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
+print "- possble note: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
 
 print "</td>";
 
@@ -588,7 +589,7 @@ print "</td>";
 print "</tr>\n\n";
 
 
-### Liste over cons: ###
+### List of cons: ###
 
 print '
 	<tr valign="top">
@@ -612,11 +613,12 @@ print '
 						</select>
 					</td>
 					<td>
-						<input type="button" class="flytknap" value="&lt;- Premiere" onClick="addtocon(m4,1)" title="Premiere (første offentlige afvikling)"><br>
+						<input type="button" class="flytknap" value="&lt;- Premiere" onClick="addtocon(m4,1)" title="Premiere (first official run)"><br>
 						<input type="button" class="flytknap" value="&lt;- Re-run" onClick="addtocon(m4,2)" title="Rerun (omtrent samme version som oprindelig udgave)"><br>
 						<input type="button" class="flytknap" value="&lt;- Re-run (mod.)" onClick="addtocon(m4,3)" title="Re-run (modificeret siden oprindelig udgave)"><br>
-						<input type="button" class="flytknap" value="&lt;- Aflyst" onClick="addtocon(m4,99)" title="Aflyst (var annonceret i programmet, men blev ikke kørt)"><br>
-						<input type="button" class="flytknapright" value="-&gt; Fjern" onClick="removefrom(m4)" ><br>
+						<input type="button" class="flytknap" value="&lt;- Test run" onClick="addtocon(m4,42)" title="Test run (announced but officially scheduled for another con)"><br>
+						<input type="button" class="flytknap" value="&lt;- Cancelled" onClick="addtocon(m4,99)" title="Aflyst (var annonceret i programmet, men blev ikke kørt)"><br>
+						<input type="button" class="flytknapright" value="-&gt; Remove" onClick="removefrom(m4)" ><br>
 					</td>
 
 					<td>
@@ -628,7 +630,6 @@ if ($conlock) { // default con
 }
 
 if($scenarie && $qcrel && count($qcrel) > 0) {
-#	mysql_data_seek($qcrel,0); // allerede valgte cons
         foreach($qcrel AS $row) {
 		print "<option value=\"{$row['id']}\">{$row['name']} ({$row['year']})</option>\n";
 	}
@@ -652,12 +653,12 @@ print '
 ';
 
 
-### Liste over navne: ###
+### List of names: ###
 
 print '
 	<tr valign="top">
 		<td>
-			Af:
+			By:
 		</td>
 		<td colspan="2">
 			<table border="0">
@@ -674,12 +675,12 @@ print '
 						</select>
 					</td>
 					<td>
-						<input type="button" class="flytknap" value="&lt;- Forfatter" onClick="addto(m2,1)" ><br>
+						<input type="button" class="flytknap" value="&lt;- Author" onClick="addto(m2,1)" ><br>
 						<input type="button" class="flytknap" value="&lt;- Illustrator" onClick="addto(m2,2)"><br>
 						<input type="button" class="flytknap" value="&lt;- Layouter" onClick="addto(m2,3)" ><br>
-						<input type="button" class="flytknap" value="&lt;- Arrangør" onClick="addto(m2,4)" ><br>
+						<input type="button" class="flytknap" value="&lt;- Organizer" onClick="addto(m2,4)" ><br>
 						<input type="button" class="flytknap" value="&lt;- Designer" onClick="addto(m2,5)" ><br>
-						<input type="button" class="flytknapright" value="-&gt; Fjern" onClick="removefrom(m2)" ><br>
+						<input type="button" class="flytknapright" value="-&gt; Remove" onClick="removefrom(m2)" ><br>
 					</td>
 
 					<td>
@@ -704,11 +705,9 @@ print '
 	</tr>
 ';
 
-tr("Evt. arrangør:","aut_extra",$aut_extra);
+tr("Optional organizer:","aut_extra",$aut_extra);
 
-#$ror = ($scenarie) ? "Ret" : "Opret";
-
-print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($scenarie ? "Ret" : "Opret").' scenarie">' . ($scenarie ? ' <input type="submit" name="action" value="Slet" onclick="return confirm(\'Slet scenarie?\n\nFor en sikkerheds skyld tjekkes der, om alle tilknytninger er fjernet.\');" class="delete">' : '') . '</td></tr>';
+print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($scenarie ? "Edit" : "Create").' game">' . ($scenarie ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 
 if ($scenarie) {
 	// Mulighed for at rette links
@@ -761,7 +760,7 @@ var m4 = document.theForm.con;
 $("#title").change(function() {
 	$.get( "lookup.php", { type: 'sce', label: $("#title").val() } , function( data ) {
 		if (data > 0) {
-			$("#titlenote").text("⚠ Et scenarie med samme titel findes allerede");
+			$("#titlenote").text("⚠ A scenario with the same title already exists");
 		} else {
 			$("#titlenote").text("");
 		}

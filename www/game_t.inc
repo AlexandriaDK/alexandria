@@ -15,13 +15,13 @@ $r = getrow("
 if ($scenarie == 161)      award_achievement(55); // De Professionelle
 if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
 if ($scenarie == 3827)     award_achievement(57); // Paninaro
-if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Cykling
+if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Bicycling
 if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario
 
-if ($r['id'] == 0) {
-	$t->assign('content',"Beklager - intet scenarie fundet!");
-	$t->assign('pagetitle',"Ikke fundet");
+if ($r['id'] == 0) { // ought to add 404 here
+	$t->assign('content', $t->getTemplateVars('_sce_nomatch') );
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 
 } else {
@@ -51,7 +51,7 @@ if ($r['id'] == 0) {
 		if ($r['players_max'] != $r['players_min']) {
 			$players_text .= "-" . $r['players_max'];
 		}
-		$players_text .= ($r['players_min'] == 1 && $r['players_max'] == 1 ? " spiller" : " spillere");
+		$players_text .= " " . ($r['players_min'] == 1 && $r['players_max'] == 1 ? $t->getTemplateVars('_sce_player') : $t->getTemplateVars('_sce_players') );
 		$participants[] = $players_text;
 		$players = ($r['players_max'] != $r['players_min'] ? $r['players_min'] . "-" . $r['players_max'] : $r['players_min']);
 	}
@@ -107,11 +107,11 @@ if ($r['id'] == 0) {
 	foreach($q AS $rs) {
 		$coninfo = nicedateset($rs['begin'],$rs['end']);
 		$conlist .= "<tr><td>";
-// Sæt evt. rerun/aflyst-ikoner på
+// Add rerun/cancelled/test icons
 		if ($rs['textsymbol']) { // unicode-ikoner
 			$conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\">{$rs['textsymbol']}</span>";
 		} elseif ($rs['iconfile']) {
-			$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" width=\"14\" height=\"14\" /> ";
+			$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" width=\"15\" height=\"15\" /> ";
 		} else {
 			$conlist .= " ";
 		}

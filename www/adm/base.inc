@@ -106,8 +106,8 @@ function changetags($data_id, $category) {
 function changetrivia($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM trivia WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Trivia:</td><td>\n";
-	$html .= sprintf("$numlinks %s",($numlinks == 1?"trivia-fact":"trivia-facts"));
-	$html .= " - <a href=\"trivia.php?category=$category&amp;data_id=$data_id\">Ret trivia</a>";
+	$html .= sprintf("$numlinks %s",($numlinks == 1?"trivia fact":"trivia facts"));
+	$html .= " - <a href=\"trivia.php?category=$category&amp;data_id=$data_id\">Edit trivia</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -115,44 +115,44 @@ function changetrivia($data_id, $category) {
 function changealias($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM alias WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Alias:</td><td>\n";
-	$html .= sprintf("$numlinks %s",($numlinks == 1?"alias":"aliaser"));
-	$html .= " - <a href=\"alias.php?category=$category&amp;data_id=$data_id\">Ret alias</a>";
+	$html .= sprintf("$numlinks %s",($numlinks == 1?"alias":"aliases"));
+	$html .= " - <a href=\"alias.php?category=$category&amp;data_id=$data_id\">Edit aliases</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
 
 function changeorganizers ( $convent_id ) {
 	$numlinks = getone("SELECT COUNT(*) FROM acrel WHERE convent_id = '$convent_id'");
-	$html  = "<tr valign=top><td>Arrangører:</td><td>\n";
-	$html .= "$numlinks " . ($numlinks == 1?"arrangør":"arrangører");
-	$html .= " - <a href=\"organizers.php?category=convent&amp;data_id=$convent_id\" accesskey=\"r\">Ret arrangører</a>";
+	$html  = "<tr valign=top><td>Organizers:</td><td>\n";
+	$html .= "$numlinks " . ($numlinks == 1?"organizer":"organizers");
+	$html .= " - <a href=\"organizers.php?category=convent&amp;data_id=$convent_id\" accesskey=\"r\">Edit organizers</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
 
 function changegenre($sce_id) {
 	$numgenres = getone("SELECT COUNT(*) FROM gsrel WHERE sce_id = '$sce_id'");
-	$html  = "<tr valign=top><td>Genrer:</td><td>\n";
-	$html .= sprintf("$numgenres %s",($numgenres == 1?"genre":"genrer"));
-	$html .= " - <a href=\"genre.php?id=$sce_id\" accesskey=\"g\">Ret genrer</a>";
+	$html  = "<tr valign=top><td>Genres:</td><td>\n";
+	$html .= sprintf("$numgenres %s",($numgenres == 1?"genre":"genres"));
+	$html .= " - <a href=\"genre.php?id=$sce_id\" accesskey=\"g\">Edit genres</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
 
 function changerun($sce_id) {
 	$numruns = getone("SELECT COUNT(*) FROM scerun WHERE sce_id = '$sce_id'");
-	$html  = "<tr valign=top><td>Afviklinger:</td><td>\n";
-	$html .= sprintf("$numruns %s",($numruns == 1?"afvikling":"afviklinger"));
-	$html .= " - <a href=\"run.php?id=$sce_id\" accesskey=\"r\">Ret afviklinger</a>";
+	$html  = "<tr valign=top><td>Runs:</td><td>\n";
+	$html .= sprintf("$numruns %s",($numruns == 1?"run":"runs"));
+	$html .= " - <a href=\"run.php?id=$sce_id\" accesskey=\"r\">Edit runs</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
 
 function changefiles($data_id, $category) {
 	$numfiles = getone("SELECT COUNT(*) FROM files WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>Filer:</td><td>\n";
-	$html .= "$numfiles ".($numfiles == 1?"fil":"filer");
-	$html .= " - <a href=\"files.php?category=$category&amp;data_id=$data_id\" accesskey=\"f\">Ret filer</a>";
+	$html  = "<tr valign=top><td>Files:</td><td>\n";
+	$html .= "$numfiles ".($numfiles == 1?"file":"files");
+	$html .= " - <a href=\"files.php?category=$category&amp;data_id=$data_id\" accesskey=\"f\">Edit files</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -168,19 +168,19 @@ function changeawards($convent_id) {
 
 function changeuserlog($data_id, $category) {
 	$numusers = getone("SELECT COUNT(DISTINCT user_id) FROM userlog WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>" . ($category == "convent" ? "Besøgende" : "Brugere") . ":</td><td>\n";
-	$html .= sprintf("$numusers %s",($numusers == 1?"person":"personer"));
-	$html .= " - <a href=\"userlog.php?category=$category&amp;data_id=$data_id\">Vis</a>";
+	$html  = "<tr valign=top><td>" . ($category == "convent" ? "Visitors" : "Users") . ":</td><td>\n";
+	$html .= sprintf("$numusers %s",($numusers == 1?"person":"persons"));
+	$html .= " - <a href=\"userlog.php?category=$category&amp;data_id=$data_id\">Show</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;	
 }
 
 function showpicture($data_id, $category) {
-	$html = "<tr><td>Billede:</td><td>";
+	$html = "<tr><td>Picture:</td><td>";
 	if (($path = getthumbnailpath($data_id, $category)) === FALSE) {
-		$html .= "Nej";
+		$html .= "No";
 	} else {
-		$html .= "<a href=\"../$path\">Ja</a>";
+		$html .= "<a href=\"../$path\">Yes</a>";
 	}
 	$html .= "</td></tr>\n\n";
 	return $html;
@@ -208,10 +208,10 @@ function showtickets($data_id, $category) {
 
 	$result = getall("SELECT id, user_name, submittime, status FROM updates WHERE data_id = '$data_id' AND category = '$category' ORDER BY id DESC");
         foreach($result AS $row) {
-		$html .= "<a href=\"ticket.php?id={$row['id']}\">#{$row['id']}</a> - indsendt af {$row['user_name']} ({$row['status']})<br>\n";
+		$html .= "<a href=\"ticket.php?id={$row['id']}\">#{$row['id']}</a> - submitted by {$row['user_name']} ({$row['status']})<br>\n";
 	}
 	if (!$result) {
-		$html .= "Ingen";
+		$html .= "None";
 	}
 	$html .= "</td></tr>\n";
 	return $html;

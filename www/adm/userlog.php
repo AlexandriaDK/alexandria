@@ -50,7 +50,7 @@ printinfo();
 print "<table align=\"center\" border=0>".
       "<tr><th colspan=5>User log: <a href=\"$mainlink\" accesskey=\"q\">$title</a> (" . count($dataset) . " " . (count($dataset) == 1 ? "person" : "personer") . ")</th></tr>\n".
       "<tr class=\"headline\">\n".
-      "<th>Bruger</th>";
+      "<th>User</th>";
 
 if ($category  == "sce") {
 	print "<th>Read</th><th>GMed</th><th>Played</th>";
@@ -62,11 +62,11 @@ foreach($dataset AS $user) {
 	print "<tr>";
 	print "<td>" . $user['name'] . "</td>";
 	if ($category == "sce") {
-		print "<td class=\"mark\">" . ($user['data']['read'] ? "X" : "") . "</td>";
-		print "<td class=\"mark\">" . ($user['data']['gmed'] ? "X" : "") . "</td>";
-		print "<td class=\"mark\">" . ($user['data']['played'] ? "X" : "") . "</td>";
+		print "<td class=\"mark\">" . ($user['data']['read'] ? "✔" : "") . "</td>";
+		print "<td class=\"mark\">" . ($user['data']['gmed'] ? "✔" : "") . "</td>";
+		print "<td class=\"mark\">" . ($user['data']['played'] ? "✔" : "") . "</td>";
 	} else {
-		print "<td class=\"mark\">" . ($user['data']['visited'] ? "X" : "") . "</td>";
+		print "<td class=\"mark\">" . ($user['data']['visited'] ? "✔" : "") . "</td>";
 	}
 	print "</tr>" . PHP_EOL;
 }

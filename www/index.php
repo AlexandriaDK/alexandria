@@ -29,7 +29,7 @@ if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
 // fetching latest scenarios for download
 $latest_downloads = array();
 $i = 0;
-$files = getall("SELECT a.id, a.title FROM sce a, files b WHERE a.id = b.data_id AND b.category = 'sce' AND downloadable = 1 AND a.boardgame != 1 GROUP BY a.id ORDER BY MIN(b.inserted) DESC LIMIT 20");
+$files = getall("SELECT a.id, a.title FROM sce a, files b WHERE a.id = b.data_id AND b.category = 'sce' AND downloadable = 1 AND a.boardgame != 1 GROUP BY a.id ORDER BY MIN(b.inserted) DESC LIMIT 40");
 foreach($files AS $file) {
 	$latest_downloads[$i]['id'] = $file['id'];
 	$latest_downloads[$i]['title'] = $file['title'];
