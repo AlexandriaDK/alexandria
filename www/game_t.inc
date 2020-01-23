@@ -35,13 +35,13 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$gms = $players = "";
 	if ($r['gms_min'] !== NULL) {
 		if ($r['gms_min'] == 0 && $r['gms_max'] == 0) {
-			$gms_text = "Ingen GM's";
+			$gms_text = $t->getTemplateVars('_sce_none_gms');
 		} else {
 			$gms_text = $r['gms_min'];
 			if ($r['gms_max'] != $r['gms_min']) {
 				$gms_text .= "-" . $r['gms_max'];
 			}
-			$gms_text .= ($r['gms_min'] == 1 && $r['gms_max'] == 1 ? " GM" : " GM's");
+			$gms_text .= " " . ($r['gms_min'] == 1 && $r['gms_max'] == 1 ? $t->getTemplateVars('_sce_gm') : $t->getTemplateVars('_sce_gms') );
 		}
 		$participants[] = $gms_text;
 		$gms = ($r['gms_max'] != $r['gms_min'] ? $r['gms_min'] . "-" . $r['gms_max'] : $r['gms_min']);
