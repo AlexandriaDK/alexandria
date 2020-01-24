@@ -140,7 +140,7 @@
 			<div class="leftmenucontent">
 				{if $boardgame}{$_top_dyn_boardgame}{else}{$_top_dyn_scenario}{/if}<br><br>
 				<span id="data_read">
-				{if $user_read}- {$_top_read_pt} <a href="javascript:changedata('data_read','remove','sce','{$id}','read')">({$_switch}</a>{/if}
+				{if $user_read}- {$_top_read_pt} <a href="javascript:changedata('data_read','remove','sce','{$id}','read')">({$_switch})</a>{/if}
 				{if not $user_read}- {$_top_not_read_pt} <a href="javascript:changedata('data_read','add','sce','{$id}','read')">({$_switch})</a>{/if}
 				</span><br>
 				{if !$boardgame}
