@@ -125,7 +125,7 @@ print "<tr valign=\"top\"><td>Internal note:</td><td><textarea name=\"intern\" c
 tr("Date of birth:", "birth", $birth, "", "ÅÅÅÅ-MM-DD", "date");
 tr("Date of death:","death", $death, "", "ÅÅÅÅ-MM-DD", "date");
 
-print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($person ? "Edit" : "Create").' person">' . ($person ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete person?\n\nAs a safety mecanism it will be checked if all references are removed.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
+print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($person ? "Update" : "Create").' person">' . ($person ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete person?\n\nAs a safety mecanism it will be checked if all references are removed.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($person) {
 // Mulighed for at rette links
