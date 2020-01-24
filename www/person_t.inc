@@ -1,7 +1,7 @@
 <?php
 $this_type = 'aut';
 
-$r = getrow("SELECT id, CONCAT(firstname,' ',surname) AS name, birth, WEEKDAY(birth) AS birthday, death, WEEKDAY(death) AS deathday, description FROM aut WHERE id = '$person'");
+$r = getrow("SELECT id, CONCAT(firstname,' ',surname) AS name, birth, WEEKDAY(birth) AS birthday, death, WEEKDAY(death) AS deathday FROM aut WHERE id = '$person'");
 if ($r['id'] == 0) {
 	$t->assign('content',"Beklager - ingen forfatter fundet");
 	$t->assign('pagetitle',"Ikke fundet");
@@ -266,12 +266,6 @@ if ($r['id'] == 0) {
 	if (file_exists("gfx/person/s_".$person.".jpg")) {
 		$personpic = "<a href=\"gfx/person/l_".$person.".jpg\"><img src=\"gfx/person/s_".$person.".jpg\" alt=\"Billede af ".htmlspecialchars($r['name'])."\" style=\"float:right; border: 1px solid black; margin: 2px;\" /></a>";
 		$available_pic = 1;
-	}
-
-
-// Intern data:
-	if ($intern == TRUE) {
-		$internpart = nl2br($r['description']);
 	}
 
 // Smarty

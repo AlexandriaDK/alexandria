@@ -87,7 +87,7 @@ if (!$action && $scenarie) {
 if ($action == "ret" && $scenarie) {
 	print "<pre>";
 	if (!$title) {
-		$_SESSION['admin']['info'] = "Du mangler en titel!";
+		$_SESSION['admin']['info'] = "You are missing a title!";
 	} else {
 		$title = trim($title);
 		$q = "UPDATE sce SET " .
@@ -352,7 +352,7 @@ foreach($q AS $r) {
 
 ?>
 <!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - scenarie</TITLE>
+<HTML><HEAD><TITLE>Administration - Scenario</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <style>

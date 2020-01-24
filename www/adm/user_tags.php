@@ -15,7 +15,7 @@ if (!$user_id || !$scenario) {
 }
 
 // valid user
-$tag = (string) $_REQUEST['tag'];
+$tag = trim( (string) $_REQUEST['tag'] );
 $tag_id = (int) $_REQUEST['tag_id'];
 
 $q = getone("SELECT 1 FROM sce WHERE id = $scenario");
