@@ -98,7 +98,7 @@ if (!$ucid) {
 				$html .= "</span>";
 				if ($nominee['nominationtext']) {
 					$nt_id = "nominee_text_" . $nominee['id'];
-					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Vis nomineringstekst\">[+]</span>";
+					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) ."\">[+]</span>";
 
 				}
 				$html .=  "</h5>";
@@ -120,12 +120,6 @@ if (!$ucid) {
 	}
 	$html .= "<div class=\"clear\"></div>" . PHP_EOL;
 }
-
-/*
-$html .= "<pre>" . var_export($awardnominees, TRUE) . "</pre>";
-$html .= "<pre>" . var_export($awardset, TRUE) . "</pre>";
-$html .= "<pre>" . var_export($award_categories, TRUE) . "</pre>";
-*/
 
 $t->assign('html_content', $html);
 $t->assign('type',$this_type);

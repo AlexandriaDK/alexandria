@@ -148,13 +148,13 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$awarddata = [];
 	$q = getall("SELECT a.id, a.nominationtext, a.winner, a.ranking, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.conset_id FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id INNER JOIN convent c ON b.convent_id = c.id WHERE a.sce_id = $scenarie ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC");
 	foreach($q AS $rs) {
-		$awardtext = ($rs['winner'] ? "Vinder" : "Nomineret" ) . ", " . htmlspecialchars($rs['name']);
+		$awardtext = ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner') ) : ucfirst($t->getTemplateVars('_award_nominated') ) ) . ", " . htmlspecialchars($rs['name']);
 		if ($rs['ranking']) {
 			$awardtext .= " (" . htmlspecialchars($rs['ranking']) . ")";
 		}
 		if ($rs['nominationtext']) {
 			$nt_id = "nominee_text_" . $rs['id'];
-			$awardtext .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" style=\"font-weight: bold;\" title=\"Vis nomineringstekst\">[+]</span>";
+			$awardtext .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" style=\"font-weight: bold;\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) . "\">[+]</span>";
 			$awardtext .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
 
 		}

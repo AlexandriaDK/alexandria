@@ -159,9 +159,9 @@ function changefiles($data_id, $category) {
 
 function changeawards($convent_id) {
 	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convent_id = '$convent_id'");
-	$html  = "<tr valign=top><td>Priser:</td><td>\n";
-	$html .= sprintf("$numawards %s, $numnominees %s",($numawards == 1?"pris":"priser"), ($numnominees == 1?"nomineret":"nominerede") );
-	$html .= " - <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"w\">Ret priser</a>";
+	$html  = "<tr valign=top><td>Awards:</td><td>\n";
+	$html .= sprintf("$numawards %s, $numnominees %s",($numawards == 1?"award":"awards"), ($numnominees == 1?"nominated":"nominated") );
+	$html .= " - <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"w\">Edit awards</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }

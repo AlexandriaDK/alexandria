@@ -305,7 +305,7 @@ if ($r['id'] == 0) {
 				$html .= "</span>";
 				if ($nominee['nominationtext']) {
 					$nt_id = "nominee_text_" . $nominee['id'];
-					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Vis nomineringstekst\">[+]</span>";
+					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) . "\">[+]</span>";
 
 				}
 				$html .=  "</h5>";
