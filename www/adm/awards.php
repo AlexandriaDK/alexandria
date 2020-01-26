@@ -42,7 +42,7 @@ foreach($result AS $row) {
 }
 
 // Ret kategori
-if ($action == "changecategory" && $do != "Slet") {
+if ($action == "changecategory" && $do != "Delete") {
 
 	$q = "UPDATE award_categories SET " .
 	     "name= '" . dbesc($name) . "', " .
@@ -52,17 +52,17 @@ if ($action == "changecategory" && $do != "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Pris rettet: $id, $name");
 	}
-	$_SESSION['admin']['info'] = "Pris rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Award updated! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
 // Slet kategori
-if ($action == "changecategory" && $do == "Slet") {
+if ($action == "changecategory" && $do == "Delete") {
 	// Tjek at der ikke er nogen nominerede, før der kan slettes
 	$q = "SELECT COUNT(*) FROM award_nominees where award_category_id = $id";
 	$r = getone($q);
 	if($r != 0) {
-		$_SESSION['admin']['info'] = "Kategorien skal være tom, før den kan slettes! " . dberror();
+		$_SESSION['admin']['info'] = "The category needs to be empty before it can be removed! " . dberror();
 		rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 	}
 
@@ -71,7 +71,7 @@ if ($action == "changecategory" && $do == "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Kategori fjernet: $id");
 	}
-	$_SESSION['admin']['info'] = "Pris fjernet! " . dberror();
+	$_SESSION['admin']['info'] = "Category removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
@@ -85,12 +85,12 @@ if ($action == "addcategory") {
 		$id = dbid();
 		chlog($data_id,$category,"Pris oprettet: $name");
 	}
-	$_SESSION['admin']['info'] = "Pris oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Award created! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
 // Ret nomineret
-if ($action == "changenominee" && $do != "Slet") {
+if ($action == "changenominee" && $do != "Delete") {
 	$award_name = getone("SELECT name FROM award_categories WHERE id = $data_id");
 	$q = "UPDATE award_nominees SET " .
 	     "name= '" . dbesc($name) . "', " .
@@ -108,7 +108,7 @@ if ($action == "changenominee" && $do != "Slet") {
 	if ($r) {
 		chlog($convent_id,'convent',"Nomineret rettet: $name ($data_id), $award_name");
 	}
-	$_SESSION['admin']['info'] = "Nomineret rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Nominee updated! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
@@ -124,16 +124,16 @@ if ($action == "addnominee") {
 		$id = dbid();
 		chlog($convent_id,'convent',"Nomineret oprettet: $name, $award_name");
 	}
-	$_SESSION['admin']['info'] = "Nomineret oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Nominee added! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
 // Slet nomineret
-if ($action == "changenominee" && $do == "Slet") {
+if ($action == "changenominee" && $do == "Delete") {
 	// Tjek at der ikke er nogen nominerede, før der kan slettes
 	$num_childs = getone("SELECT COUNT(*) FROM award_nominee_entities where award_nominee_id = $id");
 	if($num_childs != 0) {
-		$_SESSION['admin']['info'] = "Nomineringen må ikke have nogen enheder tilknyttet, før den kan slettes! " . dberror();
+		$_SESSION['admin']['info'] = "The nominee must have all entities removed, before it can be deleted! " . dberror();
 		rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 	}
 
@@ -142,7 +142,7 @@ if ($action == "changenominee" && $do == "Slet") {
 	if ($r) {
 		chlog($convent_id,'convent',"Nomineret fjernet: $id");
 	}
-	$_SESSION['admin']['info'] = "Nomineret fjernet! " . dberror();
+	$_SESSION['admin']['info'] = "Nominee removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
@@ -150,9 +150,9 @@ if ($action == 'deletenomineeentity') {
 	if (getone("SELECT id FROM award_nominee_entities WHERE id = $id") ) {
 		doquery("DELETE FROM award_nominee_entities WHERE id = $id");
 		chlog($convent_id,'convent',"Nominerings-tilknytning slettet: $id");
-		$_SESSION['admin']['info'] = "Tilknytning slettet! " . dberror();
+		$_SESSION['admin']['info'] = "Connection removed! " . dberror();
 	} else {
-		$_SESSION['admin']['info'] = "Kunne ikke finde tilknytning! " . dberror();
+		$_SESSION['admin']['info'] = "Could not find connection! " . dberror();
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
@@ -160,7 +160,7 @@ if ($action == 'deletenomineeentity') {
 
 ?>
 <!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - priser</TITLE>
+<HTML><HEAD><TITLE>Administration - Awards</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -212,11 +212,11 @@ if ($category == 'convent') {
 	$result = getall($query);
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Ret priser for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit awards for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($title) . "</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
-	      "<th>Pris</th>".
-	      "<th>Beskrivelse</th>".
+	      "<th>Award</th>".
+	      "<th>Description</th>".
 	      "</tr>\n";
 
 	if ($result) {
@@ -230,8 +230,8 @@ if ($category == 'convent') {
 			      '<td style="text-align:right;">'.$row['id'].'</td>'.
 			      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=40 maxlength=150><br><a href="awards.php?category=awardcategory&amp;data_id=' . $row['id'] . '">' . ($row['winners'] == 1 ? "1 vinder" : (int) $row['winners'] . " vindere") . " / " . ($row['nominees'] == 1 ? "1 nomineret" : $row['nominees'] . " nominerede") . '</a></td>'.
 			      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($row['description']).'</textarea></td>'.
-			      '<td><input type="submit" name="do" value="Ret"> '.
-			      ($row['nominees'] == 0 ? '<input type="submit" name="do" value="Slet" class="delete" onclick="return confirm(\'Slet pris?\');">' : '') . '</td>'.
+			      '<td><input type="submit" name="do" value="Update"> '.
+			      ($row['nominees'] == 0 ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove award?\');">' : '') . '</td>'.
 			      "</tr>\n";
 			print "</form>\n\n";
 		}
@@ -242,10 +242,10 @@ if ($category == 'convent') {
 	      '<input type="hidden" name="category" value="'.$category.'">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">';
 	print "<tr valign=\"top\">\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="name" value="" size=40 maxlength=150 autofocus></td>'.
 	      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
@@ -259,15 +259,15 @@ if ($category == 'convent') {
 	$nominees = getall("SELECT a.id, a.sce_id, a.name, a.nominationtext, a.winner, a.ranking, b.title, COUNT(c.id) AS count_entity FROM award_nominees a LEFT JOIN sce b ON a.sce_id = b.id LEFT JOIN award_nominee_entities c ON a.id = c.award_nominee_id WHERE award_category_id = $data_id GROUP BY a.id ORDER BY winner DESC, a.id");
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Ret nominerede for " . htmlspecialchars($name) . " på: <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"q\">" . htmlspecialchars($convent_name) . " ($year)</a>".
+	      "<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"q\">" . htmlspecialchars($convent_name) . " ($year)</a>".
 	      "</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
-	      "<th>Nomineret</th>".
-	      "<th>Evt. scenarie</th>".
-	      "<th>Nomineringstekst</th>".
-	      "<th>Vinder?</th>".
-	      "<th>Evt. placering</th>".
+	      "<th>Nominee</th>".
+	      "<th>Scenario (optional)</th>".
+	      "<th>Nominee text</th>".
+	      "<th>Winner?</th>".
+	      "<th>Position (optional)</th>".
 	      "<th></th>" . 
 	      "</tr>\n";
 	foreach($nominees AS $nominee) {
@@ -277,13 +277,13 @@ if ($category == 'convent') {
 		}
 		$html_entity = "";
 		$html_entity .= '<div style="margin-left: 3em;">';
-		$html_entity .= ($nominee['count_entity'] == 1 ? '1 tilknytning' : $nominee['count_entity'] . " tilknytninger");
+		$html_entity .= ($nominee['count_entity'] == 1 ? '1 connection' : $nominee['count_entity'] . " connections");
 		$html_entity .= ' <a href="#" onclick="this.nextSibling.style.display=\'block\'; this.nextSibling.focus(); this.style.display=\'none\'; return false;">[+]</a>';
-		$html_entity .= '<input name="award_nominee_entity" style="font-size: 0.7em; display: none;" class="peopletags" placeholder="Navn på delnomineret">';
+		$html_entity .= '<input name="award_nominee_entity" style="font-size: 0.7em; display: none;" class="peopletags" placeholder="Name of individual nominee">';
 		$entities = getall("SELECT id, data_id,category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
 		$html_entity .= '<br>';
 		foreach($entities AS $entity) {
-			$html_entity .= '<a href="#" onclick="if (confirm(\'Vil du slette denne tilknytning?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convent_id=' . $convent_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[slet]</a> ';
+			$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convent_id=' . $convent_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
 			if ($entity['category']) {
 				$name = getentry($entity['category'], $entity['data_id']);	
 				$link = getdatalink($entity['category'], $entity['data_id']);
@@ -311,8 +311,8 @@ if ($category == 'convent') {
 		      '<td><textarea name="nominationtext" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;" >'.htmlspecialchars($nominee['nominationtext']).'</textarea></td>'.
 		      '<td style="text-align: center;"><input type="checkbox" name="winner" value="yes" ' . ($nominee['winner'] ? 'checked' : '' ) . '></td>'.
 		      '<td><input type="text" name="ranking" value="'.htmlspecialchars($nominee['ranking']).'" size=10 maxlength=150><br>' .
-		      '<td><input type="submit" name="do" value="Ret"> '.
-		      ($nominee['count_entity'] == 0 ? '<input type="submit" name="do" value="Slet" class="delete" onclick="return confirm(\'Slet nomineret?\');">' : '') . '</td>'.
+		      '<td><input type="submit" name="do" value="Update"> '.
+		      ($nominee['count_entity'] == 0 ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove nominee?\');">' : '') . '</td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 		
@@ -323,13 +323,13 @@ if ($category == 'convent') {
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="convent_id" value="'.$convent_id.'">';
 	print "<tr valign=\"top\">\n".
-	      '<td style="text-align:right;">Ny</td>'.
-	      '<td><input type="text" name="name" value="" size=40 maxlength=150 placeholder="(efterlad blank ved scenarie eller brætspil)" autofocus></td>'.
+	      '<td style="text-align:right;">New</td>'.
+	      '<td><input type="text" name="name" value="" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)" autofocus></td>'.
 	      '<td><input type="text" name="sce_id" value="" size=30 maxlength=150 class="scenariotags"></td>'.
 	      '<td><textarea name="nominationtext" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;" ></textarea></td>'.
 	      '<td style="text-align: center;"><input type="checkbox" name="winner" value="yes" ' . (count($nominees) == 0 ? 'checked' : '' ) . '></td>'.
 	      '<td><input type="text" name="ranking" value="" size=10 maxlength=150></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 	
