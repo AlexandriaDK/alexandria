@@ -73,7 +73,7 @@ function changelinks($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM links WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Links:</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"link":"links"));
-	$html .= " - <a href=\"links.php?category=$category&amp;data_id=$data_id\">Ret links</a>";
+	$html .= " - <a href=\"links.php?category=$category&amp;data_id=$data_id\">Edit links</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -98,7 +98,7 @@ function changetags($data_id, $category) {
 		}
 		$html .= htmlspecialchars($tag);
 	}
-	$html .= " - <a href=\"tags.php?category=$category&amp;data_id=$data_id\">Ret tags</a>";
+	$html .= " - <a href=\"tags.php?category=$category&amp;data_id=$data_id\">Edit tags</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
