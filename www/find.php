@@ -15,15 +15,15 @@ $find = "";
 $cat = $_REQUEST['cat'];
 if ($_REQUEST['find']) $find = (string) $_REQUEST['find'];
 elseif ($_REQUEST['q']) $find = (string) $_REQUEST['q'];
-$search_title = $_REQUEST['search_title'];
-$search_description = $_REQUEST['search_description'];
-$search_system = intval($_REQUEST['search_system']);
+$search_title = (string) $_REQUEST['search_title'];
+$search_description = (string) $_REQUEST['search_description'];
+$search_system = (int) $_REQUEST['search_system'];
 $search_genre = array_unique((array) $_REQUEST['search_genre']);
-$search_conset = intval($_REQUEST['search_conset']);
-$search_download = $_REQUEST['search_download'];
+$search_conset = (int) $_REQUEST['search_conset'];
+$search_download = (string) $_REQUEST['search_download'];
 $search_players = (int) $_REQUEST['search_players'];
-$search_no_gm = $_REQUEST['search_no_gm'];
-$search_boardgames = $_REQUEST['search_boardgames'];
+$search_no_gm = (string) $_REQUEST['search_no_gm'];
+$search_boardgames = (string) $_REQUEST['search_boardgames'];
 $search_tag = (string) $_REQUEST['tag'];
 
 // achievements
@@ -262,7 +262,7 @@ if ($find) {
 	log_search($find);
 	
 } elseif ($_REQUEST['search_type'] == 'findspec') {
-	$where = array();
+	$where = [];
 	if ($search_title) { // pre-search for titles
 		category_search($search_title, "title", "sce");
 	} else { // set titles
@@ -279,9 +279,6 @@ if ($find) {
 	} else {
 		if ($match['sce']) { // found specific titles
 			$where[] = "id IN (".join(",",$match['sce']).")";				
-		}
-		if ($search_description) {
-			$where[] = "description LIKE '%".dbesc($search_description)."%'";
 		}
 		if ($search_system) {
 			$where[] = "sys_id = '".(int)$search_system."'";
@@ -301,6 +298,19 @@ if ($find) {
 		$q = "SELECT id FROM sce";
 		if ($where) $q .= " WHERE ".join(" AND ",$where);
 		$match['sce'] = getcol($q);
+
+		// search found, check for description
+		if ($search_description && $match['sce']) {
+			$q = "
+				SELECT sce.id
+				FROM sce
+				INNER JOIN game_description ON sce.id = game_description.game_id
+				WHERE game_description.description LIKE '%".dbesc($search_description)."%'
+				AND sce.id IN (".join(",",$match['sce']).")
+				GROUP BY sce.id
+			";
+			$match['sce'] = getcol($q);
+		}
 
 		// search found, check for conset
 		if ($search_conset && $match['sce']) {
