@@ -38,13 +38,13 @@ $thumbpaths = array(
 );
 
 // Slet fil
-if ($action == "changefile" && $do == "Fjern") {
+if ($action == "changefile" && $do == "Delete") {
 	
 	$q = "DELETE FROM files WHERE id = '$id'";
 	$r = doquery($q);
 	$q = "DELETE FROM filedata WHERE files_id = '$id'";
 	$r = doquery($q);
-	$_SESSION['admin']['info'] = "Fil-data slettet! " . dberror();
+	$_SESSION['admin']['info'] = "File data deleted! " . dberror();
 	if ($r) {
 		chlog($data_id,$category,"Fil slettet");
 	}
@@ -73,14 +73,14 @@ if ( $action == 'uploadfile' &&
 		mkdir($upload_dir, 0755);
 	}
 	if (file_exists($upload_path) ) {
-		$_SESSION['admin']['info'] = "Fil med dette filnavn findes i forvejen";
+		$_SESSION['admin']['info'] = "Error: A file with this file name already exists";
 	} elseif ($_FILES['file']['error']) {
-		$_SESSION['admin']['info'] = "Fejl under upload. Fejlkode: " . $_FILES['file']['error'];
+		$_SESSION['admin']['info'] = "Error during upload. Error code: " . $_FILES['file']['error'];
 	} elseif (move_uploaded_file($_FILES['file']['tmp_name'], $upload_path) ) {
-		$_SESSION['admin']['info'] = "Filen er uploadet.";
+		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"Fil uploadet: " . $basename);
 	} else {
-		$_SESSION['admin']['info'] = "Ukendt fejl ved upload.";
+		$_SESSION['admin']['info'] = "Unknown error when uploading.";
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ( $action == 'uploadremotefile' &&
@@ -101,15 +101,15 @@ if ( $action == 'uploadfile' &&
 		mkdir($upload_dir, 0755);
 	}
 	if (!in_array($urldata['scheme'], $allowed_schemes ) ) {
-		$_SESSION['admin']['info'] = "Ikke en gyldig URL";
+		$_SESSION['admin']['info'] = "Error: Not a valid URL";
 	} elseif (!in_array($pathinfo['extension'], $allowed_extensions) ) {
-		$_SESSION['admin']['info'] = "Ikke en gyldig filtype (" . (!is_null($pathinfo['extension']) ? "." . htmlspecialchars($pathinfo['extension']) : "blank" ) . ")";
+		$_SESSION['admin']['info'] = "Error: Not a valid file type (" . (!is_null($pathinfo['extension']) ? "." . htmlspecialchars($pathinfo['extension']) : "blank" ) . ")";
 	} elseif (file_exists($upload_path) ) {
-		$_SESSION['admin']['info'] = "Fil med dette filnavn findes i forvejen";
+		$_SESSION['admin']['info'] = "Error: A file with this file name already exists";
 	} elseif (!copy($remoteurl, $upload_path) ) {
-		$_SESSION['admin']['info'] = "Ukendt fejl ved upload.";
+		$_SESSION['admin']['info'] = "Unknown error when uploading.";
 	} else {
-		$_SESSION['admin']['info'] = "Filen er uploadet.";
+		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"Fil remote-uploadet: " . $remoteurl);
 		$remoteurl = "";
 	}
@@ -132,9 +132,9 @@ if ($action == "addfile") {
 	$downloadable = ($downloadable?1:0);
 	$extension = strtolower(substr(strrchr($path, "."), 1));
 	if (!file_exists($path)) {
-		$_SESSION['admin']['info'] = "Filen findes ikke: $path";
+		$_SESSION['admin']['info'] = "Error: The files does not exist: $path";
 	} elseif (!in_array($extension, $allowed_extensions)) {
-		$_SESSION['admin']['info'] = "Ikke en PDF, Word-dokument, tekstfil eller lydklip: $path";
+		$_SESSION['admin']['info'] = "Error: Not a vaild file type: $path";
 	} else {
 /*
 		if ($extension == "pdf") {
@@ -170,7 +170,7 @@ if ($action == "addfile") {
 		}
 */
 		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, language, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
-		$_SESSION['admin']['info'] = "Fil oprettet! " . dberror();
+		$_SESSION['admin']['info'] = "The file has been created." . dberror();
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == "thumbnail") {
@@ -183,7 +183,7 @@ if ($action == "addfile") {
 	$target_mini = "gfx/" . $target_subdir . "/s_" . $data_id . ".jpg";
 
 	if (!file_exists($path) ) {
-		$_SESSION['admin']['info'] = "Fil til thumbnail findes ikke!";
+		$_SESSION['admin']['info'] = "Error: File for thumbnail does not exist.";
 	} else {
 		$extension = strtolower(substr(strrchr($path, "."), 1));
 		if ($extension == "pdf") {
@@ -193,31 +193,31 @@ if ($action == "addfile") {
 		}
 		$valid_extensions = [ "pdf", "jpg", "jpeg", "gif", "png", "webp" ];
 		if (!in_array($extension, $valid_extensions) ) {
-			$_SESSION['admin']['info'] = "Kan ikke genkende fil som billede.";
+			$_SESSION['admin']['info'] = "Error: Can't recognize file type as image.";
 		} else {
 			if (class_exists("imagick") ) { // use imagemagick module if present
 				$image = new imagick($file);
 				if (!$image) {
-					$_SESSION['admin']['info'] = "Kan ikke genkende fil som billede!";
+					$_SESSION['admin']['info'] = "Error: Can't recognize file as image.";
 				} else {
 					$image->setImageFormat('jpg');
 					$image->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
 					$image->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // flatten transparency to background, which is white per default
 					if ($image->writeImage($target) ) {
-						$_SESSION['admin']['info'] = "Thumbnail oprettet";
+						$_SESSION['admin']['info'] = "Thumbnail created";
 						chlog($data_id,$category,"Thumbnail oprettet: " . $basename);
 						if (file_exists( $target_mini ) ) {
 							unlink( $target_mini );
 						}
 					} else {
-						$_SESSION['admin']['info'] = "Kunne ikke gemme thumbnail!";
+						$_SESSION['admin']['info'] = "Error: Could not save thumbnail.";
 					}
 				}
 			} else {
 				$command = "convert 2>&1 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
 				$content = `$command`;
 				chlog($data_id,$category,"Thumbnail oprettet: " . $basename);
-				$info = "Thumbnail oprettet.";
+				$info = "Thumbnail created.";
 				if ($content) {
 					$info .= "\nOutput:\n" . $content;
 				}
@@ -250,10 +250,10 @@ if ($action == "addfile") {
 		$deleted = TRUE;
 	}
 	if ($deleted) {
-		$_SESSION['admin']['info'] = "Thumbnail slettet! ";
+		$_SESSION['admin']['info'] = "Thumbnail deleted! ";
 		chlog($data_id,$category,"Thumbnail slettet");
 	} else {
-		$_SESSION['admin']['info'] = "Thumbnail kunne ikke slettes!\nPath large: $path_large\nPath small: $path_small ";
+		$_SESSION['admin']['info'] = "Error: Thumbnail could not be deleted!\nPath large: $path_large\nPath small: $path_small ";
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 }
@@ -299,7 +299,7 @@ if ($data_id && $category) {
 
 ?>
 <!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - filer</TITLE>
+<HTML><HEAD><TITLE>Administration - files</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 
 <script type="text/javascript">
@@ -323,16 +323,15 @@ if ($data_id && $category) {
 	print "<div align=\"center\" style=\"margin: auto; padding: auto;\">\n";
 
 	print "<table align=\"center\" border=\"0\">".
-	//      "<tr><th colspan=5>Ret filer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a> (#" . (int) $data_id . ")</th></tr>\n".
-	      "<tr><th colspan=5>Ret filer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit files for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
-	      "<th>Filnavn</th>".
-	      "<th>Beskrivelse</th>".
-	      "<th>Offentlig</th>".
-	      "<th>Sprogkode</th>".
-	      "<th>Ret</th>".
-	      "<th>Hent</th>".
+	      "<th>Filename</th>".
+	      "<th>Description</th>".
+	      "<th>Public</th>".
+	      "<th>Language code</th>".
+	      "<th>Edit</th>".
+	      "<th>Download</th>".
 	      "</tr>\n";
 
         foreach($result AS $row) {
@@ -348,7 +347,7 @@ if ($data_id && $category) {
 		      '<td ><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="40"></td>'.
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
 		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="2" placeholder="da"></td>'.
-		      '<td><input type="submit" name="do" value="Ret"> <input type="submit" name="do" value="Fjern"></td>'.
+		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Delete"></td>'.
 		      '<td ><a href="http://download.alexandria.dk/files/'.$paths[$category].'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
@@ -359,21 +358,21 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
 	      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
 	      '<td style="text-align: center"><input type="checkbox" name="downloadable" checked="checked"></td>'.
 	      '<td ><input type="text" name="language" value="" size="2" maxlength="2" placeholder="da"></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      '<td></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
-	print "<tr valign=\"top\"><td></td><td>Mulige filer:</td><td>Standard-beskrivelser:</td></tr><tr valign=\"top\"><td></td><td>";
+	print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
 	foreach(glob( DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/*") AS $file) {
 		print '<a href="http://download.alexandria.dk/files/' . $paths[$category] . '/' . $data_id . '/' . rawurlencode(basename($file)) . '" title="Download file">💾</a>&nbsp;';
-		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode(basename($file)) . "\" title=\"Make thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
+		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode(basename($file)) . "\" title=\"Create thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
 		print basename($file);
 		print "</a>";
@@ -406,7 +405,7 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="action" value="uploadremotefile">' . 
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
 	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-	      '<p>Upload fra URL: <input type="text" name="remoteurl" size="60" placeholder="http://www.eksempel.dk/blog/scenarie.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
+	      '<p>Remote upload from URL: <input type="text" name="remoteurl" size="60" placeholder="http://www.example.com/blog/scenario.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
 	      '<input type="submit" value="Upload" />' .
 	      '</p>' .
 	      '</form>'
@@ -418,7 +417,7 @@ if ($data_id && $category) {
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
 		      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
 		      '<p><a href="../' . $path . '">Thumbnail</a><br>' .
-		      '<input type="submit" value="Slet thumbnail" />' .
+		      '<input type="submit" value="Delete thumbnail" />' .
 		      '</p>' .
 		      '</form>'
 		;
@@ -427,7 +426,7 @@ if ($data_id && $category) {
 	print "\n\n</div>\n";
 
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id supplied.";
 }
 print "</body>\n</html>\n";
 
