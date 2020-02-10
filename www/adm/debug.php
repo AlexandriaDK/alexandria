@@ -14,6 +14,11 @@ print "LANG: " . htmlspecialchars( LANG ) . PHP_EOL;
 #print "PHP Locale, language: " . locale_get_display_language( 'da', 'da' );
 print "</pre>";
 
+print "<h1>Cookie:</h1>";
+print "<pre>";
+print htmlspecialchars(print_r($_COOKIE, TRUE));
+print "</pre>";
+
 print "<h1>Session:</h1>";
 print "<pre>";
 print htmlspecialchars(print_r($_SESSION, TRUE));

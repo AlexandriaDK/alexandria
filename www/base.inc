@@ -210,6 +210,10 @@ function do_twitch_login($siteuserid, $name) {
 	do_sso_login($siteuserid, $name, 'twitch');
 }
 
+function do_discord_login($siteuserid, $name) {
+	do_sso_login($siteuserid, $name, 'discord');
+}
+
 function do_google_login($siteuserid, $name) {
 	do_sso_login($siteuserid, $name, 'google');
 }

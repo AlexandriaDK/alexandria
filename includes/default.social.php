@@ -10,4 +10,7 @@ define('STEAM_WEB_API_KEY', '');
 
 define('TWITCH_CLIENT_ID', '');
 define('TWITCH_CLIENT_SECRET', '');
+
+define('DISCORD_CLIENT_ID', '');
+define('DISCORD_CLIENT_SECRET', '');
 ?>
