@@ -4,6 +4,8 @@ require_once('./connect.php');
 require_once('base.inc');
 require '../includes/social.php';
 
+set_session_redirect_url();
+
 // example from:
 // http://php.net/manual/en/oauth.examples.fireeagle.php
 $req_url = 'https://api.twitter.com/oauth/request_token';
@@ -36,7 +38,7 @@ try {
     $_SESSION['state'] = 2;
     $_SESSION['token'] = $access_token_info['oauth_token'];
     $_SESSION['secret'] = $access_token_info['oauth_token_secret'];
-    $_SESSION['twitter_debug'] = $access_token_info;
+#    $_SESSION['twitter_debug'] = $access_token_info;
   } 
   
   $oauth->setToken($_SESSION['token'],$_SESSION['secret']);

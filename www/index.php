@@ -1,4 +1,5 @@
 <?php
+// redirect after login?
 // Viderestil evt. til adm-delen
 if (isset($_SERVER['SERVER_NAME']) && in_array(strtolower($_SERVER['SERVER_NAME']), ['adm.alexandria.dk','www.adm.alexandria.dk'] )) {
 	header("Location: adm/");
@@ -8,6 +9,14 @@ if (isset($_SERVER['SERVER_NAME']) && in_array(strtolower($_SERVER['SERVER_NAME'
 require("connect.php");
 require("base.inc");
 require("template.inc");
+
+if ($_SESSION['login_after_redirect'] && $_SESSION['do_redirect']) { // assume valid URL
+	header("Location: " . $_SESSION['login_after_redirect']);
+	unset($_SESSION['login_after_redirect']);
+	unset($_SESSION['do_redirect']);
+	exit;
+}
+
 
 // fetching news
 $newslist = array();

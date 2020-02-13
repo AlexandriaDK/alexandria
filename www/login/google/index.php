@@ -3,6 +3,9 @@ define('LANGNOREDIRECT', TRUE);
 require_once __DIR__.'/../../../google-api-php-client-2.2.3_PHP54/vendor/autoload.php';
 
 session_start();
+require_once('../../connect.php');
+require_once('../../base.inc');
+set_session_redirect_url();
 
 $client = new Google_Client();
 $client->setAuthConfigFile('../../../includes/client.google.json');

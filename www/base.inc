@@ -168,6 +168,14 @@ function get_redirect_url ($url = '') {
 	return $redirect_url;
 }
 
+// set redirect url when attempting to login - but only once
+function set_session_redirect_url() {
+	$url = get_redirect_url();
+	if ( $url != "/" ) {
+		$_SESSION['login_after_redirect'] = get_redirect_url();
+	}
+	return true;
+}
 
 function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 	$site = 'facebook';
@@ -263,6 +271,7 @@ function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
 	$_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
 	$_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
 	$_SESSION['token'] = md5('abcdef' . uniqid() ); // unused, move salt to config if implemented
+	$_SESSION['do_redirect'] = TRUE;
 
 	return $user_id;
 }
