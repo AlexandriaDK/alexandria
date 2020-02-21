@@ -8,6 +8,9 @@
 		<meta name="robots" content="index, follow" />
 {if $ogimage}
 		<meta property="og:image" content="https://alexandria.dk/{$ogimage}" />
+{else}
+		<meta property="og:image" content="https://alexandria.dk/gfx/alexandria_logo_og_crush.png" />
+
 {/if}
 		<link rel="stylesheet" type="text/css" href="/alexstyle.css" />
 		<link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
