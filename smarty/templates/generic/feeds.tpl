@@ -16,7 +16,7 @@
 			{section name=i loop=$feeddata}
 			<tr>
 			<td title="{$feeddata[i].title|escape}">
-				<a href="{$feeddata[i].link|escape}">{if $feeddata[i].title == ""}<i>({$_feeds_notitle})</i>{else}{$feeddata[i].title|truncate:55|escape}{/if}</a>
+				<a href="{$feeddata[i].link|escape}">{if $feeddata[i].title == ""}<i>({$_feeds_notitle})</i>{else}{$feeddata[i].title|truncate:55|escape}{/if}{if $feeddata[i].podcast} 🔊{/if}</a>
 			</td>
 			<td>
 				{if $feeddata[i].aut_id}

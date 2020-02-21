@@ -3,7 +3,7 @@ require("./connect.php");
 require("base.inc");
 require("template.inc");
 
-$articles = getall("SELECT a.owner, a.name, a.aut_id, b.title, b.link, b.pubdate, b.comments FROM feeds a, feedcontent b WHERE a.id = b.feed_id ORDER BY b.pubdate DESC LIMIT 0,40");
+$articles = getall("SELECT a.owner, a.name, a.aut_id, a.podcast, b.title, b.link, b.pubdate, b.comments FROM feeds a, feedcontent b WHERE a.id = b.feed_id ORDER BY b.pubdate DESC LIMIT 0,40");
 
 $feeddata = array();
 $feedlist = array();
