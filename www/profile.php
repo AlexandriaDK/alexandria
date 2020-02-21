@@ -27,6 +27,5 @@ $useraut = getrow("SELECT users.aut_id, aut.firstname, aut.surname FROM users IN
 
 $t->assign('userloginmap',$userloginmap);
 $t->assign('useraut',$useraut);
-$t->display('usersettings.tpl');
-
+$t->display('userprofile.tpl');
 ?>

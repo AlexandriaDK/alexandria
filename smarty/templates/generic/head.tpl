@@ -97,6 +97,10 @@
 				<a href="awards">{$_top_awards}</a><br>
 				<br>
 				<a href="english">{$_top_inenglish}</a><br>
+	{if $user_editor}
+				<br>
+				<a href="privacy">{$_top_privacy}</a><br>
+	{/if}
 			</div>
 
 {if $dberror != TRUE}
@@ -120,7 +124,7 @@
 				<div class="mylinks">
 				<a href="myhistory">{$_top_myoverview}</a><br>
 	{if $user_editor}
-				<a href="settings">{$_top_settings}</a><br>
+				<a href="profile">{$_top_profile}</a><br>
 	{/if}
 				<a href="login?logout">{$_top_logout}</a><br>
 	{if $user_admin}
