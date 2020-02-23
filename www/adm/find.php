@@ -9,28 +9,32 @@ $find = $_REQUEST['find'];
 
 // Lidt kvik-find-kode:
 
-if (preg_match("/^([cspfat#])(\d+)$/i",$find,$regs)) {
+if (preg_match("/^([cspfat#]|cs)(\d+)$/i",$find,$regs)) {
 	$pref = strtolower($regs[1]);
 	$id = $regs[2];
 
 	switch($pref) {
 		case "s":
-			header("Location: http://{$_SERVER['HTTP_HOST']}/adm/scenarie.php?scenarie=$id");
+			header("Location: scenarie.php?scenarie=$id");
 			break;
 		
 		case "c":
-			header("Location: http://{$_SERVER['HTTP_HOST']}/adm/convent.php?con=$id");
+			header("Location: convent.php?con=$id");
+			break;
+
+		case "cs":
+			header("Location: conset.php?conset=$id");
 			break;
 
 		case "p":
 		case "f":
 		case "a":
-			header("Location: http://{$_SERVER['HTTP_HOST']}/adm/person.php?person=$id");
+			header("Location: person.php?person=$id");
 			break;
 
 		case "t":
 		case "#":
-			header("Location: http://{$_SERVER['HTTP_HOST']}/adm/ticket.php?id=$id");
+			header("Location: ticket.php?id=$id");
 			break;
 
 	}
@@ -52,17 +56,17 @@ $r2 = getall("
 
 if (count($r1) == 1 && count($r2) == 0) {
 	$id = $r1[0][0];
-	header("Location: http://{$_SERVER['HTTP_HOST']}/adm/scenarie.php?scenarie=$id");
+	header("Location: scenarie.php?scenarie=$id");
 	exit;
 } elseif (count($r1) == 0 && count($r2) == 1) {
 	$id = $r2[0][0];
-	header("Location: http://{$_SERVER['HTTP_HOST']}/adm/person.php?person=$id");
+	header("Location: person.php?person=$id");
 	exit;
 }
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - søgning</TITLE>
+<!DOCTYPE html>
+<HTML><HEAD><TITLE>Administration - search</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 </HEAD>
 
@@ -71,26 +75,19 @@ if (count($r1) == 1 && count($r2) == 0) {
 <?php
 include("links.inc");
 
-print "<b>Fundne resultater:</b><br>";
+print "<b>Found results:</b><br>";
 
-print "Scenarier:<br>";
+print "Scenarios:<br>";
 
 unset($antal);
 foreach($r1 AS list($id, $name, $alias) ) {
 	print "&nbsp;&nbsp;<a href=\"scenarie.php?scenarie=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
-/*
-	if (!$alias) {
-		print "&nbsp;&nbsp;<a href=\"scenarie.php?scenarie=$id\">$name</a><br>";
-	} else {
-		print "&nbsp;&nbsp;<i><a href=\"scenarie.php?scenarie=$id\">$name</a></i><br>";
-	}
-*/
 	$antal++;
 }
-if ($antal == 0) print "&nbsp;&nbsp;Ingen<br>";
+if ($antal == 0) print "&nbsp;&nbsp;None<br>";
 print "<br>\n\n";
 
-print "Personer:<br>\n";
+print "People:<br>\n";
 
 unset($antal);
 
@@ -98,9 +95,9 @@ foreach($r2 AS list($id, $name, $alias) ) {
 	print "&nbsp;&nbsp;<a href=\"person.php?person=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
 	$antal++;
 }
-if ($antal == 0) print "&nbsp;&nbsp;Ingen<br>";
+if ($antal == 0) print "&nbsp;&nbsp;None<br>";
 
-print "<br><a href=\"{$_SERVER['HTTP_REFERER']}\">Tilbage</a><br>";
+print "<br><a href=\"{$_SERVER['HTTP_REFERER']}\">Back</a><br>";
 
 ?>
 </body>
