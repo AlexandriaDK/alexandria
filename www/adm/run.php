@@ -19,8 +19,8 @@ $cancelled = (int) isset($_REQUEST['cancelled']);
 $q = "SELECT title FROM sce WHERE id = '$id'";
 $title = getone($q);
 
-// Ret afvikling
-if ($action == "changerun" && $do != "Slet") {
+// Update run
+if ($action == "changerun" && $do != "Delete") {
 	$begin = trim($begin);
 	$end = trim($end);
 	if (strlen($begin) == 4) $begin .= "-00-00"; // add blank month+date
@@ -38,18 +38,18 @@ if ($action == "changerun" && $do != "Slet") {
 	if ($r) {
 		chlog($id,'sce',"Afvikling rettet");
 	}
-	$_SESSION['admin']['info'] = "Afvikling rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Run updated! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
-// Slet afvikling
-if ($action == "changerun" && $do == "Slet") {
+// Delete run
+if ($action == "changerun" && $do == "Delete") {
 	$q = "DELETE FROM scerun WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
 		chlog($id,'sce',"Afvikling slettet");
 	}
-	$_SESSION['admin']['info'] = "Afvikling slettet! " . dberror();
+	$_SESSION['admin']['info'] = "Run deleted! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
@@ -67,7 +67,7 @@ if ($action == "addrun") {
 	if ($r) {
 		chlog($id,'sce',"Afvikling oprettet");
 	}
-	$_SESSION['admin']['info'] = "Afvikling oprettet! " . dberror();
+	$_SESSION['admin']['info'] ="Run created! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
@@ -75,8 +75,8 @@ $query = "SELECT id, begin, end, location, description, cancelled FROM scerun WH
 $result = getall($query);
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - afvikling</TITLE>
+<!DOCTYPE html>
+<HTML><HEAD><TITLE>Administration - runs</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 </HEAD>
 
@@ -89,14 +89,14 @@ printinfo();
 if ($id) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=6>Ret afvikling for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=6>Edit runs for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
-	      "<th>Startdato</th>".
-	      "<th>Slutdato</th>".
-	      "<th>Lokalitet</th>".
-	      "<th>Evt. note</th>".
-	      "<th>Afvikling aflyst?</th>".
+	      "<th>Start date</th>".
+	      "<th>End date</th>".
+	      "<th>Location</th>".
+	      "<th>Note</th>".
+	      "<th>Run cancelled?</th>".
 	      "</tr>\n";
 
 	foreach($result AS $row) {
@@ -106,13 +106,13 @@ if ($id) {
 		      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><input type="date" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
-		      '<td><input type="date" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
+		      '<td><input type="date" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
+		      '<td><input type="date" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
 		      '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
 		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="30" ></td>'.
 		      '<td align="center"><input type="checkbox" name="cancelled" value="yes" ' . ($row['cancelled'] ? 'checked' : '' ) . '></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      '<td><input type="submit" name="do" value="Update"></td>'.
+		      '<td><input type="submit" name="do" value="Delete"></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -121,20 +121,20 @@ if ($id) {
 	      '<input type="hidden" name="action" value="addrun">'.
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
-	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
-	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="ÅÅÅÅ-MM-DD"></td>'.
+	      '<td style="text-align:right;">New</td>'.
+	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
+	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
 	      '<td><input type="text" name="location" value="" size="30" maxlength="80"></td>'.
 	      '<td><input type="text" name="description" value="" size="30" ></td>'.
 	      '<td align="center"><input type="checkbox" name="cancelled" value="yes"></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
 
 	print "</table>\n";
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id provided.";
 }
 print "</body>\n</html>\n";
 
