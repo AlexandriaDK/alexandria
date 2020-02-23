@@ -8,24 +8,24 @@ $this_type = 'genre';
 
 $id = (int) $_REQUEST['id'];
 $action = (string) $_REQUEST['action'];
-$genid = $_REQUEST['genid'];
+$genid = (array) $_REQUEST['genid'];
 
 $title = getone("SELECT title FROM sce WHERE id = '$id'");
 
 // Ret genre
 if ($action == "changegenre") {
 	doquery("DELETE FROM gsrel WHERE sce_id = '$id'");
-	foreach ((array)$genid AS $gid => $value) {
+	foreach ($genid AS $gid => $value) {
 		doquery("INSERT INTO gsrel (gen_id, sce_id) VALUES ('$gid','$id')");
 	}
-	$_SESSION['admin']['info'] = "Genrer rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Genres for scenario updated! " . dberror();
 	chlog($id,'sce',"Genrer rettet");
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - genrer</TITLE>
+<HTML><HEAD><TITLE>Administration - genres</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 </HEAD>
 
@@ -40,7 +40,7 @@ $result = getall("SELECT gen.id, gen.name, gsrel.sce_id FROM gen LEFT JOIN gsrel
 if ($id) {
 	print "<form action=\"genre.php\" method=\"post\">\n";
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=3>Ret genrer for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n";
+	      "<tr><th colspan=3>Set genres for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n";
 
 	foreach($result AS $row) {
 		print "<tr>";
@@ -49,12 +49,12 @@ if ($id) {
 		print "</tr>\n";
 	}
 
-	print "<tr><td></td><td><input type=\"submit\" value=\"Gem genrer\" /><input type=\"hidden\" name=\"action\" value=\"changegenre\" /><input type=\"hidden\" name=\"id\" value=\"$id\" /></td></tr>\n";
+	print "<tr><td></td><td><input type=\"submit\" value=\"Save genres\" /><input type=\"hidden\" name=\"action\" value=\"changegenre\" /><input type=\"hidden\" name=\"id\" value=\"$id\" /></td></tr>\n";
 
 	print "</table>\n";
 	print "</form>\n\n";
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id provided.";
 }
 
 print "</body>\n</html>\n";

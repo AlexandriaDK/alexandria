@@ -15,7 +15,7 @@ $data_id = $_REQUEST['data_id'];
 $category = $_REQUEST['category'];
 
 // Ret alias
-if ($action == "changealias" && $do != "Slet") {
+if ($action == "changealias" && $do != "Delete") {
 	$label = trim($label);
 	$visible = ($visible == "on" ? 1 : 0);
 	$q = "UPDATE alias SET " .
@@ -26,18 +26,18 @@ if ($action == "changealias" && $do != "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Alias rettet");
 	}
-	$_SESSION['admin']['info'] = "Alias rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Alias updated! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
 // Slet alias
-if ($action == "changealias" && $do == "Slet") {
+if ($action == "changealias" && $do == "Delete") {
 	$q = "DELETE FROM alias WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
 		chlog($data_id,$category,"Alias slettet");
 	}
-	$_SESSION['admin']['info'] = "Alias slettet! " . dberror();
+	$_SESSION['admin']['info'] = "Alias deleted! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
@@ -53,7 +53,7 @@ if ($action == "addalias") {
 		$id = dbid();
 		chlog($data_id,$category,"Alias oprettet");
 	}
-	$_SESSION['admin']['info'] = "Alias oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Alias created! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
@@ -98,8 +98,8 @@ if ($data_id && $category) {
 }
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - aliaser</TITLE>
+<!DOCTYPE html>
+<HTML><HEAD><TITLE>Administration - aliases</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 </HEAD>
 
@@ -116,7 +116,7 @@ if ($data_id && $category) {
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Alias</th>".
-	      "<th>Vis</th>".
+	      "<th>Visible</th>".
 	      "</tr>\n";
 
 	foreach($result AS $row) {
@@ -130,8 +130,8 @@ if ($data_id && $category) {
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="text" name="label" value="'.htmlspecialchars($row['label']).'" size="40" maxlength="150"></td>'.
 		      '<td><input type="checkbox" name="visible" '.$selected.'></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      '<td><input type="submit" name="do" value="Update"></td>'.
+		      '<td><input type="submit" name="do" value="Delete"></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -141,16 +141,16 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="label" value="" size="40" maxlength="150"></td>'.
 	      '<td><input type="checkbox" name="visible"></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
 	print "</table>\n";
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id provided.";
 }
 print "</body>\n</html>\n";
 
