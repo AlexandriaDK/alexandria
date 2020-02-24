@@ -100,10 +100,8 @@
 				<a href="awards">{$_top_awards}</a><br>
 				<br>
 				<a href="english">{$_top_inenglish}</a><br>
-	{if $user_editor}
 				<br>
 				<a href="privacy">{$_top_privacy}</a><br>
-	{/if}
 			</div>
 
 {if $dberror != TRUE}
