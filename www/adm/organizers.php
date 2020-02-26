@@ -30,8 +30,8 @@ foreach($r AS $row) {
 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
 }
 
-// Ret arrangør
-if ($action == "changeorganizer" && $do != "Slet") {
+// Update arrangør
+if ($action == "changeorganizer" && $do != "Delete") {
 
 	$q = "UPDATE acrel SET " .
 	     "aut_id = " . strNullEscape($aut_id) . ", " .
@@ -47,18 +47,18 @@ if ($action == "changeorganizer" && $do != "Slet") {
 			chlog($data_id,$category,"Arrangør rettet: $aut_extra");
 		}
 	}
-	$_SESSION['admin']['info'] = "Arrangør rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Organizer updated! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
-// Slet arrangør
-if ($action == "changeorganizer" && $do == "Slet") {
+// Delete arrangør
+if ($action == "changeorganizer" && $do == "Delete") {
 	$q = "DELETE FROM acrel WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
 		chlog($data_id,$category,"Arrangør fjernet");
 	}
-	$_SESSION['admin']['info'] = "Arrangør fjernet! " . dberror();
+	$_SESSION['admin']['info'] = "Organizer removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
@@ -76,7 +76,7 @@ if ($action == "addorganizer") {
 			chlog($data_id,$category,"Arrangør oprettet: $aut_extra");
 		}
 	}
-	$_SESSION['admin']['info'] = "Arrangør oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Organizer added! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
@@ -96,7 +96,7 @@ if ($data_id) {
 
 ?>
 <!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - arrangører</TITLE>
+<HTML><HEAD><TITLE>Administration - organizers</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -131,10 +131,10 @@ include("links.inc");
 printinfo();
 
 print "<table align=\"center\" border=0>".
-      "<tr><th colspan=5>Ret arrangører for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+      "<tr><th colspan=5>Update organizer for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
       "<tr>\n".
       "<th>ID</th>".
-      "<th>Rolle</th>".
+      "<th>Role</th>".
       "<th>Person</th>".
       "</tr>\n";
 
@@ -152,8 +152,8 @@ if ($result) {
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="text" name="role" value="'.htmlspecialchars($row['role']).'" size=40 maxlength=100></td>'.
 		      '<td><input type="text" name="aut_text" value="'.htmlspecialchars($aut_text).'" size=40 maxlength=100 class="tags"></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      '<td><input type="submit" name="do" value="Update"></td>'.
+		      '<td><input type="submit" name="do" value="Delete"></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
