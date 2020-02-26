@@ -379,7 +379,7 @@ if ($data_id && $category) {
 		print "<br />\n";
 	}
 	print "</td><td>";
-	foreach( ["Scenariet","Scenariet (English)","Spilpersoner","Handouts","Regler","Programmet"] AS $label) {
+	foreach( ["Scenariet","Scenario (English)","Spilpersoner","Handouts","Regler","Programmet"] AS $label) {
 		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.innerHTML;\">";
 		print $label;
 		print "</a><br />\n";
