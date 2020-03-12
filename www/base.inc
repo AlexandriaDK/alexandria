@@ -808,23 +808,23 @@ function getnexteventstable () { // both cons and scenarios
 	// :TODO: Currently three queries are performed for "all", "only cons" and "only scenarios". This could be optimized into a single query.
 
 	$r = getall("
-		(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "')
+		(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname, cancelled FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "')
 		UNION
-		(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.end >= '" . date("Y-m-d") . "' AND cancelled = 0)
+		(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname, scerun.cancelled FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.end >= '" . date("Y-m-d") . "')
 		ORDER BY begin, end, name
 	");
 
 	$calout = '<table class="tableoverview" id="eventsall">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
 	$r = getall("
-		(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "')
+		(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname, cancelled FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "')
 		ORDER BY begin, end, name
 	");
 
 	$calout .= '<table class="tableoverview" id="eventsconvent" style="display: none;">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
 	$r = getall("
-		(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.end >= '" . date("Y-m-d") . "' AND cancelled = 0)
+		(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname, cancelled FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.end >= '" . date("Y-m-d") . "')
 		ORDER BY begin, end, name
 	");
 
@@ -837,7 +837,7 @@ function parseupcomingevents($eventset) {
 	$calout = "";
 	$lastbegin = "";
 	foreach($eventset AS $nextevent) {
-		list($type, $id, $name, $year, $description, $begin, $end) = $nextevent;
+		list($type, $id, $name, $year, $description, $begin, $end, $location, $cid, $cname, $cancelled) = $nextevent;
 		if ($end == '0000-00-00' || !$end) {
 			$end = $begin;
 		}
@@ -853,7 +853,7 @@ function parseupcomingevents($eventset) {
 		} else {
 			$daypart = intval(substr($begin,8,2)).".-".intval(substr($end,8,2)).": ";
 		}
-		$calout .= "<tr>\n<td>$daypart</td>\n";
+		$calout .= "<tr " . ($cancelled ? "class=\"cancelled\"" : "") . ">\n<td>$daypart</td>\n";
 		if ($type == 'convent') {
 			$calout .= "<td><a href=\"data?con=$id\" title=\"$coninfo\" class=\"con\">$name</a></td>\n";
 		} elseif ($type == 'sce') {

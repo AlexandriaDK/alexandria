@@ -36,8 +36,8 @@
 	{section name=i loop=$condata}
 	<tr>
 		<td>{$condata[i].userdyn}</td>
-		<td><a href="data?con={$condata[i].id}" class="con" title="{$condata[i].dateset|escape}">{$condata[i].name} ({$condata[i].year})</a></td>
-                <td style="padding-left: 10px;">{$condata[i].place}</td>
+		<td><a href="data?con={$condata[i].id}" class="con{if $condata[i].cancelled} cancelled{/if}" title="{$condata[i].dateset|escape}">{$condata[i].name} ({$condata[i].year})</a></td>
+                <td style="padding-left: 10px;"{if $condata[i].cancelled} class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$condata[i].place}</td>
 	</tr>
 	{/section}
 	</table>

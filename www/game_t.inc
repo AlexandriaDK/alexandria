@@ -103,7 +103,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 // Liste over cons, scenariet har været spillet på:
 // Nu kan vi sortere efter cons' tidspunkt, så ingen grund til at sortere på pre.id, medmindre ingen dato er kendt på cons fra samme år.
 	$conlist = "";
-	$q = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, pre.event, pre.event_label, pre.iconfile, pre.textsymbol FROM convent, csrel, pre WHERE convent.id = csrel.convent_id AND csrel.pre_id = pre.id AND csrel.sce_id = '$scenarie' ORDER BY convent.year, convent.begin, pre.id, convent.name");
+	$q = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled, pre.event, pre.event_label, pre.iconfile, pre.textsymbol FROM convent, csrel, pre WHERE convent.id = csrel.convent_id AND csrel.pre_id = pre.id AND csrel.sce_id = '$scenarie' ORDER BY convent.year, convent.begin, pre.id, convent.name");
 	foreach($q AS $rs) {
 		$coninfo = nicedateset($rs['begin'],$rs['end']);
 		$conlist .= "<tr><td>";
@@ -116,7 +116,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 			$conlist .= " ";
 		}
 		$conlist .= "</td><td>";
-		$conlist .= "<a href=\"data?con={$rs['id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a>";
+		$conlist .= "<a href=\"data?con={$rs['id']}\" class=\"con" . ($rs['cancelled'] ? " cancelled" : "") . "\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a>";
 #		if ($rs['event']) $conlist .= " ({$rs['event']})";
 		$conlist .= "</td></tr>" . PHP_EOL;
 	}

@@ -594,9 +594,13 @@ span.preicon, span.titicon {
 	font-size: 1em;
 }
 
-span.cancelled {
+.cancelled {
 	color: #999;
 	text-decoration: line-through;
+}
+h3.cancelnotice {
+	font-style: italic;
+	color: #e22;
 }
 
 ul.remotelogin {

@@ -30,9 +30,9 @@ $yearlist .= "</table>";
 
 $output = "";
 $q = getall("
-	(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE year = '$year')
+	(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname, convent.cancelled FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE year = '$year')
 	UNION
-	(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.begin BETWEEN '$year-00-00' AND '$year-12-31' AND cancelled = 0)
+	(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname, cancelled FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.begin BETWEEN '$year-00-00' AND '$year-12-31')
 	ORDER BY begin, end, name
 ");
 $num_cons = count($q);
@@ -60,10 +60,16 @@ foreach($q AS $row) {
 		}
 		
 	}
+	if ($row['cancelled']) {
+		$output .= "<span class=\"cancelled\">";
+	}
 	if ($row['type'] == 'convent') {
 		$output .= " $timeinfo<a href=\"data?con={$row['id']}\" class=\"con\">{$row['name']}</a><br>\n";
 	} elseif ($row['type'] == 'sce') {
 		$output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['name']}</a><br>\n";
+	}
+	if ($row['cancelled']) {
+		$output .= "</span>";
 	}
 }
 if ($output) {

@@ -5,7 +5,7 @@ require("template.inc");
 
 if ($_SESSION['user_id']) {
 	$result = getall("
-		SELECT convent.id, COALESCE(CONCAT(convent.name,' (',convent.year,')'), convent.name) AS conname, conset.id AS setid, conset.name AS setname, convent.begin, convent.end, userlog.type IS NOT NULL AS visited
+		SELECT convent.id, COALESCE(CONCAT(convent.name,' (',convent.year,')'), convent.name) AS conname, conset.id AS setid, conset.name AS setname, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited
 		FROM convent
 		LEFT JOIN userlog ON
 			convent.id = userlog.data_id AND
@@ -16,7 +16,7 @@ if ($_SESSION['user_id']) {
 	");
 } else {
 	$result = getall("
-		SELECT convent.id, COALESCE(CONCAT(convent.name,' (',convent.year,')'), convent.name) AS conname, conset.id AS setid, conset.name AS setname, convent.begin, convent.end
+		SELECT convent.id, COALESCE(CONCAT(convent.name,' (',convent.year,')'), convent.name) AS conname, conset.id AS setid, conset.name AS setname, convent.begin, convent.end, convent.cancelled
 		FROM convent
 		LEFT JOIN conset ON convent.conset_id = conset.id
 		ORDER BY conset.name, convent.year, convent.begin, convent.end, conname
@@ -49,7 +49,7 @@ foreach($result AS $r) {
 		$list .= "&nbsp;&nbsp;";
 	}
 	
-	$list .= "<a href=\"data?con={$r['id']}\" title=\"$coninfo\">".htmlspecialchars($r['conname'])."</a><br />\n";
+	$list .= "<a href=\"data?con={$r['id']}\" title=\"$coninfo\" " . ($r['cancelled'] ? "class=\"cancelled\"" : "") . ">".htmlspecialchars($r['conname'])."</a><br />\n";
 }
 $list .= "</div>";
 

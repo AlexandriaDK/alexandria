@@ -1,6 +1,6 @@
 <div id="content">
 
-	<h2 class="datatitle">{$name|escape} ({$year})</h2>
+	<h2 class="datatitle{if $cancelled} cancelled{/if}">{$name|escape} ({$year})</h2>
 	<div class="arrows">
 {if $arrowset.prev.active}
 	<a href="data?con={$arrowset.prev.conid}" title="{$arrowset.prev.name|escape}" rel="prev">←</a>
@@ -40,6 +40,12 @@
 
 {if $partof != ""}
 	<h3 class="parttitle">{$_con_partof}: {$partof}</h3>
+{/if}
+
+{if $cancelled}
+	<h3 class="cancelnotice">
+			{$_con_cancelled|nl2br}
+	</h3>
 {/if}
 
 {if $description != ""}

@@ -12,7 +12,7 @@ if ($r['id'] == 0) {
 	if ($_SESSION['user_id']) {
 	
 		$q = getall("
-			SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, convent.place, userlog.type IS NOT NULL AS visited
+			SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, convent.place, convent.cancelled, userlog.type IS NOT NULL AS visited
 			FROM convent 
 			LEFT JOIN userlog ON
 				convent.id = userlog.data_id AND
@@ -23,7 +23,7 @@ if ($r['id'] == 0) {
 		");
 	} else {
 		$q = getall("
-			SELECT id, name, begin, end, year, place
+			SELECT id, name, begin, end, year, place, cancelled
 			FROM convent 
 			WHERE conset_id = '$conset'
 			ORDER BY year, begin, name
@@ -48,7 +48,8 @@ if ($r['id'] == 0) {
 			'userdyn' => ( $_SESSION['user_id'] ? getdynamicconventhtml($rs['id'],'visited',$rs['visited']) : '' ),
 			'name' => $rs['name'],
 			'year' => $rs['year'],
-			'place' => $rs['place']
+			'place' => $rs['place'],
+			'cancelled' => $rs['cancelled']
 		];
 
 	}
