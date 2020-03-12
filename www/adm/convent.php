@@ -18,9 +18,11 @@ $conset_id = $_REQUEST['conset_id'];
 $description = $_REQUEST['description'];
 $intern = $_REQUEST['intern'];
 $confirmed = $_REQUEST['confirmed'];
+$country = (string) $_REQUEST['country'];
+$cancelled = (int) (bool) $_REQUEST['cancelled'];
 
 if (!$action && $con) {
-	$row = getrow("SELECT id, name, year, begin, end, place, conset_id, description, intern, confirmed FROM convent WHERE id = '$con'");
+	$row = getrow("SELECT id, name, year, begin, end, place, conset_id, description, intern, confirmed, country, cancelled FROM convent WHERE id = '$con'");
 	if ($row) {
 		$name = $row['name'];
 		$year = $row['year'];
@@ -31,6 +33,8 @@ if (!$action && $con) {
 		$description = $row['description'];
 		$intern = $row['intern'];
 		$confirmed = $row['confirmed'];
+		$country = $row['country'];
+		$cancelled = $row['cancelled'];
 		$qq = getall("
 			SELECT id, name, year, begin, end
 			FROM convent 
@@ -54,9 +58,9 @@ if (!$action && $con) {
 	}
 }
 
-if ($action == "ret" && $con) {
+if ($action == "edit" && $con) {
 	if (!$name) {
-		$_SESSION['admin']['info'] = "Du mangler et navn!";
+		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
 		$year = intval($year);
 		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
@@ -69,6 +73,8 @@ if ($action == "ret" && $con) {
 		     "description = '".dbesc($description)."', ".
 		     "intern = '".dbesc($intern)."', ".
 		     "conset_id = '".dbesc($conset_id)."', " .
+		     "country = '".dbesc($country)."', " .
+		     "cancelled = '".dbesc($cancelled)."', " .
 		     "confirmed = '".dbesc($confirmed)."' " .
 		     "WHERE id = '$con'";
 		$r = doquery($q);
@@ -76,26 +82,26 @@ if ($action == "ret" && $con) {
 		if ($r) {
 			chlog($con,$this_type,"Con rettet");
 		}
-		$_SESSION['admin']['info'] = "Con rettet! " . dberror();
+		$_SESSION['admin']['info'] = "Con edited! " . dberror();
 		rexit($this_type, ['con' => $con] );
 	}
 }
 
 //
-// Slet kongres
+// Delete con
 //
 
-if ($action == "Slet" && $con) { // burde tjekke om kongres findes
+if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
-	if (getCount('csrel', $con, FALSE, 'convent') ) $error[] = "kongres";
-	if (getCount('acrel', $con, FALSE, 'convent') ) $error[] = "kongres (arrangørposter)";
+	if (getCount('csrel', $con, FALSE, 'convent') ) $error[] = "scenario";
+	if (getCount('acrel', $con, FALSE, 'convent') ) $error[] = "con (organizer)";
 	if (getCount('trivia', $con, TRUE, 'convent') ) $error[] = "trivia";
 	if (getCount('links', $con, TRUE, 'convent') ) $error[] = "link";
 	if (getCount('alias', $con, TRUE, 'convent') ) $error[] = "alias";
 	if (getCount('files', $con, TRUE, 'convent') ) $error[] = "files";
-	if (getCount('userlog', $con, TRUE, 'convent') ) $error[] = "brugerlog (kræver admin)";
+	if (getCount('userlog', $con, TRUE, 'convent') ) $error[] = "user log (requires admin access)";
 	if ($error) {
-		$_SESSION['admin']['info'] = "Kan ikke slette. Kongressen har stadigvæk tilknytninger: " . implode(", ",$error);
+		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ",$error);
 		rexit($this_type, ['con' => $con] );
 	} else {
 		$name = getone("SELECT CONCAT(name, ' ', year) FROM convent WHERE id = $con");
@@ -106,19 +112,19 @@ if ($action == "Slet" && $con) { // burde tjekke om kongres findes
 		if ($r) {
 			chlog($con,$this_type,"Con slettet: $name");
 		}
-		$_SESSION['admin']['info'] = "Kongres slettet! " . dberror();
+		$_SESSION['admin']['info'] = "Con deleted! " . dberror();
 		rexit($this_type, ['con' => $con] );
 	}
 }
 
 
-if ($action == "opret") {
+if ($action == "create") {
 	if (!$name) {
-		$_SESSION['admin']['info'] = "Du mangler et navn på con'en!";
+		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
 		$year = intval($year);
 		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
-		$q = "INSERT INTO convent (id, name, year, begin, end, place, conset_id, description, intern, confirmed) " .
+		$q = "INSERT INTO convent (id, name, year, begin, end, place, conset_id, description, intern, confirmed, cancelled, country) " .
 		     "VALUES (NULL, ".
 			 "'".dbesc($name)."', ".
 			 "$year, ".
@@ -128,20 +134,22 @@ if ($action == "opret") {
 			 "'".dbesc($conset_id)."', ".
 			 "'".dbesc($description)."', ".
 			 "'".dbesc($intern)."', ".
-			 "'".dbesc($confirmed)."'".
+			 "'".dbesc($confirmed)."',".
+			 "'".dbesc($cancelled)."',".
+			 "'".dbesc($country)."'".
 			 ")";
 		$r = doquery($q);
 		if ($r) {
 			$con = dbid();
 			chlog($con,$this_type,"Con oprettet");
 		}
-		$_SESSION['admin']['info'] = "Con oprettet! " . dberror();
+		$_SESSION['admin']['info'] = "Con created " . dberror();
 		rexit($this_type, [ 'con' => $con ] );
 	}
 }
 
 unset($conset);
-$conset[0] = "[ingen eller ukendt con-række]";
+$conset[0] = "[none or unknown con series]";
 $q = getall("SELECT id, name FROM conset ORDER BY name");
 foreach($q AS $r) {
 	$conset[$r[id]] = $r[name];
@@ -157,9 +165,9 @@ $conflist = array(
 htmladmstart("Con");
 
 print "<FORM ACTION=\"convent.php\" METHOD=\"post\">\n";
-if (!$con) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"opret\">\n";
+if (!$con) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
-	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"ret\">\n";
+	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"con\" value=\"$con\">\n";
 }
 
@@ -178,14 +186,11 @@ if ($con) {
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$con\">Vis log</a>";
 	}
-#	$next = $con + 1;
-#	print " - <a href=\"convent.php?con=$next\">Næste ID</a>";
 	print "\n</td></tr>\n";
 }
 
-tr("Navn:","name",$name);
-tr("Årstal:","year",$year, "", "ÅÅÅÅ","number");
-#print "<tr valign=top><td>Info om con'en:</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
+tr("Name","name",$name);
+tr("Year","year",$year, "", "YYYY","number");
 if ($begin && $begin != "0000-00-00") {
 	list($y,$m,$d) = explode("-",$begin);
 	$opta = "($d/$m $y = ". $ugedag[date("w",mktime(0,0,0,$m,$d,$y))] . ")";
@@ -196,13 +201,14 @@ if ($end && $end != "0000-00-00") {
 	$optb = "($d/$m $y = ". $ugedag[date("w",mktime(0,0,0,$m,$d,$y))] . ")";
 }
 
-tr("Startdato:","begin",$begin,$opta, "ÅÅÅÅ-MM-DD","date");
-tr("Slutdato:","end",$end,$optb, "ÅÅÅÅ-MM-DD","date");
+tr("Start date","begin",$begin,$opta, "YYYY-MM-DD","date");
+tr("End date","end",$end,$optb, "YYYY-MM-DD","date");
 
-tr("Sted:","place",$place);
+tr("Location","place",$place);
+tr("Country code","country",$country,"","dk");
 
-print "<tr valign=top><td>Info om connen:</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
-print "<tr valign=top><td>Intern note:</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
 
 
 ## Con-serie ##
@@ -221,7 +227,7 @@ print "</td></tr>\n\n";
 
 ## Bekræft data? ##
 
-print "<tr valign=top><td>Datavaliditet:</td>";
+print "<tr valign=top><td>Data validity:</td>";
 print "<td>\n";
 print "<select name=\"confirmed\">\n";
 
@@ -233,7 +239,13 @@ foreach ($conflist AS $id => $name) {
 print "</select>\n";
 print "</td></tr>\n\n";
 
-print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($con ? "Ret" : "Opret").' con">' . ($con ? ' <input type="submit" name="action" value="Slet" onclick="return confirm(\'Slet kongres?\n\nFor en sikkerheds skyld tjekkes der, om alle tilknytninger er fjernet.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
+print "<tr valign=top><td>Cancelled?</td>";
+print "<td>\n";
+print "<input type=\"checkbox\" name=\"cancelled\" " . ($cancelled ? "checked=\"checked\"" : "") . "/>\n";
+print "</td>\n";
+print "</tr>\n\n";
+
+print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($con ? "Edit" : "Create").' con">' . ($con ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete con?\n\nAs a precaution every relation will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 ## Links og scenarier i con ##
 

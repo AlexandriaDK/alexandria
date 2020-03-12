@@ -567,6 +567,8 @@ print "</tr>\n\n";
 print "<tr valign=top><td>Board&nbsp;game?</td>";
 print "<td>\n";
 print "<input type=\"checkbox\" name=\"boardgame\" " . ($boardgame ? "checked=\"checked\"" : "") . "/>\n";
+print "</td>\n";
+print "</tr>\n\n";
 
 
 ### System? ###
