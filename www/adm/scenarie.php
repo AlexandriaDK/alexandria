@@ -355,6 +355,7 @@ foreach($q AS $r) {
 <HTML><HEAD><TITLE>Administration - Scenario</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
 <style>
   #dialog label, #dialog input { display:block; }
   #dialog label { margin-top: 0.5em; }

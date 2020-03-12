@@ -7,100 +7,94 @@ require "base.inc";
 $this_type = 'conset';
 
 $conset = (int) $_REQUEST['conset'];
-$action = $_REQUEST['action'];
-$name = $_REQUEST['name'];
-$description = $_REQUEST['description'];
-$intern = $_REQUEST['intern'];
+$action = (string) $_REQUEST['action'];
+$name = (string) $_REQUEST['name'];
+$description = (string) $_REQUEST['description'];
+$intern = (string) $_REQUEST['intern'];
+$country = (string) $_REQUEST['intern'];
 
 
 if (!$action && $conset) {
-	$row = getrow("SELECT id, name, description, intern FROM conset WHERE id = '$conset'");
+	$row = getrow("SELECT id, name, description, intern, country FROM conset WHERE id = '$conset'");
 	if ($row) {
 		$name = $row['name'];
 		$description = $row['description'];
 		$intern = $row['intern'];
+		$country = $row['country'];
 	} else {
 		unset($conset);
 	}
 }
 
-if ($action == "ret" && $conset) {
+if ($action == "edit" && $conset) {
 	if (!$name) {
-		$_SESSION['admin']['info'] = "Du mangler et navn!";
+		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
 		$q = "UPDATE conset SET " .
 		     "name = '" . dbesc($name) . "', " .
 		     "description = '" . dbesc($description) . "', " .
-		     "intern = '" . dbesc($intern) . "' " .
+		     "intern = '" . dbesc($intern) . "', " .
+		     "country = '" . dbesc($country) . "' " .
 		     "WHERE id = '$conset'";
 		$r = doquery($q);
 		if ($r) {
 			chlog($conset,$this_type,"Conset rettet");
 		}
-		$_SESSION['admin']['info'] = "Con-serie rettet! " . dberror();
+		$_SESSION['admin']['info'] = "Con series edited! " . dberror();
 		rexit($this_type, [ 'conset' => $conset ] );
 	}
 }
 
-if ($action == "opret") {
+if ($action == "create") {
 	if (!$name) {
-		$_SESSION['admin']['info'] = "Du mangler et navn på con-serien!";
+		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
-		$q = "INSERT INTO conset (id, name, description, intern) " .
-		     "VALUES (NULL, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($intern) . "')";
+		$q = "INSERT INTO conset (id, name, description, intern, country) " .
+		     "VALUES (NULL, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($intern) . "', '" . dbesc($country) . "')";
 		$r = doquery($q);
 		if ($r) {
 			$conset = dbid();
 			chlog($conset,$this_type,"Conset oprettet");
 		}
-		$_SESSION['admin']['info'] = "Con-serie oprettet! " . dberror();
+		$_SESSION['admin']['info'] = "Con series created! " . dberror();
 		rexit($this_type, [ 'conset' => $conset ] );
 		
 	}
 }
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - con-set</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-
-<?php
-include("links.inc");
+htmladmstart("Con series");
 
 printinfo();
 
 print "<FORM ACTION=\"conset.php\" METHOD=\"post\">\n";
-if (!$conset) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"opret\">\n";
+if (!$conset) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
-	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"ret\">\n";
+	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"conset\" value=\"$conset\">\n";
 }
 
-print "<a href=\"conset.php\">Ny con-serie</a>";
+print "<a href=\"conset.php\">New con series</a>";
 
 print "<table border=0>\n";
 
 if ($conset) {
-	print "<tr><td>ID:</td><td>$conset - <a href=\"../data?conset=$conset\" accesskey=\"q\">Vis con-serie</a>";
+	print "<tr><td>ID</td><td>$conset - <a href=\"../data?conset=$conset\" accesskey=\"q\">Show con series page</a>";
 	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$conset\">Vis log</a>";
+		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$conset\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
 
-tr("Navn:","name",$name);
-print "<tr valign=top><td>Info om con-serien:</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
-print "<tr valign=top><td>Intern note:</td><td><textarea name=\"intern\" cols=\"60\" rows=\"6\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
+tr("Name","name",$name);
+print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note</td><td><textarea name=\"intern\" cols=\"60\" rows=\"6\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
 
+tr("Country code","country", $country, "", "Two letter ISO code, e.g.: dk" );
 
-$ror = ($conset) ? "Ret" : "Opret";
-
+$ror = ($conset) ? "Update" : "Create";
 ?>
 
-<tr><td>&nbsp;</td><td><INPUT TYPE="submit" VALUE="<?php print $ror; ?> con-serie"></td></tr>
+<tr><td></td><td><INPUT TYPE="submit" VALUE="<?php print $ror; ?> con series"></td></tr>
 
 <?php
 
@@ -113,10 +107,10 @@ if ($conset) {
 
 // Afholdte con'er
 	$q = getall("SELECT convent.id, convent.name, year, confirmed, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE conset_id = '$conset' ORDER BY setname, year, begin, end, name");
-	print "<tr valign=top><td>Indeholder følgende kongresser:</td><td>\n";
+	print "<tr valign=top><td>Contains the following cons:</td><td>\n";
         foreach($q AS list($id, $name, $y, $c) ){
-		if ($c == 0) $conftext = "(mangler scenarier)";
-		elseif ($c == 1) $conftext = "(under indtastning)";
+		if ($c == 0) $conftext = "(missing scenarios)";
+		elseif ($c == 1) $conftext = "(being edited)";
 		else $conftext = "";
 		print "<a href=\"convent.php?con=$id\">$name ($y)</a> $conftext<br>";
 	}
@@ -133,15 +127,12 @@ if ($conset) {
 
 <form action="conset.php" method=get>
 <table border=0>
-<tr valign=baseline>
+<tr>
 <td>
-<big>Vælg con-serie:</big>
+<big>Select con series</big>
 </td>
 
 <td>
-<!--
-<select name=conset onChange="form.submit()">
--->
 <select name=conset>
 
 <?php
@@ -154,7 +145,7 @@ foreach($q AS $r) {
 ?>
 </select>
 <br>
-<input type=submit value="Rediger">
+<input type=submit value="Edit">
 
 </td>
 </tr>

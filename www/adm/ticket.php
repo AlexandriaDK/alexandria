@@ -26,16 +26,7 @@ if ($action == "ret" && $id) {
 $title = "Administration - tickets";
 if ($id > 0) $title .= " - #$id";
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-	<head><title><?php print $title; ?></title>
-		<link rel="stylesheet" type="text/css" href="style.css">
-	</head>
-
-	<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Tickets");
 
 $query = "SELECT id, data_id, category, title, submittime, user_name, user_email, status FROM updates ORDER BY id DESC";
 $result = getall($query) or die(dberror());

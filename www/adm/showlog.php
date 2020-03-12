@@ -97,15 +97,7 @@ if ($data_id && $category) {
 	$listresult = getall($query);
 
 }
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>Administration - log</title>
-<link rel="stylesheet" type="text/css" href="style.css">
-</head>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Log");
 
 if ($info) {
 	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";

@@ -88,15 +88,7 @@ $result = getall($query);
 
 $userlogins = getcolid("SELECT user_id, COUNT(*) AS logins FROM loginmap GROUP BY user_id");
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - Users</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Users");
 
 if ($info) {
 	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";

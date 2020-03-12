@@ -243,7 +243,7 @@ function getCount ($table, $data_id, $requiresData = FALSE, $category = "") {
 	return $count;
 }
 
-$ugedag = array("søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag");
+$ugedag = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 /*
 function pubdateprint($datetime) {
@@ -333,8 +333,17 @@ function rexit($this_type, $dataset = [] ) {
 
 function printinfo() {
 	if ($_SESSION['admin']['info']) {
-		print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">" . htmlspecialchars($_SESSION['admin']['info']) . "</font></td></tr></table>\n";
+		print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">";
+		if ($_SESSION['admin']['link']) {
+			print "<a href=\"" . $_SESSION['admin']['link'] . "\">";
+		}
+		print htmlspecialchars($_SESSION['admin']['info']);
+		if ($_SESSION['admin']['link']) {
+			print "</a>";
+		}
+		print "</font></td></tr></table>\n";
 		unset($_SESSION['admin']['info']);
+		unset($_SESSION['admin']['link']);
 	}
 
 }
@@ -356,6 +365,7 @@ function htmladmstart($title = "") {
 <html><head>
 <title>Administration $htmltitle</title>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
 </head>
 <body>
 EOD;

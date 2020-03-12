@@ -80,16 +80,7 @@ if ($action == "addlink") {
 	$query = "SELECT a.id, a.url, a.owner, a.name, a.pageurl, a.aut_id, COUNT(b.id) AS count FROM feeds a LEFT JOIN feedcontent b ON a.id = b.feed_id GROUP BY a.id ORDER BY a.id";
 	$result = getall($query);
 
-
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - Feeds</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Feeds");
 
 if ($info) {
 	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";

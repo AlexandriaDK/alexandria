@@ -4,16 +4,8 @@ require "base.inc";
 chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc";
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML>
-	<head><title>Administration - teknik</title>
-		<link rel="stylesheet" type="text/css" href="style.css">
-	</HEAD>
 
-	<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Technical");
 
 // TJEK AF ORPHANS
 

@@ -22,7 +22,7 @@ $country = (string) $_REQUEST['country'];
 $cancelled = (int) (bool) $_REQUEST['cancelled'];
 
 if (!$action && $con) {
-	$row = getrow("SELECT id, name, year, begin, end, place, conset_id, description, intern, confirmed, country, cancelled FROM convent WHERE id = '$con'");
+	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.intern, a.confirmed, a.country, b.country AS cscountry, a.cancelled FROM convent a LEFT JOIN conset b ON a.conset_id = b.id WHERE a.id = $con");
 	if ($row) {
 		$name = $row['name'];
 		$year = $row['year'];
@@ -34,6 +34,7 @@ if (!$action && $con) {
 		$intern = $row['intern'];
 		$confirmed = $row['confirmed'];
 		$country = $row['country'];
+		$cscountry = $row['cscountry'];
 		$cancelled = $row['cancelled'];
 		$qq = getall("
 			SELECT id, name, year, begin, end
@@ -205,7 +206,7 @@ tr("Start date","begin",$begin,$opta, "YYYY-MM-DD","date");
 tr("End date","end",$end,$optb, "YYYY-MM-DD","date");
 
 tr("Location","place",$place);
-tr("Country code","country",$country,"","dk");
+tr("Country code","country",$country,($cscountry ? $cscountry . " (derived from con series - no need to enter)" : ""), ($cscountry ? $cscountry : "Two letter ISO code, e.g.: dk") );
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";

@@ -16,7 +16,7 @@ $published = $_REQUEST['published'];
 $id = $_REQUEST['id'];
 
 // Ret news
-if ($action == "changenews" && $do != "Slet") {
+if ($action == "changenews" && $do != "Delete") {
 	$text = trim($text);
 	$online = ($online == "on" ? 1 : 0);
 	$q = "UPDATE news SET " .
@@ -29,15 +29,15 @@ if ($action == "changenews" && $do != "Slet") {
 	$id = "";
 }
 
-// Slet alias
-if ($action == "changenews" && $do == "Slet") {
+// Delete news
+if ($action == "changenews" && $do == "Delete") {
 	$q = "DELETE FROM news WHERE id = '$id'";
 	$r = doquery($q);
-	$info = "News slettet! " . dberror();
+	$info = "News deleted! " . dberror();
 	$id = "";
 }
 
-// Tilføj alias
+// Add news
 if ($action == "addnews") {
 	$text = trim($text);
 	if (!$published) $published = date("Y-m-d H:i:s");
@@ -46,22 +46,14 @@ if ($action == "addnews") {
 	     "(text, published, online) VALUES ".
 	     "('" . dbesc($text) . "', '$published', '$online')";
 	$r = doquery($q);
-	$info = "News oprettet! " . dberror();
+	$info = "News created! " . dberror();
 }
 
 if ($id) {
 	$row = getrow("SELECT text, online, published FROM news WHERE id = '$id'");
 }
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - nyheder</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("News");
 
 if ($info) {
 	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";
@@ -74,19 +66,19 @@ if ($id) {
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print '<p>News ID #'.$id.'</p>';
 	print '<p><textarea name="text" cols="60" rows="5">'.htmlspecialchars($row['text']).'</textarea></p>';
-	print '<p>Dato: <input type="text" name="published" length="20" value="'.$row['published'].'" placeholder="(efterlad blank for d.d.)"></p>';
-	print '<p>Online: <input type="checkbox" name="online" '.$selected.'></p>';
-	print '<p><input type="submit" name="do" value="Ret"></p>'.
-		    '<p><input type="submit" name="do" value="Slet"></p>';
+	print '<p>Date <input type="text" name="published" length="20" value="'.$row['published'].'" placeholder="(leave blank for today)"></p>';
+	print '<p>Online <input type="checkbox" name="online" '.$selected.'></p>';
+	print '<p><input type="submit" name="do" value="Edit"></p>'.
+		    '<p><input type="submit" name="do" value="Delete"></p>';
 	print "</form>\n\n";
 } else {
 	print '<form action="news.php" method="post">'.
 	      '<input type="hidden" name="action" value="addnews">';
-	print '<p>Ny nyhed:</p>';
+	print '<p>New post:</p>';
 	print '<p><textarea name="text" cols="60" rows="5"></textarea></p>';
-	print '<p>Dato: <input type="text" name="published" length="20" placeholder="(efterlad blank for d.d.)"></p>';
-	print '<p>Online: <input type="checkbox" name="online" checked="checked"></p>';
-	print '<p><input type="submit" name="do" value="Opret"></p>';
+	print '<p>Date <input type="text" name="published" length="20" placeholder="(leave blank for today)"></p>';
+	print '<p>Online <input type="checkbox" name="online" checked="checked"></p>';
+	print '<p><input type="submit" name="do" value="Create"></p>';
 
 	$result = getall("SELECT id, text, online FROM news ORDER BY id DESC");
 	foreach($result AS $row) {
