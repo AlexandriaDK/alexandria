@@ -70,10 +70,10 @@
 	<table class="organizerlist indata">
 	{section name=i loop=$organizerlist}
 	<tr>
-	<td style="text-align: right;">
+	<td style="text-align: right;" {if $organizerlist[i].cancelled}class="cancelled"{/if}>
 		<a href="data?con={$organizerlist[i].convent_id}" class="con">{$organizerlist[i].name|escape}</a>
 	</td>
-	<td style="padding-right: 10px">
+	<td style="padding-right: 10px" {if $organizerlist[i].cancelled}class="cancelled"{/if}>
 		<a href="data?con={$organizerlist[i].convent_id}" class="con">({$organizerlist[i].year})</a>
 	</td>
 	<td>

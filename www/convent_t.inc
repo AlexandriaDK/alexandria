@@ -144,7 +144,7 @@ if ($r['id'] == 0) {
 			if ($rs['textsymbol']) { // unicode-ikoner
 				$datalist .= $runsymbol = "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\">{$rs['textsymbol']}</span>";
 			} elseif ($rs['iconfile']) {
-				$datalist .= $runsymbol = "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\" width=\"14\" height=\"14\" />";
+				$datalist .= $runsymbol = "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) . "\" width=\"15\" height=\"15\" />";
 			} else {
 				$datalist .= $runsymbol = "<img src=\"/gfx/spacer.gif\" width=\"14\" height=\"1\" alt=\"\" />";
 			}

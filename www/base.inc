@@ -794,7 +794,7 @@ function getorganizerlist ($data_id, $category, $order = FALSE) {
 	if ($category == 'convent') {
 		$organizerlist = getall("SELECT a.id, CONCAT(b.firstname, ' ', b.surname) AS name, a.aut_id, a.aut_extra, a.role FROM acrel a LEFT JOIN aut b ON a.aut_id = b.id WHERE a.convent_id = '$data_id' ORDER BY $order");
 	} elseif ($category == 'aut') {
-		$organizerlist = getall("SELECT a.id, a.convent_id, a.role, b.name, b.year FROM acrel a INNER JOIN convent b ON a.convent_id = b.id WHERE a.aut_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
+		$organizerlist = getall("SELECT a.id, a.convent_id, a.role, b.name, b.year, b.cancelled FROM acrel a INNER JOIN convent b ON a.convent_id = b.id WHERE a.aut_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
 
 	}
 	return $organizerlist;
