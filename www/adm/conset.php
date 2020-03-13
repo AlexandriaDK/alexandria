@@ -11,7 +11,7 @@ $action = (string) $_REQUEST['action'];
 $name = (string) $_REQUEST['name'];
 $description = (string) $_REQUEST['description'];
 $intern = (string) $_REQUEST['intern'];
-$country = (string) $_REQUEST['intern'];
+$country = (string) $_REQUEST['country'];
 
 
 if (!$action && $conset) {
