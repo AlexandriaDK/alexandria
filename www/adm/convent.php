@@ -160,7 +160,7 @@ $conflist = array(
 	0 => [ "label" => "Missing list of games", "level" => 1],
 	1 => [ "label" => "List of games available", "level" => 2],
 	2 => [ "label" => "Games currently being entered", "level" => 3],
-	3 => [ "label" => "Games entered, descriptions not entered", "level" => 2],
+	3 => [ "label" => "Games entered, descriptions available", "level" => 2],
 	4 => [ "label" => "Descriptions currently being entered", "level" => 3],
 	5 => [ "label" => "Stuff still missing (write under internal note)", "level" => 2],
 	6 => [ "label" => "Program entered", "level" => 4],

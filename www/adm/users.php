@@ -123,7 +123,7 @@ if ($result) {
 		print "<tr valign='top'>\n".
 		      '<td style="text-align:right;"><a href="fbgraph.php?user_id=' . $row['id'] . '">'.$row['id'].'</a></td>'.
 		      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=50 maxlength=100></td>'.
-		      '<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size=2 maxlength=1></td>'.
+		      '<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size="6"></td>'.
 		      '<td align="center"><input type="checkbox" name="editor" value="yes" ' . ($row['editor'] ? 'checked' : '' ) . '></td>'.
 		      '<td align="right">' . (int) $userlogins[$row['id']] . '</td>'.
 		      '<td align="right" title="' . $row['login_days_in_row'] . '">' . $row['login_count'] . '</td>'.
