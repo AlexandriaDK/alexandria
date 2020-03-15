@@ -157,10 +157,14 @@ foreach($q AS $r) {
 }
 
 $conflist = array(
-	0 => "Scenarieliste mangler",
-	1 => "Scenarieliste under indtastning",
-	2 => "Scenarieliste komplet jf. program",
-	9 => "Scenarieliste bekræftet"
+	0 => [ "label" => "Missing list of games", "level" => 1],
+	1 => [ "label" => "List of games available", "level" => 2],
+	2 => [ "label" => "Games currently being entered", "level" => 3],
+	3 => [ "label" => "Games entered, descriptions not entered", "level" => 2],
+	4 => [ "label" => "Descriptions currently being entered", "level" => 3],
+	5 => [ "label" => "Stuff still missing (write under internal note)", "level" => 2],
+	6 => [ "label" => "Program entered", "level" => 4],
+	9 => [ "label" => "List confirmed", "level" => 4]
 );
 
 htmladmstart("Con");
@@ -232,10 +236,13 @@ print "<tr valign=top><td>Data validity:</td>";
 print "<td>\n";
 print "<select name=\"confirmed\">\n";
 
-foreach ($conflist AS $id => $name) {
+foreach ($conflist AS $id => $stage) {
+	$levelcolors = [ 1 => '#d55', 2 => '#d95', 3 => '#dd5', 4 => '#5d5' ];
 	print "<option value=$id";
 	if ($id == $confirmed) print " SELECTED";
-	print ">$name\n";
+	print " style=\"background-color: " . $levelcolors[$stage['level']] . "\"";
+	
+	print ">" . $stage['label'] . "\n";
 }
 print "</select>\n";
 print "</td></tr>\n\n";
