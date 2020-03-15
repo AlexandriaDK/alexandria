@@ -25,7 +25,7 @@ if ($action == "changenews" && $do != "Delete") {
 	     "published = '$published' " .
 	     "WHERE id = '$id'";
 	$r = doquery($q);
-	$info = "News rettet! " . dberror();
+	$info = "News updated! " . dberror();
 	$id = "";
 }
 
