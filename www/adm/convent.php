@@ -281,11 +281,11 @@ if ($con) {
 // Scenarier under con'en	
 	$q = getall("SELECT sce.id, title, pre.id AS preid, event FROM sce, csrel, pre WHERE csrel.convent_id = '$con' AND csrel.sce_id = sce.id AND csrel.pre_id = pre.id ORDER BY title");
 	print dberror();
-	print "<tr valign=top><td>Scenarier herunder:</td><td>\n";
+	print "<tr valign=top><td>Scenarios connected:</td><td>\n";
 	
         foreach($q AS list($id, $title, $preid, $event) ) {
 		if ($title == "") {
-			$title = "(fejl - ingen titel)";
+			$title = "(error - no title)";
 		}
 		print "<a href=\"scenarie.php?scenarie=$id\">$title</a>" . PHP_EOL;
 		if ($preid > 1) print " ($event)";
@@ -309,7 +309,7 @@ if ($con) {
 <table border=0>
 <tr valign=baseline>
 <td>
-<big>Vælg con:</big>
+<big>Select con:</big>
 </td>
 
 <td>
