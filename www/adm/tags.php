@@ -95,15 +95,7 @@ if ($data_id && $category) {
 	$result = getall($query);
 }
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - tags</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body>
-<?php
-include("links.inc");
+htmladmstart("Tags");
 
 printinfo();
 

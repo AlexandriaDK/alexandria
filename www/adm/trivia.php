@@ -103,16 +103,7 @@ if ($data_id && $category) {
 	$query = "SELECT id, fact, hidden FROM trivia WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
 	$result = getall($query);
 }
-
-?>
-<!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - trivia</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Trivia");
 
 printinfo();
 

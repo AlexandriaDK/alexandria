@@ -74,15 +74,7 @@ if ($action == "addrun") {
 $query = "SELECT id, begin, end, location, description, cancelled FROM scerun WHERE sce_id = '$id' ORDER BY begin, end, id";
 $result = getall($query);
 
-?>
-<!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - runs</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc");
+htmladmstart("Run");
 
 printinfo();
 

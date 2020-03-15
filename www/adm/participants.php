@@ -24,16 +24,7 @@ if ($scenarie && $auto_players_min) {
 	header("Location: scenarie.php?scenarie=$scenarie");
 	exit;
 }
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - deltagere til scenarie</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-
-<?php
-include("links.inc");
+htmladmstart("Participants scrape");
 
 $data = getall("SELECT id, title, intern FROM sce WHERE intern REGEXP 'spiller|player|participant|deltager|antal' AND players_min IS NULL");
 foreach($data AS $sce) {

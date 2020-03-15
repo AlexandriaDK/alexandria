@@ -64,16 +64,7 @@ if (count($r1) == 1 && count($r2) == 0) {
 	exit;
 }
 
-?>
-<!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - search</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-
-<?php
-include("links.inc");
+htmladmstart("Search");
 
 print "<b>Found results:</b><br>";
 

@@ -67,17 +67,7 @@ if ($action == "opret") {
 	}
 }
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administration - tag-beskrivelse</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-
-<?php
-include("links.inc");
+htmladmstart("Tag");
 
 printinfo();
 

@@ -25,7 +25,7 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || ($admonly && !$_S
 
 		print '
 		<p align="center">
-		(Denne side kræver udvidet adgang)
+		(This page requires admin privileges)
 		</p>';
 
 	}
