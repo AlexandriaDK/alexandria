@@ -81,7 +81,6 @@ div.leftmenucontent .mylinks {
 	position: absolute;
 	left: 195px;
 	top: 55px;
-	width: 40em;
 }
 
 #contentwide {
@@ -325,7 +324,7 @@ div.person div.list, div.system div.list {
 }
 
 div.latestnews {
-	width: 190px;
+	width: 240px;
 	padding-right: 10px;
 	border-right: 1px solid black;
 	float: left;
@@ -338,7 +337,7 @@ div.latestnews .topnote {
 
 div.frontpagedownloads {
 	float: left;
-	width: 200px;
+	width: 300px;
 	padding-left: 10px;
 }
 

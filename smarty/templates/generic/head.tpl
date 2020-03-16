@@ -220,7 +220,7 @@
 		</div>
 	{/if}
 
-	{if isset($user_scenario_missing_players) }
+	{if isset($user_scenario_missing_players) && $user_scenario_missing_players }
 			<div class="leftmenucontent">
 				{$_top_help_sce_no|@nl2br}
 				<br><br>
@@ -232,7 +232,7 @@
 			</div>
 	{/if}
 
-	{if isset($user_scenario_missing_tags) }
+	{if isset($user_scenario_missing_tags) && $user_scenario_missing_tags }
 			<div class="leftmenucontent">
 				{$_top_help_sce_tag|@nl2br}
 				<br><br>
