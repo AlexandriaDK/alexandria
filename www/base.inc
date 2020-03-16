@@ -3,7 +3,7 @@ mb_internal_encoding("UTF-8");
 // enable session for all pages
 // set cache_limiter to 'private' for sake of Firefox
 // update: set cache_limiter to 'none' for sake of Firefox *and* IE
-session_cache_limiter('none');
+#session_cache_limiter('none');
 session_start();
 
 header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiinterfaceusingvisualbasic");
@@ -60,7 +60,7 @@ if ( LANG == 'da') {
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
 
 // Smarty 
-define('SMARTY_DIR', __DIR__ . '/../smarty/libs/');
+define('SMARTY_DIR', __DIR__ . '/../smarty-3.1.34/libs/');
 require_once(SMARTY_DIR . 'Smarty.class.php');
 
 $t = new Smarty;
@@ -87,19 +87,21 @@ if (!defined('DBERROR') ) {
 	$t->assign('stat_all_convent',getone("SELECT COUNT(*) FROM convent"));
 	$t->assign('stat_all_sys',getone("SELECT COUNT(*) FROM sys"));
 	
-	$t->assign('user_id',$_SESSION['user_id']);
-	$t->assign('user_author_id',$_SESSION['user_author_id']);
-	$t->assign('user_site',$_SESSION['user_site']);
-	$t->assign('user_site_id',$_SESSION['user_site_id']);
-	$t->assign('user_name',$_SESSION['user_name']);
-	$t->assign('user_editor',$_SESSION['user_editor']);
-	$t->assign('user_admin',$_SESSION['user_admin']);
-	$t->assign('user_achievements_to_display', get_achievements_to_display() );
+	if (isset($_SESSION['user_id']) ) {
+		$t->assign('user_id',$_SESSION['user_id']);
+		$t->assign('user_author_id',$_SESSION['user_author_id'] ?? FALSE);
+		$t->assign('user_site',$_SESSION['user_site'] ?? FALSE);
+		$t->assign('user_site_id',$_SESSION['user_site_id'] ?? FALSE);
+		$t->assign('user_name',$_SESSION['user_name'] ?? FALSE);
+		$t->assign('user_editor',$_SESSION['user_editor'] ?? FALSE);
+		$t->assign('user_admin',$_SESSION['user_admin'] ?? FALSE);
+		$t->assign('user_achievements_to_display', get_achievements_to_display() );
+	}
 	$t->assign('ALEXLANGUAGES', $alexlanguages );
 	if ($lang) {
 		$t->assign('LANG', LANG );
 	}
-	if ( $urllang ) {
+	if ( isset($urllang) ) {
 		$t->assign('URLLANG', $urllang );
 		$t->assign('BASEURI', $baseuri );
 	}
@@ -127,7 +129,7 @@ if ($_SESSION['user_id']) { // set last active
 		last_active = NOW()
 		WHERE id = " . $_SESSION['user_id']
 	);
-	if ($_SESSION['user_author_id']) {
+	if ($_SESSION['user_author_id'] ?? FALSE) {
 		$scenario_missing_participants = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) INNER JOIN csrel c ON a.id = c.sce_id AND c.pre_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
 		$scenario_missing_tags = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) LEFT JOIN tags c ON a.id = c.sce_id AND c.tag != 'English' WHERE c.sce_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
 		if ($scenario_missing_participants && $scenario_missing_tags) {
@@ -353,11 +355,15 @@ function check_begin_page_achievements() {
 	if (strpos($user_agent, ' Edge/') !== FALSE) award_achievement(90);
 
 	// referer achievements
-	$referer = $_SERVER['HTTP_REFERER'];
+	$referer = $_SERVER['HTTP_REFERER'] ?? NULL;
 	if ($referer) {
 		$url = parse_url($referer);
 		$segments = array_reverse(explode('.', $url['host']) );
-		$domain = $segments[1].".".$segments[0];
+		if (count($segments) > 1) {
+			$domain = $segments[1].".".$segments[0];
+		} else {
+			$domain = $url;
+		}
 		
 		// check
 		if ($domain == 'google.com') award_achievement(37);
@@ -573,7 +579,8 @@ function textlinks ($text,$absolute_url = 0) {
 	$text = preg_replace_callback(
 		'_\[\[\[([^]]+)\]\]\]_',
 		function ($matches) {
-			return _textlink($matches[1],$absolute_url);
+			#return _textlink($matches[1],$absolute_url);
+			return _textlink($matches[1]);
 		},
 		$text
 	);
@@ -591,7 +598,11 @@ function datalink ($url, $description) {
 }
 
 function nicedateset ($begin, $end) {
+	$out = "";
 	if ( ($begin && $begin != "0000-00-00") || ($end && $end != "0000-00-00") ) {
+		if (is_null($end)) {
+			$end = $begin;
+		}
 		list($y1,$m1,$d1) = explode("-",$begin);
 		list($y2,$m2,$d2) = explode("-",$end);
 		
@@ -800,6 +811,10 @@ function getorganizerlist ($data_id, $category, $order = FALSE) {
 	return $organizerlist;
 }
 
+function getnews(int $limit = 1000) {
+	$result = getall("SELECT id, text, published, online FROM news WHERE online = 1 ORDER BY id DESC LIMIT $limit");
+	return $result;
+}
 
 function getnexteventstable () { // both cons and scenarios
 	// All cons that haven't ended (or begun) yet - manual CURDATE due to querycache
@@ -869,6 +884,7 @@ function parseupcomingevents($eventset) {
 // MySQL-kald:
 
 function getentry ($cat, $data_id, $with_category = FALSE) {
+	$value = $label = FALSE;
 
 	switch ($cat) {
 		case 'aut':

@@ -4,10 +4,8 @@ require("base.inc");
 
 header("Content-Type: application/json");
 
-$query = (string) $_REQUEST['query'];
-if (!$query) {
-	$query = (string) $_REQUEST['term'];
-}
+$query = (string) ($_REQUEST['query'] ?? $_REQUEST['term'] ?? '');
+
 $escapequery = dbesc($query);
 $result = [];
 

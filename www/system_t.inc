@@ -7,6 +7,7 @@ if ($system == 23) award_achievement(54); // MERP
 if ($system == 3)  award_achievement(68); // Paranoia
 
 $r = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
+
 if ($r['id'] == 0) {
 	$t->assign('content',"Beklager - intet system fundet!");
 	$t->assign('pagetitle',"Ikke fundet");
@@ -20,6 +21,8 @@ if ($r['id'] == 0) {
 
 	$slist = array();
 	$sl = 0;
+
+	$scenlist = "";
 
 	if (count($q) > 0) {
 		foreach($q AS $rs) {
@@ -57,7 +60,7 @@ if ($r['id'] == 0) {
 			}
 
 			if ($rs['con_id']) {
-		    $coninfo = nicedateset($rs['begin'],$rs['end']);
+				$coninfo = nicedateset($rs['begin'],$rs['end']);
 				$scenlist .= "<td class=\"lpad\"><a href=\"data?con={$rs['con_id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a></td>";
 				$slist[$sl]['coninfo'] = $coninfo;
 				$slist[$sl]['conlink'] = "data?con=".$rs['con_id'];

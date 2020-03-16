@@ -306,7 +306,7 @@ $con = [];
 #$con[0] = "[ingen eller ukendt con]";
 $q = getall("SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id ORDER BY setname, year, begin, end, name") OR die(dberror());
 foreach($q AS $r) {
-	$con[$r[id]] = $r[name]." (".$r[year].")";
+	$con[$r['id']] = $r['name']." (".$r['year'].")";
 }
 
 // Find alle systemer
@@ -315,7 +315,7 @@ $sys = [];
 $sys[0] = "[ukendt eller uspecificeret system]";
 $q = getall("SELECT id, name FROM sys ORDER BY name");
 foreach($q AS $r) {
-	$sys[$r[id]] = $r[name];
+	$sys[$r['id']] = $r['name'];
 }
 
 
@@ -325,13 +325,13 @@ foreach($q AS $r) {
 $autnew = [];
 $q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id DESC LIMIT 10");
 foreach($q AS $r) {
-	$autnew[$r[id]] = $r[name];
+	$autnew[$r['id']] = $r['name'];
 }
 
 $aut = [];
 $q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY name, id");
 foreach($q AS $r) {
-	$aut[$r[id]] = $r[name];
+	$aut[$r['id']] = $r['name'];
 }
 
 // Find alle arbejdstitler
@@ -339,7 +339,7 @@ foreach($q AS $r) {
 unset($tit);
 $q = getall("SELECT id, title FROM title ORDER BY id");
 foreach($q AS $r) {
-	$tit[$r[id]] = $r[title];
+	$tit[$r['id']] = $r['title'];
 }
 
 // Find alle slags events
@@ -347,7 +347,7 @@ foreach($q AS $r) {
 unset($pre);
 $q = getall("SELECT id, event FROM pre ORDER BY id");
 foreach($q AS $r) {
-	$pre[$r[id]] = $r[event];
+	$pre[$r['id']] = $r['event'];
 }
 
 ?>
@@ -694,7 +694,7 @@ foreach($autnew AS $id =>$name) {
 	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
 }
 print "<option value=\"\">-----------\n";
-while (list($id, $name) = each($aut)) {
+foreach($aut AS $id => $name ) {
 	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
 }
 print '

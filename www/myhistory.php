@@ -4,29 +4,34 @@ require("base.inc");
 require("template.inc");
 
 // redirect if no user
-if (!$_SESSION['user_id']) {
+if (!isset($_SESSION['user_id']) && !$user_id ) {
 	header("Location: ./");
 	exit;
 }
 
+$achievement = $_GET['achievement'] ?? "";
+$o = $_GET['o'] ?? "";
+
 // achievements
-if ($_REQUEST['achievement'] == 'clickme') {
+if ($achievement == 'clickme') {
 	award_achievement(77);
 	header("Location: myhistory");
 	exit;
 }
 
-if ($_REQUEST['achievement'] == 'createaguiinterfaceusingvisualbasic') {
+if ($achievement == 'createaguiinterfaceusingvisualbasic') {
 	award_achievement(81);
 	header("Location: myhistory");
 	exit;
 }
 
-if ($_REQUEST['achievement'] == 'upupdowndownleftrightleftrightba') {
+if ($achievement == 'upupdowndownleftrightleftrightba') {
 	award_achievement(84);
 	header("Location: myhistory");
 	exit;
 }
+
+
 
 
 function getmyachievements ($user_id) {
@@ -79,7 +84,7 @@ $content_myconvents = "";
 $content_myscenarios = "";
 $content_personal_achievements = "";
 
-$conventions = getmyconvent($user_id,$_REQUEST['o']);
+$conventions = getmyconvent($user_id,$o);
 if ($conventions) {
 #	$content_myconvents .= "<h3 class=\"parttitle\">Kongresser: (".count($conventions).")</h3>\n";
 
@@ -105,8 +110,7 @@ if ($conventions) {
 
 }
 
-
-$scenarios = getmysce($user_id,$_REQUEST['o']);
+$scenarios = getmysce($user_id,$o);
 if ($scenarios) {
 	$scenariotext = [
 		"read" => htmlspecialchars($t->getTemplateVars('_top_read_pt') ),

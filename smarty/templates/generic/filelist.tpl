@@ -18,7 +18,9 @@
 		<a href="/download/{$filedir}/{$id}/{$filelist[i].filename|rawurlencode}">{$filelist[i].description}</a>
 	</td>
 	<td>
-	{if $filelist[i].filesizetext} ({$filelist[i].filesizetext} MB){/if}
+	{if isset($filelist[i].filesizetext) }
+		({$filelist[i].filesizetext} MB)
+	{/if}
 	</td>
 	</tr>
 	{/section}

@@ -14,7 +14,7 @@ if ($r['id'] == 0) {
 	print "<!-- " . gettype($_SESSION['user_author_id']) . " -->\n";
 	print "<!-- " .  (int) ($r['id'] == $_SESSION['user_author_id']) . " -->\n";
 */
-	if ($r['id'] == $_SESSION['user_author_id']) award_achievement(21); // view own page
+	if (isset($_SESSION['user_author_id']) && $r['id'] == $_SESSION['user_author_id']) award_achievement(21); // view own page
 
 // Liste over aliaser
 	$aliaslist = getaliaslist($person,$this_type);

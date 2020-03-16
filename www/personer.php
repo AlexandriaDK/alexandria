@@ -3,8 +3,8 @@ require("./connect.php");
 require("base.inc");
 require("template.inc");
 
-$b = $_REQUEST['b']; // search letter
-$s = $_REQUEST['s']; // sort; "f" = first name, "e" = surname
+$b = (string) ($_REQUEST['b'] ?? ""); // search letter
+$s = (string) ($_REQUEST['s'] ?? ""); // sort; "f" = first name, "e" = surname
 
 if (mb_strlen($b) != 1) {
 	$b = "a";

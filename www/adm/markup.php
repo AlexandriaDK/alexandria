@@ -51,7 +51,7 @@ $scenarios = getall("select id, title, description from sce where description re
 $cons = getall("select id, description from convent where description regexp '$regexp_sql'");
 $syss = getall("select id, description from sys where description regexp '$regexp_sql'");
 
-$total = count($trivias) + count($tags) + count($scenarios) + count($cons) + count($sys);
+$total = count($trivias) + count($tags) + count($scenarios) + count($cons) + count($syss);
 print dberror();
 
 print "<table border=\"1\">" . PHP_EOL;

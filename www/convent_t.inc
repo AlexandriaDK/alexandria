@@ -4,6 +4,8 @@ $this_type = 'convent';
 $authors_limit = 4;
 $scenlistdata = [];
 $boardlistdata = [];
+$oo = $_GET['oo'] ?? FALSE;
+$edit = $_GET['edit'] ?? FALSE;
 
 function antaltxt ($new, $rerun, $cancelled, $total, $type = 'sce') {
 		if ($total == 0) {
@@ -54,6 +56,7 @@ if ($r['id'] == 0) {
 			ORDER BY year, begin, name
 		");
 		unset($seriedata,$seriecount,$seriethis);
+		$seriecount = 0;
 		foreach($qq AS $row) {
 			$seriecount++;
 			$seriedata['id'][$seriecount] = $row['id'];
@@ -65,13 +68,13 @@ if ($r['id'] == 0) {
 		}
 		$arrows = [];
 		if ($seriethis) {
-			if ($seriedata['id'][($seriethis-1)]) {
+			if (isset($seriedata['id'][($seriethis-1)])) {
 //				$coninfo = nicedateset($seriedata['begin'][($seriethis-1)],$seriedata['end'][($seriethis-1)]);
 				$arrows['prev'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis-1)], 'name' => $seriedata['name'][($seriethis-1)] . " (".$seriedata['year'][($seriethis-1)].")" ];
 			} else {
 				$arrows['prev'] = [ 'active' => FALSE ];
 			}
-			if ($seriedata['id'][($seriethis+1)]) {
+			if (isset($seriedata['id'][($seriethis+1)])) {
 //				$coninfo = nicedateset($seriedata['begin'][($seriethis+1)],$seriedata['end'][($seriethis+1)]);
 				$arrows['next'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis+1)], 'name' => $seriedata['name'][($seriethis+1)] . " (".$seriedata['year'][($seriethis+1)].")" ];
 			} else {
@@ -286,52 +289,54 @@ if ($r['id'] == 0) {
 		$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'sce_id' => $nominee['sce_id'], 'title' => $nominee['title'] ];
 	}
 
-	foreach ((array) $awardnominees[$cid] AS $conid => $convent) {
-		$html .= "<div class=\"awardyear\" data-year=\"" . $convent['year'] . "\">";
-		$html .= "<div class=\"awardblock\">" . PHP_EOL;
-		foreach($convent['categories'] AS $category) {
-			$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
-			$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
-			foreach($category['nominees'] AS $nominee) {
-				$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
-				$html .= "<div class=\"" . $class . "\">";
-				$html .= "<h5 class=\"" . $class . "\">";
-				$html .= "<span class=\"" . $class . "\">";
-				if ($nominee['sce_id']) {
-					$html .= getdataurl('sce', $nominee['sce_id'], $nominee['title']);
-				} else {
-					$html .= htmlspecialchars($nominee['name']);
-				}
-				$html .= "</span>";
-				if ($nominee['nominationtext']) {
-					$nt_id = "nominee_text_" . $nominee['id'];
-					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) . "\">[+]</span>";
+	if ($awardnominees) {
+		foreach ((array) $awardnominees[$cid] AS $conid => $convent) {
+			$html .= "<div class=\"awardyear\" data-year=\"" . $convent['year'] . "\">";
+			$html .= "<div class=\"awardblock\">" . PHP_EOL;
+			foreach($convent['categories'] AS $category) {
+				$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
+				$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
+				foreach($category['nominees'] AS $nominee) {
+					$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
+					$html .= "<div class=\"" . $class . "\">";
+					$html .= "<h5 class=\"" . $class . "\">";
+					$html .= "<span class=\"" . $class . "\">";
+					if ($nominee['sce_id']) {
+						$html .= getdataurl('sce', $nominee['sce_id'], $nominee['title']);
+					} else {
+						$html .= htmlspecialchars($nominee['name']);
+					}
+					$html .= "</span>";
+					if ($nominee['nominationtext']) {
+						$nt_id = "nominee_text_" . $nominee['id'];
+						$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) . "\">[+]</span>";
 
-				}
-				$html .=  "</h5>";
-				if ($nominee['ranking']) {
-					$html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
-				}
-				if ($nominee['nominationtext']) {
-					$html .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
-				}
+					}
+					$html .=  "</h5>";
+					if ($nominee['ranking']) {
+						$html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
+					}
+					if ($nominee['nominationtext']) {
+						$html .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
+					}
 
+					$html .= "</div>" . PHP_EOL;
+				}
 				$html .= "</div>" . PHP_EOL;
 			}
 			$html .= "</div>" . PHP_EOL;
+			$html .= "</div>" . PHP_EOL;
+	//		print "<pre>"; var_dump($nominees); exit;
+			
+			
 		}
-		$html .= "</div>" . PHP_EOL;
-		$html .= "</div>" . PHP_EOL;
-//		print "<pre>"; var_dump($nominees); exit;
-		
-		
 	}
 	$awardlist = $html;
 	
 
 
 // Liste over arrangører
-	if ($_REQUEST['oo'] == 'id') { // oo = organizer order
+	if ($oo == 'id') { // oo = organizer order
 		$organizerlist = getorganizerlist($con,$this_type, 'a.id');
 	} else {
 		$organizerlist = getorganizerlist($con,$this_type);
@@ -366,8 +371,8 @@ if ($r['id'] == 0) {
 	}
 
 //  Edit mode?
-$editorganizers = ($_REQUEST['edit'] == 'organizers');
-$editmode = ( $_SESSION['user_id'] && $editorganizers );
+$editorganizers = ($edit == 'organizers');
+$editmode = ( isset($_SESSION['user_id']) && $editorganizers );
 $people = [];
 if ($editmode) {
 	$people = getcol("SELECT CONCAT(id, ' - ', firstname, ' ', surname) AS id_name FROM aut ORDER BY firstname, surname");	
@@ -407,10 +412,10 @@ $json_people = json_encode($people);
 	$t->assign('editorganizers', $editorganizers);
 	$t->assign('editmode', $editmode );
 	$t->assign('json_people', $json_people );
-	$t->assign('user_can_edit_organizers',$_SESSION['can_edit_organizers'] );
+	$t->assign('user_can_edit_organizers',$_SESSION['can_edit_organizers'] ?? FALSE );
 
 	$t->assign('user_visited',in_array('visited',$userlog));
-	$t->assign('users_entries', $users_entries);
+	$t->assign('users_entries', $users_entries ?? FALSE);
 
 	$t->display('data.tpl');
 

@@ -67,9 +67,10 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$filelist = getfilelist($scenarie,$this_type);
 
 // Liste over forfattere, m.m.
+	$forflist = $scenlist = "";
 	$q = getall("SELECT aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.tit_id, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol FROM aut, asrel, title WHERE aut.id = asrel.aut_id AND asrel.tit_id = title.id AND asrel.sce_id = '$scenarie' ORDER BY title.priority, title.id, aut.surname, aut.firstname");
 	foreach($q AS $rs) {
-		if ( $rs['id'] == $_SESSION['user_author_id'] ) {
+		if ( isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id'] ) {
 			$_SESSION['can_edit_participant'][$scenarie] = TRUE;
 		}
 		$forflist .= "<tr><td style=\"text-align: center\">";
@@ -183,7 +184,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$linklist = getlinklist($scenarie,$this_type);
 	$trivialist = gettrivialist($scenarie,$this_type);
 	$taglist = gettaglist($scenarie,$this_type);
-	if ($_SESSION['can_edit_participant'][$scenarie] == TRUE) {
+	if ($_SESSION['can_edit_participant'][$scenarie] ?? FALSE) {
 		foreach($taglist AS $tag_id => $tag) {
 			$_SESSION['can_edit_tag'][$tag_id] = TRUE;
 		}
@@ -211,7 +212,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 	}
 
 // April fools day
-	if ( $_REQUEST['april'] == 1 ) {
+	if ( $_REQUEST['april'] ?? 0 == 1 ) {
 		require("april_scenario.inc.php");
 		$description = aprildescription($scenarie);
 	}
@@ -239,7 +240,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$t->assign('players',$players);
 	$t->assign('participants',$participants);
 	$t->assign('boardgame',$r['boardgame']);
-	$t->assign('user_can_edit_participants',$_SESSION['can_edit_participant'][$scenarie]);
+	$t->assign('user_can_edit_participants',$_SESSION['can_edit_participant'][$scenarie] ?? FALSE);
 	$t->assign('conlist',$conlist);
 	$t->assign('runlist',$runlist);
 	$t->assign('awards',$awards);
@@ -248,7 +249,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$t->assign('link',$linklist);
 	$t->assign('tags',$taglist);
 	$t->assign('json_alltags',$json_alltags);
-	$t->assign('user_can_edit_tag',$_SESSION['can_edit_tag'] );
+	$t->assign('user_can_edit_tag',$_SESSION['can_edit_tag'] ?? FALSE );
 
 	$t->assign('user_read',in_array('read',$userlog));
 	$t->assign('user_read_html',getdynamicscehtml($scenarie,'read',in_array('read',$userlog)));
@@ -256,7 +257,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$t->assign('user_gmed_html',getdynamicscehtml($scenarie,'gmed',in_array('gmed',$userlog)));
 	$t->assign('user_played',in_array('played',$userlog));
 	$t->assign('user_played_html',getdynamicscehtml($scenarie,'played',in_array('played',$userlog)));
-	$t->assign('users_entries', $users_entries);
+	$t->assign('users_entries', $users_entries ?? FALSE);
 
 	$t->display('data.tpl');
 }

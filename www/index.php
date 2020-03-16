@@ -1,32 +1,23 @@
 <?php
-// redirect after login?
-// Viderestil evt. til adm-delen
-if (isset($_SERVER['SERVER_NAME']) && in_array(strtolower($_SERVER['SERVER_NAME']), ['adm.alexandria.dk','www.adm.alexandria.dk'] )) {
-	header("Location: adm/");
-	exit;
-}
-
 require("connect.php");
 require("base.inc");
 require("template.inc");
 
-if ($_SESSION['login_after_redirect'] && $_SESSION['do_redirect']) { // assume valid URL
+if (isset($_SESSION['login_after_redirect']) && isset($_SESSION['do_redirect']) ) { // assume valid URL
 	header("Location: " . $_SESSION['login_after_redirect']);
 	unset($_SESSION['login_after_redirect']);
 	unset($_SESSION['do_redirect']);
 	exit;
 }
 
-
 // fetching news
-$newslist = array();
+$newslist = [];
 $i = 0;
-foreach(getnews() AS $data) {
+foreach(getnews(10) AS $data) {
 	$newslist[$i]['anchor'] = "news_".str_replace(array("-",":"," "),"",$data['published'])."_".$data['id'];
 	$newslist[$i]['date'] = nicedateset($data['published'],$data['published']);
 	$newslist[$i]['news'] = textlinks($data['text']);
 	$i++;
-	if ($i >= 10) break;
 }
 
 // for admins
@@ -36,7 +27,7 @@ if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
 }
 
 // fetching latest scenarios for download
-$latest_downloads = array();
+$latest_downloads = [];
 $i = 0;
 $files = getall("SELECT a.id, a.title FROM sce a, files b WHERE a.id = b.data_id AND b.category = 'sce' AND downloadable = 1 AND a.boardgame != 1 GROUP BY a.id ORDER BY MIN(b.inserted) DESC LIMIT 40");
 foreach($files AS $file) {
@@ -44,7 +35,6 @@ foreach($files AS $file) {
 	$latest_downloads[$i]['title'] = $file['title'];
 	$i++;
 }
-
 
 $scenarios_downloadable = getone("SELECT COUNT(DISTINCT data_id) FROM files WHERE category = 'sce' AND downloadable = 1");
 

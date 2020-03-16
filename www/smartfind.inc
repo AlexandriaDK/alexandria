@@ -171,17 +171,15 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 
 // Godt, der skal skrappere midler til. Vi checker lige nærliggende tekst for alle entries
 	if (!$whereextend) {
-		$rall = getall("SELECT $idfield AS id, $string FROM $table ORDER BY id");
+		$rall = getall("SELECT $idfield AS id, $string AS string FROM $table ORDER BY id");
 	} else {
-		$rall = getall("SELECT $idfield AS id, $string FROM $table $whereextendshort ORDER BY id");
+		$rall = getall("SELECT $idfield AS id, $string AS string FROM $table $whereextendshort ORDER BY id");
 	}
 	foreach($rall AS $r) {
-//	while (list($rid,$rstring) = mysql_fetch_row($r)) {
 		$rid = $r['id'];
 		$rstring = $r['string'];
 		$row['id'] = $rid;
 		$row['string'] = $rstring;
-#		$i = similar_text(strtolower($row[$string]),strtolower($find),$proc);
 		$i = similar_text(strtolower($row['string']),strtolower($find),$proc);
 		$listetegn[$row['id']] = $i;
 		$listeprocent[$row['id']] = $proc;

@@ -3,11 +3,11 @@ session_start();
 unset($auth, $authuser, $authusers, $authusernames);
 $useridauthed = false;
 
-if ($admonly && $_SESSION['user_editor'] &&!$_SESSION['user_admin']) {
+if (isset($admonly) && $_SESSION['user_editor'] &&!$_SESSION['user_admin']) {
 	$must_be_admin = TRUE;
 }
 
-if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || ($admonly && !$_SESSION['user_admin']) ) {
+if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) && !$_SESSION['user_admin']) ) {
 
 	print '
 <!DOCTYPE html>

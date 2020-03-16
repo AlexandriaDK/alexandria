@@ -139,7 +139,7 @@ if ($conset) {
 $q = getall("SELECT id, name FROM conset ORDER BY name");
 foreach($q AS $r) {
 	print "<option value=$r[id]";
-	if ($r[id] == $conset) print " SELECTED";
+	if ($r['id'] == $conset) print " SELECTED";
 	print ">$r[name]\n";
 }
 ?>

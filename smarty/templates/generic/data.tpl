@@ -6,7 +6,7 @@
 {if $type eq "aut"}
 {assign var="typename" value="Person"}
 {include file="person.tpl"}
-{elseif $type2 eq "game"}
+{elseif isset($type2) && $type2 eq "game"}
 {if $boardgame}
 {assign var="typename" value="Brætspil"}
 {else}

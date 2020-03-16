@@ -147,7 +147,7 @@ Tags med beskrivelser:
 $q = getall("SELECT COUNT(tags.id) AS count, tag.id, tag.tag FROM tag LEFT JOIN tags ON tag.tag = tags.tag GROUP BY tag.id, tag.tag ORDER BY tag");
 foreach($q AS $r) {
 	print "<option value=$r[id]";
-	if ($r[id] == $tag_id) print " SELECTED";
+	if ($r['id'] == $tag_id) print " SELECTED";
 	print ">" . htmlspecialchars($r['tag']) . " (" . $r['count'] . ")\n";
 }
 ?>

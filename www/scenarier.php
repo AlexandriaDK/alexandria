@@ -3,8 +3,8 @@ require("./connect.php");
 require("base.inc");
 require("template.inc");
 
-$backurl = "/gfx/corner-sce";
 $titlepart = "";
+$beginchar = "";
 
 // hent bogstaver
 $chars = range('a','z');
@@ -28,8 +28,8 @@ foreach($genres AS $gid => $gname) {
 $genre = join(", ",$genre);
 
 
-$b = $_REQUEST["b"];
-$g = intval($_REQUEST["g"]);
+$b = (string) ($_REQUEST["b"] ?? "");
+$g = (int) ($_REQUEST["g"] ?? "");
 
 if ($b == "") {
 	$b = "a";
@@ -37,7 +37,7 @@ if ($b == "") {
 
 if ($g) {
 	$wherepart = "LEFT JOIN gsrel ON sce.id = gsrel.sce_id WHERE gsrel.gen_id = $g";
-	if ($genres[$g]) {
+	if (isset($genres[$g])) {
 		$titlepart = $genres[$g];
 	} else {
 		$titlepart = "Ukendt kategori";

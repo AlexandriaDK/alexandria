@@ -6,8 +6,8 @@ require("template.inc");
 // skal laves om til en funktion
 $value = "";
 
-$data_id = (int) $_REQUEST['data_id'];
-$cat = (string) $_REQUEST['cat'];
+$data_id = (int) ($_REQUEST['data_id'] ?? FALSE);
+$cat = (string) ($_REQUEST['cat'] ?? FALSE);
 $label = getentry($cat,$data_id);
 
 $t->assign('category',$cat);

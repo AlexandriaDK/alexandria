@@ -153,7 +153,7 @@ unset($conset);
 $conset[0] = "[none or unknown con series]";
 $q = getall("SELECT id, name FROM conset ORDER BY name");
 foreach($q AS $r) {
-	$conset[$r[id]] = $r[name];
+	$conset[$r['id']] = $r['name'];
 }
 
 $conflist = array(
@@ -330,7 +330,7 @@ $q = getall("SELECT convent.id, convent.name, year, conset.name AS setname FROM 
 
 foreach($q AS $r) {
 	print "<option value=$r[id]";
-	if ($r[id] == $con) print " SELECTED";
+	if ($r['id'] == $con) print " SELECTED";
 	print ">$r[name] ($r[year])\n";
 }
 ?>

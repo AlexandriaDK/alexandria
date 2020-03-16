@@ -2,7 +2,8 @@
 
 // redirect, hvis resultatet sandsynligvis findes?
 $redirect = TRUE;
-if ($_REQUEST['redirect'] == no) $redirect = FALSE;
+$rredirect = $_REQUEST['redirect'] ?? '';
+if ($rredirect == 'no') $redirect = FALSE;
 
 $debug = FALSE;
 
@@ -12,19 +13,18 @@ require("template.inc");
 require("smartfind.inc");
 
 $find = "";
-$cat = $_REQUEST['cat'];
-if ($_REQUEST['find']) $find = (string) $_REQUEST['find'];
-elseif ($_REQUEST['q']) $find = (string) $_REQUEST['q'];
-$search_title = (string) $_REQUEST['search_title'];
-$search_description = (string) $_REQUEST['search_description'];
-$search_system = (int) $_REQUEST['search_system'];
-$search_genre = array_unique((array) $_REQUEST['search_genre']);
-$search_conset = (int) $_REQUEST['search_conset'];
-$search_download = (string) $_REQUEST['search_download'];
-$search_players = (int) $_REQUEST['search_players'];
-$search_no_gm = (string) $_REQUEST['search_no_gm'];
-$search_boardgames = (string) $_REQUEST['search_boardgames'];
-$search_tag = (string) $_REQUEST['tag'];
+$cat = $_REQUEST['cat'] ?? '';
+$find = $_GET['find'] ?? $_GET['q'] ?? '';
+$search_title = (string) ( $_REQUEST['search_title'] ?? '');
+$search_description = (string) ( $_REQUEST['search_description'] ?? '');
+$search_system = (int) ( $_REQUEST['search_system'] ?? '');
+$search_genre = array_unique((array) ( $_REQUEST['search_genre'] ?? []) );
+$search_conset = (int) ( $_REQUEST['search_conset'] ?? 0);
+$search_download = (string) ( $_REQUEST['search_download'] ?? '');
+$search_players = (int) ( $_REQUEST['search_players'] ?? 0);
+$search_no_gm = (string) ( $_REQUEST['search_no_gm'] ?? '');
+$search_boardgames = (string) ( $_REQUEST['search_boardgames'] ?? '');
+$search_tag = (string) ( $_REQUEST['tag'] ?? '');
 
 // achievements
 function check_search_achievements ($find) {
@@ -104,7 +104,6 @@ function search_files ($find, $category = '') {
 }
 
 function search_blogposts ($find) {
-	$where_category = ($category ? "AND a.category = '$category'" : "");
 	$preview_length = 30;
 	$output = "";
 

@@ -7,7 +7,7 @@ $this_type = 'awards';
 
 $html = "";
 
-$ucid = $cid = (int) $_GET['cid'];
+$ucid = $cid = (int) ($_GET['cid'] ?? 0);
 if ($ucid == 1) award_achievement(96); // Fastaval conset
 
 $awards = getall("SELECT a.id, a.name, a.conset_id, a.description, b.name AS conset_name FROM awards a LEFT JOIN conset b ON a.conset_id = b.id ORDER BY b.name, a.conset_id, a.id");
@@ -125,7 +125,7 @@ $t->assign('html_content', $html);
 $t->assign('type',$this_type);
 $t->assign('id', $ucid);
 $t->assign('cid', $ucid);
-$t->assign('csname', $csname);
+$t->assign('csname', $csname ?? "");
 $t->assign('ogimage', 'gfx/fastaval_otto_original.jpg');
 $t->display('awards.tpl');
 

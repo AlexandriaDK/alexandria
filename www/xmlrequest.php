@@ -54,7 +54,7 @@ if ($_REQUEST['action'] == "lookup") {
 			award_achievement(89); // played at least 10 scenarios written by the same author
 		}
 		$polandsce = [4002, 4279, 4884];
-		if (in_array($data_id, $polandsce) ) { 
+		if (in_array($_REQUEST['data_id'], $polandsce) ) { 
 			award_achievement(95); // attend scenario in Poland
 		}
 		

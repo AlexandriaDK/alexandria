@@ -1,4 +1,4 @@
-{if ! $boardgamesonly}
+{if ! isset($boardgamesonly) }
 {if $beginchar eq "1"}
 {assign var="pagetitle" value="$_games_title_sce - $_games_beginwithno"}
 {else}
@@ -11,7 +11,7 @@
 
 <div id="contentwide">
 
-{if ! $boardgamesonly}
+{if ! isset($boardgamesonly) }
 	<h2 class="pagetitle gamesselect">
 		{$_games_title_sce}
 	</h2>

@@ -153,7 +153,7 @@ if ($system) {
 $q = getall("SELECT id, name FROM sys ORDER BY name");
 foreach($q AS $r) {
 	print "<option value=$r[id]";
-	if ($r[id] == $system) print " SELECTED";
+	if ($r['id'] == $system) print " SELECTED";
 	print ">$r[name]\n";
 }
 ?>

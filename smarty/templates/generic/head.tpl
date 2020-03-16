@@ -2,11 +2,11 @@
 <html lang="{$LANG|escape}">
 	<head>
 		<title>
-			{if $typename != ""}{$typename|escape} - {/if}{if $pagetitle != ""}{$pagetitle|escape} - {/if}Alexandria
+			{if isset($typename) }{$typename|escape} - {/if}{if $pagetitle != ""}{$pagetitle|escape} - {/if}Alexandria
 		</title>
 <meta name="viewport" content="width=1024">
 		<meta name="robots" content="index, follow" />
-{if $ogimage}
+{if isset($ogimage) }
 		<meta property="og:image" content="https://alexandria.dk/{$ogimage}" />
 {else}
 		<meta property="og:image" content="https://alexandria.dk/gfx/alexandria_logo_og_crush.png" />
@@ -47,7 +47,7 @@
 			}
 			
 		</style>
-		{if $json_alltags}
+		{if isset($json_alltags) }
 		<script>
 		$(function() {
 			var availableTags = {$json_alltags};
@@ -61,7 +61,7 @@
 
 		{/if}
 
-		{if $editmode || $type == 'jostgame' }
+		{if isset($editmode) || isset($type) && $type == 'jostgame' }
 		<script>
 		$(function() {
 			var availableNames = {$json_people};
@@ -104,7 +104,7 @@
 				<a href="privacy">{$_top_privacy}</a><br>
 			</div>
 
-{if $dberror != TRUE}
+{if not isset($dberror)}
 			<div class="leftmenucontent">
 {if not $user_id}
 				<span class="menulogin">
@@ -142,7 +142,7 @@
 
 {if $user_id}
 
-	{if $type eq "sce"}
+	{if isset($type) && $type eq "sce"}
 			<div class="leftmenucontent">
 				{if $boardgame}{$_top_dyn_boardgame}{else}{$_top_dyn_scenario}{/if}<br><br>
 				<span id="data_read">
@@ -179,7 +179,7 @@
 
 	{/if}
 
-	{if $type eq "convent"}
+	{if isset($type) && $type eq "convent"}
 			<div class="leftmenucontent">
 				{$_top_dyn_convention}<br><br>
 				<span id="data_visited">
@@ -203,7 +203,7 @@
 		{/if}
 	{/if}
 
-	{if $user_editor && $recentlog}
+	{if $user_editor && isset($recentlog) }
 		<div class="leftmenucontent">
 			{$_top_recentedits}:
 			<br><br>
@@ -220,7 +220,7 @@
 		</div>
 	{/if}
 
-	{if $user_scenario_missing_players}
+	{if isset($user_scenario_missing_players) }
 			<div class="leftmenucontent">
 				{$_top_help_sce_no|@nl2br}
 				<br><br>
@@ -232,7 +232,7 @@
 			</div>
 	{/if}
 
-	{if $user_scenario_missing_tags}
+	{if isset($user_scenario_missing_tags) }
 			<div class="leftmenucontent">
 				{$_top_help_sce_tag|@nl2br}
 				<br><br>
@@ -246,7 +246,7 @@
 
 {/if}
 
-{if $URLLANG}
+{if isset($URLLANG) }
 			<div class="leftmenucontent">
 			{$_chooselanguage}
 			<br><br>
@@ -282,7 +282,7 @@
 					<a href="systemer" class="system">{$_rpgsystems|ucfirst}</a>
 				</div>
 				<div class="topmenublockfind">
-					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="text" name="find" value="{$find|escape}" size="15" class="find" itemprop="query-input"></label>
+					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="text" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input"></label>
 				</div>
 			</form>
 		</div>

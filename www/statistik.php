@@ -86,7 +86,9 @@ $r = getall("
 		antal DESC,
 		name
 ");
-unset($placering);
+
+$placering = 0;
+$lastantal = "";
 foreach($r AS $row) {
 	$placering++;
 	$placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
@@ -124,11 +126,11 @@ $r = getall("
 		name
 ");
 
-unset($placering);
+$placering = 0;
 foreach($r AS $row) {
 	$placering++;
-	$placeringout = ($lastantal != $row[antal] ? "$placering." : "");
-	$lastantal = $row[antal];
+	$placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
+	$lastantal = $row['antal'];
 	$stat_aut_exp .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 $stat_aut_exp .= '
@@ -293,11 +295,12 @@ $r = getall("
 		convent.year,
 		convent.name
 ");
-unset($placering);
+$placering = 0;
+$lastantal = "";
 foreach($r AS $row) {
 	$placering++;
-	$placeringout = ($lastantal != $row[antal] ? "$placering." : "");
-	$lastantal = $row[antal];
+	$placeringout = ($lastantal != $row['antal'] ? $placering . "." : "");
+	$lastantal = $row['antal'];
 	$stat_con_sce .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?con={$row['id']}\" class=\"con\">{$row['name']} ({$row['year']})</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
@@ -346,8 +349,8 @@ foreach($r AS $row) {
 }
 
 foreach($yearstat AS $year => $row) {
-	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => (int) $row['sce'] ];
-	$row['sce'] = intval($row['sce']);
+	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['sce'] ?? 0 ];
+	$row['sce'] = (int) ($row['sce'] ?? 0);
 	$context = ($row['cons'] == 1 ? "kongres" : "kongresser");
 	$scetext = ($row['sce'] == 1 ? "scenarie" : "scenarier");
 	$stat_con_year .= "<tr><td><a href=\"data?year=$year\" class=\"con\">$year</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td class=\"statnumber\">{$row['cons']} </td><td>$context&nbsp;&nbsp;</td><td class=\"statnumber\">{$row['sce']} </td><td>$scetext</td></tr>\n";

@@ -1,8 +1,9 @@
 <?php
 $this_type = 'year';
 
-unset($yearlist);
 list($startyear,$endyear) = getrow("SELECT MIN(year), MAX(year) FROM convent");
+
+$yearlist = "";
 
 for ($i = $startyear; $i <= $endyear; $i++) {
 	if ($i == $year) $yearlist .= "<b>$i</b>";
@@ -37,6 +38,7 @@ $q = getall("
 ");
 $num_cons = count($q);
 $thismonth = -1;
+$timeinfo = "";
 foreach($q AS $row) {
 	$month = (int) substr($row['begin'],5,2);
 	if ($month > $thismonth) {

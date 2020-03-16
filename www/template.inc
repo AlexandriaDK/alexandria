@@ -109,9 +109,4 @@ function updatelink ($category, $data_id) {
 #	return "<p style=\"font-size: 75%;\"><a href=\"rettelser?cat=$category&amp;data_id=$data_id\"><i>Indsend rettelser for denne side</i></a>\n";
 }
 
-function getnews() {
-	$result = getall("SELECT id, text, published, online FROM news WHERE online = 1 ORDER BY id DESC");
-	return $result;
-}
-
 ?>

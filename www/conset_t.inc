@@ -2,6 +2,7 @@
 $this_type = 'conset';
 
 $condata = [];
+$conlist = "";
 
 $r = getrow("SELECT id, name, description FROM conset WHERE id = '$conset'");
 if ($r['id'] == 0) {
