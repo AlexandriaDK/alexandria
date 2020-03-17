@@ -90,9 +90,9 @@ print "<a href=\"system.php\">New system</a>";
 print "<table border=0>\n";
 
 if ($system) {
-	print "<tr><td>ID:</td><td>$system - <a href=\"../data?system=$system\" accesskey=\"q\">Vis systemside</a>";
+	print "<tr><td>ID</td><td>$system - <a href=\"../data?system=$system\" accesskey=\"q\">Show RPG system page</a>";
 	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$system\">Vis log</a>";
+		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$system\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
@@ -121,7 +121,7 @@ if ($system) {
 
 // Scenarier under dette system
 	$q = getall("SELECT id, title FROM sce WHERE sys_id = '$system' ORDER BY title, id");
-	print "<tr valign=top><td align=right>Contains the following<br>scenarios:</td><td>\n";
+	print "<tr valign=top><td align=right>Contains the following<br>scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {
 		print "<a href=\"scenarie.php?scenarie=$id\">$title</a><br>";
 	}

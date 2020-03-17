@@ -13,8 +13,8 @@ $id = (int) $_REQUEST['id'];
 $category = (string) $_REQUEST['category'];
 $data_id = (int) $_REQUEST['data_id'];
 
-// Ret tag
-if ($action == "changetag" && $do != "Slet") {
+// Update tag
+if ($action == "changetag" && $do != "Remove") {
 	$url = trim($url);
 	$description = trim($description);
 	$q = "UPDATE tags SET " .
@@ -24,23 +24,23 @@ if ($action == "changetag" && $do != "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Tag rettet til $tag");
 	}
-	$_SESSION['admin']['info'] = "Tag rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Tag updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
-// Slet tag
-if ($action == "changetag" && $do == "Slet") {
+// Remove tag
+if ($action == "changetag" && $do == "Remove") {
 	$tag = getone("SELECT tag FROM tags WHERE id = $id");
 	$q = "DELETE FROM tags WHERE id = $id";
 	$r = doquery($q);
 	if ($r) {
 		chlog($data_id,$category,"Tag slettet: $tag");
 	}
-	$_SESSION['admin']['info'] = "Tag slettet! " . dberror();
+	$_SESSION['admin']['info'] = "Tag removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
-// Tilføj tag
+// Add tag
 if ($action == "addtag" && $tag != "") {
 	$q = "INSERT INTO tags " .
 	     "(sce_id, tag) VALUES ".
@@ -50,7 +50,7 @@ if ($action == "addtag" && $tag != "") {
 		$id = dbid();
 		chlog($data_id,$category,"Tag oprettet: $tag");
 	}
-	$_SESSION['admin']['info'] = "Tag oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Tag added! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
 
 }
@@ -99,7 +99,7 @@ htmladmstart("Tags");
 
 if ($data_id && $category) {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Ret tags for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit tags for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Tag</th>".
@@ -114,8 +114,8 @@ if ($data_id && $category) {
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="text" name="tag" value="'.htmlspecialchars($row['tag']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      '<td><input type="submit" name="do" value="Update"></td>'.
+		      '<td><input type="submit" name="do" value="Remove"></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -125,15 +125,15 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="tag" value="" size=40 maxlength=100></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Add"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
 	print "</table>\n";
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id provided.";
 }
 print "</body>\n</html>\n";
 

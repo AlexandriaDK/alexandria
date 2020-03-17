@@ -42,9 +42,9 @@ if (!$ucid) {
 	$html .= "<div>";
 	foreach($awardset AS $list_cid => $award) {
 		if ($list_cid) {
-			$html .= "<h2><a href=\"awards?cid=" . $list_cid . "\">" . htmlspecialchars($award['name']) . "</a></h2>";
+			$html .= "<h3><a href=\"awards?cid=" . $list_cid . "\">" . htmlspecialchars($award['name']) . "</a></h3>";
 		} else {
-			$html .= "<h2>" . htmlspecialchars($award['name']) . "</h2>" . PHP_EOL;
+			$html .= "<h3>" . htmlspecialchars($award['name']) . "</h3>" . PHP_EOL;
 		}
 	}
 	$html .= "</div>" . PHP_EOL;

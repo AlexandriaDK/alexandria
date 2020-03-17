@@ -84,7 +84,7 @@ if (!$action && $scenarie) {
 // Ret scenarie
 //
 
-if ($action == "ret" && $scenarie) {
+if ($action == "update" && $scenarie) {
 	print "<pre>";
 	if (!$title) {
 		$_SESSION['admin']['info'] = "You are missing a title!";
@@ -193,10 +193,10 @@ if ($action == "Delete" && $scenarie) { // burde tjekke om scenarie findes
 }
 
 //
-// Opret scenarie
+// Create scenarie
 //
 
-if ($action == "opret") {
+if ($action == "create") {
 	if (!$title) {
 		$info = "Du mangler en titel!";
 	} else {
@@ -312,7 +312,7 @@ foreach($q AS $r) {
 // Find alle systemer
 
 $sys = [];
-$sys[0] = "[ukendt eller uspecificeret system]";
+$sys[0] = "[unknown or unspecified RPG system]";
 $q = getall("SELECT id, name FROM sys ORDER BY name");
 foreach($q AS $r) {
 	$sys[$r['id']] = $r['name'];
@@ -464,7 +464,7 @@ var tabs;
  
     $( "#add_my_tab" )
       .on( "click", function() {
-	var language = prompt("Sprog", "en");
+	var language = prompt("Language", "en");
 	if (language) {
 		tabCounter++;
 		var label = language || "Tab " + tabCounter,
@@ -490,7 +490,7 @@ var tabs;
 function changeLanguage( elem ) {
 	dcount = elem.getAttribute( 'data-id' );
 	language = elem.innerHTML;
-	var language = prompt("Sprog", language);
+	var language = prompt("Language", language);
 	if ( language ) {
 		var id = '#ui-id-' + dcount;
 		var lid = '#d-' + dcount + ' input:first-child';
@@ -512,9 +512,9 @@ printinfo();
 
 
 print "<form action=\"scenarie.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
-if (!$scenarie) print "<input type=\"hidden\" name=\"action\" value=\"opret\">\n";
+if (!$scenarie) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
-	print "<input type=\"hidden\" name=\"action\" value=\"ret\">\n";
+	print "<input type=\"hidden\" name=\"action\" value=\"update\">\n";
 	print "<input type=\"hidden\" name=\"scenarie\" value=\"$scenarie\">\n";
 }
 
@@ -523,21 +523,21 @@ print "<a href=\"./scenarie.php\">New game</a>";
 print "<table border=\"0\">\n";
 
 if ($scenarie) {
-	print "<tr><td>ID:</td><td>$scenarie - <a href=\"../data?scenarie=$scenarie\" accesskey=\"q\">Show game page</a>";
+	print "<tr><td>ID</td><td>$scenarie - <a href=\"../data?scenarie=$scenarie\" accesskey=\"q\">Show game page</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$scenarie\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
 
-print "<tr><td>Title:</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
-print "<tr><td>Description:<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
+print "<tr><td>Title</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
+print "<tr><td>Description<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
 $dcount = 0;
 $lihtml = $inputhtml = '';
 foreach($descriptions AS $d) {
 	$dcount++;
 	$lihtml .= "<li><a href=\"#d-" . $dcount . "\" data-id=\"" . $dcount . "\" ondblclick=\"changeLanguage(this)\">" . htmlspecialchars($d['language']) . ($d['note'] != '' ? " (" . htmlspecialchars($d['note']) . ")" : "") . "</a></li>" . PHP_EOL;
-	$inputhtml .= "<div id=\"d-" . $dcount . "\">" . PHP_EOL;
+	$inputhtml .= "<div id=\"d-" . $dcount . "\" style=\"padding: 4px;\">" . PHP_EOL;
 	$inputhtml .= "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][language]\" value=\"" . htmlspecialchars($d['language']) . "\">" . PHP_EOL;
 	$inputhtml .= "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][note]\" value=\"" . htmlspecialchars($d['note']) . "\">" . PHP_EOL;
 	$inputhtml .= "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>\n" . htmlspecialchars($d['description']) . "</textarea>" . PHP_EOL;
@@ -549,12 +549,12 @@ print "<ul>" . $lihtml . "</ul>" . PHP_EOL;
 print $inputhtml;
 print "</div>";
 print "</td></tr>\n";
-print "<tr valign=top><td>Internal note:</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
 
 
 ### Participants ###
 
-print "<tr valign=top><td>Participants:</td>";
+print "<tr valign=top><td>Participants</td>";
 print "<td>\n";
 print "GMs: <input type=\"text\" name=\"gms\" value=\"" . $gms . "\" size=\"2\" \> - ";
 print "Players: <input type=\"text\" name=\"players\" value=\"" . $players . "\" size=\"2\" \> - ";
@@ -574,7 +574,7 @@ print "</tr>\n\n";
 
 ### System? ###
 
-print "<tr valign=top><td>System:</td>";
+print "<tr valign=top><td>RPG System</td>";
 print "<td>\n";
 print "<select name=\"sys_id\">\n";
 
@@ -597,7 +597,7 @@ print "</tr>\n\n";
 print '
 	<tr valign="top">
 		<td>
-			Con:
+			Con
 		</td>
 		<td colspan="2">
 			<table border="0">
@@ -617,10 +617,10 @@ print '
 					</td>
 					<td>
 						<input type="button" class="flytknap" value="&lt;- Premiere" onClick="addtocon(m4,1)" title="Premiere (first official run)"><br>
-						<input type="button" class="flytknap" value="&lt;- Re-run" onClick="addtocon(m4,2)" title="Rerun (omtrent samme version som oprindelig udgave)"><br>
-						<input type="button" class="flytknap" value="&lt;- Re-run (mod.)" onClick="addtocon(m4,3)" title="Re-run (modificeret siden oprindelig udgave)"><br>
+						<input type="button" class="flytknap" value="&lt;- Re-run" onClick="addtocon(m4,2)" title="Re-run (about same version as original)"><br>
+						<input type="button" class="flytknap" value="&lt;- Re-run (mod.)" onClick="addtocon(m4,3)" title="Re-run (modified from original)"><br>
 						<input type="button" class="flytknap" value="&lt;- Test run" onClick="addtocon(m4,42)" title="Test run (announced but officially scheduled for another con)"><br>
-						<input type="button" class="flytknap" value="&lt;- Cancelled" onClick="addtocon(m4,99)" title="Aflyst (var annonceret i programmet, men blev ikke kørt)"><br>
+						<input type="button" class="flytknap" value="&lt;- Cancelled" onClick="addtocon(m4,99)" title="Cancelled (was annunced in the programme but was not run)"><br>
 						<input type="button" class="flytknapright" value="-&gt; Remove" onClick="removefrom(m4)" ><br>
 					</td>
 
@@ -661,7 +661,7 @@ print '
 print '
 	<tr valign="top">
 		<td>
-			By:
+			By
 		</td>
 		<td colspan="2">
 			<table border="0">
@@ -708,7 +708,7 @@ print '
 	</tr>
 ';
 
-tr("Optional organizer:","aut_extra",$aut_extra);
+tr("Optional organizer","aut_extra",$aut_extra);
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($scenarie ? "Update" : "Create").' game">' . ($scenarie ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 

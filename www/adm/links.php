@@ -30,7 +30,7 @@ function rlyehlink ($text) {
 unset($result);
 
 // Ret link
-if ($action == "changelink" && $do != "Slet") {
+if ($action == "changelink" && $do != "Remove") {
 	$url = trim($url);
 	$description = trim($description);
 	if ($rid = rlyehlink($url)) {
@@ -45,22 +45,22 @@ if ($action == "changelink" && $do != "Slet") {
 	if ($r) {
 		chlog($data_id,$category,"Link rettet");
 	}
-	$_SESSION['admin']['info'] = "Link rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Link updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
-// Slet link
-if ($action == "changelink" && $do == "Slet") {
+// Remove link
+if ($action == "changelink" && $do == "Remove") {
 	$q = "DELETE FROM links WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
 		chlog($data_id,$category,"Link slettet");
 	}
-	$_SESSION['admin']['info'] = "Link slettet! " . dberror();
+	$_SESSION['admin']['info'] = "Link removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
-// Tilføj link
+// Add link
 if ($action == "addlink") {
 	$url = trim($url);
 	$description = trim($description);
@@ -76,7 +76,7 @@ if ($action == "addlink") {
 		$id = dbid();
 		chlog($data_id,$category,"Link oprettet");
 	}
-	$_SESSION['admin']['info'] = "Link oprettet! " . dberror();
+	$_SESSION['admin']['info'] = "Link added! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
 
 }
@@ -130,11 +130,11 @@ htmladmstart("Links");
 
 if ($data_id && $category) {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Ret links for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit links for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>URL</th>".
-	      "<th>Beskrivelse</th>".
+	      "<th>Description</th>".
 	      "</tr>\n";
 
 	foreach($result AS $row) {
@@ -147,8 +147,8 @@ if ($data_id && $category) {
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
 		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      '<td><input type="submit" name="do" value="Slet"></td>'.
+		      '<td><input type="submit" name="do" value="Update"></td>'.
+		      '<td><input type="submit" name="do" value="Remove"></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -158,18 +158,17 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
-	      '<td style="text-align:right;">Ny</td>'.
+	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="url" value="" size=40 maxlength=100></td>'.
 	      '<td><input type="text" name="description" value="" size=40 maxlength=100></td>'.
-	      '<td colspan=2><input type="submit" name="do" value="Opret"></td>'.
+	      '<td colspan=2><input type="submit" name="do" value="Add"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 
 	print "</table>\n";
 } else {
-	print "Fejl: Intet data-id angivet.";
+	print "Error: No data id provided.";
 }
-
 
 print "</body>\n</html>\n";
 

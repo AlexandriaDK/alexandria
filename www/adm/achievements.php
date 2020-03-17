@@ -53,7 +53,7 @@ $totalpoints = 0;
 htmladmstart("Achievements");
 
 print "<table align=\"center\" border=0>".
-      "<tr><th colspan=5>Achievements:</th></tr>\n".
+      "<tr><th colspan=5>Achievements</th></tr>\n".
       "<tr>\n".
       "<th><a href=\"achievements.php?order=id\">ID</a></th>".
       "<th>Label</th>".

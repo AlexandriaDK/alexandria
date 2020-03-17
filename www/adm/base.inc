@@ -169,7 +169,7 @@ function changeawards($convent_id) {
 
 function changeuserlog($data_id, $category) {
 	$numusers = getone("SELECT COUNT(DISTINCT user_id) FROM userlog WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>" . ($category == "convent" ? "Visitors" : "Users") . ":</td><td>\n";
+	$html  = "<tr valign=top><td>" . ($category == "convent" ? "Visitors" : "Users") . "</td><td>\n";
 	$html .= sprintf("$numusers %s",($numusers == 1?"person":"persons"));
 	$html .= " - <a href=\"userlog.php?category=$category&amp;data_id=$data_id\">Show</a>";
 	$html .= "</td></tr>\n\n";

@@ -40,7 +40,7 @@ function linkfix ($matches) {
 
 htmladmstart("Markup fixes");
 
-print "<h1>Markup fixes:</h1>" . PHP_EOL;
+print "<h1>Markup fixes</h1>" . PHP_EOL;
 
 $regexp_sql = '\\\[\\\[\\\[[^|]+\\\]\\\]\\\]';
 $regexp_php = '_\\\[\\\[\\\[([^|]+)\\\]\\\]\\\]_';

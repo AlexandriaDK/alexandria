@@ -176,20 +176,20 @@ else {
 	print "<INPUT TYPE=\"hidden\" name=\"con\" value=\"$con\">\n";
 }
 
-print "<a href=\"convent.php\">Ny con</a>";
+print "<a href=\"convent.php\">New con</a>";
 
 print "<table border=0>\n";
 
 if ($con) {
-	print "<tr><td>ID</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Vis con-side</a> - <a href=\"lock.php?con=$con\">Brug con som default con</a>";
+	print "<tr><td>ID</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Show con page</a> - <a href=\"lock.php?con=$con\">Use con as default con</a>";
 	if($con_prev) {
-		print " - <a href=\"convent.php?con=".$con_prev."\">Forrige</a>";
+		print " - <a href=\"convent.php?con=".$con_prev."\">Previous</a>";
 	}
 	if($con_next) {
-		print " - <a href=\"convent.php?con=".$con_next."\">Næste</a>";
+		print " - <a href=\"convent.php?con=".$con_next."\">Next</a>";
 	}
 	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$con\">Vis log</a>";
+		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$con\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
@@ -336,7 +336,7 @@ foreach($q AS $r) {
 ?>
 </select>
 <br>
-<input type=submit value="Rediger">
+<input type=submit value="Edit">
 
 </td>
 </tr>
