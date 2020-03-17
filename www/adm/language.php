@@ -71,7 +71,7 @@ if ($action == "update") {
 		$logtext .= " (" . implode(", ", $log) . ")";
 	}
 	chlog(NULL,$this_type, $logtext);
-	$_SESSION['admin']['info'] = "Sprogtekster rettet! " . dberror();
+	$_SESSION['admin']['info'] = "Texts updated! " . dberror();
 	rexit($this_type, ['label' => $newlabel] );
 }
 
@@ -88,7 +88,7 @@ foreach ( $alltext AS $text ) {
 ksort( $languages );
 $labelcount = count( $overview );
 
-htmladmstart("Sprog");
+htmladmstart("Translations");
 
 // Edit?
 $begin = $nextlabel = FALSE;
