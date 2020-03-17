@@ -584,7 +584,7 @@ foreach ($sys AS $id => $name) {
 	print ">$name\n";
 }
 print "</select>\n";
-print "- possble note: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
+print "- possible note: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
 
 print "</td>";
 
