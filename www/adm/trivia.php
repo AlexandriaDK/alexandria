@@ -105,8 +105,6 @@ if ($data_id && $category) {
 }
 htmladmstart("Trivia");
 
-printinfo();
-
 if ($data_id && $category) {
 
 	print "<table align=\"center\" border=0>".

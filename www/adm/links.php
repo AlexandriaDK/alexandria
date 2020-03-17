@@ -128,8 +128,6 @@ if ($data_id && $category) {
 
 htmladmstart("Links");
 
-printinfo();
-
 if ($data_id && $category) {
 	print "<table align=\"center\" border=0>".
 	      "<tr><th colspan=5>Ret links for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".

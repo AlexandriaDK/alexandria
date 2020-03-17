@@ -25,8 +25,6 @@ if ($action == "changegenre") {
 
 htmladmstart("Genre");
 
-printinfo();
-
 $result = getall("SELECT gen.id, gen.name, gsrel.sce_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.gen_id AND sce_id = '$id' ORDER BY name");
 
 if ($id) {

@@ -78,8 +78,6 @@ if ($action == "Delete" && $system) {
 }
 htmladmstart("System");
 
-printinfo();
-
 print "<FORM ACTION=\"system.php\" METHOD=\"post\">\n";
 if (!$system) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {

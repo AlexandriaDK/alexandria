@@ -48,12 +48,9 @@ if ($user_id) {
 	
 }
 $result = getall($query);
-
 $totalpoints = 0;
 
 htmladmstart("Achievements");
-
-printinfo();
 
 print "<table align=\"center\" border=0>".
       "<tr><th colspan=5>Achievements:</th></tr>\n".

@@ -69,8 +69,6 @@ if ($action == "opret") {
 
 htmladmstart("Tag");
 
-printinfo();
-
 print "<FORM ACTION=\"tag.php\" METHOD=\"post\">\n";
 if (!$tag_id) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"opret\">\n";
 else {

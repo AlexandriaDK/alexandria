@@ -112,18 +112,18 @@ print "<a href=\"person.php\">New person</a>";
 print "<table border=0>\n";
 
 if ($person) {
-	print "<tr><td>ID:</td><td>$person - <a href=\"../data?person=$person\" accesskey=\"q\">Show page for person</a>";
+	print "<tr><td>ID</td><td>$person - <a href=\"../data?person=$person\" accesskey=\"q\">Show page for person</a>";
 	if ($viewlog == TRUE) {
 		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$person\">Show log</a>";
 	}
 	print "</td></tr>\n";
 }
 
-tr("First name:","firstname",$firstname, "", "", "text", TRUE);
-tr("Surname:","surname",$surname);
-print "<tr valign=\"top\"><td>Internal note:</td><td><textarea name=\"intern\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
-tr("Date of birth:", "birth", $birth, "", "ÅÅÅÅ-MM-DD", "date");
-tr("Date of death:","death", $death, "", "ÅÅÅÅ-MM-DD", "date");
+tr("First name","firstname",$firstname, "", "", "text", TRUE);
+tr("Surname","surname",$surname);
+print "<tr valign=\"top\"><td>Internal note</td><td><textarea name=\"intern\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
+tr("Date of birth", "birth", $birth, "", "ÅÅÅÅ-MM-DD", "date");
+tr("Date of death","death", $death, "", "ÅÅÅÅ-MM-DD", "date");
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($person ? "Update" : "Create").' person">' . ($person ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete person?\n\nAs a safety mecanism it will be checked if all references are removed.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
@@ -146,13 +146,13 @@ if ($person) {
 
 // Scenarier, personen har medvirket til
 	$q = getall("SELECT sce.id, sce.title AS title, title.title AS auttitle FROM sce, asrel, title WHERE sce.id = asrel.sce_id AND asrel.tit_id = title.id AND asrel.aut_id = '$person' ORDER BY title.id, sce.title");
-	print "<tr valign=top><td>Scenarios:</td><td>\n";
+	print "<tr valign=top><td>Scenarios</td><td>\n";
         foreach($q AS list($id, $title, $auttitle) ) {
 		print "<a href=\"scenarie.php?scenarie=$id\">$title</a> ($auttitle)<br>";
 	}
 	print "</td></tr>\n";
 	$q = getall("SELECT convent.id, convent.name, convent.year, acrel.role FROM acrel INNER JOIN convent ON acrel.convent_id = convent.id WHERE acrel.aut_id = '$person' ORDER BY convent.year, convent.begin, convent.end, convent.id");
-	print "<tr valign=top><td>Organizer:</td><td>\n";
+	print "<tr valign=top><td>Organizer</td><td>\n";
         foreach($q AS list($id, $name, $year, $role) ) {
 		print "<a href=\"convent.php?con=$id\">$name ($year)</a> ($role)<br>";
 	}

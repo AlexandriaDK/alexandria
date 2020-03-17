@@ -76,8 +76,6 @@ $result = getall($query);
 
 htmladmstart("Run");
 
-printinfo();
-
 if ($id) {
 
 	print "<table align=\"center\" border=0>".

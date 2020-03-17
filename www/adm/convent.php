@@ -181,7 +181,7 @@ print "<a href=\"convent.php\">Ny con</a>";
 print "<table border=0>\n";
 
 if ($con) {
-	print "<tr><td>ID:</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Vis con-side</a> - <a href=\"lock.php?con=$con\">Brug con som default con</a>";
+	print "<tr><td>ID</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Vis con-side</a> - <a href=\"lock.php?con=$con\">Brug con som default con</a>";
 	if($con_prev) {
 		print " - <a href=\"convent.php?con=".$con_prev."\">Forrige</a>";
 	}
@@ -218,7 +218,7 @@ print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 ro
 
 ## Con-serie ##
 
-print "<tr valign=top><td>Con-serie:</td>";
+print "<tr valign=top><td>Con series</td>";
 print "<td>\n";
 print "<select name=\"conset_id\">\n";
 
@@ -232,7 +232,7 @@ print "</td></tr>\n\n";
 
 ## Bekræft data? ##
 
-print "<tr valign=top><td>Data validity:</td>";
+print "<tr valign=top><td>Data validity</td>";
 print "<td>\n";
 print "<select name=\"confirmed\">\n";
 
@@ -288,7 +288,7 @@ if ($con) {
 // Scenarier under con'en	
 	$q = getall("SELECT sce.id, title, pre.id AS preid, event FROM sce, csrel, pre WHERE csrel.convent_id = '$con' AND csrel.sce_id = sce.id AND csrel.pre_id = pre.id ORDER BY title");
 	print dberror();
-	print "<tr valign=top><td>Scenarios connected:</td><td>\n";
+	print "<tr valign=top><td>Scenarios connected</td><td>\n";
 	
         foreach($q AS list($id, $title, $preid, $event) ) {
 		if ($title == "") {
@@ -316,7 +316,7 @@ if ($con) {
 <table border=0>
 <tr valign=baseline>
 <td>
-<big>Select con:</big>
+<big>Select con</big>
 </td>
 
 <td>

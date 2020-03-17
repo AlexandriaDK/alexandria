@@ -5,6 +5,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 mb_internal_encoding("UTF-8");
 
 define("DOWNLOAD_PATH", "/home/penguin/web/loot.alexandria.dk/files/");
+$ugedag = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 	switch ($cat) {
@@ -71,7 +72,7 @@ function chlog($data_id, $category, $note="") {
 
 function changelinks($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM links WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>Links:</td><td>\n";
+	$html  = "<tr valign=top><td>Links</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"link":"links"));
 	$html .= " - <a href=\"links.php?category=$category&amp;data_id=$data_id\">Edit links</a>";
 	$html .= "</td></tr>\n\n";
@@ -81,7 +82,7 @@ function changelinks($data_id, $category) {
 function changetags($data_id, $category) {
 	$tags = getcol("SELECT tag FROM tags WHERE sce_id = '$data_id'");
 	$numtags = count($tags);
-	$html  = "<tr valign=top><td>Tags:</td><td>\n";
+	$html  = "<tr valign=top><td>Tags</td><td>\n";
 	$html .= sprintf("$numtags %s",($numtags == 1?"tag":"tags"));
 	if ($numtags) {
 		$html .= ": ";
@@ -105,7 +106,7 @@ function changetags($data_id, $category) {
 
 function changetrivia($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM trivia WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>Trivia:</td><td>\n";
+	$html  = "<tr valign=top><td>Trivia</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"trivia fact":"trivia facts"));
 	$html .= " - <a href=\"trivia.php?category=$category&amp;data_id=$data_id\">Edit trivia</a>";
 	$html .= "</td></tr>\n\n";
@@ -114,7 +115,7 @@ function changetrivia($data_id, $category) {
 
 function changealias($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM alias WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>Alias:</td><td>\n";
+	$html  = "<tr valign=top><td>Alias</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"alias":"aliases"));
 	$html .= " - <a href=\"alias.php?category=$category&amp;data_id=$data_id\">Edit aliases</a>";
 	$html .= "</td></tr>\n\n";
@@ -123,7 +124,7 @@ function changealias($data_id, $category) {
 
 function changeorganizers ( $convent_id ) {
 	$numlinks = getone("SELECT COUNT(*) FROM acrel WHERE convent_id = '$convent_id'");
-	$html  = "<tr valign=top><td>Organizers:</td><td>\n";
+	$html  = "<tr valign=top><td>Organizers</td><td>\n";
 	$html .= "$numlinks " . ($numlinks == 1?"organizer":"organizers");
 	$html .= " - <a href=\"organizers.php?category=convent&amp;data_id=$convent_id\" accesskey=\"r\">Edit organizers</a>";
 	$html .= "</td></tr>\n\n";
@@ -132,7 +133,7 @@ function changeorganizers ( $convent_id ) {
 
 function changegenre($sce_id) {
 	$numgenres = getone("SELECT COUNT(*) FROM gsrel WHERE sce_id = '$sce_id'");
-	$html  = "<tr valign=top><td>Genres:</td><td>\n";
+	$html  = "<tr valign=top><td>Genres</td><td>\n";
 	$html .= sprintf("$numgenres %s",($numgenres == 1?"genre":"genres"));
 	$html .= " - <a href=\"genre.php?id=$sce_id\" accesskey=\"g\">Edit genres</a>";
 	$html .= "</td></tr>\n\n";
@@ -141,7 +142,7 @@ function changegenre($sce_id) {
 
 function changerun($sce_id) {
 	$numruns = getone("SELECT COUNT(*) FROM scerun WHERE sce_id = '$sce_id'");
-	$html  = "<tr valign=top><td>Runs:</td><td>\n";
+	$html  = "<tr valign=top><td>Runs</td><td>\n";
 	$html .= sprintf("$numruns %s",($numruns == 1?"run":"runs"));
 	$html .= " - <a href=\"run.php?id=$sce_id\" accesskey=\"r\">Edit runs</a>";
 	$html .= "</td></tr>\n\n";
@@ -150,7 +151,7 @@ function changerun($sce_id) {
 
 function changefiles($data_id, $category) {
 	$numfiles = getone("SELECT COUNT(*) FROM files WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>Files:</td><td>\n";
+	$html  = "<tr valign=top><td>Files</td><td>\n";
 	$html .= "$numfiles ".($numfiles == 1?"file":"files");
 	$html .= " - <a href=\"files.php?category=$category&amp;data_id=$data_id\" accesskey=\"f\">Edit files</a>";
 	$html .= "</td></tr>\n\n";
@@ -159,7 +160,7 @@ function changefiles($data_id, $category) {
 
 function changeawards($convent_id) {
 	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convent_id = '$convent_id'");
-	$html  = "<tr valign=top><td>Awards:</td><td>\n";
+	$html  = "<tr valign=top><td>Awards</td><td>\n";
 	$html .= sprintf("$numawards %s, $numnominees %s",($numawards == 1?"award":"awards"), ($numnominees == 1?"nominated":"nominated") );
 	$html .= " - <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"w\">Edit awards</a>";
 	$html .= "</td></tr>\n\n";
@@ -176,7 +177,7 @@ function changeuserlog($data_id, $category) {
 }
 
 function showpicture($data_id, $category) {
-	$html = "<tr><td>Picture:</td><td>";
+	$html = "<tr><td>Picture</td><td>";
 	if (($path = getthumbnailpath($data_id, $category)) === FALSE) {
 		$html .= "No";
 	} else {
@@ -202,9 +203,8 @@ function getthumbnailpath($data_id, $category) {
 	}
 }
 
-
 function showtickets($data_id, $category) {
-	$html = "<tr valign=\"top\"><td>Tickets:</td><td>";
+	$html = "<tr valign=\"top\"><td>Tickets</td><td>";
 
 	$result = getall("SELECT id, user_name, submittime, status FROM updates WHERE data_id = '$data_id' AND category = '$category' ORDER BY id DESC");
         foreach($result AS $row) {
@@ -243,24 +243,6 @@ function getCount ($table, $data_id, $requiresData = FALSE, $category = "") {
 	return $count;
 }
 
-$ugedag = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
-/*
-function pubdateprint($datetime) {
-	$pubdatetime = strtotime($datetime);
-	$start = strftime('%e. %B, %R',$pubdatetime);
-	if (date("Y-m-d",$pubdatetime) == date("Y-m-d")) {
-		$start = "I dag, ".date("H:i",$pubdatetime);
-	} elseif (date("Y-m-d",$pubdatetime) == date("Y-m-d",strtotime("- 1 day")) ) {
-		$start = "I går, ".date("H:i",$pubdatetime);
-	} elseif (date("Y-m-d",$pubdatetime) == date("Y-m-d",strtotime("- 2 days")) ) {
-		$start = "I forgårs, ".date("H:i",$pubdatetime);
-	} else {
-		$start = strftime('%e. %B %Y, %R',$pubdatetime);
-	}
-	return $start;
-}
-*/
 
 function rexit($this_type, $dataset = [] ) {
 	switch($this_type) {

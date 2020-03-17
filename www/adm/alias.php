@@ -99,8 +99,6 @@ if ($data_id && $category) {
 
 htmladmstart("Alias");
 
-printinfo();
-
 if ($data_id && $category) {
 
 	print "<table align=\"center\" border=0>".

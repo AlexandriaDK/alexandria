@@ -64,8 +64,6 @@ if ($action == "create") {
 
 htmladmstart("Con series");
 
-printinfo();
-
 print "<FORM ACTION=\"conset.php\" METHOD=\"post\">\n";
 if (!$conset) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
@@ -107,7 +105,7 @@ if ($conset) {
 
 // Afholdte con'er
 	$q = getall("SELECT convent.id, convent.name, year, confirmed, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE conset_id = '$conset' ORDER BY setname, year, begin, end, name");
-	print "<tr valign=top><td>Contains the following cons:</td><td>\n";
+	print "<tr valign=top><td>Contains the following cons</td><td>\n";
         foreach($q AS list($id, $name, $y, $c) ){
 		if ($c == 0) $conftext = "(missing scenarios)";
 		elseif ($c == 1) $conftext = "(being edited)";

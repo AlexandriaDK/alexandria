@@ -37,8 +37,6 @@ if ($data_id && $category) {
 
 htmladmstart("User log");
 
-printinfo();
-
 print "<table align=\"center\" border=0>".
       "<tr><th colspan=5>User log: <a href=\"$mainlink\" accesskey=\"q\">$title</a> (" . count($dataset) . " " . (count($dataset) == 1 ? "person" : "personer") . ")</th></tr>\n".
       "<tr class=\"headline\">\n".
