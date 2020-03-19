@@ -20,12 +20,14 @@
 <p class="indata">
 {if $birth != ""}
 	{$_p_born}: {$birth}
+	{if $age != "" && $death == ""}({$_person_age|sprintf:$age|escape}){/if}
 {/if}
 {if $birth != "" && $death != ""}
 	<br>
 {/if}
 {if $death != ""}
 	{$_p_died}: {$death}
+	{if $age != "" && $birth != ""}({$_person_age|sprintf:$age|escape}){/if}
 {/if}
 </p>
 {/if}

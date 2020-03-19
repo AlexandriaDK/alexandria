@@ -233,12 +233,14 @@ if ($r['id'] == 0) {
 
 // Birthday
 	$birth = "";
+	$age_year = "";
 	if ($r['birth'] && $r['birth'] != "0000-00-00" && substr($r['birth'], 0, 4) != "0000" ) { // understøtter endnu ikke  fødselsdato uden år
 		if ($r['death'] && $r['death'] != "0000-00-00") {
 			$birth = birthlong($r['birth'], $r['birthday']);
 		} else {
-			$birth = birthlong($r['birth'], $r['birthday'])." (".birthage($r['birth'])." år)";
-			if (date("m-d") == substr($r['birth'],5,5)) $birth .= " <img src=\"/gfx/flag.gif\" alt=\"Fødselsdagsflag\" width=\"13\" height=\"10\" />";
+			$birth = birthlong($r['birth'], $r['birthday']);
+			$age_year = birthage($r['birth']);
+	#		if (date("m-d") == substr($r['birth'],5,5)) $birth .= " <img src=\"/gfx/flag.gif\" alt=\"Fødselsdagsflag\" width=\"13\" height=\"10\" />";
 
 		}
 	}
@@ -246,7 +248,8 @@ if ($r['id'] == 0) {
 	$death = "";
 	if ($r['death'] && $r['death'] != "0000-00-00")	{
 		if ($r['birth'] && $r['birth'] != "0000-00-00")	{
-			$death = birthlong($r['death'], $r['deathday'])." (".birthage($r['birth'],$r['death'])." år)";
+			$death = birthlong($r['death'], $r['deathday']);
+			$age_year = birthage($r['birth']);
 		} else {
 			$death = birthlong($r['death'], $r['deathday']);
 		}
@@ -280,6 +283,7 @@ if ($r['id'] == 0) {
 	$t->assign('alias',$aliaslist);
 	$t->assign('birth',$birth);
 	$t->assign('death',$death);
+	$t->assign('age',$age_year);
 	$t->assign('slist',$slist);
 	$t->assign('award',$awardlist);
 	$t->assign('organizerlist',$organizerlist);
