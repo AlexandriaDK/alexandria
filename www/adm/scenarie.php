@@ -763,7 +763,7 @@ var m4 = document.theForm.con;
 $("#title").change(function() {
 	$.get( "lookup.php", { type: 'sce', label: $("#title").val() } , function( data ) {
 		if (data > 0) {
-			$("#titlenote").text("⚠ A scenario with the same title already exists");
+			$("#titlenote").text("⚠ Note: A scenario with the same title already exists. You can still submit this new scenario.");
 		} else {
 			$("#titlenote").text("");
 		}
