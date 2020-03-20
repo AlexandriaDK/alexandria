@@ -348,7 +348,15 @@ foreach($yearstat AS $year => $row) {
 }
 
 $concountry = [];
-$r = getall("SELECT COUNT(*) AS count, COALESCE(a.country, b.country) AS ccountry FROM convent a INNER JOIN conset b ON a.conset_id = b.id GROUP BY COALESCE(a.country, b.country) ORDER BY count DESC, ISNULL(ccountry), ccountry");
+$place = 0;
+$lastcount = 0;
+$r = getall("SELECT COUNT(*) AS count, COALESCE(a.country, b.country) AS ccountry FROM convent a INNER JOIN conset b ON a.conset_id = b.id GROUP BY COALESCE(a.country, b.country) HAVING ccountry IS NOT NULL ORDER BY count DESC, ISNULL(ccountry), ccountry");
+foreach ($r AS $row) {
+	$place++;
+	$placeout = ($lastcount != $row['count'] ? "$place." : "");
+	$lastcount = $row['count'];
+	$concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => Locale::getDisplayRegion("-" . $row['ccountry'], LANG) ];
+}
 $stat_con_country = $r;
 
 award_achievement(51); // visit statistics page
@@ -362,7 +370,7 @@ $t->assign('stat_sce_replay',$stat_sce_replay);
 $t->assign('stat_sce_auts',$stat_sce_auts);
 $t->assign('stat_con_sce',$stat_con_sce);
 $t->assign('stat_con_year',$yearstatpart);
-$t->assign('stat_con_country',$stat_con_country);
+$t->assign('stat_con_country',$concountry);
 
 $t->display('statistics.tpl');
 

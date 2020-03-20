@@ -53,18 +53,16 @@
 		</table>
 	</td>
 	</tr>
-{*
 	
 	<tr>	
 	<td><span class="stathead">{$_stat_consbycountry|nl2br}</span><br>
 		<table class="tablestat tablestartpad">
 		{section name=i loop=$stat_con_country}
-		<tr><td>{$stat_con_country[i].ccountry}</td><td class="statnumber">{$stat_con_country[i].count} </td></tr>
+		<tr><td class="statnumber">{$stat_con_country[i].placeout}</td><td>{$stat_con_country[i].localecountry}</td><td class="statnumber">{$stat_con_country[i].count} </td></tr>
 		{/section}
 		</table>
 	</td>
 	</tr>
-*}	
 	</table>
 	
 </div>
