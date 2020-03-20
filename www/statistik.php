@@ -308,12 +308,7 @@ $stat_con_sce .= '
 	</table>
 ';
 
-$stat_con_year = '
-	<table class="tablestat">
-';
-
-$yearstat = array();
-$yearstatpart = [];
+$yearstat = $yearstatpart = [];
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
@@ -350,16 +345,11 @@ foreach($r AS $row) {
 
 foreach($yearstat AS $year => $row) {
 	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['sce'] ?? 0 ];
-	$row['sce'] = (int) ($row['sce'] ?? 0);
-	$context = ($row['cons'] == 1 ? "kongres" : "kongresser");
-	$scetext = ($row['sce'] == 1 ? "scenarie" : "scenarier");
-	$stat_con_year .= "<tr><td><a href=\"data?year=$year\" class=\"con\">$year</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td class=\"statnumber\">{$row['cons']} </td><td>$context&nbsp;&nbsp;</td><td class=\"statnumber\">{$row['sce']} </td><td>$scetext</td></tr>\n";
 }
 
-$stat_con_year .= '
-	</table>
-';
-
+$concountry = [];
+$r = getall("SELECT COUNT(*) AS count, COALESCE(a.country, b.country) AS ccountry FROM convent a INNER JOIN conset b ON a.conset_id = b.id GROUP BY COALESCE(a.country, b.country) ORDER BY count DESC, ISNULL(ccountry), ccountry");
+$stat_con_country = $r;
 
 award_achievement(51); // visit statistics page
 
@@ -371,8 +361,8 @@ $t->assign('stat_sys_used',$stat_sys_used);
 $t->assign('stat_sce_replay',$stat_sce_replay);
 $t->assign('stat_sce_auts',$stat_sce_auts);
 $t->assign('stat_con_sce',$stat_con_sce);
-//$t->assign('stat_con_year',$stat_con_year);
 $t->assign('stat_con_year',$yearstatpart);
+$t->assign('stat_con_country',$stat_con_country);
 
 $t->display('statistics.tpl');
 

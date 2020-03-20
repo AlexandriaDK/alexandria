@@ -46,14 +46,25 @@
 	</td>
 	
 	<td><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
-		<table class="tablestat">
+		<table class="tablestat tablestartpad">
 		{section name=i loop=$stat_con_year}
-		<tr><td><a href="data?year={$stat_con_year[i].year}" class="con">{$stat_con_year[i].year}</a>&nbsp;&nbsp;&nbsp;</td><td class="statnumber">{$stat_con_year[i].cons} </td><td>{if $stat_con_year[i].cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$stat_con_year[i].games}</td><td>{if $stat_con_year[i].games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		<tr><td><a href="data?year={$stat_con_year[i].year}" class="con">{$stat_con_year[i].year}</a></td><td class="statnumber">{$stat_con_year[i].cons} </td><td>{if $stat_con_year[i].cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$stat_con_year[i].games}</td><td>{if $stat_con_year[i].games == 1}{$_game}{else}{$_games}{/if}</td></tr>
 		{/section}
 		</table>
 	</td>
 	</tr>
+{*
 	
+	<tr>	
+	<td><span class="stathead">{$_stat_consbycountry|nl2br}</span><br>
+		<table class="tablestat tablestartpad">
+		{section name=i loop=$stat_con_country}
+		<tr><td>{$stat_con_country[i].ccountry}</td><td class="statnumber">{$stat_con_country[i].count} </td></tr>
+		{/section}
+		</table>
+	</td>
+	</tr>
+*}	
 	</table>
 	
 </div>

@@ -269,6 +269,10 @@ table.tableoverview td:first-child {
 	white-space: nowrap;
 }
 
+table.tablestartpad td:first-child {
+	padding-right: 2em;
+}
+
 tr {
 	vertical-align: top;
 }
