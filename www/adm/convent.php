@@ -74,7 +74,7 @@ if ($action == "edit" && $con) {
 		     "description = '".dbesc($description)."', ".
 		     "intern = '".dbesc($intern)."', ".
 		     "conset_id = '".dbesc($conset_id)."', " .
-		     "country = '".dbesc($country)."', " .
+		     "country = ".sqlifnull($country).", " .
 		     "cancelled = '".dbesc($cancelled)."', " .
 		     "confirmed = '".dbesc($confirmed)."' " .
 		     "WHERE id = '$con'";
@@ -137,7 +137,7 @@ if ($action == "create") {
 			 "'".dbesc($intern)."', ".
 			 "'".dbesc($confirmed)."',".
 			 "'".dbesc($cancelled)."',".
-			 "'".dbesc($country)."'".
+			 sqlifnull($country).
 			 ")";
 		$r = doquery($q);
 		if ($r) {
