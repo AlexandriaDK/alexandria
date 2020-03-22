@@ -39,7 +39,7 @@ if ( $setlang ) {
 	} else {
 		setcookie( "langlock", $setlang );
 	}
-	header("Location: language.php");
+	header("Location: language.php?do=next");
 	exit;
 }
 
@@ -113,6 +113,10 @@ foreach( $overview AS $mylabel => $string ) {
 	if ( $nextlabel != FALSE) {
 		break;
 	}
+}
+
+if ( $do == "next" && $nextlabel != FALSE ) {
+	header("Location: language.php?label=" . rawurlencode($nextlabel) );
 }
 
 if ( $label ) {
