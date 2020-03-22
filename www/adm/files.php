@@ -53,7 +53,7 @@ if ($action == "changefile" && $do == "Delete") {
 	$downloadable = ($downloadable?1:0);
 	$q = "UPDATE files SET description = '" . dbesc($description) . "', downloadable = '$downloadable', language = '" . dbesc($language) . "' WHERE id = '$id'";
 	$r = doquery($q);
-	$_SESSION['admin']['info'] = "Fil-data opdateret! " . dberror();
+	$_SESSION['admin']['info'] = "File data updated! " . dberror();
 	if ($r) {
 		chlog($data_id,$category,"Fil opdateret");
 	}
