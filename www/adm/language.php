@@ -117,6 +117,7 @@ foreach( $overview AS $mylabel => $string ) {
 
 if ( $do == "next" && $nextlabel != FALSE ) {
 	header("Location: language.php?label=" . rawurlencode($nextlabel) );
+	exit;
 }
 
 if ( $label ) {
