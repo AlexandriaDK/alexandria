@@ -240,7 +240,6 @@ if ($r['id'] == 0) {
 		} else {
 			$birth = birthlong($r['birth'], $r['birthday']);
 			$age_year = birthage($r['birth']);
-	#		if (date("m-d") == substr($r['birth'],5,5)) $birth .= " <img src=\"/gfx/flag.gif\" alt=\"Fødselsdagsflag\" width=\"13\" height=\"10\" />";
 
 		}
 	}
