@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 $order = ($_SERVER['QUERY_STRING'] == "popular" || isset($_REQUEST['popular']) ? "count desc" : "tag");
 

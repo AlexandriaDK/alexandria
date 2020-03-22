@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 $systems = getall("SELECT id, name FROM sys ORDER BY name");
 $genres = getall("SELECT id, name FROM gen WHERE genre = 1 ORDER BY name");

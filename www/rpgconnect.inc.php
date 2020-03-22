@@ -11,7 +11,6 @@ require_once(__DIR__ . '/../includes/db.auth.php');
 		header("HTTP/1.1 500 Internal Server Error");
 		header("X-Error: Database");
 		require("base.inc");
-		require("template.inc");
 		$t->display('dberror.tpl');
 		exit;
 

@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 $titlepart = "";
 $beginchar = "";
@@ -213,7 +212,6 @@ foreach($r AS $row) {
 if ($b == 'c') award_achievement(73); // Scenario beginning with C
 if ($g == 9)   award_achievement(74); // Scenario in Thriller genre
 
-$t->assign('ip',$_SERVER['REMOTE_ADDR']);
 $t->assign('keys',$keys);
 $t->assign('genre',$genre);
 $t->assign('scenlist',$xscenlist);

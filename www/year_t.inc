@@ -42,7 +42,6 @@ $timeinfo = "";
 foreach($q AS $row) {
 	$month = (int) substr($row['begin'],5,2);
 	if ($month > $thismonth) {
-		$printmonth = ucfirst($months[intval($month)]);
 		$printmonth = ucfirst( monthname( intval($month) ) );
 		if ($month == 0) $printmonth = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
 		if ($output) $output .= "</p>" . PHP_EOL;

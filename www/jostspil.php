@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require_once("base.inc");
-require_once("template.inc");
 require_once("smartfind.inc");
 
 function getjostid ($name) {
@@ -52,22 +51,11 @@ if ($to_id)	$to = getentry('aut',$to_id);
 $mainperson = $from_id;
 $subperson = $to_id;
 
-/*
-print pagebegin("Alexandria - Jost-spillet");
-print pagehead("Jost-spillet");
-
-print centerstart();
-*/
 $content = "";
 $intro = 0;
 if (!$mainperson || !$subperson) {
 	$intro = 1;
 }
-#$content .= '<form action="'.$_SERVER['PHP_SELF'].'" method="get"><table>';
-#$content .= "<tr>\n<td>Indtast første forfatter:</td>\n<td><input type=\"text\" name=\"from\" class=\"tags\" value=\"".htmlspecialchars($from)."\" />".($from_error?' <span class="finderror">?</span> ':'')."</td></tr>\n";
-#$content .= "<tr>\n<td>Indtast anden forfatter:</td>\n<td><input type=\"text\" name=\"to\" class=\"tags\" value=\"".htmlspecialchars($to)."\" />".($to_error?' <span class="finderror">?</span> ':'')."</td></tr>\n";
-#$content .= "<tr><td><input type=\"submit\" value=\"Forbind!\" /></td></tr>\n";
-#$content .= "</table>\n</form>\n";
 
 unset($person);
 unset($check);
@@ -203,11 +191,6 @@ if ($mainperson && $subperson) {
 		
 		// SLUTKODE FOR LØKKE
 		
-		/*
-		$content .= "<br>\nI alt $qnums database-forespørgsler (eller SQL-queries, om man vil)!<br>\n";
-		$content .= "I alt $personerialt personer!<br>";
-		*/
-		
 		if ($found == TRUE) {
 			$content .= sprintf( $t->getTemplateVars( $qnums == 1 ? '_jost_connected' : '_jost_connected_pl' ), $person[$mainperson], $person[$subperson], $qnums );
 			// $content .= $person[$mainperson]." og ".$person[$subperson]." er forbundet i $qnums led:";
@@ -230,14 +213,6 @@ if ($mainperson && $subperson) {
 				$scen = $scenarie[$find]['title'];
 				$scenid = $scenarie[$find]['sceid'];
 				$antal = $scenarie[$find]['antal'];
-/*
-				$content .= "$i: <a href=\"data?person=$find\" class=\"person\">$person[$find]</a> ". 
-				            "har lavet ".
-				            "<a href=\"data?scenarie=$scenid\" class=\"scenarie\">$scen</a> ".($antal>1?'m.fl. ':'').
-				            "med ".
-				            "<a href=\"data?person={$kobling[$find]}\" class=\"person\">{$person[$kobling[$find]]}</a>". 
-				            "<br />\n";
-*/
 				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $scenid, htmlspecialchars($scen), $kobling[$find], htmlspecialchars($person[$kobling[$find]]) ) );
 				// til graf
 				$graph[] = $find;
@@ -274,7 +249,6 @@ if ($mainperson && $subperson) {
 // people
 $people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM aut ORDER BY firstname, surname");	
 $json_people = json_encode($people);
-
 
 $t->assign('type','jostgame');
 $t->assign('content',$content);

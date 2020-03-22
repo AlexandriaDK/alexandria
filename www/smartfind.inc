@@ -7,7 +7,7 @@ define("URLCON","data?con=");
 
 function log_search($find, $found="") {
 	$referer = dbesc($_SERVER['HTTP_REFERER'] ?? '');
-	doquery("INSERT INTO searches (find, found, referer, searchtime, ip) VALUES ('$find','$found','$referer',NOW(),'{$_SERVER['REMOTE_ADDR']}')");
+	doquery("INSERT INTO searches (find, found, referer, searchtime) VALUES ('$find','$found','" . dbesc($referer) ."',NOW())");
 }
 
 function category_search ($find, $searchfield, $category) {

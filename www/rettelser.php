@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 // skal laves om til en funktion
 $value = "";

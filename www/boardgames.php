@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 $joinpart = "";
 
@@ -92,8 +91,6 @@ foreach($r AS $row) {
 	$last_sce_id = $sce_id;
 }
 
-$t->assign('ip',$_SERVER['REMOTE_ADDR']);
-// $t->assign('genre',$genre);
 $t->assign('scenlist',$scenlist);
 $t->assign('boardgamesonly',TRUE);
 $t->display('games.tpl');

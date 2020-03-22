@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 list($category,$data_id,$filename) = preg_split('_/_',$_SERVER['PATH_INFO'],-1,PREG_SPLIT_NO_EMPTY);
 $data_id = intval($data_id);
@@ -9,11 +8,9 @@ $fileondisk = ALEXFILES.'/'.$category.'/'.$data_id.'/'.$filename;
 
 if (file_exists($fileondisk) ) {
 	if ($category == 'scenario') $category = 'sce';
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$browser = $_SERVER['HTTP_USER_AGENT'];
 	$referer = $_SERVER['HTTP_REFERER'];
 	list($file_id) = getrow("SELECT id FROM files WHERE category = '$category' AND data_id = '$data_id'");
-	doquery("INSERT INTO filedownloads (files_id, data_id, category, accesstime, ip, browser, referer) VALUES ('$file_id','$data_id','$category',NOW(),INET_ATON('$ip'),'".dbesc($browser)."','".dbesc($referer)."')");
+	doquery("INSERT INTO filedownloads (files_id, data_id, category, accesstime, referer) VALUES ('$file_id','$data_id','$category',NOW(),'".dbesc($referer)."')");
 	#header("Location: http://download.alexandria.dk/files".$_SERVER['PATH_INFO']);
 
 	// achievements

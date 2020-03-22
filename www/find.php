@@ -9,7 +9,6 @@ $debug = FALSE;
 
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 require("smartfind.inc");
 
 $find = "";

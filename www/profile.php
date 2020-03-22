@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 // get user_id from logged-in session data
 $user_id = (int) $_SESSION['user_id'];

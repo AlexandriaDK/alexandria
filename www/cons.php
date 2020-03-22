@@ -1,7 +1,6 @@
 <?php
 require("./connect.php");
 require("base.inc");
-require("template.inc");
 
 if ($_SESSION['user_id']) {
 	$result = getall("
