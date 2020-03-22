@@ -126,7 +126,7 @@ if ( $label ) {
 	print "<input type=\"hidden\" name=\"label\" value=\"" . htmlspecialchars( $label ) . "\">";
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">";
 	print "<table>";
-	print "<tr><td>Label</td><td><input type=\"text\" name=\"newlabel\" value=\"" . htmlspecialchars( $label ) ."\" " . ( $admin ? "autofocus" : "readonly style=\"background: #ccc\"" ) . " size=\"40\" ></td></tr>";
+	print "<tr><td>Label</td><td><input type=\"text\" name=\"newlabel\" value=\"" . htmlspecialchars( $label ) ."\" " . ( $admin ? "" : "readonly style=\"background: #ccc\"" ) . " size=\"40\" ></td></tr>";
 	print "<tr><td>Used in</td><td>" . ( $matches ? implode(", ", $matches) : "[none]" ) . "</td></tr>";
 	foreach ( $languages AS $language => $dummy ) {
 		print "<tr><td>" . $language . "</td>";
