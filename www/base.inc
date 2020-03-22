@@ -883,7 +883,7 @@ function parseupcomingevents($eventset) {
 // translator overview
 
 function getTranslationOverview() {
-	$alltext = getcolid("SELECT language, COUNT(*) AS count FROM weblanguages GROUP BY language ORDER BY COUNT(*) DESC");
+	$alltext = getcolid("SELECT language, COUNT(*) AS count FROM weblanguages WHERE language != 'xx' GROUP BY language ORDER BY COUNT(*) DESC");
 	$max = max($alltext);
 	$result = [];
 	foreach($alltext AS $isocode => $count) {
