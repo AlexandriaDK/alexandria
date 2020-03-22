@@ -195,7 +195,7 @@ if ($con) {
 }
 
 tr("Name","name",$name);
-tr("Year","year",$year, "", "YYYY","number");
+tr("Year","year",$year, "", "","number");
 if ($begin && $begin != "0000-00-00") {
 	list($y,$m,$d) = explode("-",$begin);
 	$opta = "($d/$m $y = ". $ugedag[date("w",mktime(0,0,0,$m,$d,$y))] . ")";

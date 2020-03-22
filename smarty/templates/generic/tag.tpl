@@ -2,12 +2,6 @@
 
 	<h2 class="datatitle">{$tag|escape}</h2>
 
-{if $alias != ""}
-	<p class="indata">
-		({$_aka}: {$alias})
-	</p>
-{/if}
-
 {if $description != ""}
 	<p class="indata">
 		{$description|textlinks|nl2br}

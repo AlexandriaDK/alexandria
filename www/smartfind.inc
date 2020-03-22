@@ -6,7 +6,7 @@ define("URLSYS","data?system=");
 define("URLCON","data?con=");
 
 function log_search($find, $found="") {
-	$referer = dbesc($_SERVER['HTTP_REFERER']);
+	$referer = dbesc($_SERVER['HTTP_REFERER'] ?? '');
 	doquery("INSERT INTO searches (find, found, referer, searchtime, ip) VALUES ('$find','$found','$referer',NOW(),'{$_SERVER['REMOTE_ADDR']}')");
 }
 
@@ -75,6 +75,7 @@ function array_same ($array, $fixedvalue) {
 // find every key in array with specific (or larger-than) value
 
 function array_larger ($array, $fixedvalue) {
+	$newarray = [];
 	foreach($array AS $key => $value) {
 		if ($value >= $fixedvalue) {
 			$newarray[$key] = $value;
@@ -118,6 +119,7 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 
 	$match['a'] = $match['b'] = $match['c'] = array();
 	$listetegn = $listeprocent = array();
+	$whereextend = $whereextendshort = "";
 	
 // af hensyn til aliaser
 	if ($dataid) {
@@ -194,13 +196,14 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 
 // Lad os se om der kun er én entry over 80% match
 	$toptegn = array_larger($listeprocent,80);
-	if (count($toptegn) == 1) {
+	if (is_array($toptegn) && count($toptegn) == 1) {
 		$match['b'][] = key($toptegn);
 	}
 
 // Okay, så checker vi lige dem, der har flest matchende tegn
 // og checker om nogen af dem har over 70% match
 	$toptegn = array_same($listetegn,$valuetegn);
+	$positive = [];
 	foreach ($toptegn AS $key => $value) {
 		if ($listeprocent[$key] > 70) $positive[] = $key;
 	}

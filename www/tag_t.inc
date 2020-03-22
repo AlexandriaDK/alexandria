@@ -25,21 +25,16 @@ if (!$tag && !$tag_id) {
 
 	if (count($q) > 0) {
 		foreach($q AS $rs) {
-			$scenlist .= "<tr valign=\"top\">";
 			if ($_SESSION['user_id']) {
 				foreach(array('read','gmed','played') AS $type) {
-					$scenlist .= "<td>".getdynamicscehtml($rs['id'],$type,$rs[$type])."</td>";
 					$slist[$sl][$type] = getdynamicscehtml($rs['id'],$type,$rs[$type]);
 				}
 			}
-			$scenlist .= "<td>";
 			$sce_id = $rs['id'];
 			// query-i-løkke... skal optimeres!
 			$slist[$sl]['files'] = $rs['files'];
 			$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 			$slist[$sl]['title'] = $rs['title'];
-			$scenlist .= "<a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">".htmlspecialchars($rs['title'])."</a>";
-			$scenlist .= "</td>";
 
 			$forflist = array();
 			$qq = getall("SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut, asrel WHERE asrel.sce_id = '$sce_id' AND asrel.aut_id = aut.id AND asrel.tit_id = '1' ORDER BY firstname, surname");
@@ -51,28 +46,22 @@ if (!$tag && !$tag_id) {
 				$forflist[] = $rs['aut_extra'];
 			}
 			if ($forflist) {
-				$scenlist .= "<td class=\"lpad\">".join("<br />",$forflist)."</td>";
 				$slist[$sl]['forflist'] = join("<br />",$forflist);
 			} else {
-				$scenlist .= "<td>&nbsp;</td>";
 				$slist[$sl]['forflist'] = "&nbsp;";
 			}
 
 			if ($rs['con_id']) {
 		    $coninfo = nicedateset($rs['begin'],$rs['end']);
-				$scenlist .= "<td class=\"lpad\"><a href=\"data?con={$rs['con_id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a></td>";
 				$slist[$sl]['coninfo'] = $coninfo;
 				$slist[$sl]['conlink'] = "data?con=".$rs['con_id'];
 				$slist[$sl]['conname'] = "{$rs['name']} ({$rs['year']})";
 			} else {
-				$scenlist .= "<td>&nbsp;</td>";
 				$slist[$sl]['conname'] = "&nbsp;";
 			}
 
-			$scenlist .= "</tr>\n";
 			$sl++;
 		}
-		$scenlist = "<table border=\"0\" cellspacing=\"1\" cellpadding=\"1\" class=\"indata\">\n".$scenlist."</table>";
 	}
 
 // Links and trivia
@@ -87,8 +76,6 @@ if (!$tag && !$tag_id) {
 	$t->assign('id',$tag_id);
 	$t->assign('tag',$tag);
 	$t->assign('description',$description);
-	$t->assign('alias',$aliaslist);
-	$t->assign('scenlist',$scenlist);
 	$t->assign('slist',$slist);
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);
