@@ -880,6 +880,17 @@ function parseupcomingevents($eventset) {
 
 }
 
+// translator overview
+
+function getTranslationOverview() {
+	$alltext = getcolid("SELECT language, COUNT(*) AS count FROM weblanguages GROUP BY language ORDER BY COUNT(*) DESC");
+	$max = max($alltext);
+	$result = [];
+	foreach($alltext AS $isocode => $count) {
+		$result[] = [ 'isocode' => $isocode, 'llanguage' => Locale::getDisplayLanguage($isocode, LANG), 'count' => $count, 'percentage' => floor( $count / $max * 100 ) ];
+	}
+	return $result;
+}
 
 // MySQL-kald:
 

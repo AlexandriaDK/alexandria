@@ -18,7 +18,7 @@
 		<link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-{if $URLLANG}
+{if isset($URLLANG) }
 {foreach from=$ALEXLANGUAGES item=altlanguage}
 {if $URLLANG != $altlanguage}
 		<link rel="alternate" hreflang="{$altlanguage}" href="https://alexandria.dk/{$altlanguage}/{$BASEURI}" />
@@ -217,6 +217,16 @@
 			{/section}
 			<a href="adm/showlog.php" accesskey="l">{$_top_alledits}</a>
 
+		</div>
+	{/if}
+
+	{if $user_editor && isset($translations) }
+		<div class="leftmenucontent">
+			{$_top_translationprogress}:
+			<br><br>
+			{section name=l loop=$translations}
+			<a href="adm/language.php?setlang={$translations[l].isocode|rawurlencode}">{$translations[l].llanguage|ucfirst|escape}</a>: {$translations[l].percentage}%<br>
+			{/section}
 		</div>
 	{/if}
 

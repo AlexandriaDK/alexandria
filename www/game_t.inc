@@ -99,6 +99,8 @@ if ($r['id'] == 0) { // ought to add 404 here
 		$sysstring = $syspart;
 	} elseif ($r['sys_ext']) {
 		$sysstring = htmlspecialchars($r['sys_ext']);
+	} else {
+		$sysstring = "";
 	}
 
 // Liste over cons, scenariet har været spillet på:

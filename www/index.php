@@ -22,8 +22,10 @@ foreach(getnews(10) AS $data) {
 
 // for admins
 $recentlog = [];
-if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
+#if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
+if ($_SESSION['user_editor'] ?? FALSE) {
 	$recentlog = getrecentlog(3);
+	$translations = getTranslationOverview();
 }
 
 // fetching latest scenarios for download
@@ -40,6 +42,7 @@ $scenarios_downloadable = getone("SELECT COUNT(DISTINCT data_id) FROM files WHER
 
 $t->assign('type','front');
 $t->assign('recentlog',$recentlog);
+$t->assign('translations',$translations);
 $t->assign('newslist',$newslist);
 $t->assign('scenarios_downloadable',$scenarios_downloadable);
 $t->assign('html_nextevents',getnexteventstable());
