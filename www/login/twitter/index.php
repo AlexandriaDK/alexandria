@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once('./connect.php');
-require_once('base.inc');
-require '../includes/social.php';
+require_once('../../connect.php');
+require_once('../../base.inc');
+require '../../../includes/social.php';
 
 set_session_redirect_url();
 
