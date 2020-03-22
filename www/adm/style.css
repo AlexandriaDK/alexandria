@@ -109,3 +109,14 @@ option.existing {
 	color: #000;
 }
 
+div.nextlanguage {
+	font-size: 1.3em;
+}
+
+textarea.langfocus {
+	background: #ff9;
+}
+
+textarea.langfocusde {
+	background: linear-gradient(to bottom, #bbb 0%, #bbb 33.33%, #fbb 0, #fbb 66.66%, #fdb 0);
+}
