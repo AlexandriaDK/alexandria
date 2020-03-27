@@ -131,7 +131,7 @@ if ( $label ) {
 	print "<tr><td>Used in</td><td>" . ( $matches ? implode(", ", $matches) : "[none]" ) . "</td></tr>";
 	foreach ( $languages AS $language => $dummy ) {
 		print "<tr><td>" . $language . "</td>";
-		print "<td><textarea name=\"text[" . htmlspecialchars( $language ) . "]\" cols=\"100\" " . ( $language == $langlock ? 'class="' . ($langlock == 'de' ? 'langfocusde' : 'langfocus') . '" autofocus' : '') . ">" . htmlspecialchars( $overview[$label][$language] ) . "</textarea></td>";
+		print "<td><textarea name=\"text[" . htmlspecialchars( $language ) . "]\" cols=\"100\" " . ( $language == $langlock ? 'class="' . ($langlock == 'de' ? 'langfocusde' : 'langfocus') . '" autofocus' : '') . " lang=\"" . htmlspecialchars($language) . "\">" . htmlspecialchars( $overview[$label][$language] ) . "</textarea></td>";
 		print "</tr>";
 	}
 	print "<tr><td></td><td><input type=\"submit\"></td></tr>";

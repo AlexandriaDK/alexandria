@@ -61,11 +61,17 @@
 {include file="filelist.tpl"}
 
 {if $confirmed == 0}
-	<p class="indata">
-		<i>
-			{$_con_noinfo|nl2br}
-			<a href="rettelser?cat=convent&amp;data_id={$id}">{$_con_sendcorrection}</a>.
-		</i>
+	<p class="indata needhelp">
+		{$_con_noinfo|nl2br}
+		<a href="rettelser?cat=convent&amp;data_id={$id}">{$_con_sendcorrection}</a>.
+	</p>
+{elseif $confirmed == 1}
+	<p class="indata needhelp">
+		{$_con_helpwithlist|nl2br|sprintf:'contact'}
+	</p>
+{elseif $confirmed == 3}
+	<p class="indata needhelp">
+		{$_con_helpwithcontent|nl2br|sprintf:'contact'}
 	</p>
 {/if}
 
