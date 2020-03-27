@@ -206,7 +206,7 @@
 	{if $user_editor && isset($recentlog) }
 		<div class="leftmenucontent">
 			{$_top_recentedits}:
-			<br><br>
+			<div class="longblock">
 			{section name=l loop=$recentlog}
 			{$recentlog[l].linkhtml}<br>
 			<span class="noteindtast">
@@ -215,6 +215,7 @@
 			{$_by} {$recentlog[l].user|escape}<br>
 			<br></span>
 			{/section}
+			</div>
 			<a href="adm/showlog.php" accesskey="l">{$_top_alledits}</a>
 
 		</div>

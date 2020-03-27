@@ -23,7 +23,7 @@ foreach(getnews(10) AS $data) {
 $recentlog = [];
 #if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
 if ($_SESSION['user_editor'] ?? FALSE) {
-	$recentlog = getrecentlog(3);
+	$recentlog = getrecentlog(10);
 	$translations = getTranslationOverview();
 }
 
