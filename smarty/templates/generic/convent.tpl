@@ -67,11 +67,11 @@
 	</p>
 {elseif $confirmed == 1}
 	<p class="indata needhelp">
-		{$_con_helpwithlist|nl2br|sprintf:'contact'}
+		{$_con_helpwithlist|nl2br|sprintf:'kontakt'}
 	</p>
 {elseif $confirmed == 3}
 	<p class="indata needhelp">
-		{$_con_helpwithcontent|nl2br|sprintf:'contact'}
+		{$_con_helpwithcontent|nl2br|sprintf:'kontakt'}
 	</p>
 {/if}
 
