@@ -325,7 +325,7 @@ div.system a:visited, a.system:visited {
 	color: #009;
 }
 
-div.person div.list, div.system div.list {
+div.person div.list, div.system div.list, div.todolist {
 	column-count: 3;
 	-moz-column-count: 3;
 	-webkit-column-count: 3;
