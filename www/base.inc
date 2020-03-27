@@ -515,6 +515,16 @@ function birthshort ($dato) {
 }
 
 function birthage ($dato, $death = "") {
+	/* :TODO: Change to DateTime library
+	 *
+	 * $d1 = new DateTime('2011-03-12');
+	 * $d2 = new DateTime('2008-03-09');
+	 *
+	 * $diff = $d2->diff($d1);
+	 *
+	 * echo $diff->y;
+	 *
+	 */
 	$birth = explode("-",$dato);
 	if ($death) {
 		$death = explode("-",$death);
