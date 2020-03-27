@@ -18,14 +18,14 @@ Forslag: Citatboks, folks citater
 require("./connect.php");
 require("base.inc");
 
-$person = isset($_REQUEST['person']) ? intval($_REQUEST['person']) : 0;
-$scenarie = isset($_REQUEST['scenarie']) ? intval($_REQUEST['scenarie']) : 0;
-$game = isset($_REQUEST['game']) ? intval($_REQUEST['game']) : 0;
-$con = isset($_REQUEST['con']) ? intval($_REQUEST['con']) : 0;
-$conset = isset($_REQUEST['conset']) ? intval($_REQUEST['conset']) : 0;
-$system = isset($_REQUEST['system']) ? intval($_REQUEST['system']) : 0;
-$year = isset($_REQUEST['year']) ? intval($_REQUEST['year']) : 0;
-$tag = isset($_REQUEST['tag']) ? (string) $_REQUEST['tag'] : NULL;
+$person = (int) ($_REQUEST['person'] ?? 0);
+$scenarie = (int) ($_REQUEST['scenarie'] ?? 0);
+$game = (int) ($_REQUEST['game'] ?? 0);
+$con = (int) ($_REQUEST['con'] ?? 0);
+$conset = (int) ($_REQUEST['conset'] ?? 0);
+$system = (int) ($_REQUEST['system'] ?? 0);
+$year = (int) ($_REQUEST['year'] ?? 0);
+$tag = (string) ($_REQUEST['tag'] ?? '');
 
 if ($person) {
 	include ("person_t.inc");
