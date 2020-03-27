@@ -55,7 +55,15 @@ if ($g) {
 		$titlepart = "Begynder med bogstavet a";
 		$wherepart = "sce.title LIKE 'a%'";
 	}
-	if ($wherepart) $wherepart = "WHERE ".$wherepart;
+	if ($wherepart) {
+		$wherepart = "WHERE ".$wherepart;
+	}
+}
+if ($wherepart) {
+	$wherepart .= " AND sce.boardgame = 0";
+} else {
+	$wherepart = "WHERE sce.boardgame = 0";
+	
 }
 
 // Find alle scenarier, inkl. personer og cons - medtag dog kun én premierecon.
@@ -65,7 +73,7 @@ if ($g) {
 
 if ($_SESSION['user_id']) {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -75,11 +83,11 @@ if ($_SESSION['user_id']) {
 		LEFT JOIN userlog ON sce.id = userlog.data_id AND userlog.category = 'sce' AND userlog.user_id = '{$_SESSION['user_id']}'
 		$wherepart
 		GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-		ORDER BY title, aut.surname, aut.firstname
+		ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
 	");
 } else {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -103,7 +111,8 @@ foreach ($r AS $row) {
 	$scenarios[$sce_id]['title'] = $row['title'];
 	$scenarios[$sce_id]['boardgame'] = $row['boardgame'];
 	$scenarios[$sce_id]['aut'][$row['autid']] = [ 'name' => $row['autname'] ];
-	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'] ];
+#	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'] ];
+	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'], 'cancelled' => $row['cancelled'] ];
 	$scenarios[$sce_id]['downloadable'] = ($row['files'] > 0);
 	if ($_SESSION['user_id']) {
 		$scenarios[$sce_id]['userdata'] = ['read' => $row['read'], 'gmed' => $row['gmed'], 'played' => $row['played'] ]; 
@@ -148,13 +157,18 @@ foreach($scenarios AS $scenario_id => $scenario) {
 	$xscenlist .= "\t\t<td>";
 	foreach ($scenario['con'] AS $con_id => $convent) {
 		if ($con_id) {
-			$xscenlist .= "<a href=\"data?con=" . $con_id . "\" class=\"con\">".htmlspecialchars($convent['name'])." (" . $convent['year'] . ")</a><br>\n";
+			$class = "con";
+			if ($convent['cancelled'] == 1) {
+				$class .= " cancelled";
+			}
+			$xscenlist .= "<a href=\"data?con=" . $con_id . "\" class=\"$class\">".htmlspecialchars($convent['name'])." (" . $convent['year'] . ")</a><br>\n";
 		}
 	}
 	$xscenlist .= "</td>\n";
 	$xscenlist .= "\t</tr>\n";	
 }
 
+/*
 foreach($r AS $row) {
 	$sce_id = $row['id'];
 
@@ -207,6 +221,7 @@ foreach($r AS $row) {
 	$scenlist .= "\t</tr>\n";
 	$last_sce_id = $sce_id;
 }
+*/
 
 // achievements
 if ($b == 'c') award_achievement(73); // Scenario beginning with C

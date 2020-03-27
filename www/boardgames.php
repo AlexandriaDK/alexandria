@@ -7,7 +7,7 @@ $joinpart = "";
 // Find alle brætspil inkl. personer og cons
 if ($_SESSION['user_id']) {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -18,11 +18,11 @@ if ($_SESSION['user_id']) {
 		$joinpart
 		WHERE sce.boardgame = 1
 		GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-		ORDER BY title, aut.surname, aut.firstname
+		ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
 	");
 } else {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -32,7 +32,7 @@ if ($_SESSION['user_id']) {
 		$joinpart
 		WHERE sce.boardgame = 1
 		GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-		ORDER BY title, aut.surname, aut.firstname
+		ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
 	");
 }
 
@@ -82,7 +82,11 @@ foreach($r AS $row) {
 	}
 
 	if ($sce_id != $last_sce_id && $row['convent_id']) {
-		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"con\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
+		$class = "con";
+		if ($row['cancelled'] == 1) {
+			$class .= " cancelled";
+		}
+		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"$class\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
