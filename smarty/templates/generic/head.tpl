@@ -82,7 +82,7 @@
 		{* Logo: Traditional Arabic, 30px, bold *}
 		<div id="leftmenu">
 			<p>
-				<a href="./"><img src="gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
+				<a href="./" accesskey="q"><img src="gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
 			</p>
 			<div class="leftmenucontent">
 				<a href="oss">{$_top_aboutalex}</a><br>

@@ -24,9 +24,11 @@ if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|xx)/_', $_SERVER["REQUEST_
 	if ( ! defined('LANGNOREDIRECT') ) {
 		if ($_SERVER['REQUEST_URI'] == '/') {
 			header("Location: /en/");
+			exit;
 		} else {
 			header("HTTP/1.1 301 Redirect");
 			header("Location: /da" . $_SERVER['REQUEST_URI'] );
+			exit;
 		}
 	}
 }
