@@ -339,6 +339,23 @@ div.person div.list, div.system div.list, div.todolist {
 	margin-bottom: 1em;
 }
 
+div.todocons a {
+	display: block;
+}
+
+div.countrylist {
+	margin-bottom: 1em;
+}
+
+div.countrylist span {
+	background-color: #3ae7fb;
+	border-radius: 4px;
+	padding: 3px;
+	font-size: 0.8em;
+	font-weight: bold;
+	cursor: pointer;
+}
+
 div.latestnews {
 	width: 240px;
 	padding-right: 10px;

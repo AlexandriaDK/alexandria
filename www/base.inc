@@ -899,9 +899,17 @@ function getTranslationOverview() {
 	$max = max($alltext);
 	$result = [];
 	foreach($alltext AS $isocode => $count) {
-		$result[] = [ 'isocode' => $isocode, 'llanguage' => Locale::getDisplayLanguage($isocode, LANG), 'count' => $count, 'percentage' => floor( $count / $max * 100 ) ];
+		$result[] = [ 'isocode' => $isocode, 'llanguage' => getLanguageName($isocode), 'count' => $count, 'percentage' => floor( $count / $max * 100 ) ];
 	}
 	return $result;
+}
+
+function getLanguageName($isocode) {
+	return Locale::getDisplayLanguage($isocode, LANG);
+}
+
+function getCountryName($countrycode) {
+	return Locale::getDisplayRegion("-" . $countrycode, LANG);
 }
 
 // MySQL-kald:
@@ -1097,22 +1105,31 @@ function smarty_function_con($con) {
 	$cancelled = $con['cancelled'] ?? 0;
 	$begin = $con['begin'] ?? NULL;
 	$end = $con['end'] ?? NULL;
-	$html = htmlspecialchars($name);
+	$country = $con['country'] ?? "";
+	$text = htmlspecialchars($name);
 	if ($year) {
 		if ($name !== "") {
-			$html .= " ";
+			$text .= " ";
 		}
-		$html .= "(" . $year .  ")";
+		$text .= "(" . $year .  ")";
 	}
 
 	if ($id) {
 		$class = "con";
-		$title = "";
-		$printdateset = nicedateset($begin, $end);
+		$title = nicedateset($begin, $end);
 		if ($cancelled) {
 			$class .= " cancelled";	
 		}
-		$html = '<a href="data?con=' . $id . '" class="' . $class . '" title="' . htmlspecialchars( $printdateset ) . '">' . $html . '</a>';
+		$link = '<a href="data?con=' . $id . '" class="' . $class . '"';
+		if ($title) {
+			$link .= ' title="' . htmlspecialchars( $title ) .'"';
+		}
+		if ($country) {
+			$link .= ' data-country="' . htmlspecialchars( $country ) .'"';
+		}
+		$link .= '>';
+		$linkoff = '</a>';
+		$html = $link . $text . $linkoff;
 	}
 	return $html;
 }

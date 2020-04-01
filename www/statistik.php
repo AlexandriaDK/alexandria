@@ -354,7 +354,7 @@ foreach ($r AS $row) {
 	$place++;
 	$placeout = ($lastcount != $row['count'] ? "$place." : "");
 	$lastcount = $row['count'];
-	$concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => Locale::getDisplayRegion("-" . $row['ccountry'], LANG) ];
+	$concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => getCountryName($row['ccountry']) ];
 }
 $stat_con_country = $r;
 

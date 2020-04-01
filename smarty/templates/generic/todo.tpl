@@ -10,25 +10,39 @@
 	{$_todo_intro|nl2br|sprintf:'kontakt'}
 </p>
 
+{if $cons_list}
 <h3>{$_todo_helpwithlist}</h3>
 <p>
 	{$_todo_listguide|nl2br}
 </p>
-<div class="todolist">
-{foreach from=$cons_list item=$con}
-	<a href="data?con={$con.id}" class="con">{$con.name} ({$con.year})</a><br>
+<div class="countrylist">
+{foreach from=$cons_list_c key=$cc item=$country}
+	<span class="countrybutton" onclick="$('#helplist [data-country={$cc}]').toggle();" title="{$country|escape}">[{$cc|upper}]</span>
 {/foreach}
 </div>
+<div class="todolist todocons" id="helplist">
+{foreach from=$cons_list item=$con}
+	{con dataset=$con}
+{/foreach}
+</div>
+{/if}
 
+{if $cons_content}
 <h3>{$_todo_helpwithcontent}</h3>
 <p>
 	{$_todo_contentguide|nl2br}
 </p>
-<div class="todolist">
-{foreach from=$cons_content item=$con}
-	<a href="data?con={$con.id}" class="con">{$con.name} ({$con.year})</a><br>
+<div class="countrylist">
+{foreach from=$cons_content_c key=$cc item=$country}
+	<span class="countrybutton" onclick="$('#helpguide [data-country={$cc}]').toggle();" title="{$country|escape}">[{$cc|upper}]</span>
 {/foreach}
 </div>
+<div class="todolist todocons" id="helpguide">
+{foreach from=$cons_content item=$con}
+	{con dataset=$con}
+{/foreach}
+</div>
+{/if}
 
 <h3>{$_todo_tools}</h3>
 <p>

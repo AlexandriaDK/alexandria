@@ -1,5 +1,4 @@
 <?php
-
 // redirect, hvis resultatet sandsynligvis findes?
 $redirect = TRUE;
 $rredirect = $_REQUEST['redirect'] ?? '';
@@ -271,9 +270,9 @@ if ($find) {
 	}
 	
 	if (!$search_title && !$search_description && !$search_system && !$search_genre && !$search_conset && !$search_download && !$search_players && !$search_no_gm && !$search_boardgames) { // searched for nothing - blank results
-		$match['sce'] = array();
+		$match['sce'] = [];
 	} elseif ($search_title && !($match['sce']) ) { // title searched, but no match
-		$match['sce'] = array();
+		$match['sce'] = [];
 	} else {
 		if ($match['sce']) { // found specific titles
 			$where[] = "id IN (".join(",",$match['sce']).")";				
@@ -379,17 +378,15 @@ if ($debug) {
 }
 
 // Smarty
-
 $t->assign('find_aut', display_result($match['aut'], "person", "person", "aut") );
 $t->assign('find_sce', display_result($match['sce'], "scenarie", "scenarie", "sce") );
 $t->assign('find_convent', display_result($match['convent'], "con", "con", "convent") );
 $t->assign('find_sys', display_result($match['sys'], "system", "system", "sys") );
-$t->assign('find_tags', $tagsearch );
-$t->assign('find_files', $filesearch );
-$t->assign('find_blogposts', $blogsearch );
+$t->assign('find_tags', $tagsearch ?? "" );
+$t->assign('find_files', $filesearch ?? "" );
+$t->assign('find_blogposts', $blogsearch ?? "" );
 $t->assign('search_boardgames', $search_boardgames );
 $t->display('find.tpl');
 exit;
-
 
 ?>
