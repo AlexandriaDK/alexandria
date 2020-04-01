@@ -13,10 +13,10 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'de', 'en', 'nb', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|xx)/_', $_SERVER["REQUEST_URI"], $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
-} else {
+} elseif ( ! defined("STDIN") ) { // if not run from console
 	// redirect logic:
 	// if frontpage requested redirect to English page
 	// else redirect to Danish sub-page
@@ -107,7 +107,7 @@ if (!defined('DBERROR') ) {
 		$t->assign('URLLANG', $urllang );
 		$t->assign('BASEURI', $baseuri );
 	}
-	$t->assign('ip',$_SERVER['REMOTE_ADDR']);
+	$t->assign('ip',$_SERVER['REMOTE_ADDR'] ?? "");
 } else {
 	$t->assign('dberror', TRUE);
 }
@@ -123,7 +123,7 @@ foreach( $import_languages AS $language ) {
 
 // Startup variables
 
-if ($_SESSION['user_id']) { // set last active
+if (isset($_SESSION['user_id'])) { // set last active
 	doquery("
 		UPDATE users
 		SET

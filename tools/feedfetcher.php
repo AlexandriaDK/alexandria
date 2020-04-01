@@ -1,10 +1,13 @@
 <?php
 // due to blog.com
 ini_set("user_agent", "Alexandria.dk feedfetcher");
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
 
-$blog_id = intval($_SERVER['argv']['1']);
+$blog_id = intval($_SERVER['argv']['1'] ?? 0);
+chdir('../www/');
 require("./connect.php");
-require("base.inc");
+require("./base.inc");
 
 function utf8_decode_enhanced($string) {
 	$result = html_entity_decode($string,ENT_COMPAT,"UTF-8");
