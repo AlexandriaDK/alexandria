@@ -47,9 +47,9 @@
 	
 	<td><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
 		<table class="tablestat tablestartpad">
-		{section name=i loop=$stat_con_year}
-		<tr><td><a href="data?year={$stat_con_year[i].year}" class="con">{$stat_con_year[i].year}</a></td><td class="statnumber">{$stat_con_year[i].cons} </td><td>{if $stat_con_year[i].cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$stat_con_year[i].games}</td><td>{if $stat_con_year[i].games == 1}{$_game}{else}{$_games}{/if}</td></tr>
-		{/section}
+		{foreach from=$stat_con_year item=$scy}
+		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		{/foreach}
 		</table>
 	</td>
 	</tr>
@@ -57,9 +57,9 @@
 	<tr>	
 	<td><span class="stathead">{$_stat_consbycountry|nl2br}</span><br>
 		<table class="tablestat tablestartpad">
-		{section name=i loop=$stat_con_country}
-		<tr><td class="statnumber">{$stat_con_country[i].placeout}</td><td>{$stat_con_country[i].localecountry}</td><td class="statnumber">{$stat_con_country[i].count} </td></tr>
-		{/section}
+		{foreach from=$stat_con_country item=$scc}
+		<tr><td class="statnumber">{$scc.placeout}</td><td>{$scc.localecountry}</td><td class="statnumber">{$scc.count} </td></tr>
+		{/foreach}
 		</table>
 	</td>
 	</tr>

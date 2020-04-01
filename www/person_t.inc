@@ -140,7 +140,7 @@ if ($r['id'] == 0) {
 			$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 			$slist[$sl]['title'] = $rs['title'];
 	
-			unset($conlist);
+			$conlist = [];
 			$qq = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled FROM convent, csrel WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = '{$rs['id']}' ORDER BY convent.name");
 			foreach($qq AS $rrs) {
 				$coninfo = nicedateset($rrs['begin'],$rrs['end']);

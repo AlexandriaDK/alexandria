@@ -27,7 +27,7 @@ $( function() {
 	<ul class="taglist">
 	{foreach $tags AS $tag_id => $tag}
 	<li>
-		{if $user_can_edit_tag[$tag_id]}
+		{if isset($user_can_edit_tag[$tag_id]) && $user_can_edit_tag[$tag_id] }
 			<span id="tagdelete_{$tag_id}" class="delete"> 
 			<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete" title="{$_sce_removetag|escape}">[{$_remove|ucfirst|escape}]</a></span>
 		{/if}

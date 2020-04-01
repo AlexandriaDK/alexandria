@@ -16,12 +16,12 @@
 			{$_fp_topnote}
 		</p>
 
-		{section name=i loop=$newslist}
+		{foreach from=$newslist item=$news}
 		<p>
-			<a id="{$newslist[i].anchor}">{$newslist[i].date}</a>:<br>
-			{$newslist[i].news}
+			<a id="{$news.anchor}">{$news.date}</a>:<br>
+			{$news.news}
 		</p>
-		{/section}
+		{/foreach}
 		<h3>
 			{$_fp_alexnumbers}
 		</h3>
@@ -42,9 +42,9 @@
 			{$_fp_recentdownload}
 		</h3>
 		<ul>
-		{section name=i loop=$latest_downloads}
-			<li><a href="data?scenarie={$latest_downloads[i].id}" class="scenarie">{$latest_downloads[i].title|escape}</a></li>
-		{/section}
+		{foreach from=$latest_downloads item=$scenario}
+			<li><a href="data?scenarie={$scenario.id}" class="scenarie">{$scenario.title|escape}</a></li>
+		{/foreach}
 		</ul>
 			
 		<h3 style="margin-bottom: 0;">

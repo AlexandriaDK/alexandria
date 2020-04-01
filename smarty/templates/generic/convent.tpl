@@ -141,22 +141,22 @@
 {/if}
 
 	<table class="indata">
-	{section name=i loop=$organizerlist}
+	{foreach from=$organizerlist item=$ol}
 	<tr>
 	<td style="padding-right: 10px">
-		{$organizerlist[i].role|escape}
+		{$ol.role|escape}
 	</td>
 	<td>
-		{if $organizerlist[i].aut_id}
-		<a href="data?person={$organizerlist[i].aut_id}" class="person">{$organizerlist[i].name|escape}</a>
+		{if $ol.aut_id}
+		<a href="data?person={$ol.aut_id}" class="person">{$ol.name|escape}</a>
 		{else}
-		{$organizerlist[i].aut_extra|escape}
+		{$ol.aut_extra|escape}
 		{/if}
 	</td>
 	{if $editmode}
 	<td style="text-align: center;">
 		{foreach $user_can_edit_organizers AS $acrel_id => $true}
-		{if $organizerlist[i].id == $acrel_id}
+		{if $ol.id == $acrel_id}
 			<a href="adm/user_organizers.php?convent={$id}&amp;acrel_id={$acrel_id}&amp;action=delete">[{$_remove}]</a>
 			{break}
 		{/if}
@@ -164,7 +164,7 @@
 	</td>
 	{/if}
 	</tr>
-	{/section}
+	{/foreach}
 	
 	{if $editmode}
 	<form action="adm/user_organizers.php" method="post">

@@ -225,9 +225,9 @@
 		<div class="leftmenucontent">
 			{$_top_translationprogress}:
 			<br><br>
-			{section name=l loop=$translations}
-			<a href="adm/language.php?setlang={$translations[l].isocode|rawurlencode}">{$translations[l].llanguage|ucfirst|escape}</a>: {$translations[l].percentage}%<br>
-			{/section}
+			{foreach from=$translations item=$translation}
+			<a href="adm/language.php?setlang={$translation.isocode|rawurlencode}">{$translation.llanguage|ucfirst|escape}</a>: {$translation.percentage}%<br>
+			{/foreach}
 		</div>
 	{/if}
 
@@ -235,9 +235,9 @@
 			<div class="leftmenucontent">
 				{$_top_help_sce_no|@nl2br}
 				<br><br>
-				{section name=s loop=$user_scenario_missing_players}
-				<a href="data?scenarie={$user_scenario_missing_players[s].id}" class="scenarie">{$user_scenario_missing_players[s].title|escape}</a><br>
-				{/section}
+				{foreach from=$user_scenario_missing_players item=$usmc}
+				<a href="data?scenarie={$usmc.id}" class="scenarie">{$usmc.title|escape}</a><br>
+				{/foreach}
 				<br>
 				{$_top_help_sce_no2|@nl2br}
 			</div>
@@ -247,9 +247,9 @@
 			<div class="leftmenucontent">
 				{$_top_help_sce_tag|@nl2br}
 				<br><br>
-				{section name=s loop=$user_scenario_missing_tags}
-				<a href="data?scenarie={$user_scenario_missing_tags[s].id}" class="scenarie">{$user_scenario_missing_tags[s].title|escape}</a><br>
-				{/section}
+				{foreach from=$user_scenario_missing_tags item=$usmt}
+				<a href="data?scenarie={$usmt.id}" class="scenarie">{$usmt.title|escape}</a><br>
+				{/foreach}
 				<br>
 				{$_top_help_sce_tag2|@nl2br}
 			</div>

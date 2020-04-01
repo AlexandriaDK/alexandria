@@ -43,7 +43,7 @@
 	{foreach from=$slist item=$scenario}
 		<tr>
 			{if $scenario.read}<td>{$scenario.read}</td>{else}<td></td>{/if}
-			{if $scenario.gmed}<td>{$scenario.gmed}</td>{else}<td></td>{/if}
+			{if isset($scenario.gmed) && $scenario.gmed}<td>{$scenario.gmed}</td>{else}<td></td>{/if}
 			{if $scenario.played}<td>{$scenario.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
 			<td>{if $scenario.files}<a href="{$scenario.link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
 			<td style="text-align: center;">

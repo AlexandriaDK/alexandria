@@ -21,9 +21,9 @@
 					<td>{$_rpgsystem|ucfirst}</td>
 					<td><select name="search_system">
 					<option value="">{$_find_notimportant}</option>
-{section name=s loop=$systems}
-						<option value="{$systems[s].id}">{$systems[s].name}</option>
-{/section}
+{foreach from=$systems item=$system}
+						<option value="{$system.id}">{$system.name}</option>
+{/foreach}
 						</select>
 					</td>
 				</tr>
@@ -32,9 +32,9 @@
 					<td>{$_find_conplay}</td>
 					<td><select name="search_conset">
 					<option value="">{$_find_notimportant}</option>
-{section name=set loop=$consets}
-						<option value="{$consets[set].id}">{$consets[set].name}</option>
-{/section}
+{foreach from=$consets item=$conset}
+						<option value="{$conset.id}">{$conset.name}</option>
+{/foreach}
 						</select>
 					</td>
 				</tr>

@@ -13,26 +13,26 @@
 	
 		<table>
 			<tr><th>{$_feeds_postdate}</th><th>{$_feeds_by}</th><th>{$_feeds_commentsno}</th><th>{$_feeds_postdate}</th></tr>
-			{section name=i loop=$feeddata}
+			{foreach from=$feeddata item=$feedrow}
 			<tr>
-			<td title="{$feeddata[i].title|escape}">
-				<a href="{$feeddata[i].link|escape}">{if $feeddata[i].title == ""}<i>({$_feeds_notitle})</i>{else}{$feeddata[i].title|truncate:55|escape}{/if}{if $feeddata[i].podcast} 🔊{/if}</a>
+			<td title="{$feedrow.title|escape}">
+				<a href="{$feedrow.link|escape}">{if $feedrow.title == ""}<i>({$_feeds_notitle})</i>{else}{$feedrow.title|truncate:55|escape}{/if}{if $feedrow.podcast} 🔊{/if}</a>
 			</td>
 			<td>
-				{if $feeddata[i].aut_id}
-					<a href="data?person={$feeddata[i].aut_id}" class="person">{$feeddata[i].owner|escape}</a>
+				{if $feedrow.aut_id}
+					<a href="data?person={$feedrow.aut_id}" class="person">{$feedrow.owner|escape}</a>
 				{else}
-					{$feeddata[i].owner|escape}
+					{$feedrow.owner|escape}
 				{/if}
 			</td>
 			<td style="text-align: right; padding-right: 35px;">
-				{$feeddata[i].comments}
+				{$feedrow.comments}
 			</td>
 			<td style="text-align: right;">
-				{$feeddata[i].printdate}
+				{$feedrow.printdate}
 			</td>
 			</tr>
-			{/section}
+			{/foreach}
 		</table>
 
 		<h3>
@@ -40,9 +40,9 @@
 		</h3>
 		
 		<p>
-			{section name=i loop=$feedlist}
-			<a href="{$feedlist[i].pageurl|escape}">{$feedlist[i].owner|escape}: {$feedlist[i].name|escape}</a><br>
-			{/section}
+			{foreach from=$feedlist item=$feed}
+			<a href="{$feed.pageurl|escape}">{$feed.owner|escape}: {$feed.name|escape}</a><br>
+			{/foreach}
 		</p>
 
 		<h3>

@@ -33,17 +33,17 @@
 	</h3>
 
 	<table class="indata">
-	{section name=s loop=$slist}
+	{foreach from=$slist item=$game}
 		<tr>
-			{if $slist[s].read}<td>{$slist[s].read}</td>{/if}
-			{if $slist[s].gmed}<td>{$slist[s].gmed}</td>{/if}
-			{if $slist[s].played}<td>{$slist[s].played}</td><td style="width: 5px;">&nbsp;</td>{/if}
-			<td>{if $slist[s].files}<a href="{$slist[s].link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-			<td><a href="{$slist[s].link}" class="scenarie">{$slist[s].title|escape}</a></td>
-			<td class="lpad">{$slist[s].forflist}</td>
-			<td>{if $slist[s].conlink}<a href="{$slist[s].conlink}" class="con" title="{$slist[s].coninfo}">{$slist[s].conname|escape}</a>{/if}</td>
+			{if $game.read}<td>{$game.read}</td>{/if}
+			{if $game.gmed}<td>{$game.gmed}</td>{/if}
+			{if $game.played}<td>{$game.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
+			<td>{if $game.files}<a href="{$game.link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+			<td><a href="{$game.link}" class="scenarie">{$game.title|escape}</a></td>
+			<td class="lpad">{$game.forflist}</td>
+			<td>{if $game.conlink}<a href="{$game.conlink}" class="con" title="{$game.coninfo}">{$game.conname|escape}</a>{/if}</td>
 
-	{/section}
+	{/foreach}
 	</table>
 {/if}
 
