@@ -28,18 +28,18 @@
 
 {include file="filelist.tpl"}
 
-{if $conlist != ""}
+{if $condata}
 	<h3 class="parttitle">
 		{$_conventions|ucfirst}
 	</h3>
 	<table class="conlist">
-	{section name=i loop=$condata}
+	{foreach from=$condata item=$con}
 	<tr>
-		<td>{$condata[i].userdyn}</td>
-		<td><a href="data?con={$condata[i].id}" class="con{if $condata[i].cancelled} cancelled{/if}" title="{$condata[i].dateset|escape}">{$condata[i].name} ({$condata[i].year})</a></td>
-                <td style="padding-left: 10px;"{if $condata[i].cancelled} class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$condata[i].place}</td>
+		<td>{$con.userdyn}</td>
+		<td>{con dataset=$con}</td>
+                <td style="padding-left: 10px;"{if $con.cancelled} class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$con.place}</td>
 	</tr>
-	{/section}
+	{/foreach}
 	</table>
 {/if}
 

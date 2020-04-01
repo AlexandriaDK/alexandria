@@ -207,14 +207,14 @@
 		<div class="leftmenucontent">
 			{$_top_recentedits}:
 			<div class="longblock">
-			{section name=l loop=$recentlog}
-			{$recentlog[l].linkhtml}<br>
+			{foreach from=$recentlog item=$log}
+			{$log.linkhtml}<br>
 			<span class="noteindtast">
-			{$recentlog[l].note|escape}<br>
-			{$recentlog[l].pubtime}<br>
-			{$_by} {$recentlog[l].user|escape}<br>
+			{$log.note|escape}<br>
+			{$log.pubtime}<br>
+			{$_by} {$log.user|escape}<br>
 			<br></span>
-			{/section}
+			{/foreach}
 			</div>
 			<a href="adm/showlog.php" accesskey="l">{$_top_alledits}</a>
 

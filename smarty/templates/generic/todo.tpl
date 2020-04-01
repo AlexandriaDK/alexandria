@@ -1,7 +1,7 @@
 {assign var="pagetitle" value="{$_todo_title}"}
 {include file="head.tpl"}
 
-<div id="contenttext">
+<div id="content">
 		<h2 class="pagetitle">
 			{$_todo_title}
 		</h2>

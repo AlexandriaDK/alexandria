@@ -817,7 +817,7 @@ function getorganizerlist ($data_id, $category, $order = FALSE) {
 	if ($category == 'convent') {
 		$organizerlist = getall("SELECT a.id, CONCAT(b.firstname, ' ', b.surname) AS name, a.aut_id, a.aut_extra, a.role FROM acrel a LEFT JOIN aut b ON a.aut_id = b.id WHERE a.convent_id = '$data_id' ORDER BY $order");
 	} elseif ($category == 'aut') {
-		$organizerlist = getall("SELECT a.id, a.convent_id, a.role, b.name, b.year, b.cancelled FROM acrel a INNER JOIN convent b ON a.convent_id = b.id WHERE a.aut_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
+		$organizerlist = getall("SELECT a.id, a.convent_id, a.role, b.name, b.begin, b.end, b.year, b.cancelled FROM acrel a INNER JOIN convent b ON a.convent_id = b.id WHERE a.aut_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
 
 	}
 	return $organizerlist;
@@ -1080,6 +1080,41 @@ function image_rescale_save($source, $destination, $max_width, $max_height) {
 	imagecopyresampled($dst_image,$src_image,0,0,0,0,$dst_width,$dst_height,$src_width,$src_height);
 	@imagejpeg($dst_image,$destination);
 	return $true;
+}
+
+/*
+ * Smarty functions
+ */
+
+function smarty_function_con($con) {
+	$html  = "";
+	if (is_array($con['dataset'] ?? FALSE)) {
+		$con = $con['dataset'];
+	}
+	$id = $con['id'] ?? 0;
+	$name = $con['name'] ?? "";
+	$year = $con['year'] ?? "";
+	$cancelled = $con['cancelled'] ?? 0;
+	$begin = $con['begin'] ?? NULL;
+	$end = $con['end'] ?? NULL;
+	$html = htmlspecialchars($name);
+	if ($year) {
+		if ($name !== "") {
+			$html .= " ";
+		}
+		$html .= "(" . $year .  ")";
+	}
+
+	if ($id) {
+		$class = "con";
+		$title = "";
+		$printdateset = nicedateset($begin, $end);
+		if ($cancelled) {
+			$class .= " cancelled";	
+		}
+		$html = '<a href="data?con=' . $id . '" class="' . $class . '" title="' . htmlspecialchars( $printdateset ) . '">' . $html . '</a>';
+	}
+	return $html;
 }
 
 ?>

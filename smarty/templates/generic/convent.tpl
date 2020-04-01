@@ -87,20 +87,20 @@
 			{$_scenarios|ucfirst}:
 		</h3>
 		</td></tr>
-	{section name=i loop=$scenlistdata}
+	{foreach from=$scenlistdata item=$scenarios}
 
 		<tr>
-		<td>{$scenlistdata[i].userdyn.read}</td>
-		<td>{$scenlistdata[i].userdyn.gmed}</td>
-		<td>{$scenlistdata[i].userdyn.played}</td>
+		<td>{$scenarios.userdyn.read}</td>
+		<td>{$scenarios.userdyn.gmed}</td>
+		<td>{$scenarios.userdyn.played}</td>
 		<td style="width: 10px;"></td>
-		<td>{if $scenlistdata[i].filescount}<a href="data?scenarie={$scenlistdata[i].id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-		<td>{$scenlistdata[i].runsymbol}</td>
-		<td><a href="data?scenarie={$scenlistdata[i].id}" class="scenarie">{$scenlistdata[i].title|escape}</a></td>
-		<td style="padding-left: 10px">{$scenlistdata[i].authtml}{if $scenlistdata[i].autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenlistdata[i].autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenlistdata[i].autextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{$scenlistdata[i].systemhtml}</td>
+		<td>{if $scenarios.filescount}<a href="data?scenarie={$scenarios.id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+		<td>{$scenarios.runsymbol}</td>
+		<td><a href="data?scenarie={$scenarios.id}" class="scenarie">{$scenarios.title|escape}</a></td>
+		<td style="padding-left: 10px">{$scenarios.authtml}{if $scenarios.autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.autextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$scenarios.systemhtml}</td>
 		</tr>
-	{/section}
+	{/foreach}
 	{/if}
 	{if $boardlist != "" }
 		<tr><td colspan="8">
@@ -108,20 +108,20 @@
 			{$_boardgames|ucfirst}:
 		</h3>
 		</td></tr>
-	{section name=i loop=$boardlistdata}
+	{foreach from=$boardlistdata item=$boardgames}
 
 		<tr>
-		<td>{$boardlistdata[i].userdyn.read}</td>
-		<td>{$boardlistdata[i].userdyn.gmed}</td>
-		<td>{$boardlistdata[i].userdyn.played}</td>
+		<td>{$boardgames.userdyn.read}</td>
+		<td>{$boardgames.userdyn.gmed}</td>
+		<td>{$boardgames.userdyn.played}</td>
 		<td style="width: 10px;"></td>
-		<td>{if $boardlistdata[i].filescount}<a href="data?scenarie={$boardlistdata[i].id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
-		<td>{$boardlistdata[i].runsymbol}</td>
-		<td><a href="data?scenarie={$boardlistdata[i].id}" class="scenarie">{$boardlistdata[i].title|escape}</a></td>
-		<td style="padding-left: 10px">{$boardlistdata[i].authtml}{if $boardlistdata[i].autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardlistdata[i].autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$boardlistdata[i].autextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{$boardlistdata[i].systemhtml}</td>
+		<td>{if $boardgames.filescount}<a href="data?scenarie={$boardgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
+		<td>{$boardgames.runsymbol}</td>
+		<td><a href="data?scenarie={$boardgames.id}" class="scenarie">{$boardgames.title|escape}</a></td>
+		<td style="padding-left: 10px">{$boardgames.authtml}{if $boardgames.autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardgames.autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$boardgames.autextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$boardgames.systemhtml}</td>
 		</tr>
-	{/section}
+	{/foreach}
 	{/if}
 
 	</table>

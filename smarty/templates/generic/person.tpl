@@ -40,25 +40,25 @@
 	<h3 class="parttitle">{$_scenarios|ucfirst}</h3>
 
 	<table class="scenariolist indata">
-	{section name=s loop=$slist}
+	{foreach from=$slist item=$scenario}
 		<tr>
-			{if $slist[s].read}<td>{$slist[s].read}</td>{else}<td></td>{/if}
-			{if $slist[s].gmed}<td>{$slist[s].gmed}</td>{else}<td></td>{/if}
-			{if $slist[s].played}<td>{$slist[s].played}</td><td style="width: 5px;">&nbsp;</td>{/if}
-			<td>{if $slist[s].files}<a href="{$slist[s].link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+			{if $scenario.read}<td>{$scenario.read}</td>{else}<td></td>{/if}
+			{if $scenario.gmed}<td>{$scenario.gmed}</td>{else}<td></td>{/if}
+			{if $scenario.played}<td>{$scenario.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
+			<td>{if $scenario.files}<a href="{$scenario.link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
 			<td style="text-align: center;">
-			{if $slist[s].textsymbol}
-			<span title="{$slist[s].icontitle|escape}">{$slist[s].textsymbol}</span>
-			{elseif $slist[s].iconfile}
-			<img src="gfx/{$slist[s].iconfile}" alt="{$slist[s].icontitle|escape}" title="{$slist[s].icontitle|escape}" width="{$slist[s].iconwidth}" height="{$slist[s].iconheight}" />
+			{if $scenario.textsymbol}
+			<span title="{$scenario.icontitle|escape}">{$scenario.textsymbol}</span>
+			{elseif $scenario.iconfile}
+			<img src="gfx/{$scenario.iconfile}" alt="{$scenario.icontitle|escape}" title="{$scenario.icontitle|escape}" width="{$scenario.iconwidth}" height="{$scenario.iconheight}" />
 			{else}
 
 			{/if}
 			</td>
-			<td><a href="{$slist[s].link}" class="scenarie">{$slist[s].title|escape}</a></td>
-			<td style="padding-left: 10px;">{$slist[s].conlist}</td>
+			<td><a href="{$scenario.link}" class="scenarie">{$scenario.title|escape}</a></td>
+			<td style="padding-left: 10px;">{$scenario.conlist}</td>
 		</tr>
-	{/section}
+	{/foreach}
 	</table>
 {/if}
 
@@ -70,19 +70,19 @@
 {if $organizerlist}
 <h3 class="parttitle" id="organizer">{$_p_organizerroles}:</h3>
 	<table class="organizerlist indata">
-	{section name=i loop=$organizerlist}
+	{foreach from=$organizerlist item=$con}
 	<tr>
-	<td style="text-align: right;" {if $organizerlist[i].cancelled}class="cancelled"{/if}>
-		<a href="data?con={$organizerlist[i].convent_id}" class="con">{$organizerlist[i].name|escape}</a>
+	<td style="text-align: right;" {if $con.cancelled}class="cancelled"{/if}>
+		{con id=$con.convent_id name=$con.name begin=$con.begin end=$con.end }
 	</td>
-	<td style="padding-right: 10px" {if $organizerlist[i].cancelled}class="cancelled"{/if}>
-		<a href="data?con={$organizerlist[i].convent_id}" class="con">({$organizerlist[i].year})</a>
+	<td style="padding-right: 10px" {if $con.cancelled}class="cancelled"{/if}>
+		{con id=$con.convent_id year=$con.year }
 	</td>
 	<td>
-		{$organizerlist[i].role|escape}
+		{$con.role|escape}
 	</td>
 	</tr>
-	{/section}
+	{/foreach}
 	</table>
 {/if}
 

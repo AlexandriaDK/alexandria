@@ -2,7 +2,6 @@
 $this_type = 'conset';
 
 $condata = [];
-$conlist = "";
 
 $r = getrow("SELECT id, name, description FROM conset WHERE id = '$conset'");
 if ($r['id'] == 0) {
@@ -30,31 +29,21 @@ if ($r['id'] == 0) {
 			ORDER BY year, begin, name
 		");
 	}
-	$conlist .= "<table class=\"conlist\">";
 	foreach($q AS $rs) {
 		$coninfo = nicedateset($rs['begin'],$rs['end']);
-		$conlist .= "<tr>";
-		if ($_SESSION['user_id']) {
-			$conlist .= "<td>".getdynamicconventhtml($rs['id'],'visited',$rs['visited'])."</td>";
-		}
-
-		$conlist .= "<td><a href=\"data?con={$rs['id']}\" class=\"con\" title=\"$coninfo\">{$rs['name']} (" . ($rs['year'] ? $rs['year'] : "?") . ")</a></td>";
-		if ($rs['place']) $conlist .= "<td style=\"padding-left: 10px;\">{$rs['place']}</td>";
-		else $conlist .= "<td></td>";
-		$conlist .= "</tr>\n";
-
 		$condata[] = [
 			'id' => $rs['id'],
 			'dateset' => $coninfo,
 			'userdyn' => ( $_SESSION['user_id'] ? getdynamicconventhtml($rs['id'],'visited',$rs['visited']) : '' ),
 			'name' => $rs['name'],
 			'year' => $rs['year'],
+			'begin' => $rs['begin'],
+			'end' => $rs['end'],
 			'place' => $rs['place'],
 			'cancelled' => $rs['cancelled']
 		];
 
 	}
-	$conlist .= "</table>\n";
 
 // Liste over aliaser
 	$aliaslist = getaliaslist($conset,$this_type);
@@ -86,7 +75,6 @@ if ($r['id'] == 0) {
 	$t->assign('name',$r['name']);
 	$t->assign('pic',$available_pic);
 	$t->assign('description',$r['description']);
-	$t->assign('conlist',$conlist);
 	$t->assign('condata',$condata);
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);
