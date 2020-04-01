@@ -16,7 +16,7 @@ $lang = "";
 if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|xx)/_', $_SERVER["REQUEST_URI"], $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
-} else {
+} elseif ( ! defined("STDIN") ) { // if not run from console
 	// redirect logic:
 	// if frontpage requested redirect to English page
 	// else redirect to Danish sub-page
