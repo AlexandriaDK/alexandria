@@ -18,6 +18,7 @@ $id = $_REQUEST['id'];
 // Ret news
 if ($action == "changenews" && $do != "Delete") {
 	$text = trim($text);
+	if (!$published) $published = date("Y-m-d H:i:s");
 	$online = ($online == "on" ? 1 : 0);
 	$q = "UPDATE news SET " .
 	     "text = '" . dbesc($text) . "', " .
