@@ -17,6 +17,20 @@ function conListByConfirmed($confirmed) {
 	return $list;
 }
 
+function conListByConfirmedGroup($confirmed) {
+	$confirmed = (int) $confirmed;
+	$result = [];
+	$list = getall("SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, COALESCE(convent.country, conset.country) AS country FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE confirmed = $confirmed ORDER BY country, convent.year DESC, convent.name");
+	foreach ($list AS $convent) {
+		if (!isset($result[$convent['country']]) ) {
+			$result[$convent['country']] = [ 'countryname' => getCountryName($convent['country']), 'cons' => [] ];
+		}
+		$result[$convent['country']]['cons'][] = $convent;
+	}
+	uasort($result, function($a, $b) { return count($b['cons']) - count($a['cons']); }); // sort array with most cons at top
+	return $result;
+}
+
 function conListCountries($list) {
 	$count = [];
 	foreach($list AS $con) {
@@ -35,18 +49,13 @@ function conListCountries($list) {
 	return $countries;
 }
 
-$cons_list    = conListByConfirmed(1);
-$cons_list_c = conListCountries($cons_list);
-$cons_content = conListByConfirmed(3);
-$cons_content_c = conListCountries($cons_content);
-$cons_missing = conListByConfirmed(0);
-$cons_missing_c = conListCountries($cons_missing);
+$cons_list    = conListByConfirmedGroup(1);
+$cons_content = conListByConfirmedGroup(3);
+$cons_missing = conListByConfirmedGroup(0);
 
+$t->assign('todo_tabs', TRUE);
 $t->assign('cons_list', $cons_list);
-$t->assign('cons_list_c', $cons_list_c);
 $t->assign('cons_content', $cons_content);
-$t->assign('cons_content_c', $cons_content_c);
 $t->assign('cons_missing', $cons_missing);
-$t->assign('cons_missing_c', $cons_missing_c);
 $t->display('todo.tpl');
 ?>

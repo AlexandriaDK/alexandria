@@ -355,15 +355,8 @@ foreach($q AS $r) {
 <HTML><HEAD><TITLE>Administration - Scenario</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/uistyle.css">
 <link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
-<style>
-  #dialog label, #dialog input { display:block; }
-  #dialog label { margin-top: 0.5em; }
-  #dialog input, #dialog textarea { width: 95%; }
-  #tabs { margin-top: 1em; }
-  #tabs li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
-  #add_tab { cursor: pointer; }
-</style>
 <script
 			  src="https://code.jquery.com/jquery-3.4.1.min.js"
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="

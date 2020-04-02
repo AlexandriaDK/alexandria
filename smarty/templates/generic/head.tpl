@@ -13,6 +13,7 @@
 
 {/if}
 		<link rel="stylesheet" type="text/css" href="/alexstyle.css" />
+		<link rel="stylesheet" type="text/css" href="/uistyle.css" />
 		<link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
 		<link rel="icon" type="image/png" href="/gfx/favicon_ti.png">
 		<link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
@@ -59,6 +60,16 @@
 		});
 		</script>
 
+		{/if}
+
+		{if isset($todo_tabs) } 
+		<script>
+		$( function() {
+			$( "#tabslist" ).tabs();
+			$( "#tabsguide" ).tabs();
+			$( "#tabsmissing" ).tabs();
+		} );
+		</script>
 		{/if}
 
 		{if isset($editmode) || isset($type) && $type == 'jostgame' }

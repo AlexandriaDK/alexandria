@@ -17,14 +17,19 @@
 <p>
 	{$_todo_listguide|nl2br}
 </p>
-<div class="countrylist">
-{foreach from=$cons_list_c key=$cc item=$country}
-	<span class="countrybutton" onclick="$('#helplist [data-country={$cc}]').toggle( 100 );" title="{$country|escape}">[{$cc|upper}]</span>
+
+<div id="tabslist" class="tabsmin">
+<ul>
+{foreach from=$cons_list key=$cc item=$country}
+<li><a href="#tabslist-{$cc}" title="{$country.countryname|escape}">{$country.countryname|escape} ({$country.cons|count})</a></li>
 {/foreach}
+</ul>
+{foreach name=outer from=$cons_list key=$cc item=$countries}
+<div id="tabslist-{$cc}" class="todolist">
+	{foreach from=$countries.cons item=$con}
+		{con dataset=$con}<br>
+	{/foreach}
 </div>
-<div class="todolist todocons" id="helplist">
-{foreach from=$cons_list item=$con}
-	{con dataset=$con}
 {/foreach}
 </div>
 {/if}
@@ -34,14 +39,19 @@
 <p>
 	{$_todo_contentguide|nl2br}
 </p>
-<div class="countrylist">
-{foreach from=$cons_content_c key=$cc item=$country}
-	<span class="countrybutton" onclick="$('#helpguide [data-country={$cc}]').toggle( 100 );" title="{$country|escape}">[{$cc|upper}]</span>
+
+<div id="tabsguide" class="tabsmin">
+<ul>
+{foreach from=$cons_content key=$cc item=$country}
+<li><a href="#tabsguide-{$cc}" title="{$country.countryname|escape}">{$country.countryname|escape} ({$country.cons|count})</a></li>
 {/foreach}
+</ul>
+{foreach name=outer from=$cons_content key=$cc item=$countries}
+<div id="tabsguide-{$cc}" class="todolist">
+	{foreach from=$countries.cons item=$con}
+		{con dataset=$con}<br>
+	{/foreach}
 </div>
-<div class="todolist todocons" id="helpguide">
-{foreach from=$cons_content item=$con}
-	{con dataset=$con}
 {/foreach}
 </div>
 {/if}
@@ -51,17 +61,22 @@
 <p>
 	{$_todo_contentmissing|nl2br}
 </p>
-<div class="countrylist">
-{foreach from=$cons_missing_c key=$cc item=$country}
-	<span class="countrybutton" onclick="$('#helpmissing [data-country={$cc}]').toggle( 100 );" title="{$country|escape}">[{$cc|upper}]</span>
+
+<div id="tabsmissing" class="tabsmin">
+<ul>
+{foreach from=$cons_missing key=$cc item=$country}
+<li><a href="#tabsmissing-{$cc}" title="{$country.countryname|escape}">{$country.countryname|escape} ({$country.cons|count})</a></li>
 {/foreach}
+</ul>
+{foreach name=outer from=$cons_missing key=$cc item=$countries}
+<div id="tabsmissing-{$cc}" class="todolist">
+	{foreach from=$countries.cons item=$con}
+		{con dataset=$con}<br>
+	{/foreach}
 </div>
-<div class="todolist todocons" id="helpmissing">
-{foreach from=$cons_missing item=$con}
-	{con dataset=$con}
 {/foreach}
 </div>
 {/if}
 
-
+</div>
 {include file="end.tpl"}
