@@ -9,13 +9,13 @@
 
 <h3>{$_todo_tools}</h3>
 <p>
-	{$_todo_toolsguide|nl2br|sprintf:'https://www.google.com/search?query=pdf+ocr'}
+	{$_todo_guidetools|nl2br|sprintf:'https://www.google.com/search?query=pdf+ocr'}
 </p>
 
 {if $cons_list}
 <h3>{$_todo_helpwithlist}</h3>
 <p>
-	{$_todo_listguide|nl2br}
+	{$_todo_guidelist|nl2br}
 </p>
 
 <div id="tabslist" class="tabsmin">
@@ -37,7 +37,7 @@
 {if $cons_content}
 <h3>{$_todo_helpwithcontent}</h3>
 <p>
-	{$_todo_contentguide|nl2br}
+	{$_todo_guidecontent|nl2br}
 </p>
 
 <div id="tabsguide" class="tabsmin">
@@ -59,7 +59,7 @@
 {if $cons_missing}
 <h3>{$_todo_helpwithmissing}</h3>
 <p>
-	{$_todo_contentmissing|nl2br}
+	{$_todo_guidemissing|nl2br}
 </p>
 
 <div id="tabsmissing" class="tabsmin">

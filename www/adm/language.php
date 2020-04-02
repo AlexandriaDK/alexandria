@@ -67,6 +67,9 @@ if ($action == "update") {
 		}
 	}
 	$logtext = "Tekst rettet: " . $label;
+	if ( $label != $newlabel ) {
+		$logtext .= " → $newlabel";
+	}
 	if ( $log ) {
 		$logtext .= " (" . implode(", ", $log) . ")";
 	}
