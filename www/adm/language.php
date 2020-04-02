@@ -59,8 +59,8 @@ if ($action == "update") {
 					$log[] = '~' . $language;
 				}
 			}
-			$q = "INSERT INTO weblanguages (label, text, language) VALUES " .
-			     "('" . dbesc( $newlabel ) . "','" . dbesc( $string ) . "','" . dbesc( $language )."')";
+			$q = "INSERT INTO weblanguages (label, text, language, lastupdated) VALUES " .
+			     "('" . dbesc( $newlabel ) . "','" . dbesc( $string ) . "','" . dbesc( $language )."', NOW() )";
 			doquery($q);
 		} elseif ( strlen( $old[$language] ) > 0 ) { // deleted
 			$log[] = '-' . $language;
