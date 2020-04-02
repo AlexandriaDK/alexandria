@@ -13,7 +13,7 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'de', 'en', 'nb', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } elseif ( ! defined("STDIN") ) { // if not run from console
@@ -36,26 +36,46 @@ define( 'LANG', $lang );
 
 if ( LANG == 'da') {
 	setlocale(LC_TIME, "da_DK.UTF-8"); 
+	Locale::setDefault('da_DK.utf-8');
 } elseif ( LANG == 'en' ) {
 	setlocale(LC_TIME, "en_GB.UTF-8"); 
+	Locale::setDefault('eb_GB.utf-8');
 } elseif ( LANG == 'sv' ) {
 	setlocale(LC_TIME, "sv_SE.UTF-8"); 
+	Locale::setDefault('sv_SE.utf-8');
 } elseif ( LANG == 'nb' ) {
 	setlocale(LC_TIME, "nb_NO.UTF-8"); 
+	Locale::setDefault('nb_NO.utf-8');
 } elseif ( LANG == 'de' ) {
 	setlocale(LC_TIME, "de_DE.UTF-8"); 
+	Locale::setDefault('de_DE.utf-8');
 } elseif ( LANG == 'fr' ) {
 	setlocale(LC_TIME, "fr_FR.UTF-8"); 
+	Locale::setDefault('fr_FR.utf-8');
 } elseif ( LANG == 'es' ) {
 	setlocale(LC_TIME, "es_ES.UTF-8"); 
+	Locale::setDefault('es_ES.utf-8');
 } elseif ( LANG == 'ru' ) {
 	setlocale(LC_TIME, "ru_RU.UTF-8");
+	Locale::setDefault('ru_RU.utf-8');
 } elseif ( LANG == 'be' ) {
 	setlocale(LC_TIME, "be_BY.UTF-8");
+	Locale::setDefault('be_BY.utf-8');
 } elseif ( LANG == 'fi' ) {
 	setlocale(LC_TIME, "fi_FI.UTF-8");
+	Locale::setDefault('fi_FI.utf-8');
 } elseif ( LANG == 'pl' ) {
 	setlocale(LC_TIME, "pl_PL.UTF-8");
+	Locale::setDefault('pl_PL.utf-8');
+} elseif ( LANG == 'it' ) {
+	setlocale(LC_TIME, "it_IT.UTF-8");
+	Locale::setDefault('it_IT.utf-8');
+} elseif ( LANG == 'ar' ) {
+	setlocale(LC_TIME, "ar_PL.UTF-8");
+	Locale::setDefault('ar_PL.utf-8');
+} elseif ( LANG == 'zh' ) {
+	setlocale(LC_TIME, "zh_CN.UTF-8");
+	Locale::setDefault('zh_CN.utf-8');
 }
 
 // general
@@ -503,57 +523,6 @@ function pubdateprint($datetime) {
 	return $start;
 }
 
-
-function birthlong ($date, $day = FALSE) {
-	$time = strtotime($date);
-	$date_format = strftime('%e. %B %Y',$time);
-	return $date_format;
-}
-
-function birthshort ($dato) {
-  $birth = explode("-",$dato);
-  $foedt = intval($birth[2]) . "/" . intval($birth[1]) . " " . $birth[0];
-  return $foedt;
-}
-
-function birthage ($dato, $death = "") {
-	/* :TODO: Change to DateTime library
-	 *
-	 * $d1 = new DateTime('2011-03-12');
-	 * $d2 = new DateTime('2008-03-09');
-	 *
-	 * $diff = $d2->diff($d1);
-	 *
-	 * echo $diff->y;
-	 *
-	 */
-	$birth = explode("-",$dato);
-	if ($death) {
-		$death = explode("-",$death);
-	}
-	$date_y = ($death ? $death[0] : date("Y") );
-	$date_md = ($death ? $death[1] . "-" . $death[2] : date("m-d") );
-	$age = $date_y - $birth[0];
-	if ($date_md < $birth[1]."-".$birth[2]) $age--;
-	return $age;
-}
-
-function shortweekday ($dato) {
-	$week = array("Søn","Man","Tir","Ons","Tor","Fre","Lør");
-	list($my, $mm, $md) = explode("-",$dato);
-	$weekday = $week[date("w",mktime(0,0,0,$mm,$md,$my))];
-	return date("w",mktime(0,0,0,$mm,$md,$my));
-}
-
-function monthname ( $monthNo ) {
-	$monthNo = (int) $monthNo;
-	if ( $monthNo < 1 || $monthNo > 12) {
-		return false;
-	}
-	$month = strftime('%B', mktime(0,0,0,$monthNo,10) );
-	return $month;
-}
-
 function _textlink ($string, $absolute_url = 0) {
 	$urlpart = "/find";
 	if (preg_match("/^(c|s|p|cs|sys|t|tag)(\d*)\|(.*)$/i",$string,$regs)) {
@@ -609,6 +578,44 @@ function datalink ($url, $description) {
 	return $link;
 }
 
+function birthage ($dato, $death = "") {
+	/* :TODO: Change to DateTime library
+	 *
+	 * $d1 = new DateTime('2011-03-12');
+	 * $d2 = new DateTime('2008-03-09');
+	 *
+	 * $diff = $d2->diff($d1);
+	 *
+	 * echo $diff->y;
+	 *
+	 */
+	$birth = explode("-",$dato);
+	if ($death) {
+		$death = explode("-",$death);
+	}
+	$date_y = ($death ? $death[0] : date("Y") );
+	$date_md = ($death ? $death[1] . "-" . $death[2] : date("m-d") );
+	$age = $date_y - $birth[0];
+	if ($date_md < $birth[1]."-".$birth[2]) $age--;
+	return $age;
+}
+
+function monthname ( $monthNo ) {
+	$monthNo = (int) $monthNo;
+	if ( $monthNo < 1 || $monthNo > 12) {
+		return false;
+	}
+	$f = new IntlDateFormatter(null, null, null, null, null, 'MMMM');
+	return $f->format(new DateTime("2020-" . $monthNo . "-02") );
+}
+
+function fulldate ( $dateString ) {
+	$formatter = new IntlDateFormatter(LANG, IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+	$datetime = new DateTime($dateString);
+	$output = $formatter->format($datetime);
+	return $output;
+}
+
 function nicedateset ($begin, $end) {
 	$out = "";
 	if ( ($begin && $begin != "0000-00-00") || ($end && $end != "0000-00-00") ) {
@@ -621,17 +628,17 @@ function nicedateset ($begin, $end) {
 		if ($m1 == "00" && $d1 == "00") {
 			$out = sprintf("%d",$y1);
 		} elseif ($d1 == "00") {
-			$out = sprintf("%s %d", monthname( intval($m1) ), $y1);
+			$out = sprintf("%s %d", monthname( $m1 ), $y1);
 		} elseif (!$end || ($begin == $end)) {
-			$out = sprintf("%d. %s %d", $d1, monthname ( intval($m1) ), $y1);
+			$out = fulldate( $begin );
 		} elseif (!$begin) {
-			$out = sprintf("%d. %s %d", $d2, monthname ( intval($m2) ), $y2);
+			$out = fulldate( $end );
 		} elseif ($y1 == $y2 && $m1 == $m2) {
-			$out = sprintf("%d. - %d. %s %d", $d1, $d2, monthname( intval($m2) ), $y2);
+			$out = sprintf("%d. - %d. %s %d", $d1, $d2, monthname( $m2 ), $y2);
 		} elseif ($y1 == $y2) {
-			$out = sprintf("%d. %s - %d. %s %d", $d1, monthname( intval($m1) ), $d2, monthname( intval($m2) ), $y2);
+			$out = sprintf("%d. %s - %d. %s %d", $d1, monthname( $m1 ), $d2, monthname( $m2 ), $y2);
 		} else {
-			$out = sprintf("%d. %s %d - %d. %s %d", $d1, monthname( intval($m1) ), $y1, $d2, monthname( intval($m2) ), $y2);
+			$out = sprintf("%d. %s %d - %d. %s %d", $d1, monthname( $m1 ), $y1, $d2, monthname( $m2 ), $y2);
 		}
 	}
 	return $out;

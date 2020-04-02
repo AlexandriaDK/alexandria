@@ -14,7 +14,7 @@ $newslist = [];
 $i = 0;
 foreach(getnews(10) AS $data) {
 	$newslist[$i]['anchor'] = "news_".str_replace(array("-",":"," "),"",$data['published'])."_".$data['id'];
-	$newslist[$i]['date'] = nicedateset($data['published'],$data['published']);
+	$newslist[$i]['date'] = fulldate( $data['published'] );
 	$newslist[$i]['news'] = textlinks($data['text']);
 	$i++;
 }

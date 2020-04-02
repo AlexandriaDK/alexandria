@@ -236,9 +236,9 @@ if ($r['id'] == 0) {
 	$age_year = "";
 	if ($r['birth'] && $r['birth'] != "0000-00-00" && substr($r['birth'], 0, 4) != "0000" ) { // understøtter endnu ikke fødselsdato uden år
 		if ($r['death'] && $r['death'] != "0000-00-00") {
-			$birth = birthlong($r['birth'], $r['birthday']);
+			$birth = fulldate($r['birth']);
 		} else {
-			$birth = birthlong($r['birth'], $r['birthday']);
+			$birth = fulldate($r['birth']);
 			$age_year = birthage($r['birth']);
 
 		}
@@ -247,10 +247,10 @@ if ($r['id'] == 0) {
 	$death = "";
 	if ($r['death'] && $r['death'] != "0000-00-00")	{
 		if ($r['birth'] && $r['birth'] != "0000-00-00")	{
-			$death = birthlong($r['death'], $r['deathday']);
+			$death = fulldate($r['death']);
 			$age_year = birthage($r['birth'], $r['death']);
 		} else {
-			$death = birthlong($r['death'], $r['deathday']);
+			$death = fulldate($r['death']);
 		}
 	}
 
