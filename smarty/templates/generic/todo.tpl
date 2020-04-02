@@ -27,7 +27,9 @@
 {foreach name=outer from=$cons_list key=$cc item=$countries}
 <div id="tabslist-{$cc}" class="todolist">
 	{foreach from=$countries.cons item=$con}
-		{con dataset=$con}<br>
+		<div>
+		{con dataset=$con}
+		</div>
 	{/foreach}
 </div>
 {/foreach}
@@ -49,7 +51,9 @@
 {foreach name=outer from=$cons_content key=$cc item=$countries}
 <div id="tabsguide-{$cc}" class="todolist">
 	{foreach from=$countries.cons item=$con}
-		{con dataset=$con}<br>
+		<div>
+		{con dataset=$con}
+		</div>
 	{/foreach}
 </div>
 {/foreach}
@@ -71,7 +75,9 @@
 {foreach name=outer from=$cons_missing key=$cc item=$countries}
 <div id="tabsmissing-{$cc}" class="todolist">
 	{foreach from=$countries.cons item=$con}
-		{con dataset=$con}<br>
+		<div>
+		{con dataset=$con}
+		</div>
 	{/foreach}
 </div>
 {/foreach}
