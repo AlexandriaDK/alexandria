@@ -7,7 +7,7 @@ if (is_dir($_SERVER['DOCUMENT_ROOT']."/$string")) {
 	$url = "/$string/";
 } elseif (preg_match('/^[a-z]{2}$/', $string) ) { //language redirect
 	$url = '/' . $string . '/';
-} elseif (preg_match('/^[a-z]{2}\/$/', $string) ) { //language not found
+} elseif (preg_match('/^[a-z]{2}\//', $string) ) { //language not found
 	$magic = FALSE;
 } elseif (substr($string,-4) != '.htm' && substr($string,-5) != '.html') {
 	if (preg_match('_^[a-z]{2}/_', $string) ) {

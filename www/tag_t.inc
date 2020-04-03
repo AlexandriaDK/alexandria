@@ -55,7 +55,7 @@ if (!$tag && !$tag_id) {
 		    $coninfo = nicedateset($rs['begin'],$rs['end']);
 				$slist[$sl]['coninfo'] = $coninfo;
 				$slist[$sl]['conlink'] = "data?con=".$rs['con_id'];
-				$slist[$sl]['conname'] = "{$rs['name']} ({$rs['year']})";
+				$slist[$sl]['conname'] = $rs['name'] . " (" . yearname($rs['year']) . ")";
 			} else {
 				$slist[$sl]['conname'] = "&nbsp;";
 			}

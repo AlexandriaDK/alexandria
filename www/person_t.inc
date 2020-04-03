@@ -144,7 +144,7 @@ if ($r['id'] == 0) {
 			$qq = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled FROM convent, csrel WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = '{$rs['id']}' ORDER BY convent.name");
 			foreach($qq AS $rrs) {
 				$coninfo = nicedateset($rrs['begin'],$rrs['end']);
-				$conlist[] = "<a href=\"data?con={$rrs['id']}\" class=\"con" . ($rrs['cancelled'] == 1 ? " cancelled" : "") . "\" title=\"$coninfo\">".htmlspecialchars($rrs['name'])." ({$rrs['year']})</a>";
+				$conlist[] = "<a href=\"data?con={$rrs['id']}\" class=\"con" . ($rrs['cancelled'] == 1 ? " cancelled" : "") . "\" title=\"$coninfo\">".htmlspecialchars($rrs['name'])." (" . yearname($rrs['year']) . ")</a>";
 			}
 			if ($conlist) {
 				$scenlist .= "<td style=\"padding-left: 10px;\">".join("<br />",$conlist)."</td>";

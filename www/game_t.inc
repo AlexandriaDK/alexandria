@@ -119,8 +119,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 			$conlist .= " ";
 		}
 		$conlist .= "</td><td>";
-		$conlist .= "<a href=\"data?con={$rs['id']}\" class=\"con" . ($rs['cancelled'] ? " cancelled" : "") . "\" title=\"$coninfo\">{$rs['name']} ({$rs['year']})</a>";
-#		if ($rs['event']) $conlist .= " ({$rs['event']})";
+		$conlist .= smarty_function_con( [ 'dataset' => $rs ] );
 		$conlist .= "</td></tr>" . PHP_EOL;
 	}
 

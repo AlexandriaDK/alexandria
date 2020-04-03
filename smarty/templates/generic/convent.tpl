@@ -1,6 +1,6 @@
 <div id="content">
 
-	<h2 class="datatitle{if $cancelled} cancelled{/if}">{$name|escape} ({$year})</h2>
+	<h2 class="datatitle{if $cancelled} cancelled{/if}">{$name|escape} ({$year|yearname})</h2>
 	<div class="arrows">
 {if $arrowset.prev.active}
 	<a href="data?con={$arrowset.prev.conid}" title="{$arrowset.prev.name|escape}" rel="prev">←</a>

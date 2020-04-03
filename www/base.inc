@@ -13,7 +13,7 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'de', 'en', 'nb', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|nv|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } elseif ( ! defined("STDIN") ) { // if not run from console
@@ -34,49 +34,48 @@ if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|xx)/_', ($_SERVER
 }
 define( 'LANG', $lang );
 
+$locale = ('eb_GB.utf-8');
 if ( LANG == 'da') {
-	setlocale(LC_TIME, "da_DK.UTF-8"); 
-	Locale::setDefault('da_DK.utf-8');
+	$locale = 'da_DK';
 } elseif ( LANG == 'en' ) {
-	setlocale(LC_TIME, "en_GB.UTF-8"); 
-	Locale::setDefault('eb_GB.utf-8');
+	$locale = ('eb_GB.utf-8');
 } elseif ( LANG == 'sv' ) {
-	setlocale(LC_TIME, "sv_SE.UTF-8"); 
-	Locale::setDefault('sv_SE.utf-8');
+	$locale = ('sv_SE.utf-8');
 } elseif ( LANG == 'nb' ) {
-	setlocale(LC_TIME, "nb_NO.UTF-8"); 
-	Locale::setDefault('nb_NO.utf-8');
+	$locale = ('nb_NO.utf-8');
 } elseif ( LANG == 'de' ) {
-	setlocale(LC_TIME, "de_DE.UTF-8"); 
-	Locale::setDefault('de_DE.utf-8');
+	$locale = ('de_DE.utf-8');
 } elseif ( LANG == 'fr' ) {
-	setlocale(LC_TIME, "fr_FR.UTF-8"); 
-	Locale::setDefault('fr_FR.utf-8');
+	$locale = ('fr_FR.utf-8');
 } elseif ( LANG == 'es' ) {
-	setlocale(LC_TIME, "es_ES.UTF-8"); 
-	Locale::setDefault('es_ES.utf-8');
+	$locale = ('es_ES.utf-8');
 } elseif ( LANG == 'ru' ) {
-	setlocale(LC_TIME, "ru_RU.UTF-8");
-	Locale::setDefault('ru_RU.utf-8');
+	$locale = ('ru_RU.utf-8');
 } elseif ( LANG == 'be' ) {
-	setlocale(LC_TIME, "be_BY.UTF-8");
-	Locale::setDefault('be_BY.utf-8');
+	$locale = ('be_BY.utf-8');
 } elseif ( LANG == 'fi' ) {
-	setlocale(LC_TIME, "fi_FI.UTF-8");
-	Locale::setDefault('fi_FI.utf-8');
+	$locale = ('fi_FI.utf-8');
 } elseif ( LANG == 'pl' ) {
-	setlocale(LC_TIME, "pl_PL.UTF-8");
-	Locale::setDefault('pl_PL.utf-8');
+	$locale = ('pl_PL.utf-8');
 } elseif ( LANG == 'it' ) {
-	setlocale(LC_TIME, "it_IT.UTF-8");
-	Locale::setDefault('it_IT.utf-8');
+	$locale = ('it_IT.utf-8');
 } elseif ( LANG == 'ar' ) {
-	setlocale(LC_TIME, "ar_PL.UTF-8");
-	Locale::setDefault('ar_PL.utf-8');
+	$locale = ('ar_PL.utf-8');
 } elseif ( LANG == 'zh' ) {
-	setlocale(LC_TIME, "zh_CN.UTF-8");
-	Locale::setDefault('zh_CN.utf-8');
+	$locale = ('zh_CN.utf-8');
+} elseif ( LANG == 'ja' ) {
+	$locale = ('ja_JP.utf-8');
+} elseif ( LANG == 'he' ) {
+	$locale = ('he_IL.utf-8');
+} elseif ( LANG == 'fo' ) {
+	$locale = ('fo_FO.utf-8');
+} elseif ( LANG == 'kl' ) {
+	$locale = ('kl_GL.utf-8');
+} elseif ( LANG == 'nv' ) {
+	$locale = ('nv_US.utf-8');
 }
+setlocale(LC_TIME, $locale);
+Locale::setDefault($locale);
 
 // general
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
@@ -515,10 +514,8 @@ function pubdateprint($datetime) {
 		$start = htmlspecialchars( $t->getTemplateVars('_year_yesterday') ) . ", " . date("H:i",$pubdatetime);
 	} elseif (date("Y-m-d",$pubdatetime) == date("Y-m-d",strtotime("- 2 days")) ) {
 		$start = htmlspecialchars( $t->getTemplateVars('_year_twodaysago') ) . ", " . date("H:i",$pubdatetime);
-	} elseif (date("Y", $pubdatetime) != date("Y") ) {
-		$start = strftime('%e. %B %Y, %R',$pubdatetime);
 	} else {
-		$start = strftime('%e. %B, %R',$pubdatetime);
+		$start = fulldatetime( $datetime );
 	}
 	return $start;
 }
@@ -609,8 +606,24 @@ function monthname ( $monthNo ) {
 	return $f->format(new DateTime("2020-" . $monthNo . "-02") );
 }
 
+function yearname ( $year ) {
+	$year = (int) $year;
+	if ($year < 0 || $year > 9999 ) { // Y10K BUG!
+		return false;
+	}
+	$f = new IntlDateFormatter(null, null, null, null, null, 'y');
+	return $f->format(new DateTime( $year . "-02-02") );
+}
+
 function fulldate ( $dateString ) {
 	$formatter = new IntlDateFormatter(LANG, IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+	$datetime = new DateTime($dateString);
+	$output = $formatter->format($datetime);
+	return $output;
+}
+
+function fulldatetime ( $dateString ) {
+	$formatter = new IntlDateFormatter(LANG, IntlDateFormatter::LONG, IntlDateFormatter::SHORT);
 	$datetime = new DateTime($dateString);
 	$output = $formatter->format($datetime);
 	return $output;
@@ -634,11 +647,11 @@ function nicedateset ($begin, $end) {
 		} elseif (!$begin) {
 			$out = fulldate( $end );
 		} elseif ($y1 == $y2 && $m1 == $m2) {
-			$out = sprintf("%d. - %d. %s %d", $d1, $d2, monthname( $m2 ), $y2);
+			$out = sprintf("%d. - %d. %s %s", $d1, $d2, monthname( $m2 ), yearname( $y2 ) );
 		} elseif ($y1 == $y2) {
-			$out = sprintf("%d. %s - %d. %s %d", $d1, monthname( $m1 ), $d2, monthname( $m2 ), $y2);
+			$out = sprintf("%d. %s - %d. %s %s", $d1, monthname( $m1 ), $d2, monthname( $m2 ), yearname( $y2 ) );
 		} else {
-			$out = sprintf("%d. %s %d - %d. %s %d", $d1, monthname( $m1 ), $y1, $d2, monthname( $m2 ), $y2);
+			$out = sprintf("%s - %s", fulldate( $begin ), fulldate ( $end ));
 		}
 	}
 	return $out;
@@ -879,7 +892,7 @@ function parseupcomingevents($eventset) {
 		if ($lastbegin != $beginpart) {
 			$lastbegin = $beginpart;
 			list($conyear,$conmonth) = explode("-",$beginpart);
-			$calout .= "<tr><th colspan=\"2\">".ucfirst(monthname($conmonth))." $conyear</th></tr>\n";
+			$calout .= "<tr><th colspan=\"2\">".ucfirst(monthname($conmonth))." " . yearname( $conyear ) ."</th></tr>\n";
 		}
 		$coninfo = nicedateset($begin,$end);
 		if ($begin == $end) {
@@ -1118,7 +1131,7 @@ function smarty_function_con($con) {
 		if ($name !== "") {
 			$text .= " ";
 		}
-		$text .= "(" . $year .  ")";
+		$text .= "(" . yearname( $year ) .  ")";
 	}
 
 	if ($id) {

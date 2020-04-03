@@ -22,8 +22,8 @@ for ($i = floor(($startyear-1)/10)*10+1; $i <= $endyear; $i++) {
 	if (($i-1)%10 == 0) $yearlist .= "<tr>";
 
 	if ($i < $startyear) $yearlist .= "<td></td>";
-	elseif ($i == $year) $yearlist .= "<td>$i</td>";
-	else $yearlist .= "<td><a href=\"data?year=$i\" class=\"con\">$i</a></td>";
+	elseif ($i == $year) $yearlist .= "<td>" . yearname( $i ) . "</td>";
+	else $yearlist .= "<td><a href=\"data?year=$i\" class=\"con\">" . yearname( $i ) ."</a></td>";
 	
 	if ($i % 10 == 0 || $i == $endyear) $yearlist .= "</tr>\n";
 }
@@ -65,7 +65,8 @@ foreach($q AS $row) {
 		$output .= "<span class=\"cancelled\">";
 	}
 	if ($row['type'] == 'convent') {
-		$output .= " $timeinfo<a href=\"data?con={$row['id']}\" class=\"con\">{$row['name']}</a><br>\n";
+		unset($row['year']);
+		$output .= " " . $timeinfo . smarty_function_con($row) . "<br>\n";
 	} elseif ($row['type'] == 'sce') {
 		$output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['name']}</a><br>\n";
 	}

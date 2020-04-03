@@ -1,6 +1,6 @@
 <div id="content">
 
-	<h2 class="datatitle">{$_year_eventsin} {$year}</h2>
+	<h2 class="datatitle">{$_year_eventsin} {$year|yearname}</h2>
 
 	{$yearlist}
 	

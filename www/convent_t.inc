@@ -69,14 +69,12 @@ if (is_null($r['id']) ) {
 		$arrows = [];
 		if ($seriethis) {
 			if (isset($seriedata['id'][($seriethis-1)])) {
-//				$coninfo = nicedateset($seriedata['begin'][($seriethis-1)],$seriedata['end'][($seriethis-1)]);
-				$arrows['prev'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis-1)], 'name' => $seriedata['name'][($seriethis-1)] . " (".$seriedata['year'][($seriethis-1)].")" ];
+				$arrows['prev'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis-1)], 'name' => $seriedata['name'][($seriethis-1)] . " (" . yearname($seriedata['year'][($seriethis-1)]) . ")" ];
 			} else {
 				$arrows['prev'] = [ 'active' => FALSE ];
 			}
 			if (isset($seriedata['id'][($seriethis+1)])) {
-//				$coninfo = nicedateset($seriedata['begin'][($seriethis+1)],$seriedata['end'][($seriethis+1)]);
-				$arrows['next'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis+1)], 'name' => $seriedata['name'][($seriethis+1)] . " (".$seriedata['year'][($seriethis+1)].")" ];
+				$arrows['next'] = [ 'active' => TRUE, 'conid' => $seriedata['id'][($seriethis+1)], 'name' => $seriedata['name'][($seriethis+1)] . " (" . yearname($seriedata['year'][($seriethis+1)]) . ")" ];
 			} else {
 				$arrows['next'] = [ 'active' => FALSE ];
 			}

@@ -7,7 +7,7 @@ $joinpart = "";
 // Find alle brætspil inkl. personer og cons
 if ($_SESSION['user_id']) {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -22,7 +22,7 @@ if ($_SESSION['user_id']) {
 	");
 } else {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -86,7 +86,8 @@ foreach($r AS $row) {
 		if ($row['cancelled'] == 1) {
 			$class .= " cancelled";
 		}
-		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"$class\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
+#		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"$class\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
+		$scenlist .= "\t\t<td>" . smarty_function_con( [ 'id' => $row['convent_id'], 'name' => $row['convent_name'], 'year' => $row['year'], 'begin' => $row['begin'], 'end' => $row['end'], 'cancelled' => $row['cancelled'] ] ) . "</td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}

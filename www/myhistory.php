@@ -102,7 +102,7 @@ if ($conventions) {
 
 		$content_myconvents .= "<td>".getdataurl('convent',$convent['id'],$convent['name'])."</td>";
 		$content_myconvents .= "<td style=\"text-align: left\">".$convent['conset_name']."</td>";
-		$content_myconvents .= "<td style=\"text-align: right\">".$convent['year']."</td>";
+		$content_myconvents .= "<td style=\"text-align: right\">" . yearname( $convent['year'] ) . "</td>";
 		$content_myconvents .= "</tr>\n";
 	}
 	$content_myconvents .= "</table>\n";
@@ -156,15 +156,6 @@ if ($scenarios) {
 	if ($played >= 100) award_achievement(70);  // played +100 scenarios
 	if ($visited >= 50) award_achievement(69); // visited +50 conventions
 
-	// assemble content
-/*
-	$content_myscenarios = "<div style=\"float: left;\" >" . 
-	                       "<h3 class=\"parttitle\">Scenarier: (".count($scenarios) . ": $read/$gmed/$played)</h3>" .
-	                       "<table><tr><td><a href=\"myhistory?o=1\">Titel</a></td><td><a href=\"myhistory?o=2\">Læst</a></td><td><a href=\"myhistory?o=3\">Kørt</a></td><td><a href=\"myhistory?o=4\">Spillet</a></td></tr>" . 
-	                       $content_myscenarios .
-	                       "</table>\n" . 
-	                       "</div>\n";
-*/
 }
 
 $achievements = getmyachievements($user_id);

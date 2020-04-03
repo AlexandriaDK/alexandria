@@ -4,21 +4,21 @@ require("base.inc");
 
 if ($_SESSION['user_id']) {
 	$result = getall("
-		SELECT convent.id, COALESCE(CONCAT(convent.name,' (',convent.year,')'), convent.name) AS conname, conset.id AS setid, conset.name AS setname, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited
+		SELECT convent.id, convent.name, conset.id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited
 		FROM convent
 		LEFT JOIN userlog ON
 			convent.id = userlog.data_id AND
 			userlog.category = 'convent' AND
 			userlog.user_id = '{$_SESSION['user_id']}'
 		LEFT JOIN conset ON convent.conset_id = conset.id
-		ORDER BY conset.name, convent.year, convent.begin, convent.end, conname
+		ORDER BY conset.name, convent.year, convent.begin, convent.end, name
 	");
 } else {
 	$result = getall("
-		SELECT convent.id, COALESCE(CONCAT(convent.name,' (',convent.year,')'), convent.name) AS conname, conset.id AS setid, conset.name AS setname, convent.begin, convent.end, convent.cancelled
+		SELECT convent.id, convent.name, conset.id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled
 		FROM convent
 		LEFT JOIN conset ON convent.conset_id = conset.id
-		ORDER BY conset.name, convent.year, convent.begin, convent.end, conname
+		ORDER BY conset.name, convent.year, convent.begin, convent.end, name
 	");
 }
 
@@ -48,7 +48,8 @@ foreach($result AS $r) {
 		$list .= "&nbsp;&nbsp;";
 	}
 	
-	$list .= "<a href=\"data?con={$r['id']}\" title=\"$coninfo\" " . ($r['cancelled'] ? "class=\"cancelled\"" : "") . ">".htmlspecialchars($r['conname'])."</a><br />\n";
+#	$list .= "<a href=\"data?con={$r['id']}\" title=\"$coninfo\" " . ($r['cancelled'] ? "class=\"cancelled\"" : "") . ">".htmlspecialchars($r['conname'])."</a><br />\n";
+	$list .= smarty_function_con( $r ) . "<br>";
 }
 $list .= "</div>";
 

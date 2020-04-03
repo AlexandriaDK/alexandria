@@ -73,7 +73,7 @@ if ($wherepart) {
 
 if ($_SESSION['user_id']) {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -87,7 +87,7 @@ if ($_SESSION['user_id']) {
 	");
 } else {
 	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.cancelled, COUNT(files.id) AS files
+		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files
 		FROM sce
 		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 		LEFT JOIN convent ON csrel.convent_id = convent.id
@@ -101,7 +101,6 @@ if ($_SESSION['user_id']) {
 }
 
 $last_sce_id = 0;
-$scenlist = "";
 $xscenlist = "";
 
 // byg scenarieliste på forhånd
@@ -112,7 +111,7 @@ foreach ($r AS $row) {
 	$scenarios[$sce_id]['boardgame'] = $row['boardgame'];
 	$scenarios[$sce_id]['aut'][$row['autid']] = [ 'name' => $row['autname'] ];
 #	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'] ];
-	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'], 'cancelled' => $row['cancelled'] ];
+	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'id' => $row['convent_id'], 'name' => $row['convent_name'], 'year' => $row['year'], 'cancelled' => $row['cancelled'], 'begin' => $row['begin'], 'end' => $row['end'] ];
 	$scenarios[$sce_id]['downloadable'] = ($row['files'] > 0);
 	if ($_SESSION['user_id']) {
 		$scenarios[$sce_id]['userdata'] = ['read' => $row['read'], 'gmed' => $row['gmed'], 'played' => $row['played'] ]; 
@@ -157,71 +156,12 @@ foreach($scenarios AS $scenario_id => $scenario) {
 	$xscenlist .= "\t\t<td>";
 	foreach ($scenario['con'] AS $con_id => $convent) {
 		if ($con_id) {
-			$class = "con";
-			if ($convent['cancelled'] == 1) {
-				$class .= " cancelled";
-			}
-			$xscenlist .= "<a href=\"data?con=" . $con_id . "\" class=\"$class\">".htmlspecialchars($convent['name'])." (" . $convent['year'] . ")</a><br>\n";
+			$xscenlist .= smarty_function_con( $convent ) . "<br>" ;
 		}
 	}
 	$xscenlist .= "</td>\n";
 	$xscenlist .= "\t</tr>\n";	
 }
-
-/*
-foreach($r AS $row) {
-	$sce_id = $row['id'];
-
-	$scenlist .= "\t<tr class=\"listresult\">\n";
-	if ($_SESSION['user_id']) {
-		if ($sce_id != $last_sce_id) {
-			if ($row['boardgame'] ) {
-				$options = getuserlogoptions('boardgame');
-			} else {
-				$options = getuserlogoptions('scenario');
-			}
-
-			foreach( $options AS $type) {
-				$scenlist .= "<td>";
-				if ($type != NULL) {
-					$scenlist .= getdynamicscehtml($row['id'],$type,$row[$type]);
-				}
-				$scenlist .= "</td>";
-			}
-			$scenlist .= "<td style=\"width: 10px;\">&nbsp;</td>";
-		} else {
-			$scenlist .= "<td colspan=\"4\"></td>";
-		}
-	}
-
-	if ($sce_id != $last_sce_id && $row['files'] > 0) {
-//		$scenlist .= '<td><img src="/gfx/ikon_download.gif" alt="Download" title="Dette scenarie kan downloades" width="15" height="15" /></td>';
-		$scenlist .= "<td><span title=\"" . htmlspecialchars($t->getTemplateVars('_sce_downloadable')) . "\">💾</span></td>";
-	} else {
-		$scenlist .= "<td></td>";
-	}
-	if ($sce_id != $last_sce_id) {
-		$scenlist .= "\t\t<td><a href=\"data?scenarie={$sce_id}\" class=\"scenarie\">".htmlspecialchars($row['title'])."</a></td>\n";
-	} else {
-		$scenlist .= "\t\t<td>&nbsp;</td>\n";
-	}
-
-	if ($row['autid']) {
-		$scenlist .= "\t\t<td><a href=\"data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
-	} else {
-		$scenlist .= "\t\t<td>&nbsp;</td>\n";
-	}
-
-	if ($sce_id != $last_sce_id && $row['convent_id']) {
-		$scenlist .= "\t\t<td><a href=\"data?con={$row['convent_id']}\" class=\"con\">".htmlspecialchars($row['convent_name'])." ({$row['year']})</a></td>\n";
-	} else {
-		$scenlist .= "\t\t<td>&nbsp;</td>\n";
-	}
-
-	$scenlist .= "\t</tr>\n";
-	$last_sce_id = $sce_id;
-}
-*/
 
 // achievements
 if ($b == 'c') award_achievement(73); // Scenario beginning with C
