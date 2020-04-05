@@ -48,7 +48,7 @@
 	<td><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
 		<table class="tablestat tablestartpad">
 		{foreach from=$stat_con_year item=$scy}
-		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
 		{/foreach}
 		</table>
 	</td>

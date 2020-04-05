@@ -275,7 +275,10 @@ $r = getall("
 		COUNT(*) AS antal,
 		convent.id,
 		convent.name,
-		convent.year
+		convent.year,
+		convent.begin,
+		convent.end,
+		convent.cancelled
 	FROM
 		convent,
 		csrel,
@@ -300,7 +303,7 @@ foreach($r AS $row) {
 	$placering++;
 	$placeringout = ($lastantal != $row['antal'] ? $placering . "." : "");
 	$lastantal = $row['antal'];
-	$stat_con_sce .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?con={$row['id']}\" class=\"con\">{$row['name']} ({$row['year']})</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_con_sce .= "<tr><td class=\"statnumber\">$placeringout</td><td>" . smarty_function_con($row) . "</td><td class=\"statnumber\">" . $row['antal'] . "</td></tr>\n";
 }
 
 $stat_con_sce .= '
@@ -309,17 +312,11 @@ $stat_con_sce .= '
 
 $yearstat = $yearstatpart = [];
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		year
-	FROM
-		convent
-	GROUP BY
-		year
-	HAVING
-		antal >= 1
-	ORDER BY
-		year
+	SELECT COUNT(*) AS antal, year
+	FROM convent
+	GROUP BY year
+	HAVING antal >= 1
+	ORDER BY year
 ");
 foreach($r AS $row) {
 	$yearstat[$row['year']]['cons'] = $row['antal'];

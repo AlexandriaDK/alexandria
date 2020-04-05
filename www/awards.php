@@ -32,7 +32,7 @@ foreach ($award_nominees AS $nominee) {
 	$cat_id = $nominee['category_id'];
 	if (!$cid) $cid = 0;
 	$awardnominees[$cid][$con_id]['name'] = $nominee['con_name'];
-	$awardnominees[$cid][$con_id]['year'] = $nominee['year'];
+	$awardnominees[$cid][$con_id]['year'] = yearname( $nominee['year'] );
 	$awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
 	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'sce_id' => $nominee['sce_id'], 'title' => $nominee['title'] ];
 }
@@ -77,9 +77,9 @@ if (!$ucid) {
 	$html .= "<div class=\"clear\"></div>" . PHP_EOL;
 
 	foreach ($awardnominees[$cid] AS $conid => $convent) {
-		$htmlid = "con$conid";
+		$htmlid = "con" . $conid;
 		$html .= "<div class=\"awardyear\" data-year=\"" . $convent['year'] . "\">";
-		$html .= "<h3 id=\"$htmlid\">" . getdataurl('convent', $conid, $convent['name'] . " (" . $convent['year'] . ")") . "</h3>";
+		$html .= "<h3 id=\"$htmlid\">" . getdataurl('convent', $conid, $convent['name'] . " (" . ( $convent['year'] ) . ")") . "</h3>";
 		$html .= "<div class=\"awardblock\">" . PHP_EOL;
 		foreach($convent['categories'] AS $category) {
 			$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
