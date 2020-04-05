@@ -13,7 +13,7 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'de', 'en', 'nb', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|nv|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|hi|tl|sa|ta|bn|nv|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } elseif ( ! defined("STDIN") ) { // if not run from console
@@ -71,6 +71,16 @@ if ( LANG == 'da') {
 	$locale = ('fo_FO.utf-8');
 } elseif ( LANG == 'kl' ) {
 	$locale = ('kl_GL.utf-8');
+} elseif ( LANG == 'hi' ) {
+	$locale = ('hi_IN.utf-8');
+} elseif ( LANG == 'tl' ) {
+	$locale = ('tl_PH.utf-8');
+} elseif ( LANG == 'sa' ) {
+	$locale = ('sa_IN.utf-8');
+} elseif ( LANG == 'ta' ) {
+	$locale = ('ta_IN.utf-8');
+} elseif ( LANG == 'bn' ) {
+	$locale = ('bn_IN.utf-8');
 } elseif ( LANG == 'nv' ) {
 	$locale = ('nv_US.utf-8');
 }

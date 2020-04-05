@@ -1,6 +1,6 @@
 # Options +MultiViews
 RewriteEngine On
-RewriteRule "^(da|en|sv|nb|de|fi|fr|es|ru|be|pl|it|ar|zh|ja|he|fo|kl|nv|xx)/(.*)" "/$2"
+RewriteRule "^(da|en|sv|nb|de|fi|fr|es|ru|be|pl|it|ar|zh|ja|he|fo|kl|hi|tl|sa|ta|bn|nv|xx)/(.*)" "/$2"
 
 ErrorDocument 404 /error/404magic.php
 AddDefaultCharset utf-8
