@@ -10,6 +10,31 @@
 	<table class="tablestatlist">
 
 	<tr>
+	<td><span class="stathead">{$_stat_consbycountry|nl2br}</span><br>
+		<table class="tablestat tablestartpad">
+		{foreach from=$stat_con_country item=$scc}
+		<tr><td class="statnumber">{$scc.placeout}</td><td>{$scc.localecountry}</td><td class="statnumber">{$scc.count} </td></tr>
+		{/foreach}
+		</table>
+	</td>
+	
+	<td rowspan="2"><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
+		<table class="tablestat tablestartpad">
+		{foreach from=$stat_con_year item=$scy}
+		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		{/foreach}
+		</table>
+	</td>
+	</tr>
+	
+	<tr>	
+	<td class="statleft"><span class="stathead">{$_stat_largestcons|nl2br}</span><br>
+		{$stat_con_sce}
+	</td>
+	</tr>
+
+
+	<tr>
 	<td class="statleft"><span class="stathead">{$_stat_mostprolific|nl2br}</span><br>
 		{$stat_aut_active}
 	</td>
@@ -40,29 +65,6 @@
 	</td>
 	</tr>
 	
-	<tr>
-	<td class="statleft"><span class="stathead">{$_stat_largestcons|nl2br}</span><br>
-		{$stat_con_sce}
-	</td>
-	
-	<td><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
-		<table class="tablestat tablestartpad">
-		{foreach from=$stat_con_year item=$scy}
-		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
-		{/foreach}
-		</table>
-	</td>
-	</tr>
-	
-	<tr>	
-	<td><span class="stathead">{$_stat_consbycountry|nl2br}</span><br>
-		<table class="tablestat tablestartpad">
-		{foreach from=$stat_con_country item=$scc}
-		<tr><td class="statnumber">{$scc.placeout}</td><td>{$scc.localecountry}</td><td class="statnumber">{$scc.count} </td></tr>
-		{/foreach}
-		</table>
-	</td>
-	</tr>
 	</table>
 	
 </div>
