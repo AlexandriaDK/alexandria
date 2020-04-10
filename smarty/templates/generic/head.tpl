@@ -96,22 +96,19 @@
 				<a href="./" accesskey="q"><img src="gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
 			</p>
 			<div class="leftmenucontent">
-				<a href="oss">{$_top_aboutalex}</a><br>
+				<a href="todo">{$_top_helpalexandria}</a><br>
 				<a href="rettelser">{$_top_submit}</a><br>
-				<a href="kontakt">{$_top_contact}</a><br>
 				<br>
 				<a href="findspec">{$_top_searchgame}</a><br>
 				<a href="tags">{$_top_tags}</a><br>
 				<a href="statistik">{$_top_statistics}</a><br>
 				<br>
 				<a href="calendar">{$_top_calendar}</a><br>
-				<a href="jostspil">{$_top_jostgame}</a><br>
 				<a href="feeds">{$_top_blogfeeds}</a><br>
-				<br>
 				<a href="awards">{$_top_awards}</a><br>
+				<a href="jostspil">{$_top_jostgame}</a><br>
 				<br>
-				<a href="english">{$_top_inenglish}</a><br>
-				<br>
+				<a href="kontakt">{$_top_contact}</a><br>
 				<a href="privacy">{$_top_privacy}</a><br>
 			</div>
 
