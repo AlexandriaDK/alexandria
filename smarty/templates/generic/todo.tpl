@@ -12,11 +12,6 @@
 	{$_todo_guideinternational|nl2br|sprintf:'kontakt'}
 </p>
 
-<h3>{$_todo_tools}</h3>
-<p>
-	{$_todo_guidetools|nl2br|sprintf:'https://www.google.com/search?query=pdf+ocr'}
-</p>
-
 {if $cons_list}
 <h3>{$_todo_helpwithlist}</h3>
 <p>
@@ -88,6 +83,12 @@
 {/foreach}
 </div>
 {/if}
+
+<h3>{$_todo_tools}</h3>
+<p>
+	{$_todo_guidetools|nl2br|sprintf:'https://www.google.com/search?query=pdf+ocr'}
+</p>
+
 
 </div>
 {include file="end.tpl"}
