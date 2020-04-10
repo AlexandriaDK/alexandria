@@ -647,6 +647,10 @@ ul.taglist li a, a.tag {
 	padding: 3px;
 	font-size: 0.8em;
 	color: black;
+
+}
+a.tag::before {
+	content: "🏷️ ";
 }
 
 ul.taglist li span.delete a {

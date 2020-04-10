@@ -31,12 +31,12 @@ $( function() {
 			<span id="tagdelete_{$tag_id}" class="delete"> 
 			<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete" title="{$_sce_removetag|escape}">[{$_remove|ucfirst|escape}]</a></span>
 		{/if}
-	<a href="data?tag={$tag|rawurlencode}" rel="tag">{$tag|escape}</a>
+	<a href="data?tag={$tag|rawurlencode}" rel="tag" class="tag">{$tag|escape}</a>
 	</li>
 	{/foreach}
 	{* This part is really only for users logged in *}
 	{if $user_id}
-	<li><a href="#" onclick="$('#tag_input_li').toggle(100).focus();$('#tag_input').focus();" title="{$_sce_addtag}" accesskey="t">+</a></li>
+	<li><a href="#" onclick="$('#tag_input_li').toggle(100).focus();$('#tag_input').focus();" title="{$_sce_addtag}" accesskey="t" class="tag">+</a></li>
 	<li style="display: none;" id="tag_input_li"><input type="hidden" name="scenario" value="{$id}"><input type="hidden" name="action" value="add"><input type="text" name="tag" id="tag_input" class="newtag" placeholder="E.g. Grind Night"></li>
 	{/if}
 	</ul>	
