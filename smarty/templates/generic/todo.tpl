@@ -7,6 +7,11 @@
 	{$_todo_intro|nl2br|sprintf:'kontakt'}
 </p>
 
+<h3>{$_todo_international}</h3>
+<p>
+	{$_todo_guideinternational|nl2br|sprintf:'kontakt'}
+</p>
+
 <h3>{$_todo_tools}</h3>
 <p>
 	{$_todo_guidetools|nl2br|sprintf:'https://www.google.com/search?query=pdf+ocr'}
