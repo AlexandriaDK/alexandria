@@ -212,11 +212,10 @@ function set_session_redirect_url() {
 
 function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 	$site = 'facebook';
-	$ip = $_SERVER['REMOTE_ADDR'];
 	$time = time();
 	$login_today_allusers = getone("SELECT COUNT(*) FROM users WHERE last_login >= CURDATE()");
 	if (list($user_id, $logintime) = getrow("SELECT user_id, logintime FROM loginmap WHERE site = '$site' AND siteuserid = '$siteuserid'")) {
-		doquery("UPDATE loginmap SET logintime = '$time', ip = '$ip' WHERE site = '$site' AND siteuserid = '$siteuserid'");	
+		doquery("UPDATE loginmap SET logintime = '$time' WHERE site = '$site' AND siteuserid = '$siteuserid'");	
 		$last_login_days = getone("SELECT DATEDIFF(CURDATE(), last_login) FROM users WHERE id = '$user_id'");
 		doquery("
 			UPDATE users
@@ -228,10 +227,10 @@ function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 		list($login_days_in_row, $login_count) = getrow("SELECT login_days_in_row, login_count FROM users WHERE id = '$user_id'");
 
 	} else { // create user
-		doquery("INSERT INTO users (id, created, log, ip, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."\nRemote user: {$_SERVER['REMOTE_ADDR']}\n', '$ip', '" . dbesc($name) . "', NOW(), 0, 1)");
+		doquery("INSERT INTO users (id, created, log, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."', '" . dbesc($name) . "', NOW(), 0, 1)");
 		$user_id = dbid();
 		if ($user_id) {
-			doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime, ip) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time', '$ip')");
+			doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time')");
 		}
 	}
 
@@ -265,11 +264,10 @@ function do_steam_login($siteuserid, $name) {
 }
 
 function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
-	$ip = $_SERVER['REMOTE_ADDR'];
 	$time = time();
 	$login_today_allusers = getone("SELECT COUNT(*) FROM users WHERE last_login >= CURDATE()");
 	if (list($user_id, $logintime) = getrow("SELECT user_id, logintime FROM loginmap WHERE site = '$site' AND siteuserid = '$siteuserid'")) {
-		doquery("UPDATE loginmap SET logintime = '$time', ip = '$ip' WHERE site = '$site' AND siteuserid = '$siteuserid'");	
+		doquery("UPDATE loginmap SET logintime = '$time' WHERE site = '$site' AND siteuserid = '$siteuserid'");	
 		$last_login_days = getone("SELECT DATEDIFF(CURDATE(), last_login) FROM users WHERE id = '$user_id'");
 		doquery("
 			UPDATE users
@@ -281,10 +279,10 @@ function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
 		list($login_days_in_row, $login_count) = getrow("SELECT login_days_in_row, login_count FROM users WHERE id = '$user_id'");
 
 	} else { // create user
-		doquery("INSERT INTO users (id, created, log, ip, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."\nRemote user: {$_SERVER['REMOTE_ADDR']}\n', '$ip', '" . dbesc($name) . "', NOW(), 0, 1)");
+		doquery("INSERT INTO users (id, created, log, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."', '" . dbesc($name) . "', NOW(), 0, 1)");
 		$user_id = dbid();
 		if ($user_id) {
-			doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime, ip) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time', '$ip')");
+			doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time')");
 		}
 	}
 
@@ -324,7 +322,7 @@ function validate_remote_login ($siteuserid,$hash,$time,$site,$name) {
 		doquery("UPDATE loginmap SET logintime = '$time' WHERE site = '$site' AND siteuserid = '$siteuserid'");	
 		return $user_id;
 	} else { // create user
-		doquery("INSERT INTO users (id, created, log) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."\nRemote user: {$_SERVER['REMOTE_ADDR']}\n')");
+		doquery("INSERT INTO users (id, created, log) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: ".dbesc($name)."')");
 		$user_id = dbid();
 		doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '".dbesc($name)."', '$time')");
 		return $user_id;
@@ -353,8 +351,7 @@ function award_user_achievement ($user_id, $achievement_id, $shown = 0) {
 	$_SESSION['user_achievements'][] = $achievement_id;
 	$id = getone("SELECT id FROM user_achievements where user_id = $user_id AND achievement_id = $achievement_id"); // check if already got achievement - not transaction safe
 	if (!$id) {
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$id = doquery("INSERT INTO user_achievements (user_id, achievement_id, completed, shown, ip) VALUES ($user_id, $achievement_id, NOW(), $shown, '$ip')");
+		$id = doquery("INSERT INTO user_achievements (user_id, achievement_id, completed, shown) VALUES ($user_id, $achievement_id, NOW(), $shown)");
 		// update current list
 		$t->assign('user_achievements_to_display', get_achievements_to_display() );
 		return $id;
