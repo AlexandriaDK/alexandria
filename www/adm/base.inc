@@ -338,6 +338,7 @@ function sqlifnull($string) {
 }
 
 function htmladmstart($title = "") {
+	$find = $_REQUEST['find'] ?? '';
 	$htmltitle = "";
 	if ($title) {
 		$htmltitle = " - " . htmlspecialchars($title);

@@ -5,7 +5,7 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc";
 
-$find = $_REQUEST['find'];
+$find = $_REQUEST['find'] ?? '';
 
 // Lidt kvik-find-kode:
 
