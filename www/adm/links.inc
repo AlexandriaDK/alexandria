@@ -2,25 +2,25 @@
 <form action="find.php">
 <a href="./" accesskey="i">Info</a>
 ·
-<a href="person.php" accesskey="p">Person</a>
+<a href="person.php" accesskey="p" title="Hotkey: P">Person</a>
 ·
-<a href="scenarie.php" accesskey="s">Scenario</a>
+<a href="scenarie.php" accesskey="g" title="Hotkey: G">Game</a>
 ·
-<a href="convent.php" accesskey="c">Con</a>
+<a href="convent.php" accesskey="c" title="Hotkey: C">Con</a>
 ·
-<a href="conset.php">Con series</a>
+<a href="conset.php" accesskey="s" title="Hotkey: S">Con series</a>
 ·
-<a href="system.php" accesskey="y">RPG System</a>
+<a href="system.php" accesskey="y" title="Hotkey: Y">RPG System</a>
 ·
 <a href="tag.php">Tag</a>
 ·
-<a href="language.php" accesskey="o">Translations</a>
+<a href="language.php" accesskey="o" title="Hotkey: O">Translations</a>
 ·
-<a href="showlog.php" accesskey="l">Log</a>
+<a href="showlog.php" accesskey="l" title="Hotkey: L">Log</a>
 ·
 <a href="teknik.php">Technical</a>
 ·
-<a href="ticket.php" accesskey="t">Tickets</a>
+<a href="ticket.php" accesskey="t" title="Hotkey: T">Tickets</a>
 <?php
 if ($_SESSION['user_admin'] ) {
 ?>
@@ -40,7 +40,7 @@ if ($_SESSION['user_admin'] ) {
 }
 ?>
 <br>
-<span style="font-size: 12px;"><label for="ffind" accesskey="k">Quic<u>K</u> find: <input id="ffind" type="text" name="find" value="<?php print htmlspecialchars($find); ?>" size="20"></label>
+<span style="font-size: 12px;"><label for="ffind" accesskey="k"><span title="Hotkey: K">Quic<u>K</u> find:</span> <input id="ffind" type="text" name="find" value="<?php print htmlspecialchars($find); ?>" size="20"></label>
 <?php
 $conlock = (int) $_COOKIE['conlock'];
 $langlock = (string) $_COOKIE['langlock'];
