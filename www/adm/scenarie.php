@@ -112,8 +112,10 @@ if ($action == "update" && $scenarie) {
 					$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
 				}
 			}
-			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
-			$r = doquery($sql);
+			if ($inserts) {
+				$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
+				$r = doquery($sql);
+			}
 		}
 		print dberror();
 		if ($r) {
