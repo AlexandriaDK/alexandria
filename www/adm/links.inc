@@ -10,7 +10,7 @@
 ·
 <a href="conset.php" accesskey="s" title="Hotkey: S">Con series</a>
 ·
-<a href="system.php" accesskey="y" title="Hotkey: Y">RPG System</a>
+<a href="system.php" accesskey="r" title="Hotkey: R">RPG System</a>
 ·
 <a href="tag.php">Tag</a>
 ·
