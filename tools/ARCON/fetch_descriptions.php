@@ -1,8 +1,8 @@
 <?php
 // fetch list of scenarios from an arcon
 
-$mainurl = 'https://www.spillfestival.no/arcon35/program.php';
-$tournamenturl = 'https://www.spillfestival.no/arcon35/turnering.php';
+$mainurl = 'https://www.spillfestival.no/arcon36/program.php';
+$tournamenturl = 'https://www.spillfestival.no/arcon36/turnering.php';
 $mainpath = pathinfo( $mainurl );
 $tmp = 'tmp/' . $mainpath['basename'];
 
@@ -31,6 +31,6 @@ if ( preg_match_all( '_' . $tournamenturl . '\?id=\d+_', $html, $urls) ) {
 		savecache( $url );
 	}
 } else {
-
+	print "No matches!" . PHP_EOL;
 }
 ?>

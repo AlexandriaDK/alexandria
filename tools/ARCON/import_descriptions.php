@@ -2,9 +2,9 @@
 require("../www/connect.php");
 require("../www/base.inc");
 
-$originalurl = 'https://www.spillfestival.no/arcon35/program.php';
+$originalurl = 'https://www.spillfestival.no/arcon36/program.php';
 
-$convent_id = 803;
+$convent_id = 995;
 $convent_setname = "ARCON";
 
 $glob = 'tmp/turnering.php?*';
