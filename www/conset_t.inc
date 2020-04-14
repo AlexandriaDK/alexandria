@@ -9,6 +9,7 @@ if ($r['id'] == 0) {
 	$t->assign('pagetitle',"Ikke fundet");
 	$t->display('default.tpl');
 } else {
+	$cname = ($r['id'] == 40 ? $t->getTemplatevars('_cons_other') : $r['name'] );
 	if ($_SESSION['user_id']) {
 	
 		$q = getall("
@@ -68,11 +69,11 @@ if ($r['id'] == 0) {
 
 // Smarty
 
-	$t->assign('pagetitle',$r['name']);
+	$t->assign('pagetitle',$cname);
 	$t->assign('type',$this_type);
 
 	$t->assign('id',$conset);
-	$t->assign('name',$r['name']);
+	$t->assign('name',$cname);
 	$t->assign('pic',$available_pic);
 	$t->assign('description',$r['description']);
 	$t->assign('condata',$condata);

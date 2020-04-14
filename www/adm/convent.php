@@ -150,8 +150,7 @@ if ($action == "create") {
 }
 
 unset($conset);
-$conset[0] = "[none or unknown con series]";
-$q = getall("SELECT id, name FROM conset ORDER BY name");
+$q = getall("SELECT id, name FROM conset ORDER BY id != 40, name");
 foreach($q AS $r) {
 	$conset[$r['id']] = $r['name'];
 }

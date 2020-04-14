@@ -4,21 +4,21 @@ require("base.inc");
 
 if ($_SESSION['user_id']) {
 	$result = getall("
-		SELECT convent.id, convent.name, conset.id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited
+		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited
 		FROM convent
 		LEFT JOIN userlog ON
 			convent.id = userlog.data_id AND
 			userlog.category = 'convent' AND
 			userlog.user_id = '{$_SESSION['user_id']}'
 		LEFT JOIN conset ON convent.conset_id = conset.id
-		ORDER BY conset.name, convent.year, convent.begin, convent.end, name
+		ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
 	");
 } else {
 	$result = getall("
-		SELECT convent.id, convent.name, conset.id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled
+		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled
 		FROM convent
 		LEFT JOIN conset ON convent.conset_id = conset.id
-		ORDER BY conset.name, convent.year, convent.begin, convent.end, name
+		ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
 	");
 }
 
@@ -29,17 +29,20 @@ $list = "";
 
 foreach($result AS $r) {
 	if ($conset != $r['setid']) {
-		/*
-		if ($part == 1 && substr($r['setname'],0,1) >= "K") {
-			$part = 2;
+		if ($r['setid'] == 40) {
+			$setid = 40;
+			$setname = $t->getTemplateVars('_cons_other');
+		} else {
+			$setid = $r['setid'];
+			$setname = $r['setname'];
+			
 		}
-		*/
 		if ($conset != "") {
 			$list .= "</div>\n";
 		}
 		$list .= "<div class=\"conblock\">";
 		$conset = $r['setid'];
-		$list .= "<h3 style=\"display: inline;\"><a href=\"data?conset={$r['setid']}\">".htmlspecialchars($r['setname'])."</a></h3><br />\n";
+		$list .= "<h3 style=\"display: inline;\"><a href=\"data?conset=$setid\">" . htmlspecialchars($setname) . "</a></h3><br />\n";
 	}
 	$coninfo = nicedateset($r['begin'],$r['end']);
 	if ($_SESSION['user_id']) {
@@ -48,14 +51,11 @@ foreach($result AS $r) {
 		$list .= "&nbsp;&nbsp;";
 	}
 	
-#	$list .= "<a href=\"data?con={$r['id']}\" title=\"$coninfo\" " . ($r['cancelled'] ? "class=\"cancelled\"" : "") . ">".htmlspecialchars($r['conname'])."</a><br />\n";
 	$list .= smarty_function_con( $r ) . "<br>";
 }
 $list .= "</div>";
 
 // Smarty
-#$t->assign('part1',$data[1]);
-#$t->assign('part2',$data[2]);
 $t->assign('list',$list);
 
 $t->display('convents.tpl');

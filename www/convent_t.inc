@@ -33,8 +33,8 @@ if ($con == 127 || $con == 743) award_achievement(80); // 1. Copenhagen Gamecon 
 
 $r = getrow("SELECT convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE convent.id = '$con'");
 if (is_null($r['id']) ) {
-	$t->assign('content',"Beklager - ingen con fundet!");
-	$t->assign('pagetitle',"Ikke fundet");
+	$t->assign('content',"Sorry - no con found!");
+	$t->assign('pagetitle',"Not found");
 	$t->display('default.tpl');
 } else {
 // Liste over filer
@@ -43,12 +43,10 @@ if (is_null($r['id']) ) {
 
 // Del af større conset?
 
-//	$serieantal = getone("SELECT COUNT(*) FROM convent WHERE '{$r['conset_id']}' = conset_id");
-
 // I så fald, find næste og forrige
-//	if ($r['conset_id'] && $serieantal > 1) {
 	if ($r['conset_id']) {
-		$delafout = "<a href=\"data?conset={$r['conset_id']}\" class=\"con\">{$r['cname']}</a>";
+		$cname = ($r['conset_id'] == 40 ? $t->getTemplateVars('_cons_other') : $r['cname']);
+		$delafout = "<a href=\"data?conset={$r['conset_id']}\" class=\"con\">" . htmlspecialchars( $cname ) . "</a>";
 		$qq = getall("
 			SELECT id, name, year, begin, end
 			FROM convent 
