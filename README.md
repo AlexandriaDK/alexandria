@@ -4,7 +4,7 @@ First online code version of Alexandria.dk
 ## Caveat
 The project was started in 2000. Some of the code might be from that era.
 
-The code ought to be PHP7 compatible. MySQL 5+ is needed as RDBMS.
+The code requires PHP 7. MySQL 5+ is needed as RDBMS.
 
 ## Install
 Remember to check out the config files under `includes/`. 
