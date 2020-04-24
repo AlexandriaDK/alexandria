@@ -8,7 +8,7 @@
 	</h2>
 
 		<p>
-			{$_feeds_presentation|nl2br}
+			{$_feeds_presentation|sprintf:'feedrss'|nl2br}
 		</p>
 	
 		<table>
@@ -50,7 +50,7 @@
 		</h3>
 		
 		<p>
-			{$_feeds_yourblogdetails}
+			{$_feeds_yourblogdetails|sprintf:'kontakt'}
 		</p>
 </div>
 
