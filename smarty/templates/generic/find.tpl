@@ -65,7 +65,7 @@
 		{$_find_nomatch}
 	</p>
 	<p>
-		{$_find_contactus}
+		{$_find_contactus|sprintf:'rettelser'}
 	</p>
 {/if}
 

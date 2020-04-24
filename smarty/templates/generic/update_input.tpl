@@ -40,7 +40,7 @@
 		</form>
 
 		<p>
-			{$_update_larger}
+			{$_update_larger|sprintf:'mailto:peter@alexandria.dk':'peter@alexandria.dk'|nl2br}
 		</p>	
 
 
