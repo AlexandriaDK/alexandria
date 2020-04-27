@@ -25,10 +25,13 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$t->display('default.tpl');
 
 } else {
-//	$description = $r['description'];
-	$description = getone("SELECT description FROM game_description WHERE game_id = $scenarie LIMIT 1");
 	$descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY (LEFT(language, 2) = '" . LANG . "') DESC, LENGTH(language), priority, language");
-	#$descriptions = getone("SELECT description, language, note, (LEFT(language, 2) = '" . LANG . "') AS languagematch FROM game_description WHERE game_id = $scenarie ORDER BY languagematch DESC, LENGTH(language), priority, language");
+	foreach ($descriptions AS $d_id => $description) {
+		list($language) = explode( " ", $description['language'] );
+		if (preg_match('/^[a-z]{2}$/', $language) ) {
+			$descriptions[$d_id]['langcode'] = $language;
+		}
+	}
 
 // Beskrivelse af deltagere:
 	$participants = [];
@@ -234,9 +237,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 
 	$t->assign('forflist',$forflist);
 	$t->assign('aut_extra',$r['aut_extra']);
-	$t->assign('description',$description);
 	$t->assign('descriptions',$descriptions);
-	$t->assign('descriptionscount', count($descriptions) );
 	$t->assign('gms',$gms);
 	$t->assign('players',$players);
 	$t->assign('participants',$participants);

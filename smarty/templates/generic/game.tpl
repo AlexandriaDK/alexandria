@@ -99,7 +99,7 @@ $( function() {
 <h3 class="parttitle">
 	{$_sce_description}
 </h3>
-{if $descriptionscount gt 1}
+{if count($descriptions) gt 1}
 <div id="tabs">
 <ul>
 {foreach $descriptions AS $d_id => $d}
@@ -109,14 +109,14 @@ $( function() {
 
 {foreach $descriptions AS $d_id => $d}
 	<div id="description-{$d_id}">
-	<p class="indata" lang="{$d.language|escape}">
+	<p class="indata"{if isset($d.langcode)} lang="{$d.langcode|escape}"{/if}>
 		{$d.description|escape|textlinks|nl2br}
 	</p>
 	</div>
 {/foreach}
 </div>
 {else}
-	<p class="indata">
+	<p class="indata"{if isset($descriptions[0].langcode)} lang="{$descriptions[0].langcode|escape}"{/if}>
 		{$descriptions[0].description|escape|textlinks|nl2br}
 	</p>
 {/if}
