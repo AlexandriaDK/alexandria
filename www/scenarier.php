@@ -14,7 +14,7 @@ $chars[] = "1";
 
 $keys = "";
 foreach($chars AS $char) {
-	$keys .= "\n\t\t<a href=\"scenarier?b=".rawurlencode($char)."\">".mb_strtoupper($char == "1" ? "0-9" : $char)."</a>";
+	$keys .= "\n\t\t<a href=\"scenarier?b=".rawurlencode($char)."\">".mb_strtoupper($char == "1" ? "0-9#" : $char)."</a>";
 }
 
 // fetch genres
