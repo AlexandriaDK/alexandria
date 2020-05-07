@@ -529,12 +529,13 @@ function pubdateprint($datetime) {
 
 function _textlink ($string, $absolute_url = 0) {
 	$urlpart = "/find";
-	if (preg_match("/^(c|s|p|cs|sys|t|tag)(\d*)\|(.*)$/i",$string,$regs)) {
+	if (preg_match("/^(c|cx|s|p|cs|sys|t|tag)(\d*)\|(.*)$/i",$string,$regs)) {
 		$pref = $regs[1];
 		$data_id = $regs[2];
 		$text = $regs[3];
 		switch ($pref) {
 			case "c": $cat = "convent"; $class = "con"; $search = "con"; break;
+			case "cx": $cat = "convent"; $class = "con cancelled"; $search = "con"; break;
 			case "s": $cat = "sce"; $class = "scenarie"; $search = "sce"; break;
 			case "p": $cat = "aut"; $class = "person"; $search = "aut"; break;
 			case "cs": $cat = "conset"; $class = "con"; $search = "conset"; break;
