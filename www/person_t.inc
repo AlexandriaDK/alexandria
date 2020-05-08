@@ -1,19 +1,15 @@
 <?php
 $this_type = 'aut';
 
-$r = getrow("SELECT id, CONCAT(firstname,' ',surname) AS name, birth, WEEKDAY(birth) AS birthday, death, WEEKDAY(death) AS deathday FROM aut WHERE id = '$person'");
+$r = getrow("SELECT id, intern, CONCAT(firstname,' ',surname) AS name, birth, death FROM aut WHERE id = $person");
 if ($r['id'] == 0) {
 	$t->assign('content',"Beklager - ingen forfatter fundet");
 	$t->assign('pagetitle',"Ikke fundet");
 	$t->display('default.tpl');
 
 } else {
+	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
 // Achievements
-/*
-	print "<!-- " . gettype($r['id']) . " -->\n";
-	print "<!-- " . gettype($_SESSION['user_author_id']) . " -->\n";
-	print "<!-- " .  (int) ($r['id'] == $_SESSION['user_author_id']) . " -->\n";
-*/
 	if (isset($_SESSION['user_author_id']) && $r['id'] == $_SESSION['user_author_id']) award_achievement(21); // view own page
 
 // Liste over aliaser
@@ -277,6 +273,7 @@ if ($r['id'] == 0) {
 
 	$t->assign('id',$person);
 	$t->assign('name',$r['name']);
+	$t->assign('intern',$intern);
 	$t->assign('pic',$available_pic);
 	$t->assign('ogimage', getimageifexists($person, 'person') );
 	$t->assign('alias',$aliaslist);

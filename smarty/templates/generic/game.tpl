@@ -100,7 +100,7 @@ $( function() {
 	{$_sce_description}
 </h3>
 {if count($descriptions) gt 1}
-<div id="tabs">
+<div id="tabs" style="margin-top: 0">
 <ul>
 {foreach $descriptions AS $d_id => $d}
 <li><a href="#description-{$d_id}">{$d.language|escape}{if $d.note} ({$d.note}){/if}</a></li>
@@ -152,21 +152,8 @@ $( function() {
 {/foreach}
 {/if}
 
-{if $trivia}
-<h3 class="parttitle">{$_trivia|ucfirst}</h3>
-<ul class="indatalist">
-{$trivia}
-</ul>
-{/if}
-
-{if $link}
-<h3 class="parttitle">{$_links|ucfirst}</h3>
-<p class="indata">
-{$link}
-</p>
-{/if}
-
+{include file="trivialink.tpl"}
+{include file="internal.tpl"}
 {include file="updatelink.tpl"}
-
 
 </div>

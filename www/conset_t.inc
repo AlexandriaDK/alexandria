@@ -3,12 +3,13 @@ $this_type = 'conset';
 
 $condata = [];
 
-$r = getrow("SELECT id, name, description FROM conset WHERE id = '$conset'");
+$r = getrow("SELECT id, name, description, intern FROM conset WHERE id = '$conset'");
 if ($r['id'] == 0) {
 	$t->assign('content',"Beklager - ingen con-serie fundet!");
 	$t->assign('pagetitle',"Ikke fundet");
 	$t->display('default.tpl');
 } else {
+	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
 	$cname = ($r['id'] == 40 ? $t->getTemplatevars('_cons_other') : $r['name'] );
 	if ($_SESSION['user_id']) {
 	
@@ -76,6 +77,7 @@ if ($r['id'] == 0) {
 	$t->assign('name',$cname);
 	$t->assign('pic',$available_pic);
 	$t->assign('description',$r['description']);
+	$t->assign('intern',$intern);
 	$t->assign('condata',$condata);
 	$t->assign('trivia',$trivialist);
 	$t->assign('link',$linklist);

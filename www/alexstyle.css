@@ -234,7 +234,7 @@ td.filelist {
 	text-decoration: underline;
 }
 
-.intern {
+.intern, .internal {
 	color: #999;
 }
 

@@ -5,11 +5,10 @@ if ($game) {
 }
 
 $r = getrow("
-	SELECT sce.id, title, sce.description, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname FROM sce
+	SELECT sce.id, title, sce.description, sce.intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname FROM sce
 	LEFT JOIN sys ON sys.id = sys_id
-	WHERE sce.id = '$scenarie'
+	WHERE sce.id = $scenarie
 ");
-
 
 // achievements
 if ($scenarie == 161)      award_achievement(55); // De Professionelle
@@ -32,6 +31,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 			$descriptions[$d_id]['langcode'] = $language;
 		}
 	}
+	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
 
 // Beskrivelse af deltagere:
 	$participants = [];
@@ -238,6 +238,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 	$t->assign('forflist',$forflist);
 	$t->assign('aut_extra',$r['aut_extra']);
 	$t->assign('descriptions',$descriptions);
+	$t->assign('intern',$intern);
 	$t->assign('gms',$gms);
 	$t->assign('players',$players);
 	$t->assign('participants',$participants);
