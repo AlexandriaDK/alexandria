@@ -7,8 +7,8 @@
 
 {if $link}
 <h3 class="parttitle">{$_links|ucfirst}</h3>
-<p class="indata">
+<ul class="indatalist">
 {$link}
-</p>
+</ul>
 {/if}
 

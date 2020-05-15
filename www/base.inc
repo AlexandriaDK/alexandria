@@ -578,8 +578,9 @@ function triviabullet ($fact) {
 	return $html;
 }
 
-function datalink ($url, $description) {
-	$link = textlinks(htmlspecialchars($description)).": \n<a href=\"".htmlspecialchars($url)."\" title=\"".htmlspecialchars($description)."\">".htmlspecialchars($url)."</a>";
+function linkbullet ($url, $description) {
+	#$link = textlinks(htmlspecialchars($description)).": \n<a href=\"".htmlspecialchars($url)."\" title=\"".htmlspecialchars($description)."\">".htmlspecialchars($url)."</a>";
+	$link = "<li><a href=\"".htmlspecialchars($url)."\" title=\"".htmlspecialchars($description)."\">".textlinks(htmlspecialchars($description))."</li>";
 	return $link;
 }
 
@@ -815,8 +816,7 @@ function getlinklist ($data_id, $cat) {
 	$linklist = "";
 	$q = getall("SELECT url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id");
 	foreach($q AS $rs) {
-		$linklist .= datalink($rs['url'],$rs['description']);
-		$linklist .= "<br />\n";
+		$linklist .= linkbullet($rs['url'],$rs['description']) . PHP_EOL;
 	}
 	return $linklist;
 }
