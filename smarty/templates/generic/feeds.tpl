@@ -12,7 +12,7 @@
 		</p>
 	
 		<table>
-			<tr><th>{$_feeds_postdate}</th><th>{$_feeds_by}</th><th>{$_feeds_commentsno}</th><th>{$_feeds_postdate}</th></tr>
+			<tr><th>{$_feeds_title}</th><th>{$_feeds_by}</th><th>{$_feeds_commentsno}</th><th>{$_feeds_postdate}</th></tr>
 			{foreach from=$feeddata item=$feedrow}
 			<tr>
 			<td title="{$feedrow.title|escape}">
@@ -39,7 +39,7 @@
 			{$_feeds_sources}
 		</h3>
 		
-		<p>
+		<p class="close">
 			{foreach from=$feedlist item=$feed}
 			<a href="{$feed.pageurl|escape}">{$feed.owner|escape}: {$feed.name|escape}</a><br>
 			{/foreach}

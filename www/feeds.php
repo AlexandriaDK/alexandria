@@ -29,7 +29,7 @@ foreach($articles AS $id => $article) {
 */
 }
 
-foreach(getall("SELECT owner, name, pageurl FROM feeds ORDER BY owner") AS $id => $data) {
+foreach(getall("SELECT owner, name, pageurl FROM feeds WHERE pauseupdate = 0 ORDER BY owner") AS $id => $data) {
 	$feedlist[$id] = $data;
 }
 

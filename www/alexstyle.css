@@ -196,6 +196,10 @@ td.filelist {
 	padding-top: 0px;
 }
 
+p.close {
+	margin-top: 0px;
+}
+
 .lpad {
 	padding-left: 10px;
 }

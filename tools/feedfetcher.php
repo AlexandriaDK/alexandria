@@ -83,7 +83,7 @@ print "Beginning fetch at ".date("Y-m-d H:i:s")."\n\n";
 if ($blog_id) {
 	$feeds = getall("SELECT id, url, owner FROM feeds WHERE id = '$blog_id'");
 } else {
-	$feeds = getall("SELECT id, url, owner FROM feeds");
+	$feeds = getall("SELECT id, url, owner FROM feeds WHERE pauseupdate = 0");
 }
 
 foreach($feeds AS $feed) {
