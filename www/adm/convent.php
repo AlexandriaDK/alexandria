@@ -209,7 +209,7 @@ tr("Start date","begin",$begin,$opta, "YYYY-MM-DD","date");
 tr("End date","end",$end,$optb, "YYYY-MM-DD","date");
 
 tr("Location","place",$place);
-tr("Country code","country",$country,($cscountry ? $cscountry . " (derived from con series - no need to enter)" : ""), ($cscountry ? $cscountry : "Two letter ISO code, e.g.: dk") );
+tr("Country code","country",$country,($cscountry ? $cscountry . " (derived from con series - no need to enter)" : ""), ($cscountry ? $cscountry : "Two letter ISO code, e.g.: se") );
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
