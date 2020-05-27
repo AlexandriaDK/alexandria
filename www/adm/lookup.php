@@ -13,4 +13,9 @@ if ($type == 'sce' && $label != "") {
 	$num = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($label) . "'");
 	print $num;
 }
+
+if ($type == 'countrycode' && $label != "") {
+	$countryname = getCountryName($label);
+	print $countryname;	
+}
 ?>

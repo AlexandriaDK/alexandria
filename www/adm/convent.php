@@ -205,11 +205,14 @@ if ($end && $end != "0000-00-00") {
 	$optb = "($d/$m $y = ". $ugedag[date("w",mktime(0,0,0,$m,$d,$y))] . ")";
 }
 
+$countryname = getCountryName( ($country ? $country : $cscountry) );
+
 tr("Start date","begin",$begin,$opta, "YYYY-MM-DD","date");
 tr("End date","end",$end,$optb, "YYYY-MM-DD","date");
 
 tr("Location","place",$place);
-tr("Country code","country",$country,($cscountry ? $cscountry . " (derived from con series - no need to enter)" : ""), ($cscountry ? $cscountry : "Two letter ISO code, e.g.: dk") );
+print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size=50></td><td>' . ($cscountry ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
+#tr("Country code","country",$country,($cscountry ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : ""), ($cscountry ? $cscountry : "Two letter ISO code, e.g.: dk") );
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
@@ -341,6 +344,14 @@ foreach($q AS $r) {
 </tr>
 </table>
 </form>
+
+<script>
+("#country").change(function() {
+	$.get( "lookup.php", { type: 'countrycode', label: $("#country").val() } , function( data ) {
+		$("#countrynote").text( data );
+	});
+});
+</script>
 
 </body>
 </html>
