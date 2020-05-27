@@ -12,6 +12,7 @@ $name = (string) $_REQUEST['name'];
 $description = (string) $_REQUEST['description'];
 $intern = (string) $_REQUEST['intern'];
 $country = (string) $_REQUEST['country'];
+$countryname = getCountryName( $country );
 
 
 if (!$action && $conset) {
@@ -83,11 +84,13 @@ if ($conset) {
 	print "\n</td></tr>\n";
 }
 
+$countryname = getCountryName( $country );
+
 tr("Name","name",$name);
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=\"intern\" cols=\"60\" rows=\"6\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
 
-tr("Country code","country", $country, "", "Two letter ISO code, e.g.: dk" );
+print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size="10"></td><td id="countrynote">' . htmlspecialchars( $countryname ) . '</td></tr>';
 
 $ror = ($conset) ? "Update" : "Create";
 ?>
@@ -149,6 +152,14 @@ foreach($q AS $r) {
 </tr>
 </table>
 </form>
+
+<script>
+$("#country").change(function() {
+	$.get( "lookup.php", { type: 'countrycode', label: $("#country").val() } , function( data ) {
+		$("#countrynote").text( data );
+	});
+});
+</script>
 
 </body>
 </html>

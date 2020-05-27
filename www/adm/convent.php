@@ -211,7 +211,7 @@ tr("Start date","begin",$begin,$opta, "YYYY-MM-DD","date");
 tr("End date","end",$end,$optb, "YYYY-MM-DD","date");
 
 tr("Location","place",$place);
-print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size=50></td><td>' . ($cscountry ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
+print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size="50"></td><td id="countrynote">' . htmlspecialchars($cscountry ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
@@ -345,7 +345,7 @@ foreach($q AS $r) {
 </form>
 
 <script>
-("#country").change(function() {
+$("#country").change(function() {
 	$.get( "lookup.php", { type: 'countrycode', label: $("#country").val() } , function( data ) {
 		$("#countrynote").text( data );
 	});
