@@ -4,7 +4,7 @@ require("base.inc");
 
 if ($_SESSION['user_id']) {
 	$result = getall("
-		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited
+		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited, COALESCE(convent.country, conset.country) AS country
 		FROM convent
 		LEFT JOIN userlog ON
 			convent.id = userlog.data_id AND
@@ -15,7 +15,7 @@ if ($_SESSION['user_id']) {
 	");
 } else {
 	$result = getall("
-		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled
+		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, COALESCE(convent.country, conset.country) AS country
 		FROM convent
 		LEFT JOIN conset ON convent.conset_id = conset.id
 		ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
@@ -27,6 +27,32 @@ $part = 1;
 
 $list = "";
 
+$cons = [];
+$countries = [];
+
+foreach( $result AS $c ) {
+	$setid = $c['setid'];
+	$conid = $c['id'];
+	if ( ! isset( $cons[$setid] ) ) {
+		$cons[$setid] = [
+			'setname' => $c['setname'],
+			'countries' => [],
+			'cons' => []
+		];
+	}
+	$cons[$setid]['cons'][$conid] = $c;
+	$cons[$setid]['countries'][$c['country']] = TRUE;
+	if ( $c['country'] ) {
+		if ( ! isset( $countries[$c['country']] ) ) {
+			$countries[$c['country']] = 0;
+		}
+		$countries[$c['country']]++;
+	}
+}
+arsort( $countries, SORT_NUMERIC );
+$countries = array_keys( $countries );
+
+/*
 foreach($result AS $r) {
 	if ($conset != $r['setid']) {
 		if ($r['setid'] == 40) {
@@ -38,7 +64,7 @@ foreach($result AS $r) {
 			
 		}
 		if ($conset != "") {
-			$list .= "</div>\n";
+			$list .= "\n</div>\n\n";
 		}
 		$list .= "<div class=\"conblock\">";
 		$conset = $r['setid'];
@@ -53,10 +79,12 @@ foreach($result AS $r) {
 	
 	$list .= smarty_function_con( $r ) . "<br>";
 }
-$list .= "</div>";
-
+$list .= "\n</div>\n";
+ */
+//
 // Smarty
-$t->assign('list',$list);
+$t->assign('cons',$cons);
+$t->assign('countries',$countries);
 
 $t->display('convents.tpl');
 

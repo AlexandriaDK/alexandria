@@ -29,16 +29,20 @@
 	</h2>
 {/if}
 	<table>
+		<thead>
 		<tr>
 {if $user_id}
-			<th colspan="4">
+			<th colspan="4"></th>
 {/if}
 			<th></th>
-			<th class="listhead" >{$_title|ucfirst}:</th>
-			<th class="listhead" >{$_by|ucfirst}:</th>
-			<th class="listhead" >{$_games_writtenfor|ucfirst}:</th>
+			<th class="listhead">{$_title|ucfirst}:</th>
+			<th class="listhead">{$_by|ucfirst}:</th>
+			<th class="listhead">{$_games_writtenfor|ucfirst}:</th>
 		</tr>
+		</thead>
+		<tbody>
 		{$scenlist}
+		</tbody>
 	</table>
 
 </div>

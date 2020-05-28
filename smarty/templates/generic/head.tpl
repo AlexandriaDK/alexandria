@@ -269,10 +269,7 @@
 			<div class="leftmenucontent">
 			{$_chooselanguage}
 			<br><br>
-{foreach from=$ALEXLANGUAGES item=altlanguage}
-{if $altlanguage != 'da'} • {/if}{* hack *}
-			<a href="/{$altlanguage}/{$BASEURI}">{$altlanguage}</a>
-{/foreach}
+			{foreach $ALEXLANGUAGES as $altlanguage}<a href="/{$altlanguage}/{$BASEURI}">{$altlanguage}</a>{if not $altlanguage@last} • {/if}{/foreach}
 			</div>
 {/if}
 

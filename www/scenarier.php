@@ -130,7 +130,7 @@ foreach($scenarios AS $scenario_id => $scenario) {
 		foreach( $options AS $type) {
 			$xscenlist .= "<td>";
 			if ($type != NULL) {
-				$xscenlist .= getdynamicscehtml($row['id'],$type,$scenario['userdata'][$type]);
+				$xscenlist .= getdynamicscehtml($scenario_id,$type,$scenario['userdata'][$type]);
 			}
 			$xscenlist .= "</td>";
 		}

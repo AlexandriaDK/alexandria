@@ -470,7 +470,7 @@ function getdynamicscehtml($sce_id,$type,$active) {
 	$html = 
 		"<span id=\"".$span_id."\">".
 		"<a href=\"javascript:switchicon('".$span_id."','".($active?'remove':'add')."','sce',".$sce_id.",'".$type."')\">".
-		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]." ".($active?'active':'passive')."\" title=\"".$scenariotext[$type]."\" border=\"0\" />".
+		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]." ".($active?'active':'passive')."\" title=\"".$scenariotext[$type]."\">".
 		"</a>".
 		"</span>"
 	;
@@ -580,7 +580,7 @@ function triviabullet ($fact) {
 
 function linkbullet ($url, $description) {
 	#$link = textlinks(htmlspecialchars($description)).": \n<a href=\"".htmlspecialchars($url)."\" title=\"".htmlspecialchars($description)."\">".htmlspecialchars($url)."</a>";
-	$link = "<li><a href=\"".htmlspecialchars($url)."\" title=\"".htmlspecialchars($description)."\">".textlinks(htmlspecialchars($description))."</li>";
+	$link = "<li><a href=\"".htmlspecialchars($url)."\" title=\"".htmlspecialchars($description)."\">".textlinks(htmlspecialchars($description))."</a></li>";
 	return $link;
 }
 

@@ -83,7 +83,7 @@ div.longblock:hover {
 	position: absolute;
 	left: 195px;
 	top: 55px;
-	width: 60em;
+	width: 70em;
 }
 
 #contenttext {
@@ -391,6 +391,22 @@ div.conblock {
 	margin-bottom: 5px;
 }
 
+div.conblock h3 {
+	display: inline-block;
+}
+
+div.conblock ul {
+	list-style-type: none;
+	margin: 0;
+	padding-left: 1em;
+	break-inside: avoid;
+}
+
+span.countryselector {
+	cursor: pointer;
+}
+
+
 div.leftmenuad {
 	margin: 10px;
 }
@@ -561,8 +577,8 @@ p.calendarmonth {
 }
 
 div.concolumns {
-	column-count: 2;
-	column-gap: 40px;
+	column-count: 3;
+	column-gap: 30px;
 }
 
 .awardblock {
