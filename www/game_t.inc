@@ -128,18 +128,21 @@ if ($r['id'] == 0) { // ought to add 404 here
 
 // Liste over afviklinger for evt. live-scenarier
 	$runlist = "";
-	$q = getall("SELECT begin, end, location, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end");
+	$q = getall("SELECT begin, end, location, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end, id");
 	foreach($q AS $rs) {
 		$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
 		$runlist .= nicedateset($rs['begin'],$rs['end']);
-		if ($rs['location']) {
+		if ( $rs['location'] || $rs['description'] ) {
 			if ( nicedateset($rs['begin'],$rs['end']) ) {
 				$runlist .= ", ";
 			}
 			$runlist .= htmlspecialchars($rs['location']);
 		}
+		if ( $rs['location'] && $rs['description'] ) {
+			$runlist .= ": ";
+		}
 		if ($rs['description']) {
-			$runlist .= ": ".htmlspecialchars($rs['description']);
+			$runlist .= htmlspecialchars($rs['description']);
 		}
 		$runlist .= "</span>";
 		if ($rs['cancelled']) {

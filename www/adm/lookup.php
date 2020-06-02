@@ -18,4 +18,9 @@ if ($type == 'countrycode' && $label != "") {
 	$countryname = getCountryName($label);
 	print $countryname;	
 }
+
+if ($type == 'languagecode' && $label != "") {
+	$languagename = getLanguageName($label);
+	print $languagename;
+}
 ?>
