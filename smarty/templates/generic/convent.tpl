@@ -27,7 +27,7 @@
 	</p>
 {/if}
 
-{if $place || $dateset}
+{if $place || $dateset || $countrycode}
 	<p class="indata">
 	{if $place || $countrycode}
 		{$_location|ucfirst}: {if $place}{$place}{/if}{if $place && $countrycode}, {/if}{if $countrycode}{$countrycode|getCountryNameFallback}{/if}<br>
