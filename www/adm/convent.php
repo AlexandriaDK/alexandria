@@ -9,16 +9,16 @@ $this_type = 'convent';
 
 $con = (int) $_REQUEST['con'];
 $action = $_REQUEST['action'];
-$name = $_REQUEST['name'];
+$name = trim( (string) $_REQUEST['name'] );
 $year = $_REQUEST['year'];
 $begin = $_REQUEST['begin'];
 $end = $_REQUEST['end'];
-$place = $_REQUEST['place'];
+$place = trim( (string) $_REQUEST['place'] );
 $conset_id = $_REQUEST['conset_id'];
-$description = $_REQUEST['description'];
+$description = ltrim( (string) $_REQUEST['description']);
 $intern = $_REQUEST['intern'];
 $confirmed = $_REQUEST['confirmed'];
-$country = (string) $_REQUEST['country'];
+$country = trim( (string) $_REQUEST['country'] );
 $cancelled = (int) (bool) $_REQUEST['cancelled'];
 
 if (!$action && $con) {

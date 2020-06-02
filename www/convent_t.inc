@@ -31,7 +31,7 @@ function antaltxt ($new, $rerun, $cancelled, $total, $type = 'sce') {
 if ($con == 26) award_achievement(79); // X-Con
 if ($con == 127 || $con == 743) award_achievement(80); // 1. Copenhagen Gamecon (Viking Con I) or Konvent '77 (GothCon I)
 
-$r = getrow("SELECT convent.id, convent.name, convent.intern, convent.year, convent.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE convent.id = $con");
+$r = getrow("SELECT convent.id, convent.name, convent.intern, convent.year, convent.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname, COALESCE(convent.country, conset.country) AS country FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE convent.id = $con");
 if (is_null($r['id']) ) {
 	$t->assign('content',"Sorry - no con found!");
 	$t->assign('pagetitle',"Not found");
@@ -389,6 +389,7 @@ $json_people = json_encode($people);
 	$t->assign('pic',$available_pic);
 	$t->assign('ogimage', getimageifexists($con, 'convent') );
 	$t->assign('place',$r['place']);
+	$t->assign('countrycode',$r['country']);
 	$t->assign('dateset',nicedateset($r['begin'],$r['end']));
 	$t->assign('partof',$delafout);
 	$t->assign('confirmed',$r['confirmed']);

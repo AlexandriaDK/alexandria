@@ -37,7 +37,7 @@
 	<tr>
 		<td>{$con.userdyn}</td>
 		<td>{con dataset=$con}</td>
-                <td style="padding-left: 10px;"{if $con.cancelled} class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$con.place}</td>
+                <td style="padding-left: 10px;"{if $con.cancelled} class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$con.place}{if $con.place && $con.country}, {/if}{if $con.country}{$con.country|getCountryNameFallback}{/if}</td>
 	</tr>
 	{/foreach}
 	</table>

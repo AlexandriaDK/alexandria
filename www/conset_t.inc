@@ -14,19 +14,21 @@ if ($r['id'] == 0) {
 	if ($_SESSION['user_id']) {
 	
 		$q = getall("
-			SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, convent.place, convent.cancelled, userlog.type IS NOT NULL AS visited
+			SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, convent.place, convent.cancelled, userlog.type IS NOT NULL AS visited, COALESCE(convent.country, conset.country) AS country
 			FROM convent 
 			LEFT JOIN userlog ON
 				convent.id = userlog.data_id AND
 				userlog.category = 'convent' AND
 				userlog.user_id = '{$_SESSION['user_id']}'
+			LEFT JOIN conset ON convent.conset_id = conset.id
 			WHERE conset_id = '$conset'
 			ORDER BY year, begin, name
 		");
 	} else {
 		$q = getall("
-			SELECT id, name, begin, end, year, place, cancelled
+			SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, convent.place, convent.cancelled, COALESCE(convent.country, conset.country) AS country
 			FROM convent 
+			LEFT JOIN conset ON convent.conset_id = conset.id
 			WHERE conset_id = '$conset'
 			ORDER BY year, begin, name
 		");
@@ -42,6 +44,7 @@ if ($r['id'] == 0) {
 			'begin' => $rs['begin'],
 			'end' => $rs['end'],
 			'place' => $rs['place'],
+			'country' => $rs['country'],
 			'cancelled' => $rs['cancelled']
 		];
 

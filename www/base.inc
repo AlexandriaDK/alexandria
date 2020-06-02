@@ -940,6 +940,14 @@ function getCountryName($countrycode) {
 	return Locale::getDisplayRegion("-" . $countrycode, LANG);
 }
 
+function getCountryNameFallback($countrycode) {
+	$name = Locale::getDisplayRegion("-" . $countrycode, LANG);
+	if ( $name == "" ) {
+		return $countrycode;
+	}
+	return $name;
+}
+
 // MySQL-kald:
 
 function getentry ($cat, $data_id, $with_category = FALSE) {
