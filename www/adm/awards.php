@@ -304,7 +304,7 @@ if ($category == 'convent') {
 		      '<input type="hidden" name="id" value="'.$nominee['id'].'">';
 		print "<tr valign=\"top\">\n".
 		      '<td style="text-align:right;">'.$nominee['id'].'</td>'.
-		      '<td><input type="text" name="name" value="'.htmlspecialchars($nominee['name']).'" size=40 maxlength=150 placeholder="(efterlad blank ved scenarie eller brætspil)"><br>' .
+		      '<td><input type="text" name="name" value="'.htmlspecialchars($nominee['name']).'" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)"><br>' .
 		      $html_entity . 
 		      '</td>'.
 		      '<td><input type="text" name="sce_id" value="'.htmlspecialchars($sce_id).'" size=30 maxlength=150 class="scenariotags"></td>'.
