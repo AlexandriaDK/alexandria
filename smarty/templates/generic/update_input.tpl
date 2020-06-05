@@ -8,7 +8,7 @@
 		</h2>
 
 		<p>
-			{$_update_intro|nl2br}
+			{$_update_intro|sprintf:"fblogin":""|nl2br}
 		</p>
 
 {if $category == 'convent' && $label != ""}
