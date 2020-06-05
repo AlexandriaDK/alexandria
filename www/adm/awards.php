@@ -286,8 +286,8 @@ if ($category == 'convent') {
 			$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convent_id=' . $convent_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
 			if ($entity['category']) {
 				$name = getentry($entity['category'], $entity['data_id']);	
-				$link = getdatalink($entity['category'], $entity['data_id']);
-				$linkhtml = getdataurl($entity['category'], $entity['data_id'], $name);
+				$link = getdatalink($entity['category'], $entity['data_id'], TRUE);
+				$linkhtml = getdataurl($entity['category'], $entity['data_id'], $name, TRUE);
 				$html_entity .= $linkhtml;
 			} else {
 				$html_entity .= $entity['label'];
