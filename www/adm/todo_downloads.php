@@ -31,7 +31,7 @@ Prioriteret liste over forfattere, vi bør kontakte for scenarier, der ikke er o
 </p>
 <p>
 <input type="number" name="w_scenarios" min="-10000" max="10000" value="<?php print $w_scenarios; ?>"> point for hvert scenarie<br>
-<input type="number" name="w_runs" min="-10000" max="10000" value="<?php print $w_runs; ?>"> point for hver afvikling på con m.m. (inkl. afslytninger)<br>
+<input type="number" name="w_runs" min="-10000" max="10000" value="<?php print $w_runs; ?>"> point for hver afvikling på con m.m. (inkl. aflytninger)<br>
 <input type="number" name="w_award_nominees" min="-10000" max="10000" value="<?php print $w_award_nominees; ?>"> point for hver prisnominering<br>
 <input type="number" name="w_award_winners" min="-10000" max="10000" value="<?php print $w_award_winners; ?>"> point for hver prisvinder<br>
 <input type="number" name="w_userlogs" min="-10000" max="10000" value="<?php print $w_userlogs; ?>"> point for hver Alexandria-bruger, der har markeret scenariet<br>
@@ -40,7 +40,7 @@ Prioriteret liste over forfattere, vi bør kontakte for scenarier, der ikke er o
 
 </form>
 
-<?
+<?php
 
 if ($action == "calculate") {
 	$authordata = [];

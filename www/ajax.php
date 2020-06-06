@@ -16,7 +16,7 @@ if (strlen($query) >= 2) {
 		UNION ALL
 			SELECT aut.id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart, 'person' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id IN (1,5) LEFT JOIN sce ON asrel.sce_id = sce.id WHERE CONCAT(surname, ' ', firstname) LIKE '$escapequery%' GROUP BY aut.id
 		UNION ALL
-			SELECT sce.id, title AS label, 'sce' AS type, 'scenarie' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(aut.firstname,' ',aut.surname) ORDER BY aut.id SEPARATOR '$separator'), '') AS note FROM sce LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id IN (1,5) LEFT JOIN aut ON asrel.aut_id = aut.id  WHERE title LIKE '$escapequery%' GROUP BY sce.id
+			SELECT sce.id, title AS label, 'sce' AS type, 'scenarie' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(aut.firstname,' ',aut.surname) ORDER BY aut.popularity DESC, aut.id SEPARATOR '$separator'), '') AS note FROM sce LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id IN (1,5) LEFT JOIN aut ON asrel.aut_id = aut.id  WHERE title LIKE '$escapequery%' GROUP BY sce.id
 		UNION ALL
 			SELECT sys.id, name AS label, 'sys' AS type, 'system' AS linkpart, 'system' AS filepart, MIN(sce.title) AS note FROM sys LEFT JOIN sce ON sys.id = sce.sys_id WHERE name LIKE '$escapequery%' GROUP BY sys.id
 		UNION ALL
