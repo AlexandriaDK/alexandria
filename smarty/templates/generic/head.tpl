@@ -31,7 +31,7 @@
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
 		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-		<script src="quicksearch.js"></script>
+		<script src="/quicksearch.js"></script>
 		<style>
 			.ui-autocomplete {
 				max-height: 600px;
