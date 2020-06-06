@@ -727,3 +727,9 @@ div.accounts div.unlinked {
 div.accounts div.linked {
 	background: rgb(0, 240, 0) radial-gradient(circle, rgb(0, 240, 0) 0%, rgb(0, 180, 0) 100%);
 }
+
+.autosearchnote {
+	color: #999;
+	padding-left: 2em;
+	font-size: 0.7em;
+}

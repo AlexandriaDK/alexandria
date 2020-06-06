@@ -104,7 +104,7 @@ $(function() {
 //			.attr( "style", "background: url('" + item.thumbnail + "'); background-size: contain; background-repeat: no-repeat; background-position: right;")
 //					.append(" <a>" + item.label + "<br>" + item.id + "<br>" + item.class + "</a>" )
 			.append(" <a>" + item.label + "</a>" )
-			.append(" <br><span class='note'>" + item.note + "</span>" )
+			.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
 			.appendTo ( ul );
 	}
 });

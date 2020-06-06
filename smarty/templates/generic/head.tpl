@@ -42,10 +42,6 @@
 				font-size: 0.9em;
 				margin-right: 30px;
 			}
-
-			.ui-autocomplete .note {
-				font-size: 0.7em;
-			}
 			
 		</style>
 		{if isset($json_alltags) }
