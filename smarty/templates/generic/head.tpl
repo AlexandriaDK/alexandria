@@ -12,6 +12,7 @@
 		<meta property="og:image" content="https://alexandria.dk/gfx/alexandria_logo_og_crush.png" />
 
 {/if}
+		<meta property="fb:admins" content="745283070">
 		<link rel="stylesheet" type="text/css" href="/alexstyle.css" />
 		<link rel="stylesheet" type="text/css" href="/uistyle.css" />
 		<link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
