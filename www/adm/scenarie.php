@@ -44,6 +44,12 @@ $aut = $_REQUEST['aut'];
 $aut_extra = $_REQUEST['aut_extra'];
 $con = $_REQUEST['con'];
 $boardgame = (int) (bool) $_REQUEST['boardgame'];
+$person = (array) $_REQUEST['person'] ?? [];
+
+if ($person) {
+	var_dump($person);
+	exit;
+}
 
 $gms = $_REQUEST['gms'];
 $players = $_REQUEST['players'];
@@ -85,7 +91,6 @@ if (!$action && $scenarie) {
 //
 
 if ($action == "update" && $scenarie) {
-	print "<pre>";
 	if (!$title) {
 		$_SESSION['admin']['info'] = "You are missing a title!";
 	} else {
@@ -116,6 +121,22 @@ if ($action == "update" && $scenarie) {
 				$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
 				$r = doquery($sql);
 			}
+
+			$q = "DELETE FROM asrel WHERE sce_id = '$scenarie'";
+			$r = doquery($q);
+			foreach( $person AS $autdata) {
+
+				$aut_id = (int) $autdata['name'];
+				$tit_id = (int) $autdata['title'];
+				$note = (string) $autdata['note'];
+				if ($tit_id && $aut_id) {
+					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
+					     "VALUES ('$scenarie', '$aut_id', '$tit_id', '" . dbesc( $note ) ."')";
+					$r = doquery($q);
+					print dberror();
+				}
+			}
+	
 		}
 		print dberror();
 		if ($r) {
@@ -126,19 +147,6 @@ if ($action == "update" && $scenarie) {
 		if ($jsenabled == "1") {
 	
 	// Tilføj person-scenarie-relationer
-			$q = "DELETE FROM asrel WHERE sce_id = '$scenarie'";
-			$r = doquery($q);
-			foreach( (array) $aut AS $autdata) {
-				unset($tit_id,$aut_id);
-				list($tit_id,$aut_id) = explode("_",$autdata);
-				if ($tit_id && $aut_id) {
-					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id) ".
-					     "VALUES ('$scenarie', '$aut_id', '$tit_id')";
-					$r = doquery($q);
-					print dberror();
-				}
-			}
-	
 	// Tilføj scenarie-con-relationer
 	
 			$q = "DELETE FROM csrel WHERE sce_id = '$scenarie'";
@@ -263,7 +271,14 @@ if ($action == "create") {
 # Find eksisterende scenarie-medarbejdere
 
 if ($scenarie) {
-	$qrel = getall("SELECT asrel.id AS relid, aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, title.id AS titid, title.title FROM asrel, aut, title WHERE asrel.sce_id='$scenarie' AND asrel.aut_id = aut.id AND asrel.tit_id = title.id ORDER BY title.id, name");
+	$qrel = getall("
+	SELECT asrel.id AS relid, aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.note, asrel.tit_id AS titid, title.title
+	FROM asrel
+	INNER JOIN aut ON asrel.aut_id = aut.id
+	LEFT JOIN title ON asrel.tit_id = title.id
+	WHERE asrel.sce_id = $scenarie
+	ORDER BY asrel.tit_id, name
+");
 	print dberror();
 }
 
@@ -428,12 +443,6 @@ function addtocon(mm,contype) {
 }
 
 function doSubmit() {
-	for (i=0;i<m1.length;i++) {
-		m1.options[i].selected = false;
-	}
-	for (i=0;i<m2.length;i++) {
-		m2.options[i].selected = true;
-	}
 	for (i=0;i<m3.length;i++) {
 		m3.options[i].selected = false;
 	}
@@ -650,8 +659,54 @@ print '
 	</tr>
 ';
 
+print '
+	<tr valign="top">
+		<td>
+			By
+		</td>
+		<td colspan="2">
+			<table border="0">
+';
+$acount = 0;
+if ($scenarie) {
+	foreach($qrel AS $row) {
+		$acount++;
+		print '<tr data-personid="' . $acount . '"><td>';
+		print '<input type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '">';
+		print '</td><td>';
+		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '">';
+		print '</td><td>';
+		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '">';
+		print '</td><td>';
+		print '<span onclick="disabletoggle(' . $acount . ', true)" data-delete="1">[delete]</span>';
+		print '<span onclick="disabletoggle(' . $acount . ', false)" data-delete="0">[undelete]</span>';
+		print '</td></tr>' . PHP_EOL;
+	}
+}
+$acount++;
+print '<tr><td>';
+print '<input name="person[' . $acount . '][name]" placeholder="Name">';
+print '</td><td>';
+print '<input name="person[' . $acount . '][title]" placeholder="Title">';
+print '</td><td>';
+print '<input name="person[' . $acount . '][note]" placeholder="Note">';
+print '</td></tr>' . PHP_EOL;
+
+print '		
+	<tr><td>Automatically add new</td></tr>
+			</table>
+		</td>
+	</tr>
+		';
+
+
+
 
 ### List of names: ###
+
+
+
+/*
 
 print '
 	<tr valign="top">
@@ -702,6 +757,7 @@ print '
 		</td>
 	</tr>
 ';
+ */
 
 tr("Optional organizer","aut_extra",$aut_extra);
 
@@ -741,6 +797,8 @@ if ($scenarie) {
 
 ?>
 
+</table>
+
 <script type="text/javascript">
 <!--
 	document.write('<input type="hidden" name="jsenabled" value="1">');
@@ -750,8 +808,6 @@ if ($scenarie) {
 </form>
 
 <script type="text/javascript">
-var m1 = document.theForm.bigselectaut;
-var m2 = document.theForm.aut;
 var m3 = document.theForm.bigselectcon;
 var m4 = document.theForm.con;
 
@@ -764,6 +820,11 @@ $("#title").change(function() {
 		}
 	});
 });
+
+function disabletoggle( personid, value ) {
+	$("tr [data-personid=" + personid + "] input").prop("disabled", value);
+}
+
 </script>
 
 
