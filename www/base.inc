@@ -13,7 +13,7 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'de', 'en', 'nb', 'sv' ];
 $lang = "";
-if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|hi|tl|sa|ta|bn|nv|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
+if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|hi|tl|sa|ta|bn|nv|cr|oj|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches) ) {
 	$lang = $urllang = $matches[1];
 	$baseuri = substr($_SERVER['REQUEST_URI'],4);
 } elseif ( ! defined("STDIN") ) { // if not run from console
