@@ -688,6 +688,7 @@ tr("Optional organizer","aut_extra",$aut_extra);
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($game ? "Update" : "Create").' game">' . ($game ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 
+$this_type = 'sce';
 if ($game) {
 	print changetags($game,$this_type);
 	print changelinks($game,$this_type);
