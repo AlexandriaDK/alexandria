@@ -79,7 +79,7 @@ htmladmstart("Run");
 if ($id) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=6>Edit runs for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=6>Edit runs for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Start date</th>".

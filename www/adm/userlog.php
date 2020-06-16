@@ -8,6 +8,7 @@ $this_type = 'links';
 
 $category = $_REQUEST['category'];
 $data_id = $_REQUEST['data_id'];
+if ($category == 'game') $category = 'sce';
 
 if ($data_id && $category) {
 	$data_id = intval($data_id);
@@ -15,7 +16,7 @@ if ($data_id && $category) {
 	case 'sce':
 		$cat = 'sce';
 		$q = "SELECT title FROM sce WHERE id = '$data_id'";
-		$mainlink = "scenarie.php?scenarie=$data_id";
+		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
 		$cat = 'convent';

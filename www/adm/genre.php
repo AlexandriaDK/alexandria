@@ -18,7 +18,7 @@ if ($action == "changegenre") {
 	foreach ($genid AS $gid => $value) {
 		doquery("INSERT INTO gsrel (gen_id, sce_id) VALUES ('$gid','$id')");
 	}
-	$_SESSION['admin']['info'] = "Genres for scenario updated! " . dberror();
+	$_SESSION['admin']['info'] = "Genres for game updated! " . dberror();
 	chlog($id,'sce',"Genrer rettet");
 	rexit( $this_type, [ 'id' => $id ] );
 }
@@ -30,7 +30,7 @@ $result = getall("SELECT gen.id, gen.name, gsrel.sce_id FROM gen LEFT JOIN gsrel
 if ($id) {
 	print "<form action=\"genre.php\" method=\"post\">\n";
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=3>Set genres for: <a href=\"scenarie.php?scenarie=$id\" accesskey=\"q\">$title</a></th></tr>\n";
+	      "<tr><th colspan=3>Set genres for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n";
 
 	foreach($result AS $row) {
 		print "<tr>";

@@ -15,7 +15,7 @@ if (preg_match("/^([cspfat#]|cs)(\d+)$/i",$find,$regs)) {
 
 	switch($pref) {
 		case "s":
-			header("Location: scenarie.php?scenarie=$id");
+			header("Location: game.php?game=$id");
 			break;
 		
 		case "c":
@@ -56,7 +56,7 @@ $r2 = getall("
 
 if (count($r1) == 1 && count($r2) == 0) {
 	$id = $r1[0][0];
-	header("Location: scenarie.php?scenarie=$id");
+	header("Location: game.php?game=$id");
 	exit;
 } elseif (count($r1) == 0 && count($r2) == 1) {
 	$id = $r2[0][0];
@@ -72,7 +72,7 @@ print "Scenarios:<br>";
 
 unset($antal);
 foreach($r1 AS list($id, $name, $alias) ) {
-	print "&nbsp;&nbsp;<a href=\"scenarie.php?scenarie=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
+	print "&nbsp;&nbsp;<a href=\"game.php?game=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
 	$antal++;
 }
 if ($antal == 0) print "&nbsp;&nbsp;None<br>";

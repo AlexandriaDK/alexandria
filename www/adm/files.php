@@ -8,6 +8,7 @@ $this_type = 'files';
 unset($result);
 
 $category = (string) $_REQUEST['category'];
+if ($category == 'game') $category = 'sce';
 $id = (int) $_REQUEST['id'];
 $data_id = (int) $_REQUEST['data_id'];
 $action = (string) $_REQUEST['action'];
@@ -269,7 +270,7 @@ if ($data_id && $category) {
 	case 'sce':
 		$cat = 'sce';
 		$q = "SELECT title FROM sce WHERE id = '$data_id'";
-		$mainlink = "scenarie.php?scenarie=$data_id";
+		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
 		$cat = 'convent';

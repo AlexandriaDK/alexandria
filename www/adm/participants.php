@@ -21,7 +21,7 @@ if ($scenarie && $auto_players_min) {
 	}
 	doquery("UPDATE sce SET players_min = $auto_players_min, players_max = $auto_players_max WHERE id = $scenarie");
 	doquery("INSERT INTO log (data_id, category, time, user, user_id, ip, note) VALUES ($scenarie, 'sce', NOW(), 'Peter Brodersen', 4, '77.66.4.55', 'GM-antal oprettet')");
-	header("Location: scenarie.php?scenarie=$scenarie");
+	header("Location: game.php?game=$scenarie");
 	exit;
 }
 htmladmstart("Participants scrape");
@@ -32,7 +32,7 @@ foreach($data AS $sce) {
 	$id = $sce['id'];
 	$p = 0;
 	print "<p>";
-	print "<b><a href=\"scenarie.php?scenarie=" . $id . "\">" . $sce['title'] . "</a></b>\n";
+	print "<b><a href=\"game.php?game=" . $id . "\">" . $sce['title'] . "</a></b>\n";
 	print "<br />";
 	foreach($lines AS $line) {
 		if ( preg_match('/(spiller|player|participant|deltager|antal)/i',$line) && preg_match('/(\d|en|én|to|tre|fire|fem|seks)/',$line) ) {

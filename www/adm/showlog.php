@@ -9,6 +9,7 @@ $data_id = $_REQUEST['data_id'];
 $category = $_REQUEST['category'];
 $listlimit = (int) $_REQUEST['listlimit'];
 $user_id = (int) $_REQUEST['user_id'];
+if ($category == 'game') $category = 'sce';
 
 if ($listlimit <= 0) {
 	$listlimit = 100;
@@ -16,7 +17,7 @@ if ($listlimit <= 0) {
 
 function admLink ($category, $data_id) {
 	$link = "";
-	if ($category == 'sce') return 'scenarie.php?scenarie=' . $data_id;
+	if ($category == 'sce') return 'game.php?game=' . $data_id;
 	if ($category == 'convent') return 'convent.php?con=' . $data_id;
 	if ($category == 'conset') return 'conset.php?conset=' . $data_id;
 	if ($category == 'aut') return 'person.php?person=' . $data_id;
@@ -47,7 +48,7 @@ if ($data_id && $category) {
 	case 'sce':
 		$cat = 'sce';
 		$q = "SELECT title FROM sce WHERE id = '$data_id'";
-		$mainlink = "scenarie.php?scenarie=$data_id";
+		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
 		$cat = 'convent';

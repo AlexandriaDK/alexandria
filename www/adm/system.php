@@ -123,7 +123,7 @@ if ($system) {
 	$q = getall("SELECT id, title FROM sce WHERE sys_id = '$system' ORDER BY title, id");
 	print "<tr valign=top><td align=right>Contains the following<br>scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {
-		print "<a href=\"scenarie.php?scenarie=$id\">$title</a><br>";
+		print "<a href=\"game.php?game=$id\">$title</a><br>";
 	}
 	if (!$q) print "[None]";
 	print "</td></tr>\n";

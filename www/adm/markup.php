@@ -105,7 +105,7 @@ foreach($scenarios AS $scenario) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sce\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
 	print "<tr>";
 	print "<td>" . htmlspecialchars($scenario['description']) . "<br>";
-	print "<a href=\"scenarie.php?scenarie=" . $scenario['id'] . "\">[scenario]</a>";
+	print "<a href=\"game.php?game=" . $scenario['id'] . "\">[scenario]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(

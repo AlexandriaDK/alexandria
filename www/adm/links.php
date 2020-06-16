@@ -13,6 +13,7 @@ $description = $_REQUEST['description'];
 $id = $_REQUEST['id'];
 $category = $_REQUEST['category'];
 $data_id = $_REQUEST['data_id'];
+if ($category == 'game') $category = 'sce';
 
 $url = trim($url);
 if ($url && substr($url,0,4) != 'http') {
@@ -34,7 +35,7 @@ if ($action == "changelink" && $do != "Remove") {
 	$url = trim($url);
 	$description = trim($description);
 	if ($rid = rlyehlink($url)) {
-		$url = "http://rlyeh.alexandria.dk/pub/scenarier/scenarie.php3?id=".$rid;
+		$url = "http://rlyeh.alexandria.dk/pub/scenarier/game.php3?id=".$rid;
 		$description = "Scenariet til download på Projekt R\\'lyeh";
 	}
 	$q = "UPDATE links SET " .
@@ -65,7 +66,7 @@ if ($action == "addlink") {
 	$url = trim($url);
 	$description = trim($description);
 	if ($rid = rlyehlink($url)) {
-		$url = "http://rlyeh.alexandria.dk/pub/scenarier/scenarie.php3?id=".$rid;
+		$url = "http://rlyeh.alexandria.dk/pub/scenarier/game.php3?id=".$rid;
 		$description = "Scenariet til download på Projekt R\\'lyeh";
 	}
 	$q = "INSERT INTO links " .
@@ -93,7 +94,7 @@ if ($data_id && $category) {
 	case 'sce':
 		$cat = 'sce';
 		$q = "SELECT title FROM sce WHERE id = '$data_id'";
-		$mainlink = "scenarie.php?scenarie=$data_id";
+		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
 		$cat = 'convent';

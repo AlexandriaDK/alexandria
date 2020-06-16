@@ -148,7 +148,7 @@ if ($person) {
 	$q = getall("SELECT sce.id, sce.title AS title, title.title AS auttitle FROM sce, asrel, title WHERE sce.id = asrel.sce_id AND asrel.tit_id = title.id AND asrel.aut_id = '$person' ORDER BY title.id, sce.title");
 	print "<tr valign=top><td>Scenarios</td><td>\n";
         foreach($q AS list($id, $title, $auttitle) ) {
-		print "<a href=\"scenarie.php?scenarie=$id\">$title</a> ($auttitle)<br>";
+		print "<a href=\"game.php?game=$id\">$title</a> ($auttitle)<br>";
 	}
 	print "</td></tr>\n";
 	$q = getall("SELECT convent.id, convent.name, convent.year, acrel.role FROM acrel INNER JOIN convent ON acrel.convent_id = convent.id WHERE acrel.aut_id = '$person' ORDER BY convent.year, convent.begin, convent.end, convent.id");

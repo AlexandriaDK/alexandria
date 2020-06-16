@@ -5,7 +5,7 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc";
 
-$this_type = 'sce';
+$this_type = 'game';
 
 /*
  * Ny løsning pr. 22. oktober 2002 - kræver javascript, men outputtet fylder kun 1 gang con-liste
@@ -30,7 +30,7 @@ function strSplitParticipants($str) {
 $action = $_REQUEST['action'];
 $jsenabled = $_REQUEST['jsenabled'];
 
-$scenarie = (int) $_REQUEST['scenarie'];
+$game = (int) $_REQUEST['game'];
 $title = $_REQUEST['title'];
 $description = $_REQUEST['description'];
 $descriptions = (array) $_REQUEST['descriptions'];
@@ -46,11 +46,6 @@ $con = $_REQUEST['con'];
 $boardgame = (int) (bool) $_REQUEST['boardgame'];
 $person = (array) $_REQUEST['person'] ?? [];
 
-if ($person) {
-	var_dump($person);
-	exit;
-}
-
 $gms = $_REQUEST['gms'];
 $players = $_REQUEST['players'];
 list ($gms_min, $gms_max) = strSplitParticipants($gms);
@@ -58,12 +53,12 @@ list ($players_min, $players_max) = strSplitParticipants($players);
 
 $participants_extra = $_REQUEST['participants_extra'];
 
-if (!$action && $scenarie) {
-	$row = getrow("SELECT * FROM sce WHERE id = '$scenarie'");
+if (!$action && $game) {
+	$row = getrow("SELECT * FROM sce WHERE id = '$game'");
 	if ($row) {
 		$title = $row['title'];
 		$description = $row['description'];
-		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY priority, language");
+		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $game ORDER BY priority, language");
 		if (!$descriptions) {
 			$descriptions = [1 => [ 'id' => 1, 'language' => 'da', 'description' => '', 'note' => '' ] ];
 		}
@@ -82,15 +77,15 @@ if (!$action && $scenarie) {
 		$players = ($players_max != $players_min ? $players_min . "-" . $players_max : $players_min);
 		
 	} else {
-		unset($scenarie);
+		unset($game);
 	}
 }
 
 //
-// Ret scenarie
+// Edit game
 //
 
-if ($action == "update" && $scenarie) {
+if ($action == "update" && $game) {
 	if (!$title) {
 		$_SESSION['admin']['info'] = "You are missing a title!";
 	} else {
@@ -107,14 +102,14 @@ if ($action == "update" && $scenarie) {
 		     "players_max = " . strNullEscape($players_max).", " .
 		     "participants_extra = '".dbesc($participants_extra)."', " .
 		     "boardgame = $boardgame " .
-		     "WHERE id = $scenarie";
+		     "WHERE id = $game";
 		$r = doquery($q);
 		if ($r) {
-			doquery("DELETE FROM game_description WHERE game_id = $scenarie");
+			doquery("DELETE FROM game_description WHERE game_id = $game");
 			$inserts = [];
 			foreach($descriptions AS $d) {
 				if ($d['description'] !== "") {
-					$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+					$inserts[] = "($game, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
 				}
 			}
 			if ($inserts) {
@@ -122,7 +117,7 @@ if ($action == "update" && $scenarie) {
 				$r = doquery($sql);
 			}
 
-			$q = "DELETE FROM asrel WHERE sce_id = '$scenarie'";
+			$q = "DELETE FROM asrel WHERE sce_id = '$game'";
 			$r = doquery($q);
 			foreach( $person AS $autdata) {
 
@@ -131,7 +126,7 @@ if ($action == "update" && $scenarie) {
 				$note = (string) $autdata['note'];
 				if ($tit_id && $aut_id) {
 					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
-					     "VALUES ('$scenarie', '$aut_id', '$tit_id', '" . dbesc( $note ) ."')";
+					     "VALUES ($game, $aut_id, $tit_id, '" . dbesc( $note ) ."')";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -140,23 +135,24 @@ if ($action == "update" && $scenarie) {
 		}
 		print dberror();
 		if ($r) {
-			chlog($scenarie,$this_type,"Scenarie rettet");
+			chlog($game,$this_type,"Scenarie rettet");
 		}
 
 // Relation-systemet virker kun, hvis javascript er enabled:
 		if ($jsenabled == "1") {
 	
-	// Tilføj person-scenarie-relationer
-	// Tilføj scenarie-con-relationer
+	// Add person-game relations
+	// Add game-con relations
 	
-			$q = "DELETE FROM csrel WHERE sce_id = '$scenarie'";
+			$q = "DELETE FROM csrel WHERE sce_id = '$game'";
 			$r = doquery($q);
 			foreach( (array) $con AS $condata) {
-				unset($pre_id,$con_id);
 				list($pre_id,$con_id) = explode("_",$condata);
+				$pre_id = (int) $pre_id;
+				$con_id = (int) $con_id;
 				if ($pre_id && $con_id) {
 					$q = "INSERT INTO csrel (sce_id, convent_id, pre_id) ".
-					     "VALUES ('$scenarie', '$con_id', '$pre_id')";
+					     "VALUES ($game, $con_id, $pre_id)";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -165,118 +161,116 @@ if ($action == "update" && $scenarie) {
 
 // Færdig!
 		$_SESSION['admin']['info'] = "Game updated! " . dberror();
-		rexit($this_type, ['scenarie' => $scenarie] );
+		rexit($this_type, ['game' => $game] );
 	}
 }
 
 //
-// Slet scenarie
+// Delete game
 //
 
-if ($action == "Delete" && $scenarie) { // burde tjekke om scenarie findes
+if ($action == "Delete" && $game) { // should check if game exists
 	$error = [];
-	if (getCount('asrel', $scenarie, FALSE, 'sce') ) $error[] = "person";
-	if (getCount('csrel', $scenarie, FALSE, 'sce') ) $error[] = "con";
-	if (getCount('gsrel', $scenarie, FALSE, 'sce') ) $error[] = "genre";
-	if (getCount('scerun', $scenarie, FALSE, 'sce') ) $error[] = "run";
-	if (getCount('trivia', $scenarie, TRUE, 'sce') ) $error[] = "trivia";
-	if (getCount('links', $scenarie, TRUE, 'sce') ) $error[] = "link";
-	if (getCount('alias', $scenarie, TRUE, 'sce') ) $error[] = "alias";
-	if (getCount('files', $scenarie, TRUE, 'sce') ) $error[] = "file";
-	if (getCount('userlog', $scenarie, TRUE, 'sce') ) $error[] = "user log (requires admin)";
+	if (getCount('asrel', $game, FALSE, 'sce') ) $error[] = "person";
+	if (getCount('csrel', $game, FALSE, 'sce') ) $error[] = "con";
+	if (getCount('gsrel', $game, FALSE, 'sce') ) $error[] = "genre";
+	if (getCount('scerun', $game, FALSE, 'sce') ) $error[] = "run";
+	if (getCount('trivia', $game, TRUE, 'sce') ) $error[] = "trivia";
+	if (getCount('links', $game, TRUE, 'sce') ) $error[] = "link";
+	if (getCount('alias', $game, TRUE, 'sce') ) $error[] = "alias";
+	if (getCount('files', $game, TRUE, 'sce') ) $error[] = "file";
+	if (getCount('userlog', $game, TRUE, 'sce') ) $error[] = "user log (requires admin)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);
-		rexit($this_type, ['scenarie' => $scenarie] );
+		rexit($this_type, ['game' => $game] );
 	} else {
-		$title = getone("SELECT title FROM sce WHERE id = $scenarie");
+		$title = getone("SELECT title FROM sce WHERE id = $game");
 
-		$q = "DELETE FROM sce WHERE id = $scenarie";
+		$q = "DELETE FROM sce WHERE id = $game";
 		$r = doquery($q);
 
 		if ($r) {
-			doquery("DELETE FROM game_description WHERE game_id = $scenarie");
-			chlog($scenarie,$this_type,"Scenarie slettet: $title");
+			doquery("DELETE FROM game_description WHERE game_id = $game");
+			chlog($game,$this_type,"Scenarie slettet: $title");
 		}
 		$_SESSION['admin']['info'] = "Game deleted! " . dberror();
-		rexit($this_type, ['scenarie' => $scenarie] );
+		rexit($this_type, ['game' => $game] );
 	}
 }
 
 //
-// Create scenarie
+// Create game
 //
 
 if ($action == "create") {
 	if (!$title) {
-		$info = "Du mangler en titel!";
+		$info = "Title is missingl!";
 	} else {
 		$title = trim($title);
 		$q = "INSERT INTO sce (id, title, description, intern, sys_id, sys_ext, aut_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
 		     "VALUES (NULL, '".dbesc($title)."', '".dbesc($description)."', '".dbesc($intern)."', '".dbesc($sys_id)."', '".dbesc($sys_ext)."', '".dbesc($aut_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
 		$r = doquery($q);
 		if ($r) {
-			$scenarie = dbid();
+			$game = dbid();
 			$inserts = [];
 			foreach($descriptions AS $d) {
 				if ($d['description'] !== "") {
-					$inserts[] = "($scenarie, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+					$inserts[] = "($game, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
 				}
 			}
 			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
 			$r = doquery($sql);
-			chlog($scenarie,$this_type,"Scenarie oprettet");
+			chlog($game,$this_type,"Scenarie oprettet");
 		}
 		$_SESSION['admin']['info'] = "Game created! " . dberror();
-
-// Tilføj person-scenarie-relationer
 
 // Relation-systemet virker kun, hvis javascript er enabled:
 		if ($jsenabled == "1") {
 	
-	// Tilføj person-scenarie-relationer
-			$q = "DELETE FROM asrel WHERE sce_id = '$scenarie'";
+	// Add person-game relations
+			$q = "DELETE FROM asrel WHERE sce_id = '$game'";
 			$r = doquery($q);
 			foreach( (array) $aut AS $autdata) {
 				unset($tit_id,$aut_id);
 				list($tit_id,$aut_id) = explode("_",$autdata);
 				if ($tit_id && $aut_id) {
 					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id) ".
-					     "VALUES ('$scenarie', '$aut_id', '$tit_id')";
+					     "VALUES ('$game', '$aut_id', '$tit_id')";
 					$r = doquery($q);
 					print dberror();
 				}
 			}
 	
-	// Tilføj scenarie-con-relationer
+	// Add scenario-con relations
 	
-			$q = "DELETE FROM csrel WHERE sce_id = '$scenarie'";
+			$q = "DELETE FROM csrel WHERE sce_id = '$game'";
 			$r = doquery($q);
 			foreach( (array) $con AS $condata) {
 				unset($pre_id,$con_id);
 				list($pre_id,$con_id) = explode("_",$condata);
 				if ($pre_id && $con_id) {
 					$q = "INSERT INTO csrel (sce_id, convent_id, pre_id) ".
-					     "VALUES ('$scenarie', '$con_id', '$pre_id')";
+					     "VALUES ('$game', '$con_id', '$pre_id')";
 					$r = doquery($q);
 					print dberror();
 				}
 			}
 		}
 
-// Færdig!
-	rexit($this_type, ['scenarie' => $scenarie] );
+// Done!
+	rexit($this_type, ['game' => $game] );
 	}
 }
 
-# Find eksisterende scenarie-medarbejdere
+# Find existing game persons
 
-if ($scenarie) {
+if ($game) {
 	$qrel = getall("
 	SELECT asrel.id AS relid, aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.note, asrel.tit_id AS titid, title.title
 	FROM asrel
 	INNER JOIN aut ON asrel.aut_id = aut.id
 	LEFT JOIN title ON asrel.tit_id = title.id
-	WHERE asrel.sce_id = $scenarie
+	WHERE asrel.sce_id = $game
 	ORDER BY asrel.tit_id, name
 ");
 	print dberror();
@@ -284,7 +278,7 @@ if ($scenarie) {
 
 # Find eksisterende con-tilknytninger
 
-if ($scenarie) {
+if ($game) {
 	$qcrel = getall("
 		SELECT
 			csrel.id AS relid,
@@ -303,7 +297,7 @@ if ($scenarie) {
 		LEFT JOIN
 			conset ON convent.conset_id = conset.id
 		WHERE
-			csrel.sce_id='$scenarie' AND
+			csrel.sce_id='$game' AND
 			csrel.convent_id = convent.id AND
 			csrel.pre_id = pre.id
 		ORDER BY
@@ -515,21 +509,21 @@ include("links.inc");
 printinfo();
 
 
-print "<form action=\"scenarie.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
-if (!$scenarie) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
+print "<form action=\"game.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
+if (!$game) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">\n";
-	print "<input type=\"hidden\" name=\"scenarie\" value=\"$scenarie\">\n";
+	print "<input type=\"hidden\" name=\"game\" value=\"$game\">\n";
 }
 
-print "<a href=\"./scenarie.php\">New game</a>";
+print "<a href=\"./game.php\">New game</a>";
 
 print "<table border=\"0\">\n";
 
-if ($scenarie) {
-	print "<tr><td>ID</td><td>$scenarie - <a href=\"../data?scenarie=$scenarie\" accesskey=\"q\">Show game page</a>";
+if ($game) {
+	print "<tr><td>ID</td><td>$game - <a href=\"../data?scenarie=$game\" accesskey=\"q\">Show game page</a>";
 	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$scenarie\">Show log</a>";
+		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$game\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
@@ -610,7 +604,7 @@ print '
 						<select name="con[]" id="con" multiple size="7" class="personselect">
 ';
 
-if ($scenarie) {
+if ($game) {
         foreach($qcrel AS $row) {
 		print "<option value=\"{$row['preid']}_{$row['id']}\">{$row['name']} ({$row['year']}) ({$row['event']})</option>\n";
 	}
@@ -636,7 +630,7 @@ if ($conlock) { // default con
 	print "<option value=\"\">-----------\n";
 }
 
-if($scenarie && $qcrel && count($qcrel) > 0) {
+if($game && $qcrel && count($qcrel) > 0) {
         foreach($qcrel AS $row) {
 		print "<option value=\"{$row['id']}\">{$row['name']} ({$row['year']})</option>\n";
 	}
@@ -662,137 +656,49 @@ print '
 print '
 	<tr valign="top">
 		<td>
-			By
+			By <span class="addnext atoggle">➕</span>
 		</td>
 		<td colspan="2">
-			<table border="0">
+			<table border="0" id="persontable">
 ';
 $acount = 0;
-if ($scenarie) {
+if ($game) {
 	foreach($qrel AS $row) {
 		$acount++;
 		print '<tr data-personid="' . $acount . '"><td>';
-		print '<input type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '">';
+		print '<input type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '" placeholder="Name">';
 		print '</td><td>';
-		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '">';
+		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
 		print '</td><td>';
-		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '">';
+		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '" placeholder="Optional note">';
 		print '</td><td>';
-		print '<span onclick="disabletoggle(' . $acount . ', true)" data-delete="1">[delete]</span>';
-		print '<span onclick="disabletoggle(' . $acount . ', false)" data-delete="0">[undelete]</span>';
+		print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
 		print '</td></tr>' . PHP_EOL;
 	}
 }
-$acount++;
-print '<tr><td>';
-print '<input name="person[' . $acount . '][name]" placeholder="Name">';
-print '</td><td>';
-print '<input name="person[' . $acount . '][title]" placeholder="Title">';
-print '</td><td>';
-print '<input name="person[' . $acount . '][note]" placeholder="Note">';
-print '</td></tr>' . PHP_EOL;
 
 print '		
-	<tr><td>Automatically add new</td></tr>
-			</table>
-		</td>
-	</tr>
-		';
-
-
-
-
-### List of names: ###
-
-
-
-/*
-
-print '
-	<tr valign="top">
-		<td>
-			By
-		</td>
-		<td colspan="2">
-			<table border="0">
-				<tr>
-					<td>
-						<select name="aut[]" id="aut" multiple size="13" class="personselect">
-';
-if ($scenarie) {
-        foreach($qrel AS $row) {
-		print "<option value=\"{$row['titid']}_{$row['id']}\">{$row['name']} ({$row['title']})</option>\n";
-	}
-}
-print '
-						</select>
-					</td>
-					<td>
-						<input type="button" class="flytknap" value="&lt;- Author" onClick="addto(m2,1)" ><br>
-						<input type="button" class="flytknap" value="&lt;- Illustrator" onClick="addto(m2,2)"><br>
-						<input type="button" class="flytknap" value="&lt;- Layouter" onClick="addto(m2,3)" ><br>
-						<input type="button" class="flytknap" value="&lt;- Organizer" onClick="addto(m2,4)" ><br>
-						<input type="button" class="flytknap" value="&lt;- Designer" onClick="addto(m2,5)" ><br>
-						<input type="button" class="flytknapright" value="-&gt; Remove" onClick="removefrom(m2)" ><br>
-					</td>
-
-					<td>
-						<select name="bigselectaut" id="bigselectaut" multiple size="13">
-';
-print "<option value=\"\">--- newest ten persons ---\n";
-foreach($autnew AS $id =>$name) {
-	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
-}
-print "<option value=\"\">-----------\n";
-foreach($aut AS $id => $name ) {
-	print "<option value=\"$id\" ondblclick=\"addto(m2,1);\">" . htmlspecialchars($name) . "\n";
-}
-print '
-						</select>
-					</td>
-
-				</tr>
-
 			</table>
 		</td>
 	</tr>
 ';
- */
+
 
 tr("Optional organizer","aut_extra",$aut_extra);
 
-print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($scenarie ? "Update" : "Create").' game">' . ($scenarie ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
+print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($game ? "Update" : "Create").' game">' . ($game ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 
-if ($scenarie) {
-	// Mulighed for at rette links
-	print changetags($scenarie,$this_type);
-
-	// Mulighed for at rette links
-	print changelinks($scenarie,$this_type);
-	
-	// Mulighed for at rette trivia
-	print changetrivia($scenarie,$this_type);
-
-	// Mulighed for at rette alias
-	print changealias($scenarie,$this_type);
-
-	// Mulighed for at rette genrer
-	print changegenre($scenarie,$this_type);
-
-	// Mulighed for at rette afvikling
-	print changerun($scenarie,$this_type);
-
-	// Mulighed for at rette filer
-	print changefiles($scenarie,$this_type);
-
-	// Hvor mange personer har markeret kongressen i deres log?
-	print changeuserlog($scenarie,$this_type);
-
-	// Vis evt. billede
-	print showpicture($scenarie,$this_type);
-
-	// Vis tickets for scenariet
-	print showtickets($scenarie,$this_type);
+if ($game) {
+	print changetags($game,$this_type);
+	print changelinks($game,$this_type);
+	print changetrivia($game,$this_type);
+	print changealias($game,$this_type);
+	print changegenre($game,$this_type);
+	print changerun($game,$this_type);
+	print changefiles($game,$this_type);
+	print changeuserlog($game,$this_type);
+	print showpicture($game,$this_type);
+	print showtickets($game,$this_type);
 }	
 
 ?>
@@ -811,6 +717,15 @@ if ($scenarie) {
 var m3 = document.theForm.bigselectcon;
 var m4 = document.theForm.con;
 
+$(".addnext").click( function() {
+	var acount = $( "#persontable tr" ).length;
+	var newcount = acount + 1;
+	var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="addnext" name="person[' + newcount + '][name]" placeholder="Name"></td><td><input name="person[' + newcount + '][title]" placeholder="Title"></td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span></td></tr>';
+	$( "#persontable" ).append( dynhtml );
+	
+
+});
+
 $("#title").change(function() {
 	$.get( "lookup.php", { type: 'sce', label: $("#title").val() } , function( data ) {
 		if (data > 0) {
@@ -821,8 +736,10 @@ $("#title").change(function() {
 	});
 });
 
-function disabletoggle( personid, value ) {
-	$("tr [data-personid=" + personid + "] input").prop("disabled", value);
+function disabletoggle( personid ) {
+	dodelete = ! $("tr [data-personid=" + personid + "]").prop("dodelete");
+	$("tr [data-personid=" + personid + "] input").prop("disabled", dodelete);
+	$("tr [data-personid=" + personid + "]").prop("dodelete", dodelete);
 }
 
 </script>

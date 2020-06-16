@@ -13,6 +13,7 @@ $visible = $_REQUEST['visible'];
 $id = $_REQUEST['id'];
 $data_id = $_REQUEST['data_id'];
 $category = $_REQUEST['category'];
+if ($category == 'game') $category = 'sce';
 
 // Ret alias
 if ($action == "changealias" && $do != "Delete") {
@@ -69,7 +70,7 @@ if ($data_id && $category) {
 	case 'sce':
 		$cat = 'sce';
 		$q = "SELECT title FROM sce WHERE id = '$data_id'";
-		$mainlink = "scenarie.php?scenarie=$data_id";
+		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
 		$cat = 'convent';

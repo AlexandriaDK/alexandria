@@ -295,7 +295,7 @@ if ($con) {
 		if ($title == "") {
 			$title = "(error - no title)";
 		}
-		print "<a href=\"scenarie.php?scenarie=$id\">$title</a>" . PHP_EOL;
+		print "<a href=\"game.php?game=$id\">$title</a>" . PHP_EOL;
 		if ($preid > 1) print " ($event)";
 		print "<br>";
 	}

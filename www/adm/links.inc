@@ -4,7 +4,7 @@
 ·
 <a href="person.php" accesskey="p" title="Hotkey: P">Person</a>
 ·
-<a href="scenarie.php" accesskey="g" title="Hotkey: G">Game</a>
+<a href="game.php" accesskey="g" title="Hotkey: G">Game</a>
 ·
 <a href="convent.php" accesskey="c" title="Hotkey: C">Con</a>
 ·

@@ -222,7 +222,7 @@ foreach($result AS $row) {
 #
 #$htmllone = "<b>Scenarier uden personer:</b> (".count($result).")<br>\n";
 #foreach($result AS $row) {
-#	$htmllone .= "<a href=\"scenarie.php?scenarie={$row['id']}\">{$row['title']}</a><br>\n";
+#	$htmllone .= "<a href=\"game.php?game={$row['id']}\">{$row['title']}</a><br>\n";
 #}
 
 // TJEK AF KONGRESSER UDEN STARTDATO

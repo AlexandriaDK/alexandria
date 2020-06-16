@@ -13,7 +13,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		case 'sce':
 		$value = "title";
 		$url = 'data?scenarie=';
-		$returl = 'scenarie.php?scenarie=';
+		$returl = 'game.php?game=';
 		break;
 	
 		case 'conset':
@@ -57,6 +57,7 @@ function tr($tekst, $name, $def="", $opt="", $placeholder = "", $type="text", $a
 
 function chlog($data_id, $category, $note="") {
 	global $authuser;
+	if ($category == 'game') $category = 'sce';
 	$authuser = $_SESSION['user_name'];
 	$authuserid = $_SESSION['user_id'];
 	$ip = addslashes($_SERVER['REMOTE_ADDR']);
@@ -262,7 +263,8 @@ function rexit($this_type, $dataset = [] ) {
 			$location = 'files.php';
 			break;
 		case 'sce':
-			$location = 'scenarie.php';
+		case 'game':
+			$location = 'game.php';
 			break;
 		case 'sys':
 			$location = 'system.php';

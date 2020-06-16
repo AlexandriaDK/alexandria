@@ -746,7 +746,7 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 		break;
 	
 		case 'sce':
-		$value = ($admin ? "/adm/scenarie.php?scenarie=$data_id" : "data?scenarie=$data_id");
+		$value = ($admin ? "/adm/game.php?game=$data_id" : "data?scenarie=$data_id");
 		break;
 	
 		case 'conset':

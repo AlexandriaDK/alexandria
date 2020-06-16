@@ -12,7 +12,8 @@ switch ($cat) {
 	break;
 
 	case 'sce':
-	$returl = 'scenarie.php?scenarie=';
+	case 'game':
+	$returl = 'game.php?game=';
 	break;
 
 	case 'conset':
