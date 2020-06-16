@@ -271,7 +271,7 @@ if ($game) {
 	INNER JOIN aut ON asrel.aut_id = aut.id
 	LEFT JOIN title ON asrel.tit_id = title.id
 	WHERE asrel.sce_id = $game
-	ORDER BY asrel.tit_id, name
+	ORDER BY title.priority, asrel.tit_id, aut.surname, aut.firstname
 ");
 	print dberror();
 }
@@ -508,6 +508,16 @@ include("links.inc");
 
 printinfo();
 
+function titleoptions ( $titles, $count, $default = FALSE ) {
+	$html = '<select name="person[' . $count . '][title]">';
+	foreach( $titles AS $id => $title ) {
+		$html .= '<option value="' . $id . '"' . ($id === $default ? ' selected' : '') . '>' . htmlspecialchars( $title ) . '</option>';
+	}
+	$html .= '</select>';
+	return $html;
+}
+
+$titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 print "<form action=\"game.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
 if (!$game) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
@@ -656,7 +666,7 @@ print '
 print '
 	<tr valign="top">
 		<td>
-			By <span class="addnext atoggle">➕</span>
+			By <span accesskey="+" title="Hotkey: +" class="addnext atoggle">➕</span>
 		</td>
 		<td colspan="2">
 			<table border="0" id="persontable">
@@ -668,7 +678,8 @@ if ($game) {
 		print '<tr data-personid="' . $acount . '"><td>';
 		print '<input type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '" placeholder="Name">';
 		print '</td><td>';
-		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
+		print titleoptions( $titles, $acount, $row['titid'] );		
+#		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
 		print '</td><td>';
 		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '" placeholder="Optional note">';
 		print '</td><td>';
@@ -721,7 +732,8 @@ var m4 = document.theForm.con;
 $(".addnext").click( function() {
 	var acount = $( "#persontable tr" ).length;
 	var newcount = acount + 1;
-	var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="addnext" name="person[' + newcount + '][name]" placeholder="Name"></td><td><input name="person[' + newcount + '][title]" placeholder="Title"></td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span></td></tr>';
+	var options = '<?php print titleoptions( $titles, 'NEWCOUNT' ); ?>'.replace( 'NEWCOUNT', newcount );
+	var dynhtml = '<tr data-personid="' + newcount + '"><td><input name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span></td></tr>';
 	$( "#persontable" ).append( dynhtml );
 	
 
