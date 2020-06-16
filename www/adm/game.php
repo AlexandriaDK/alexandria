@@ -752,6 +752,7 @@ $("#title").change(function() {
 function disabletoggle( personid ) {
 	dodelete = ! $("tr [data-personid=" + personid + "]").prop("dodelete");
 	$("tr [data-personid=" + personid + "] input").prop("disabled", dodelete);
+	$("tr [data-personid=" + personid + "] select").prop("disabled", dodelete);
 	$("tr [data-personid=" + personid + "]").prop("dodelete", dodelete);
 }
 
