@@ -395,14 +395,16 @@ $('form').keydown(function(event) {
 
 $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
 	if (event.key == "Enter") {
-		event.preventDefault();
+		if ( event.target.id !== 'ffind' ) {
+			event.preventDefault();
+		}
 	}
 });
 
 $(function() {
 	$( ".personlookup" ).autocomplete({
 		source: availableNames,
-		delay: 10
+		delay: 30
 	});
 	$(".addnext").click( function() {
 		var acount = $( "#persontable tr" ).length;
@@ -413,7 +415,7 @@ $(function() {
 		var bar = $( "#persontable" ).find('tr:last input:first')
 			.autocomplete({
 				source: availableNames,
-				delay: 10
+				delay: 30
 			})
 			.change( checkperson )
 		;
@@ -532,14 +534,14 @@ printinfo();
 function titleoptions ( $titles, $count, $default = FALSE ) {
 	$html = '<select name="person[' . $count . '][title]">';
 	foreach( $titles AS $id => $title ) {
-		$html .= '<option value="' . $id . '"' . ($id === $default ? ' selected' : '') . '>' . htmlspecialchars( $title ) . '</option>';
+		$html .= '<option value="' . $id . '"' . ($id == $default ? ' selected' : '') . '>' . htmlspecialchars( $title ) . '</option>';
 	}
 	$html .= '</select>';
 	return $html;
 }
 
 
-print "<form action=\"game.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
+print "<form action=\"game.php\" method=\"post\" id=\"theForm\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
 if (!$game) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">\n";
