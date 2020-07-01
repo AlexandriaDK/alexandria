@@ -361,6 +361,13 @@ foreach($q AS $r) {
 	$pre[$r['id']] = $r['event'];
 }
 
+$people = [];
+$r = getall("SELECT id, firstname, surname FROM aut ORDER BY firstname, surname");
+foreach($r AS $row) {
+	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
+}
+
+$titles = getcolid("SELECT id, title FROM title ORDER BY id");
 ?>
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - Scenario</TITLE>
@@ -374,38 +381,52 @@ foreach($q AS $r) {
 			  crossorigin="anonymous"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
+var availableNames = <?php print json_encode($people); ?>;
+
+/*
+$('form').keydown(function(event) {
+	console.log("foo");
+	if (event.ctrlKey && event.keyCode === 13) {
+		console.log("bar");
+		$(this).trigger('submit');
+	}
+})
+ */
+
+$(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
+	if (event.key == "Enter") {
+		event.preventDefault();
+	}
+});
+
+$(function() {
+	$( ".personlookup" ).autocomplete({
+		source: availableNames,
+		delay: 10
+	});
+	$(".addnext").click( function() {
+		var acount = $( "#persontable tr" ).length;
+		var newcount = acount + 1;
+		var options = '<?php print titleoptions( $titles, 'NEWCOUNT' ); ?>'.replace( 'NEWCOUNT', newcount );
+		var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle" onclick="addperson(' + newcount + ');">👤</span></td></tr>';
+		var newtr = $( "#persontable" ).append( dynhtml );
+		var bar = $( "#persontable" ).find('tr:last input:first')
+			.autocomplete({
+				source: availableNames,
+				delay: 10
+			})
+			.change( checkperson )
+		;
+		
+
+	});
+});
+
 function removefrom(mm) {
 	mmlen = mm.length ;
 	for ( i=(mmlen-1); i>=0; i--) {
 		if (mm.options[i].selected == true ) {
 			mm.options[i] = null;
-		}
-	}
-}
-
-function addto(mm,jobtype) {
-	m1len = m1.length;
-	if (jobtype == 1) {
-		prefix = '1_';
-		suffix = '(Author)';
-	} else if (jobtype == 2) {
-		prefix = '2_';
-		suffix = '(Illustrator)';
-	} else if (jobtype == 3) {
-		prefix = '3_';
-		suffix = '(Layouter)';
-	} else if (jobtype == 4) {
-		prefix = '4_';
-		suffix = '(Organizer)';
-	} else if (jobtype == 5) {
-		prefix = '5_';
-		suffix = '(Designer)';
-	}
-
-	for ( i=0; i<m1len ; i++){
-		if (m1.options[i].selected == true ) {
-			mmlen = mm.length;
-			mm.options[mmlen]= new Option(m1.options[i].text+' '+suffix, prefix+m1.options[i].value);
 		}
 	}
 }
@@ -517,7 +538,6 @@ function titleoptions ( $titles, $count, $default = FALSE ) {
 	return $html;
 }
 
-$titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 print "<form action=\"game.php\" method=\"post\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
 if (!$game) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
@@ -676,7 +696,7 @@ if ($game) {
 	foreach($qrel AS $row) {
 		$acount++;
 		print '<tr data-personid="' . $acount . '"><td>';
-		print '<input type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '" placeholder="Name">';
+		print '<input class="personlookup personexists" type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '" placeholder="Name">';
 		print '</td><td>';
 		print titleoptions( $titles, $acount, $row['titid'] );		
 #		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
@@ -684,6 +704,7 @@ if ($game) {
 		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '" placeholder="Optional note">';
 		print '</td><td>';
 		print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
+		print '<span title="Add new person" class="atoggle" onclick="addperson(' . $acount . ');"> 👤</span>';
 		print '</td></tr>' . PHP_EOL;
 	}
 }
@@ -729,15 +750,6 @@ if ($game) {
 var m3 = document.theForm.bigselectcon;
 var m4 = document.theForm.con;
 
-$(".addnext").click( function() {
-	var acount = $( "#persontable tr" ).length;
-	var newcount = acount + 1;
-	var options = '<?php print titleoptions( $titles, 'NEWCOUNT' ); ?>'.replace( 'NEWCOUNT', newcount );
-	var dynhtml = '<tr data-personid="' + newcount + '"><td><input name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span></td></tr>';
-	$( "#persontable" ).append( dynhtml );
-	
-
-});
 
 $("#title").change(function() {
 	$.get( "lookup.php", { type: 'sce', label: $("#title").val() } , function( data ) {
@@ -749,11 +761,51 @@ $("#title").change(function() {
 	});
 });
 
+$(".personlookup").change( checkperson );
+
+function checkperson( dom ) {
+	var input = $( dom.target );
+	input.removeClass("personexists").removeClass("persondoesnotexist")
+	var val = input.val();
+	if ( val != '' ) {
+		var personId = parseInt(val);
+		var foundperson = availableNames.filter(s => s.startsWith(personId + " - ") )[0];
+		if ( foundperson ) {
+			input.val( foundperson );
+			input.addClass("personexists");
+		} else {
+			input.addClass("persondoesnotexist");
+			return false;
+		}
+	} else {
+		input.removeClass("personexists").removeClass("persondoesnotexist");
+	}
+
+}
+
 function disabletoggle( personid ) {
 	dodelete = ! $("tr [data-personid=" + personid + "]").prop("dodelete");
 	$("tr [data-personid=" + personid + "] input").prop("disabled", dodelete);
 	$("tr [data-personid=" + personid + "] select").prop("disabled", dodelete);
 	$("tr [data-personid=" + personid + "]").prop("dodelete", dodelete);
+}
+
+function addperson( personid ) {
+	var input = $("tr [data-personid=" + personid + "] input:first");
+	var newpersonname = input.val();
+	$.getJSON( "lookup.php", { type: 'addperson', label: newpersonname }, function( data ) {
+		if ( data.error == false ) {
+			if ( data.new == true ) {
+				var newlabel = data.id + ' - ' + newpersonname;
+				availableNames.push( newlabel );
+			}
+			var inputlabel = availableNames.filter(s => s.startsWith(data.id + " - ") )[0];
+			input.val( inputlabel );
+			input.removeClass("persondoesnotexist").addClass("personexists");
+		} else {
+			input.removeClass("personexists").addClass("persondoesnotexist");
+		}
+	});
 }
 
 </script>

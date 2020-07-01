@@ -82,6 +82,7 @@ div.nomtext {
 
 span.atoggle {
 	cursor: pointer;
+	user-select: none;
 }
 
 option.existing {
@@ -123,4 +124,12 @@ textarea.langfocus {
 
 textarea.langfocusde {
 	background: linear-gradient(to bottom, #bbb 0%, #bbb 33.33%, #fbb 0, #fbb 66.66%, #fdb 0);
+}
+
+input.personexists:enabled {
+	background-color: #6c6;
+}
+
+input.persondoesnotexist:enabled {
+	background-color: #c66;
 }

@@ -180,12 +180,13 @@ check_search_achievements($find);
 // Først lidt kvik-find-kode:
 
 if ($find) {
-	if (preg_match("/^([cspf]|cs)(\d+)$/i",$find,$regs)) {
+	if (preg_match("/^([cspfg]|cs)(\d+)$/i",$find,$regs)) {
 		$pref = strtolower($regs[1]);
 		$id = $regs[2];
 	
 		switch($pref) {
 			case "s":
+			case "g":
 				header("Location: data?scenarie=$id");
 				exit;
 				break;
