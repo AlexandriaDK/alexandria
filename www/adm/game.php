@@ -467,7 +467,7 @@ function doSubmit() {
 		m4.options[i].selected = true;
 	}
 	if ( $('.personunsure:enabled').length + $('.persondoesnotexist:enabled').length > 0 ) {
-		return confirm('Some people are not confirmed and will be removed. Continue?');
+		return confirm('Some people (marked with yellow and red background) are not confirmed and will be removed. Continue?');
 	}
 	return true;
 }
