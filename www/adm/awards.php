@@ -287,7 +287,7 @@ if ($category == 'convent') {
 			if ($entity['category']) {
 				$name = getentry($entity['category'], $entity['data_id']);	
 				$link = getdatalink($entity['category'], $entity['data_id'], TRUE);
-				$linkhtml = getdataurl($entity['category'], $entity['data_id'], $name, TRUE);
+				$linkhtml = getdatahtml($entity['category'], $entity['data_id'], $name, TRUE);
 				$html_entity .= $linkhtml;
 			} else {
 				$html_entity .= $entity['label'];

@@ -299,7 +299,7 @@ if (is_null($r['id']) ) {
 					$html .= "<h5 class=\"" . $class . "\">";
 					$html .= "<span class=\"" . $class . "\">";
 					if ($nominee['sce_id']) {
-						$html .= getdataurl('sce', $nominee['sce_id'], $nominee['title']);
+						$html .= getdatahtml('sce', $nominee['sce_id'], $nominee['title']);
 					} else {
 						$html .= htmlspecialchars($nominee['name']);
 					}

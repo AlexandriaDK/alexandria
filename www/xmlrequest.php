@@ -19,7 +19,7 @@ if ($_REQUEST['action'] == "lookup") {
 		$result = mysqli_query($dblink,$query) or die(mysqli_error($dblink));
 		$i=0;
 		while($row = mysqli_fetch_row($result)) {
-			print "<div class=\"result\">".getdataurl($row[2],$row[0],$row[1])."</div>\n";
+			print "<div class=\"result\">".getdatahtml($row[2],$row[0],$row[1])."</div>\n";
 			$i++;
 			if ($i > 10) {
 				print "<div class=\"result\">...</div>\n";

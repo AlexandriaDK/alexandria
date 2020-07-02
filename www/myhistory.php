@@ -100,7 +100,7 @@ if ($conventions) {
 			                     "</span>".
 			                     "</td>";
 
-		$content_myconvents .= "<td>".getdataurl('convent',$convent['id'],$convent['name'])."</td>";
+		$content_myconvents .= "<td>".getdatahtml('convent',$convent['id'],$convent['name'])."</td>";
 		$content_myconvents .= "<td style=\"text-align: left\">".$convent['conset_name']."</td>";
 		$content_myconvents .= "<td style=\"text-align: right\">" . yearname( $convent['year'] ) . "</td>";
 		$content_myconvents .= "</tr>\n";
@@ -119,7 +119,7 @@ if ($scenarios) {
 
 	foreach ($scenarios AS $scenario) {
 		$content_myscenarios .= "<tr>";
-		$content_myscenarios .= "<td>".getdataurl('sce',$scenario['id'],$scenario['title'])."</td>";
+		$content_myscenarios .= "<td>".getdatahtml('sce',$scenario['id'],$scenario['title'])."</td>";
 		if ($scenario['boardgame']) {
 			$options = getuserlogoptions('boardgame');
 		} else {

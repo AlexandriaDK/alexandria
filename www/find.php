@@ -56,7 +56,7 @@ function search_files ($find, $category = '') {
 				$output .= "</ul></li>";
 			}
 			$output .= "<li>".
-			           getdataurl($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).
+			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).
 			           "<ul>";
 			$last_id = $row['data_id'];
 		}
@@ -75,10 +75,10 @@ function search_files ($find, $category = '') {
 			$output .=
 		}
 			$output .= "<li>".
-			           getdataurl($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
+			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
 		if ((stripos($row['content'],$find)) !== FALSE) {
 			$output .= "<li>".
-			           getdataurl($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
+			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
 			           " (".htmlspecialchars($row['page']).")<br />".
 	#		           "&nbsp;&nbsp;.. ".preg_replace('/('.preg_quote($find,'/').')/i','<b>$1</b>',htmlspecialchars($row['preview']))." ..<br />".
 	#		           "&nbsp;&nbsp;.. ".preg_replace('/^.*?\s(.{,30})('.preg_quote($find,'/').')(.{,30})\s.*$/si','$1<b>$2</b>$3',htmlspecialchars($row['content']))." ..<br />".
@@ -86,9 +86,9 @@ function search_files ($find, $category = '') {
 			           "</li>\n";
 		} else {
 			$output .= "<li>".
-			           getdataurl($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
+			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
 			           " (".htmlspecialchars($row['page']).")<br />".
-#			           getdataurl($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".
+#			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".
 #			           htmlspecialchars($row['label']).
 			           "</li>\n";
 		}

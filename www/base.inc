@@ -687,7 +687,7 @@ function getalluserentries($category, $data_id) {
 	return $result;
 }
 
-function getdataurl ($cat, $data_id, $text, $admin = FALSE) {
+function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 	$link = getdatalink($cat, $data_id, $admin);
 
 	switch ($cat) {
@@ -729,7 +729,7 @@ function getrecentlog($limit = 10) {
 	foreach($log AS &$row) {
 		$row['name'] = getentry($row['category'], $row['data_id']);	
 		$row['link'] = getdatalink($row['category'], $row['data_id']);
-		$row['linkhtml'] = getdataurl($row['category'], $row['data_id'], $row['name']);
+		$row['linkhtml'] = getdatahtml($row['category'], $row['data_id'], $row['name']);
 		$row['pubtime'] = pubdateprint($row['time']);
 	}
 

@@ -79,7 +79,7 @@ if (!$ucid) {
 	foreach ($awardnominees[$cid] AS $conid => $convent) {
 		$htmlid = "con" . $conid;
 		$html .= "<div class=\"awardyear\" data-year=\"" . $convent['year'] . "\">";
-		$html .= "<h3 id=\"$htmlid\">" . getdataurl('convent', $conid, $convent['name'] . " (" . ( $convent['year'] ) . ")") . "</h3>";
+		$html .= "<h3 id=\"$htmlid\">" . getdatahtml('convent', $conid, $convent['name'] . " (" . ( $convent['year'] ) . ")") . "</h3>";
 		$html .= "<div class=\"awardblock\">" . PHP_EOL;
 		foreach($convent['categories'] AS $category) {
 			$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
@@ -90,7 +90,7 @@ if (!$ucid) {
 				$html .= "<h5 class=\"" . $class . "\">";
 				$html .= "<span class=\"" . $class . "\">";
 				if ($nominee['sce_id']) {
-					$html .= getdataurl('sce', $nominee['sce_id'], $nominee['title']);
+					$html .= getdatahtml('sce', $nominee['sce_id'], $nominee['title']);
 				} else {
 					$html .= htmlspecialchars($nominee['name']);
 				}
