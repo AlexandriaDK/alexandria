@@ -466,6 +466,10 @@ function doSubmit() {
 	for (i=0;i<m4.length;i++) {
 		m4.options[i].selected = true;
 	}
+	if ( $('.personunsure:enabled').length + $('.persondoesnotexist:enabled').length > 0 ) {
+		return confirm('Some people are not confirmed and will be removed. Continue?');
+	}
+	return true;
 }
 
 // tabs
@@ -541,7 +545,7 @@ function titleoptions ( $titles, $count, $default = FALSE ) {
 }
 
 
-print "<form action=\"game.php\" method=\"post\" id=\"theForm\" name=\"theForm\" onsubmit=\"doSubmit();\">\n";
+print "<form action=\"game.php\" method=\"post\" id=\"theForm\" name=\"theForm\" onsubmit=\"return doSubmit();\">\n";
 if (!$game) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">\n";
@@ -766,7 +770,7 @@ $(".personlookup").change( checkperson );
 
 function checkperson( dom ) {
 	var input = $( dom.target );
-	input.removeClass("personexists").removeClass("persondoesnotexist")
+	input.removeClass("personexists personunsure persondoesnotexist")
 	var val = input.val();
 	if ( val != '' ) {
 		var personId = parseInt(val);
@@ -778,8 +782,6 @@ function checkperson( dom ) {
 			input.addClass("personunsure");
 			return false;
 		}
-	} else {
-		input.removeClass("personexists personunsure persondoesnotexist");
 	}
 
 }
