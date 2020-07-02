@@ -9,12 +9,13 @@ $find = $_REQUEST['find'] ?? '';
 
 // Lidt kvik-find-kode:
 
-if (preg_match("/^([cspfat#]|cs)(\d+)$/i",$find,$regs)) {
+if (preg_match("/^([csgpfat#]|cs)(\d+)$/i",$find,$regs)) {
 	$pref = strtolower($regs[1]);
 	$id = $regs[2];
 
 	switch($pref) {
 		case "s":
+		case "g":
 			header("Location: game.php?game=$id");
 			break;
 		
