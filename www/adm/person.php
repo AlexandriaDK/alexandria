@@ -54,6 +54,7 @@ if ($action == "Delete" && $person) { // burde tjekke om person findes
 	if (getCount('trivia', $person, TRUE, 'aut') ) $error[] = "trivia";
 	if (getCount('links', $person, TRUE, 'aut') ) $error[] = "link";
 	if (getCount('alias', $person, TRUE, 'aut') ) $error[] = "alias";
+	if (getCount('users', $person, FALSE, 'aut') ) $error[] = "user";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['person' => $person] );
