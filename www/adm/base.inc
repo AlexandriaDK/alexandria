@@ -248,22 +248,24 @@ function getCount ($table, $data_id, $requiresData = FALSE, $category = "") {
 function rexit($this_type, $dataset = [] ) {
 	switch($this_type) {
 		case 'convent':
-			$location = 'convent.php';
-			break;
 		case 'conset':
-			$location = 'conset.php';
-			break;
 		case 'organizers':
-			$location = 'organizers.php';
-			break;
 		case 'links':
-			$location = 'links.php';
-			break;
 		case 'files':
-			$location = 'files.php';
+		case 'game':
+		case 'trivia':
+		case 'genre':
+		case 'tag':
+		case 'tags':
+		case 'alias':
+		case 'run':
+		case 'achievements':
+		case 'awards':
+		case 'language':
+		case 'users':
+			$location = $this_type . '.php';
 			break;
 		case 'sce':
-		case 'game':
 			$location = 'game.php';
 			break;
 		case 'sys':
@@ -271,33 +273,6 @@ function rexit($this_type, $dataset = [] ) {
 			break;
 		case 'aut':
 			$location = 'person.php';
-			break;
-		case 'trivia':
-			$location = 'trivia.php';
-			break;
-		case 'alias':
-			$location = 'alias.php';
-			break;
-		case 'genre':
-			$location = 'genre.php';
-			break;
-		case 'run':
-			$location = 'run.php';
-			break;
-		case 'achievements':
-			$location = 'achievements.php';
-			break;
-		case 'awards':
-			$location = 'awards.php';
-			break;
-		case 'tags':
-			$location = 'tags.php';
-			break;
-		case 'tag':
-			$location = 'tag.php';
-			break;
-		case 'language':
-			$location = 'language.php';
 			break;
 		default:
 			$location = './';

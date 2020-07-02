@@ -12,7 +12,7 @@ $aut_id = (int) $_REQUEST['aut_id'];
 $id = (int) $_REQUEST['id'];
 $name = $_REQUEST['name'];
 $do = $_REQUEST['do'];
-$order = $_REQUEST['order'];
+$order = (string) $_REQUEST['order'];
 $editor = (int) isset($_REQUEST['editor']);
 $user_id = (int) $_REQUEST['user_id'];
 $asked = (int) $_REQUEST['asked'];
@@ -52,7 +52,8 @@ if ($action == "update") {
 	if ($r) {
 //		chlog($id,$this_type,"Link rettet");
 	}
-	$info = "User rettet! " . dberror();
+	$_SESSION['admin']['info'] = "User updated! " . dberror();
+	rexit($this_type, ['order' => $order ] );
 }
 
 if (!$order) $order = 'lastactive';

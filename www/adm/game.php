@@ -224,27 +224,24 @@ if ($action == "create") {
 		}
 		$_SESSION['admin']['info'] = "Game created! " . dberror();
 
-// Relation-systemet virker kun, hvis javascript er enabled:
+// Add person-game relations
+		foreach( $person AS $autdata) {
+
+			$aut_id = (int) $autdata['name'];
+			$tit_id = (int) $autdata['title'];
+			$note = (string) $autdata['note'];
+			if ($tit_id && $aut_id) {
+				$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
+				     "VALUES ($game, $aut_id, $tit_id, '" . dbesc( $note ) ."')";
+				$r = doquery($q);
+				print dberror();
+			}
+		}
+
+// Relation system for cons only works if javascript is enabled
 		if ($jsenabled == "1") {
 	
-	// Add person-game relations
-			$q = "DELETE FROM asrel WHERE sce_id = '$game'";
-			$r = doquery($q);
-			foreach( (array) $aut AS $autdata) {
-				unset($tit_id,$aut_id);
-				list($tit_id,$aut_id) = explode("_",$autdata);
-				if ($tit_id && $aut_id) {
-					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id) ".
-					     "VALUES ('$game', '$aut_id', '$tit_id')";
-					$r = doquery($q);
-					print dberror();
-				}
-			}
-	
 	// Add scenario-con relations
-	
-			$q = "DELETE FROM csrel WHERE sce_id = '$game'";
-			$r = doquery($q);
 			foreach( (array) $con AS $condata) {
 				unset($pre_id,$con_id);
 				list($pre_id,$con_id) = explode("_",$condata);
