@@ -419,6 +419,9 @@ $(function() {
 		
 
 	});
+
+	// add blank row for ease
+	$(".addnext").click();
 });
 
 function removefrom(mm) {
@@ -615,9 +618,43 @@ print "- possible note: <input type=text name=sys_ext value=\"".htmlspecialchars
 
 print "</td>";
 
-
 print "</tr>\n\n";
 
+### persons ###
+print '
+	<tr valign="top">
+		<td>
+			By <span accesskey="+" title="Hotkey: +" class="addnext atoggle">➕</span>
+		</td>
+		<td colspan="2">
+			<table border="0" id="persontable">
+';
+$acount = 0;
+if ($game) {
+	foreach($qrel AS $row) {
+		$acount++;
+		print '<tr data-personid="' . $acount . '"><td>';
+		print '<input class="personlookup personexists" type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '" placeholder="Name">';
+		print '</td><td>';
+		print titleoptions( $titles, $acount, $row['titid'] );		
+#		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
+		print '</td><td>';
+		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '" placeholder="Optional note">';
+		print '</td><td>';
+		print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
+		print '<span title="Add new person" class="atoggle" onclick="addperson(' . $acount . ');"> 👤</span>';
+		print '</td></tr>' . PHP_EOL;
+	}
+}
+
+print '		
+			</table>
+		</td>
+	</tr>
+';
+
+
+tr("Optional organizer","aut_extra",$aut_extra);
 
 ### List of cons: ###
 
@@ -682,40 +719,6 @@ print '
 	</tr>
 ';
 
-print '
-	<tr valign="top">
-		<td>
-			By <span accesskey="+" title="Hotkey: +" class="addnext atoggle">➕</span>
-		</td>
-		<td colspan="2">
-			<table border="0" id="persontable">
-';
-$acount = 0;
-if ($game) {
-	foreach($qrel AS $row) {
-		$acount++;
-		print '<tr data-personid="' . $acount . '"><td>';
-		print '<input class="personlookup personexists" type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars( $row['name'] ) . '" placeholder="Name">';
-		print '</td><td>';
-		print titleoptions( $titles, $acount, $row['titid'] );		
-#		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
-		print '</td><td>';
-		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '" placeholder="Optional note">';
-		print '</td><td>';
-		print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
-		print '<span title="Add new person" class="atoggle" onclick="addperson(' . $acount . ');"> 👤</span>';
-		print '</td></tr>' . PHP_EOL;
-	}
-}
-
-print '		
-			</table>
-		</td>
-	</tr>
-';
-
-
-tr("Optional organizer","aut_extra",$aut_extra);
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($game ? "Update" : "Create").' game">' . ($game ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 
