@@ -609,9 +609,8 @@ print "<td>\n";
 print "<select name=\"sys_id\">\n";
 
 foreach ($sys AS $id => $name) {
-	print "<option value=$id";
-	if ($id == $sys_id) print " selected";
-	print ">$name\n";
+	$selected = ($id == $sys_id ? "selected" : "");
+	print "<option value=\"$id\" $selected>" . htmlspecialchars($name) . "</option>" . PHP_EOL;
 }
 print "</select>\n";
 print "- possible note: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
