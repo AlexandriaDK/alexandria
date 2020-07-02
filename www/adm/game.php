@@ -407,7 +407,7 @@ $(function() {
 		var acount = $( "#persontable tr" ).length;
 		var newcount = acount + 1;
 		var options = '<?php print titleoptions( $titles, 'NEWCOUNT' ); ?>'.replace( 'NEWCOUNT', newcount );
-		var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle" onclick="addperson(' + newcount + ');">👤</span></td></tr>';
+		var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span></td></tr>';
 		var newtr = $( "#persontable" ).append( dynhtml );
 		var bar = $( "#persontable" ).find('tr:last input:first')
 			.autocomplete({
@@ -642,7 +642,7 @@ if ($game) {
 		print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars( $row['note'] ) . '" placeholder="Optional note">';
 		print '</td><td>';
 		print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
-		print '<span title="Add new person" class="atoggle" onclick="addperson(' . $acount . ');"> 👤</span>';
+		print '<span title="Add new person" class="atoggle glow" onclick="addperson(' . $acount . ');"> 👤</span>';
 		print '</td></tr>' . PHP_EOL;
 	}
 }
@@ -776,11 +776,11 @@ function checkperson( dom ) {
 			input.val( foundperson );
 			input.addClass("personexists");
 		} else {
-			input.addClass("persondoesnotexist");
+			input.addClass("personunsure");
 			return false;
 		}
 	} else {
-		input.removeClass("personexists").removeClass("persondoesnotexist");
+		input.removeClass("personexists personunsure persondoesnotexist");
 	}
 
 }
@@ -803,9 +803,9 @@ function addperson( personid ) {
 			}
 			var inputlabel = availableNames.filter(s => s.startsWith(data.id + " - ") )[0];
 			input.val( inputlabel );
-			input.removeClass("persondoesnotexist").addClass("personexists");
+			input.removeClass("persondoesnotexist personunsure").addClass("personexists");
 		} else {
-			input.removeClass("personexists").addClass("persondoesnotexist");
+			input.removeClass("personexists personunsure").addClass("persondoesnotexist");
 		}
 	});
 }

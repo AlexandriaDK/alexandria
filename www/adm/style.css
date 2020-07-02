@@ -126,8 +126,15 @@ textarea.langfocusde {
 	background: linear-gradient(to bottom, #bbb 0%, #bbb 33.33%, #fbb 0, #fbb 66.66%, #fdb 0);
 }
 
+.glow:hover {
+}
+
 input.personexists:enabled {
 	background-color: #6c6;
+}
+
+input.personunsure:enabled {
+	background-color: #ee3;
 }
 
 input.persondoesnotexist:enabled {

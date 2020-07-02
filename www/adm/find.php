@@ -13,31 +13,35 @@ if (preg_match("/^([csgpfat#]|cs)(\d+)$/i",$find,$regs)) {
 	$pref = strtolower($regs[1]);
 	$id = $regs[2];
 
+	$url = "";
 	switch($pref) {
 		case "s":
 		case "g":
-			header("Location: game.php?game=$id");
+			$url = "game.php?game=" . $id;
 			break;
 		
 		case "c":
-			header("Location: convent.php?con=$id");
+			$url = "convent.php?con=" . $id;
 			break;
 
 		case "cs":
-			header("Location: conset.php?conset=$id");
+			$url = "conset.php?conset=" . $id;
 			break;
 
 		case "p":
 		case "f":
 		case "a":
-			header("Location: person.php?person=$id");
+			$url = "person.php?person=" . $id;
 			break;
 
 		case "t":
 		case "#":
-			header("Location: ticket.php?id=$id");
+			$url = "ticket.php?id=" . $id;
 			break;
-
+	}
+	if ( $url ) {
+		header( "Location: " . $url );
+		exit;
 	}
 
 }
