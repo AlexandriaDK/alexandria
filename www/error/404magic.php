@@ -28,7 +28,8 @@ if ($magic) {
 	exit;
 } else {
 	header("HTTP/1.1 404 Not Found");
-	print "<h1 style=\"font-family: sans-serif;\">404 Not Found</h1> <p>404 - Filen findes ikke</p>";
+	print "<h1 style=\"font-family: sans-serif;\">404 Not Found</h1> <p>404 - The requested resource is not found</p>";
+	exit;
 }
 
 ?>
