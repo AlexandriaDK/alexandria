@@ -1,6 +1,8 @@
 <?php
 require("./connect.php");
 require("./base.inc");
+$output = "";
+
 if ($_REQUEST['action'] == "lookup") {
 	if ($_REQUEST['q']) {
 		$query = "
@@ -30,7 +32,9 @@ if ($_REQUEST['action'] == "lookup") {
 	exit;
 } elseif ($_REQUEST['action'] == "adduserlog" && $_SESSION['user_id'] && $_REQUEST['data_id'] && $_REQUEST['category'] && $_REQUEST['type']) {
 	adduserlog($_SESSION['user_id'],$_REQUEST['category'],$_REQUEST['data_id'],$_REQUEST['type']);
-
+	$newlabel = $t->getTemplateVars('_top_' . $_REQUEST['type'] . '_pt') ?? 'Done';
+	$output = [ 'newlabel' => $newlabel, 'newdirection' => 'remove', 'switch' => $t->getTemplateVars( '_switch' ) ];
+	
 	// achievements
 	if ($_REQUEST['category'] == 'sce') {
 		list($sys_id, $boardgame) = getrow("SELECT sys_id, boardgame FROM sce WHERE id = " . (int) $_REQUEST['data_id'] );
@@ -62,5 +66,10 @@ if ($_REQUEST['action'] == "lookup") {
 	}
 } elseif ($_REQUEST['action'] == "removeuserlog" && $_SESSION['user_id'] && $_REQUEST['data_id'] && $_REQUEST['category'] && $_REQUEST['type']) {
 	removeuserlog($_SESSION['user_id'],$_REQUEST['category'],$_REQUEST['data_id'],$_REQUEST['type']);
+	$newlabel = $t->getTemplateVars('_top_not_' . $_REQUEST['type'] . '_pt') ?? 'Done';
+	$output = [ 'newlabel' => $newlabel, 'newdirection' => 'add', 'switch' => $t->getTemplateVars( '_switch' ) ];
+}
+if ( $output !== "" ) {
+	print json_encode( $output );
 }
 ?>

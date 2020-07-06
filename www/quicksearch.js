@@ -25,44 +25,13 @@ if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
     }
 }
 
-function check_search(query) {
-	if (query.length > 1) {
-		xmlhttp.open("GET", "xmlrequest.php?action=lookup&q=" + escape(query), true);
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState == 4) {
-				if (xmlhttp.responseText == '') {
-					document.getElementById('resultbox').style.display = 'none';
-				} else {
-					document.getElementById('resultbox').innerHTML = xmlhttp.responseText;
-					document.getElementById('resultbox').style.display = 'block';
-				}
-			}
-		}
-		xmlhttp.send(null);
-	} else {
-		document.getElementById('resultbox').style.display = 'none';
-	}
-}
-
 function changedata(element,action,category,data_id,type) {
-	var newtext;
-	if (action == "add") {
-		xmlhttp.open("GET", "xmlrequest.php?action=adduserlog&category="+category+"&data_id="+data_id+"&type="+escape(type), true);
-		xmlhttp.send(null);
-		if (type == 'read') { newtext = 'Læst' }
-		if (type == 'gmed') { newtext = 'Kørt' }
-		if (type == 'played') { newtext = 'Spillet' }
-		if (type == 'visited') { newtext = 'Besøgt' }
-		document.getElementById(element).innerHTML = "- "+newtext+" <a href=\"javascript:changedata('"+element+"','remove','"+category+"','"+data_id+"','"+escape(type)+"')\">(skift)</a>";
-	}
-	if (action == "remove") {
-		xmlhttp.open("GET", "xmlrequest.php?action=removeuserlog&category="+category+"&data_id="+data_id+"&type="+escape(type), true);
-		xmlhttp.send(null);
-		if (type == 'read') { newtext = 'Ikke læst' }
-		if (type == 'gmed') { newtext = 'Ikke kørt' }
-		if (type == 'played') { newtext = 'Ikke spillet' }
-		if (type == 'visited') { newtext = 'Ikke besøgt' }
-		document.getElementById(element).innerHTML = "- "+newtext+" <a href=\"javascript:changedata('"+element+"','add','"+category+"','"+data_id+"','"+escape(type)+"')\">(skift)</a>";
+	if ( action == "add" || action == "remove" ) {
+		var doaction = action + 'userlog';
+		$.getJSON( "xmlrequest.php", { action: doaction, category: category, data_id: data_id, type: type }, function( data ) {
+			var html = "- " + data.newlabel + " <a href=\"javascript:changedata('" + element + "','" + data.newdirection + "','" + category + "','" + data_id + "','" + escape(type) + "')\">(" + data.switch + ")</a>";
+			$( '#' + element ).html( html );
+		});
 	}
 }
 
