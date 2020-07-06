@@ -125,7 +125,7 @@
 				</ul>
 				<br>
 {else}
-				{$_top_loggedonas}:<br><span title="{$user_id} - {$user_name|escape}">{$user_name|truncate:20|escape}</span><br>
+				{$_top_loggedonas}:<br><span title="{$user_name|escape}">{$user_name|truncate:20|escape}</span><br>
 				<br>
 				<div class="mylinks">
 				<a href="myhistory">{$_top_myoverview}</a><br>

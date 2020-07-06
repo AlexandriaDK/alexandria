@@ -17,13 +17,16 @@ require "base.inc";
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
 <script>
-function getStats() {
-	$( "#frontstat" ).load( "frontstat.php" );
-}
+$(document).ready(function() {  
+	$( "#frontstattext" ).load( "frontstat.php", function() {
+		$( this ).hide().show(100);
+	});
+});
+
 </script>
 </head>
 
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000" onload="getStats()">
+<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000" >
 
 <?php
 include("links.inc");
@@ -46,12 +49,7 @@ printinfo();
 	Active users
 </h3>
 
-<div id="frontstat">Henter ...</div>
-
-<script>
-
-</script>
-
+<div id="frontstattext">Fetching statistics ...</div>
 
 <h3>
 	Oversigt
