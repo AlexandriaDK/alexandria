@@ -30,7 +30,7 @@ if (file_exists($fileondisk) ) {
 	header("Location: https://download.alexandria.dk/files".$_SERVER['PATH_INFO']);
 
 } else {
-	header("HTTP/1.0 404 Not Found");
+	header("HTTP/1.1 404 Not Found");
 	die("The file was not found - please contact <a href=\"mailto:peter@alexandria.dk\">peter@alexandria.dk</a>.");
 }
 

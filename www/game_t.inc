@@ -18,7 +18,8 @@ if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98)
 if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario
 
-if ($r['id'] == 0) { // ought to add 404 here
+if ($r['id'] == 0) {
+	header( "HTTP/1.1 404 Not Found ");
 	$t->assign('content', $t->getTemplateVars('_sce_nomatch') );
 	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
