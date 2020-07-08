@@ -72,7 +72,7 @@ if ($r['id'] == 0) { // ought to add 404 here
 // Liste over forfattere, m.m.
 	$forflist = $scenlist = "";
 	$q = getall("
-		SELECT aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.tit_id, asrel.note, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol
+		SELECT aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.tit_id, asrel.note, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol
 		FROM aut
 		INNER JOIN asrel ON aut.id = asrel.aut_id
 		LEFT JOIN title ON asrel.tit_id = title.id
@@ -80,24 +80,25 @@ if ($r['id'] == 0) { // ought to add 404 here
 		ORDER BY title.priority, title.id, aut.surname, aut.firstname
 	");
 	foreach($q AS $rs) {
+		$title = $t->getTemplateVars( "_" . $rs['title_label'] );
 		$note = "";
 		if ( $rs['note'] ) {
-			$note = " (" . textlinks( htmlspecialchars( $rs['note'] ) ) . ")";
+			$htmlnote = " (" . textlinks( htmlspecialchars( $rs['note'] ) ) . ")";
 		}
 		if ( isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id'] ) {
 			$_SESSION['can_edit_participant'][$scenarie] = TRUE;
 		}
-		$forflist .= "<tr><td style=\"text-align: center\">";
+		$forflist .= '<tr><td style="text-align: center">';
 		if ($rs['textsymbol']) { // unicode-ikoner
-			$forflist .= "<span class=\"titicon\" title=\"{$rs['title']}\">{$rs['textsymbol']}</span>";
+			$forflist .= '<span class="titicon" title="' . htmlspecialchars( $title ) . '">' . $rs['textsymbol'] . '</span>';
 		} elseif ($rs['iconfile']) {
-			$forflist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"{$rs['title']}\" title=\"{$rs['title']}\" width=\"{$rs['iconwidth']}\" height=\"{$rs['iconheight']}\" />";
+			$forflist .= '<img src="/gfx/' . rawurlencode( $rs['iconfile'] ) . '" alt="' . htmlspecialchars( $title ) . '" title="' . htmlspecialchars( $title ) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
 		} else {
-			$forflist .= " ";
+			$forflist .= ' ';
 		}
 		$forflist .= "</td>";
-		$scenlist .= "<td><a href=\"data?scenarie={$rs['id']}\" class=\"scenarie\">{$rs['title']}</a></td>";
-		$forflist .= "<td><a href=\"data?person=$rs[id]\" class=\"person\">{$rs['name']}</a>" . $note . "</td>";
+		$scenlist .= '<td><a href="data?scenarie=' . $rs['id'] . '" class="scenarie">' . htmlspecialchars( $rs['title'] ) . '</a></td>';
+		$forflist .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' .htmlspecialchars( $rs['name'] ) . '</a>' . $htmlnote . '</td>';
 		$forflist .= "</tr>" . PHP_EOL;
 	}
 

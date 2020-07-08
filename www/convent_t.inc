@@ -252,13 +252,6 @@ if (is_null($r['id']) ) {
 
 		$scen_antaltxt = antaltxt($sce_new, $sce_rerun, $sce_cancelled, $total, 'sce');
 		$board_antaltxt = antaltxt($board_new, $board_rerun, $board_cancelled, $board_total, 'board');
-
-		$conflist = array(
-			0 => "scenarieliste mangler",
-			1 => "scenarieliste under indtastning",
-			2 => "scenarieliste komplet jf. program",
-			9 => "scenarieliste bekræftet"
-		);
 	
 		if ($scenlist) {
 			$scenlist = "<tr><td colspan=\"8\">$scen_antaltxt</td></tr>\n" . $scenlist;
