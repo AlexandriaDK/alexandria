@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="210mm" height="297mm" version="1.1" viewBox="0 0 744.09448819 1052.3622047" xmlns="http://www.w3.org/2000/svg">
- <g transform="matrix(-.83359 -.55239 .55239 -.83359 307.26 1379.4)" stroke-linecap="round" stroke-linejoin="round">
-  <g transform="matrix(.66937 0 0 .73244 145.01 214.07)" stroke="#000">
-   <path transform="matrix(.8892 0 0 1.0473 36.175 -9.2306)" d="m350.08 140.08h-54.389l27.194-47.102z" stroke-width="7.2104"/>
-   <path d="m323.15 89.121-63.644 124h127.29l-63.642-124z" fill="none" stroke-width="6.9581"/>
-  </g>
-  <rect x="318.59" y="371.74" width="85.652" height="636.28" ry="0" stroke="#000" stroke-width="5.9875"/>
-  <rect x="379.28" y="369.72" width="8.9142" height="640.33" ry="0" fill="#fff" stroke="#fff" stroke-width="1.9377"/>
- </g>
+<svg width="210mm" height="297mm" viewBox="0 0 744.094 1052.362" xmlns="http://www.w3.org/2000/svg">
+    <g transform="scale(-1) rotate(33.531 2135.74 -1199.652)" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke="#000">
+            <path transform="matrix(.5952 0 0 .76708 169.224 207.31)" d="M350.08 140.08h-54.389l27.194-47.102z" stroke-width="7.21"/>
+            <path d="M323.15 89.121l-63.644 124h127.29l-63.642-124z" fill="none" stroke-width="6.958" transform="matrix(.66937 0 0 .73244 145.01 214.07)"/>
+        </g>
+        <rect x="318.59" y="371.74" width="85.652" height="636.28" ry="0" stroke="#000" stroke-width="5.987"/>
+        <rect x="379.28" y="369.72" width="8.914" height="640.33" ry="0" fill="#fff" stroke="#fff" stroke-width="1.938"/>
+    </g>
 </svg>
