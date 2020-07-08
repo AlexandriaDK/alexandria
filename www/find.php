@@ -7,7 +7,7 @@ if ($rredirect == 'no') $redirect = FALSE;
 $debug = FALSE;
 
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 require("smartfind.inc");
 
 $find = "";

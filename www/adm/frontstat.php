@@ -1,9 +1,9 @@
 <?php
 require "adm.inc";
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 
 $result = getall("SELECT COUNT(*) AS c, user, user_id, MAX(`time`) AS latest, SUM(note REGEXP '^(Con|System|Person|Scenarie|Conset) oprettet$') AS oprettet FROM log WHERE `time` >= CURDATE() - INTERVAL 7 DAY GROUP BY user, user_id ORDER BY c DESC, latest DESC, user");
 print "<table>";

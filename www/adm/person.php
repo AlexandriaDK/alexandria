@@ -1,9 +1,9 @@
 <?php
 require "adm.inc";
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 $this_type = 'aut';
 
 $action = $_REQUEST['action'];

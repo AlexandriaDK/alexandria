@@ -1,6 +1,6 @@
 <?php
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 
 $query = (string) ($_REQUEST['query'] ?? $_REQUEST['term'] ?? '');

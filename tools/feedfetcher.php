@@ -3,7 +3,7 @@
 ini_set("user_agent", "Alexandria.dk feedfetcher");
 chdir('../www/');
 require("./connect.php");
-require("./base.inc");
+require("./base.inc.php");
 $blog_id = intval($_SERVER['argv']['1'] ?? 0);
 
 function utf8_decode_enhanced($string) {

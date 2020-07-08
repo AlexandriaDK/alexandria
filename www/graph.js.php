@@ -1,6 +1,6 @@
 <?php
 require("./connect.php");
-require_once("base.inc");
+require_once("base.inc.php");
 
 $name = (string) $_REQUEST['name'];
 $action = (string) $_REQUEST['action'];

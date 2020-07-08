@@ -4,7 +4,7 @@
 # This script should be run nightly
 
 require("../www/connect.php");
-require("../www/base.inc");
+require("../www/base.inc.php");
 
 // Update popularity for persons
 // Simply award 1 point for every distinct user who has added any of the person's scenario to their log (read, gmed, played)

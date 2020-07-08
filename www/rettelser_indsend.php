@@ -1,6 +1,6 @@
 <?php
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 function mailsanitize($string) {
 	return str_replace(array("\r","\n"),"",$string);

@@ -2,10 +2,10 @@
 // Denne side scraper intern igennem efter spiller- og spilleder-antal
 $admonly = TRUE;
 require "adm.inc";
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 
 $scenarie = $_REQUEST['scenarie'];
 $auto_players_max = $auto_players_min = $_REQUEST['auto_players_min'];

@@ -1,6 +1,6 @@
 <?php
 require("./connect.php");
-require("./base.inc");
+require("./base.inc.php");
 $output = "";
 
 if ($_REQUEST['action'] == "lookup") {

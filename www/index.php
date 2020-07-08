@@ -1,6 +1,6 @@
 <?php
 require("connect.php");
-require("base.inc");
+require("base.inc.php");
 
 if (isset($_SESSION['login_after_redirect']) && isset($_SESSION['do_redirect']) ) { // assume valid URL
 	header("Location: " . $_SESSION['login_after_redirect']);

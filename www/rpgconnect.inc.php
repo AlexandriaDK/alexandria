@@ -11,7 +11,7 @@ if (!@ ($dblink = mysqli_connect($db_host, $db_user, $db_pass) ) || @$_SERVER['Q
 	define('DBERROR',TRUE);
 	header("HTTP/1.1 500 Internal Server Error");
 	header("X-Error: Database");
-	require("base.inc");
+	require("base.inc.php");
 	$t->display('dberror.tpl');
 	exit;
 

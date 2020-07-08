@@ -17,7 +17,7 @@ if (! isset($_GET['code'])) {
   $_SESSION['access_token'] = $client->getAccessToken();
   chdir('../../');
   require_once('./connect.php');
-  require_once('base.inc');
+  require_once('base.inc.php');
   
   $userinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $_SESSION['access_token']['access_token'];
   $userinfo_json = file_get_contents($userinfo_url);

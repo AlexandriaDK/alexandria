@@ -1,6 +1,6 @@
 <?php
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 function fixttftext($string) {
 	return $string; // no need for conversion anymore

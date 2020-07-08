@@ -1,9 +1,9 @@
 <?php
 require "adm.inc";
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 $this_type = 'tag';
 
 $tag_id = (int) $_REQUEST['tag_id'];

@@ -1,6 +1,6 @@
 <?php
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 $q = mysql_query("SELECT id, url FROM links ORDER BY id");
 

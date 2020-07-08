@@ -16,7 +16,7 @@ Forslag: Citatboks, folks citater
 */
 
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 $person = (int) ($_REQUEST['person'] ?? 0);
 $scenarie = (int) ($_REQUEST['scenarie'] ?? 0);

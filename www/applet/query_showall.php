@@ -1,6 +1,6 @@
 <?php
 require_once("../../inc/rpgconnect.inc");
-require_once("../base.inc");
+require_once("../base.inc.php");
 
 list($category, $dataid) = explode("_",$_REQUEST['q']);
 if (!$dataid) $dataid = '1';

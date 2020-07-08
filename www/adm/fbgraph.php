@@ -1,10 +1,10 @@
 <?php
 $admonly = TRUE;
 require "adm.inc";
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 
 $id = (int) $_GET['user_id'];
 if (!$id) exit;

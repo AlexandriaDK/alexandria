@@ -1,10 +1,10 @@
 <?php
 // save page for users editing organizers
 
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 
 $convent = (int) $_REQUEST['convent'];
 $action = (string) $_REQUEST['action'];

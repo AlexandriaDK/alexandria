@@ -68,7 +68,7 @@ if (!isset($_GET['code'])) {
 	session_start();
 	chdir('../../');
 	require_once('./connect.php');
-	require_once('base.inc');
+	require_once('base.inc.php');
 
 	$siteuserid = $user['_id'];
 	$name = $user['display_name'];

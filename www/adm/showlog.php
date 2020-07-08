@@ -1,9 +1,9 @@
 <?php
 require "adm.inc";
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 $this_type = 'log';
 $data_id = $_REQUEST['data_id'];
 $category = $_REQUEST['category'];

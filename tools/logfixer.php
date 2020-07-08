@@ -4,7 +4,7 @@
 # Output is CSV data
 
 require("../www/connect.php");
-require("../www/base.inc");
+require("../www/base.inc.php");
 
 if (count($argv) < 7) {
 	print "Missing arguments." . PHP_EOL;

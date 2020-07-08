@@ -70,6 +70,7 @@ if ( ! file_exists( __DIR__ . '/../' . $required_smarty ) ) {
 // mod_rewrite requires  FileInfo  to be enabled.
 
 if ( $setuperror === TRUE && $ignoreerrors != TRUE ) {
+	header( "HTTP/1.1 503 Service Unavailable ");
 	header( "Content-Type: text/plain" );
 	print "Installation of Alexandria RPG database:
 

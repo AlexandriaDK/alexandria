@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once('../../connect.php');
-require_once('../../base.inc');
+require_once('../../base.inc.php');
 require '../../../includes/social.php';
 
 set_session_redirect_url();

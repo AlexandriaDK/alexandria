@@ -1,7 +1,7 @@
 <?php
 chdir("../../");
 require("./connect.php");
-require("./base.inc");
+require("./base.inc.php");
 
 $id = (int) $_GET['id'];
 

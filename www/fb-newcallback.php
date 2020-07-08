@@ -2,7 +2,7 @@
 session_start();
 define('LANGNOREDIRECT', TRUE);
 require_once('./connect.php');
-require_once('base.inc');
+require_once('base.inc.php');
 ini_set("display_errors",TRUE);
 $app_id = 6044298682;
 

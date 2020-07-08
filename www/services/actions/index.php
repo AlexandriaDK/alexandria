@@ -1,7 +1,7 @@
 <?php
 chdir("../../");
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 $postdata = file_get_contents("php://input");
 

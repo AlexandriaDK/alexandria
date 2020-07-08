@@ -1,6 +1,6 @@
 <?php
 require_once("./connect.php");
-require_once("base.inc");
+require_once("base.inc.php");
 require_once("fetchdata.inc.php");
 
 $category = $_REQUEST['category'];

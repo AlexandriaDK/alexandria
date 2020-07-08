@@ -4,7 +4,7 @@ require_once __DIR__.'/../../../google-api-php-client-2.2.3_PHP54/vendor/autoloa
 
 session_start();
 require_once('../../connect.php');
-require_once('../../base.inc');
+require_once('../../base.inc.php');
 set_session_redirect_url();
 
 $client = new Google_Client();

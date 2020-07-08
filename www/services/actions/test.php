@@ -1,7 +1,7 @@
 <?php
 chdir("../../");
 require("./connect.php");
-require("base.inc");
+require("base.inc.php");
 
 $postdata = getone("SELECT incoming_raw FROM actions_log WHERE id = 2");
 

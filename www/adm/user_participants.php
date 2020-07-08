@@ -16,10 +16,10 @@ function strSplitParticipants($str) {
 	return [ $str_min, $str_max ];
 }
 
-require "base.inc";
+require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
-require "base.inc";
+require "base.inc.php";
 
 $scenarie = (int) $_REQUEST['scenarie'];
 $user_id = $_SESSION['user_id'];

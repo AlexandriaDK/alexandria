@@ -1,6 +1,6 @@
 <?php
 require_once("./connect.php");
-require_once("base.inc");
+require_once("base.inc.php");
 
 function getFullEntry ($cat, $data_id) {
 	$result = array();
