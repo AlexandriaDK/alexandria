@@ -21,6 +21,10 @@ $elite = (int) $_REQUEST['elite'];
 $brother = (int) $_REQUEST['brother'];
 $achievement_id = (int) $_REQUEST['achievement_id'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 // Tilføj Asked- eller Beer-achievement
 if ($user_id && $asked) {
 	award_user_achievement($user_id, 72);
@@ -119,6 +123,7 @@ print "<table align=\"center\" border=0>".
 if ($result) {
 	foreach($result AS $row) {
 		print '<form action="users.php?order=' . $order . '" method="post">'.
+		      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 		      '<input type="hidden" name="action" value="update">'.
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
 		print "<tr valign='top'>\n".

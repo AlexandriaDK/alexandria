@@ -14,6 +14,10 @@ $birth = $_REQUEST['birth'];
 $death = $_REQUEST['death'];
 $intern = $_REQUEST['intern'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 if (!$action && $person) {
 	$r = getrow("SELECT firstname, surname, intern, birth, death FROM aut WHERE id = '$person'");
 	if ($r) {
@@ -72,7 +76,7 @@ if ($action == "Delete" && $person) { // burde tjekke om person findes
 	}
 }
 
-if ($action == "opret") {
+if ($action == "create") {
 	$firstname = trim($firstname);
 	$surname = trim($surname);
 	if (strpos($firstname, " ") !== FALSE && $surname === "") { // extract surname from firstname
@@ -101,8 +105,9 @@ if ($action == "opret") {
 
 htmladmstart("Person");
 
-print "<FORM ACTION=\"person.php\" METHOD=\"post\">\n";
-if (!$person) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"opret\">\n";
+print "<form action=\"person.php\" method=\"post\">\n";
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
+if (!$person) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"ret\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"person\" value=\"$person\">\n";

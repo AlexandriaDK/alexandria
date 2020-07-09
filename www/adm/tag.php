@@ -11,6 +11,10 @@ $action = (string) $_REQUEST['action'];
 $tag = (string) $_REQUEST['tag'];
 $description = (string) $_REQUEST['description'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 if ($tag && !$tag_id) {
 	$tag_id = getone("SELECT id FROM tag WHERE tag = '" . dbesc($tag) . "'");
 }
@@ -45,7 +49,7 @@ if ($action == "update" && $tag_id) {
 	rexit( $this_type, [ 'tag_id' => $tag_id ] );
 }
 
-if ($action == "opret") {
+if ($action == "create") {
 	$tid = getone("SELECT id FROM tag WHERE tag = '" . dbesc($tag) . "'");
 	if ($tid) {
 		$_SESSION['admin']['info'] = "This tag already exists!";
@@ -70,7 +74,8 @@ if ($action == "opret") {
 htmladmstart("Tag");
 
 print "<FORM ACTION=\"tag.php\" METHOD=\"post\">\n";
-if (!$tag_id) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"opret\">\n";
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
+if (!$tag_id) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"update\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"tag_id\" value=\"$tag_id\">\n";

@@ -11,6 +11,11 @@ $action = (string) $_REQUEST['action'];
 $name = (string) $_REQUEST['name'];
 $description = (string) $_REQUEST['description'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
+
 if (!$action && $system) {
 	list($id, $name, $description) = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
 }
@@ -79,6 +84,7 @@ if ($action == "Delete" && $system) {
 htmladmstart("System");
 
 print "<FORM ACTION=\"system.php\" METHOD=\"post\">\n";
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 if (!$system) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";

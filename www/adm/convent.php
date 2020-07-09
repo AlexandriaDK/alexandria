@@ -21,6 +21,10 @@ $confirmed = $_REQUEST['confirmed'];
 $country = trim( (string) $_REQUEST['country'] );
 $cancelled = (int) (bool) $_REQUEST['cancelled'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 if (!$action && $con) {
 	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.intern, a.confirmed, a.country, b.country AS cscountry, a.cancelled FROM convent a LEFT JOIN conset b ON a.conset_id = b.id WHERE a.id = $con");
 	if ($row) {
@@ -169,6 +173,7 @@ $conflist = array(
 htmladmstart("Con");
 
 print "<FORM ACTION=\"convent.php\" METHOD=\"post\">\n";
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 if (!$con) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";

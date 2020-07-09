@@ -1,20 +1,24 @@
-function changedata(element,action,category,data_id,type) {
+function changedata(element,action,category,data_id,type, token ) {
 	if ( action == "add" || action == "remove" ) {
 		var doaction = action + 'userlog';
-		$.getJSON( "xmlrequest.php", { action: doaction, category: category, data_id: data_id, type: type }, function( data ) {
-			var html = "- " + data.newlabel + " <a href=\"javascript:changedata('" + element + "','" + data.newdirection + "','" + category + "','" + data_id + "','" + escape(type) + "')\">(" + data.switch + ")</a>";
+		$.getJSON( "xmlrequest.php", { action: doaction, category: category, data_id: data_id, type: type, token: token }, function( data ) {
+			var html = "- " + data.newlabel + " <a href=\"javascript:changedata('" + element + "','" + data.newdirection + "','" + category + "','" + data_id + "','" + type + "','" + token + "')\">(" + data.switch + ")</a>";
 			$( '#' + element ).html( html );
 		});
 	}
 }
 
-function switchicon(element,action,category,data_id,type) {
+function switchicon( element, action, category, data_id, type, token ) {
 	if (action == "add" || action == "remove" ) {
 		var doaction = action + 'userlog';
 		var img = type + '_' + (action == 'add' ? 'active' : 'passive') + ".jpg";
-		$.getJSON( "xmlrequest.php", { action: doaction, category: category, data_id: data_id, type: type }, function( data ) {
-			var html = " <a href=\"javascript:switchicon('" + element + "','" + data.newdirection + "','" + category + "','" + data_id + "','" + escape(type) + "')\"><img src=\"gfx/" + img + "\" alt=\"" + ( data.newlabel ) + "\" title=\"" + ( data.newlabel ) + "\"></a>";
-			$( '#' + element ).html( html );
+		$.getJSON( "xmlrequest.php", { action: doaction, category: category, data_id: data_id, type: type, token: token }, function( data ) {
+			if ( ! data.error ) {
+				var html = " <a href=\"javascript:switchicon('" + element + "','" + data.newdirection + "','" + category + "','" + data_id + "','" + type + "','" + token + "')\"><img src=\"gfx/" + img + "\" alt=\"" + ( data.newlabel ) + "\" title=\"" + ( data.newlabel ) + "\"></a>";
+				$( '#' + element ).html( html );
+			} else {
+				alert( 'Error updating your log. Please log out and in again.' );
+			}
 		});
 	}
 }

@@ -11,6 +11,10 @@ $action = $_REQUEST['action'];
 $intern = $_REQUEST['intern'];
 $status = $_REQUEST['status'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 if ($action == "ret" && $id) {
 	$query = "UPDATE updates SET intern = '" . dbesc($intern) . "', status = '$status' WHERE id = $id";
 	doquery($query);
@@ -87,6 +91,7 @@ if ($id) {
 	}
 
 	print "<form action=\"ticket.php\" method=\"post\">\n";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<input type=\"hidden\" name=\"action\" value=\"ret\">\n";
 	print "<input type=\"hidden\" name=\"id\" value=\"$id\">\n";
 	print "<input type=\"hidden\" name=\"vis\" value=\"$vis\">\n";

@@ -30,44 +30,52 @@ if ($_REQUEST['action'] == "lookup") {
 		}
 	}
 	exit;
-} elseif ($_REQUEST['action'] == "adduserlog" && $_SESSION['user_id'] && $_REQUEST['data_id'] && $_REQUEST['category'] && $_REQUEST['type']) {
-	adduserlog($_SESSION['user_id'],$_REQUEST['category'],$_REQUEST['data_id'],$_REQUEST['type']);
-	$newlabel = $t->getTemplateVars('_top_' . $_REQUEST['type'] . '_pt') ?? 'Done';
-	$output = [ 'newlabel' => $newlabel, 'newdirection' => 'remove', 'switch' => $t->getTemplateVars( '_switch' ) ];
-	
-	// achievements
-	if ($_REQUEST['category'] == 'sce') {
-		list($sys_id, $boardgame) = getrow("SELECT sys_id, boardgame FROM sce WHERE id = " . (int) $_REQUEST['data_id'] );
-		list($fanboy_count) = getone("SELECT COUNT(*), user_id, GROUP_CONCAT(sce_id), asrel.aut_id FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
-		if ($_REQUEST['type'] == 'read') {
-			award_achievement(3);
-		}	
-		if ($_REQUEST['type'] == 'played') {
-			award_achievement(4);
-		}	
-		if ($_REQUEST['type'] == 'gmed') {
-			award_achievement(5);
-		}
-		if ($boardgame == 1) {
-			award_achievement(87); // board game
-		}
-		if ($sys_id == 99) { // System: Hinterlandet
-			award_achievement(88); // play, read or GM Hinterlandet
-		}
-		if ($fanboy_count) {
-			award_achievement(89); // played at least 10 scenarios written by the same author
-		}
-		$polandsce = [4002, 4279, 4884];
-		if (in_array($_REQUEST['data_id'], $polandsce) ) { 
-			award_achievement(95); // attend scenario in Poland
-		}
+} elseif ($_REQUEST['action'] == "adduserlog" && $_SESSION['user_id'] && $_REQUEST['data_id'] && $_REQUEST['category'] && $_REQUEST['type'] ) {
+	$token = $_REQUEST['token'];
+	if ( compare_tokens( $token, $_SESSION['token'] ) ) {
+		adduserlog($_SESSION['user_id'],$_REQUEST['category'],$_REQUEST['data_id'],$_REQUEST['type']);
+		$newlabel = $t->getTemplateVars('_top_' . $_REQUEST['type'] . '_pt') ?? 'Done';
+		$output = [ 'newlabel' => $newlabel, 'newdirection' => 'remove', 'switch' => $t->getTemplateVars( '_switch' ) ];
 		
-		
-	}
+		// achievements
+		if ($_REQUEST['category'] == 'sce') {
+			list($sys_id, $boardgame) = getrow("SELECT sys_id, boardgame FROM sce WHERE id = " . (int) $_REQUEST['data_id'] );
+			list($fanboy_count) = getone("SELECT COUNT(*), user_id, GROUP_CONCAT(sce_id), asrel.aut_id FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+			if ($_REQUEST['type'] == 'read') {
+				award_achievement(3);
+			}	
+			if ($_REQUEST['type'] == 'played') {
+				award_achievement(4);
+			}	
+			if ($_REQUEST['type'] == 'gmed') {
+				award_achievement(5);
+			}
+			if ($boardgame == 1) {
+				award_achievement(87); // board game
+			}
+			if ($sys_id == 99) { // System: Hinterlandet
+				award_achievement(88); // play, read or GM Hinterlandet
+			}
+			if ($fanboy_count) {
+				award_achievement(89); // played at least 10 scenarios written by the same author
+			}
+			$polandsce = [4002, 4279, 4884];
+			if (in_array($_REQUEST['data_id'], $polandsce) ) { 
+				award_achievement(95); // attend scenario in Poland
+			}
+		}
+	} else {
+		$output = compare_token_error( $token, $_SESSION['token'] );
+	}	
 } elseif ($_REQUEST['action'] == "removeuserlog" && $_SESSION['user_id'] && $_REQUEST['data_id'] && $_REQUEST['category'] && $_REQUEST['type']) {
-	removeuserlog($_SESSION['user_id'],$_REQUEST['category'],$_REQUEST['data_id'],$_REQUEST['type']);
-	$newlabel = $t->getTemplateVars('_top_not_' . $_REQUEST['type'] . '_pt') ?? 'Done';
-	$output = [ 'newlabel' => $newlabel, 'newdirection' => 'add', 'switch' => $t->getTemplateVars( '_switch' ) ];
+	$token = $_REQUEST['token'];
+	if ( compare_tokens( $token, $_SESSION['token'] ) ) {
+		removeuserlog($_SESSION['user_id'],$_REQUEST['category'],$_REQUEST['data_id'],$_REQUEST['type']);
+		$newlabel = $t->getTemplateVars('_top_not_' . $_REQUEST['type'] . '_pt') ?? 'Done';
+		$output = [ 'newlabel' => $newlabel, 'newdirection' => 'add', 'switch' => $t->getTemplateVars( '_switch' ) ];
+	} else {
+		$output = compare_token_error( $token, $_SESSION['token'] );
+	}
 }
 if ( $output !== "" ) {
 	print json_encode( $output );

@@ -17,6 +17,10 @@ $order = $_REQUEST['order'];
 $user_id = (int) $_REQUEST['user_id'];
 $points = (int) $_REQUEST['points'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 // Ret achievement
 if ($action == "update") {
 	$q = "UPDATE achievements SET " .
@@ -68,6 +72,7 @@ if ($result) {
 	foreach($result AS $row) {
 		$totalpoints += $row['points'];
 		print '<form action="achievements.php" method="post">'.
+		      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . 
 		      '<input type="hidden" name="action" value="update">'.
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
 		print "<tr valign='top'>\n".

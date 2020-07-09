@@ -15,6 +15,10 @@ $online = $_REQUEST['online'];
 $published = $_REQUEST['published'];
 $id = $_REQUEST['id'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 // Ret news
 if ($action == "changenews" && $do != "Delete") {
 	$text = trim($text);
@@ -63,6 +67,7 @@ if ($info) {
 if ($id) {
 	$selected = ($row['online'] == 1 ? 'checked="checked"' : '');
 	print '<form action="news.php" method="post">'.
+	      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 	      '<input type="hidden" name="action" value="changenews">'.
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print '<p>News ID #'.$id.'</p>';
@@ -74,6 +79,7 @@ if ($id) {
 	print "</form>\n\n";
 } else {
 	print '<form action="news.php" method="post">'.
+	      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 	      '<input type="hidden" name="action" value="addnews">';
 	print '<p>New post:</p>';
 	print '<p><textarea name="text" cols="60" rows="5"></textarea></p>';

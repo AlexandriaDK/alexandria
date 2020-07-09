@@ -30,6 +30,10 @@ function strSplitParticipants($str) {
 $action = $_REQUEST['action'];
 $jsenabled = $_REQUEST['jsenabled'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 $game = (int) $_REQUEST['game'];
 $title = $_REQUEST['title'];
 $description = $_REQUEST['description'];
@@ -546,6 +550,7 @@ function titleoptions ( $titles, $count, $default = FALSE ) {
 
 
 print "<form action=\"game.php\" method=\"post\" id=\"theForm\" name=\"theForm\" onsubmit=\"return doSubmit();\">\n";
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 if (!$game) print "<input type=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">\n";

@@ -151,18 +151,18 @@
 			<div class="leftmenucontent">
 				{if $boardgame}{$_top_dyn_boardgame}{else}{$_top_dyn_scenario}{/if}<br><br>
 				<span id="data_read">
-				{if $user_read}- {$_top_read_pt} <a href="javascript:changedata('data_read','remove','sce','{$id}','read')">({$_switch})</a>{/if}
-				{if not $user_read}- {$_top_not_read_pt} <a href="javascript:changedata('data_read','add','sce','{$id}','read')">({$_switch})</a>{/if}
+				{if $user_read}- {$_top_read_pt} <a href="javascript:changedata('data_read','remove','sce','{$id}','read', '{$token}')">({$_switch})</a>{/if}
+				{if not $user_read}- {$_top_not_read_pt} <a href="javascript:changedata('data_read','add','sce','{$id}','read', '{$token}')">({$_switch})</a>{/if}
 				</span><br>
 				{if !$boardgame}
 				<span id="data_gmed">
-				{if $user_gmed}- {$_top_gmed_pt} <a href="javascript:changedata('data_gmed','remove','sce','{$id}','gmed')">({$_switch})</a>{/if}
-				{if not $user_gmed}- {$_top_not_gmed_pt} <a href="javascript:changedata('data_gmed','add','sce','{$id}','gmed')">({$_switch})</a>{/if}
+				{if $user_gmed}- {$_top_gmed_pt} <a href="javascript:changedata('data_gmed','remove','sce','{$id}','gmed', '{$token}')">({$_switch})</a>{/if}
+				{if not $user_gmed}- {$_top_not_gmed_pt} <a href="javascript:changedata('data_gmed','add','sce','{$id}','gmed', '{$token}')">({$_switch})</a>{/if}
 				</span><br>
 				{/if}
 				<span id="data_played">
-				{if $user_played}- {$_top_played_pt} <a href="javascript:changedata('data_played','remove','sce','{$id}','played')">({$_switch})</a>{/if}
-				{if not $user_played}- {$_top_not_played_pt} <a href="javascript:changedata('data_played','add','sce','{$id}','played')">({$_switch})</a>{/if}
+				{if $user_played}- {$_top_played_pt} <a href="javascript:changedata('data_played','remove','sce','{$id}','played', '{$token}')">({$_switch})</a>{/if}
+				{if not $user_played}- {$_top_not_played_pt} <a href="javascript:changedata('data_played','add','sce','{$id}','played', '{$token}')">({$_switch})</a>{/if}
 				</span>
 			</div>
 
@@ -189,9 +189,9 @@
 				{$_top_dyn_convention}<br><br>
 				<span id="data_visited">
 				{if $user_visited}
-				- {$_top_visited_pt} <a href="javascript:changedata('data_visited','remove','convent','{$id}','visited')">({$_switch})</a>
+				- {$_top_visited_pt} <a href="javascript:changedata('data_visited','remove','convent','{$id}','visited', '{$token}')">({$_switch})</a>
 				{else}
-				- {$_top_not_visited_pt} <a href="javascript:changedata('data_visited','add','convent','{$id}','visited')">({$_switch})</a>
+				- {$_top_not_visited_pt} <a href="javascript:changedata('data_visited','add','convent','{$id}','visited', '{$token}')">({$_switch})</a>
 				{/if}
 				</span>
 

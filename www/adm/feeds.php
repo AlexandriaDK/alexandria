@@ -16,6 +16,10 @@ $owner = $_REQUEST['owner'];
 $name = $_REQUEST['name'];
 $do = $_REQUEST['do'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 // Ret link
 if ($action == "changelink" && $do != "Slet") {
 	$url = trim($url);
@@ -98,6 +102,7 @@ print "<table align=\"center\" border=0>".
 
 foreach($result AS $row) {
 	print '<form action="feeds.php" method="post">'.
+	      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 	      '<input type="hidden" name="action" value="changelink">'.
 	      '<input type="hidden" name="id" value="'.$row['id'].'">';
 	print "<tr valign='top'>\n".

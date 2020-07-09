@@ -239,6 +239,18 @@ function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 	if ($login_count >= 25)         award_user_achievement($user_id,71); // login 25 times
 	if ($login_today_allusers == 0) award_user_achievement($user_id,76); // first login today
 	award_user_achievement($user_id, 1); // login
+	
+	$_SESSION['user_id'] = $user_id;
+	$name = getone("SELECT name FROM users WHERE id = '$user_id'");
+	$_SESSION['user_name'] = $name;
+	$_SESSION['user_site'] = 'Facebook';
+	$_SESSION['user_site_id'] = $siteuserid;
+	$_SESSION['user_author_id'] = (int) getone("SELECT aut_id FROM users WHERE id = '$user_id'");
+	$_SESSION['user_editor'] = (bool) getone("SELECT editor FROM users WHERE id = '$user_id'");
+	$_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
+	$_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
+	$_SESSION['token'] = md5('Alex(/FB(!"' . uniqid() ); // partially used, move salt to config if implemented
+
 	return $user_id;
 }
 
@@ -301,8 +313,9 @@ function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
 	$_SESSION['user_editor'] = (bool) getone("SELECT editor FROM users WHERE id = '$user_id'");
 	$_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
 	$_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
-	$_SESSION['token'] = md5('abcdef' . uniqid() ); // unused, move salt to config if implemented
+	$_SESSION['token'] = md5('Alex(/(!"' . $site . uniqid() ); // partially used, move salt to config if implemented
 	$_SESSION['do_redirect'] = TRUE;
+	check_login_achievements();
 
 	return $user_id;
 }
@@ -466,10 +479,11 @@ function getdynamicscehtml($sce_id,$type,$active) {
 		"gmed" => htmlspecialchars($t->getTemplateVars('_top_gmed_pt') ),
 		"played" => htmlspecialchars($t->getTemplateVars('_top_played_pt') ),
 	];
-	$span_id = "sce_".$sce_id."_".$type;
+	$jsurl = getdynamicjavascripturl( $sce_id, 'sce', $type, $active);
+	$span_id = "sce_" . $sce_id . "_" . $type;
 	$html = 
 		"<span id=\"".$span_id."\">".
-		"<a href=\"javascript:switchicon('".$span_id."','".($active?'remove':'add')."','sce',".$sce_id.",'".$type."')\">".
+		"<a href=\"" . $jsurl . "\">".
 		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]." ".($active?'active':'passive')."\" title=\"".$scenariotext[$type]."\">".
 		"</a>".
 		"</span>"
@@ -477,13 +491,13 @@ function getdynamicscehtml($sce_id,$type,$active) {
 	return $html;
 }
 
-function getdynamicconventhtml($sce_id,$type,$active) {
+function getdynamicconventhtml($convent_id,$type,$active) {
 	global $t;
 	$conventtext = [ "visited" => htmlspecialchars( $t->getTemplateVars('_top_visited_pt') ) ];
-	$span_id = "convent_".$sce_id."_".$type;
+	$span_id = "convent_" . $convent_id . "_" . $type;
 	$html = 
 		"<span id=\"".$span_id."\">".
-		"<a href=\"javascript:switchicon('".$span_id."','".($active?'remove':'add')."','convent',".$sce_id.",'".$type."')\">".
+		"<a href=\"javascript:switchicon('".$span_id."','".($active?'remove':'add')."','convent',".$convent_id.",'".$type."','".$token."')\">".
 		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$conventtext[$type]."\" title=\"".$conventtext[$type]."\" border=\"0\" />".
 		"</a>".
 		"</span>"
@@ -491,6 +505,27 @@ function getdynamicconventhtml($sce_id,$type,$active) {
 	return $html;
 }
 
+function getdynamicjavascripturl( $data_id, $category, $type, $active ) {
+	$token = $_SESSION['token'] ?? "";
+	$span_id = $category . "_" . $data_id . "_" . $type;
+	$url = "javascript:switchicon('".$span_id."','".($active?'remove':'add')."','" . $category ."',".$data_id.",'".$type."','".$token."')";
+	return $url;
+}
+
+function compare_tokens ( $token1, $token2 ) {
+	return ( $token1 === $token2 && $token1 !== "" && $token2 !== "" );
+}
+
+function compare_token_error( $usertoken, $sessiontoken ) {
+	if ( $usertoken === "" ) {
+		$output = [ 'error' => 'Missing token' ];
+	} elseif ( $sessiontoken === "" ) {
+		$output = [ 'error' => 'No token set' ];
+	} else {
+		$output = [ 'error' => 'Invalid token' ];
+	}	
+	return $output;
+}
 
 // generic functions
 

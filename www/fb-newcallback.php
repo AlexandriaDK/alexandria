@@ -92,17 +92,7 @@ $user = $response->getGraphUser();
 
 $user_id = do_fb_login($user['id'], $user['name'] );
 
-$_SESSION['user_id'] = $user_id;
-$name = getone("SELECT name FROM users WHERE id = '$user_id'");
-$_SESSION['user_name'] = $name;
-$_SESSION['user_site'] = 'Facebook';
-$_SESSION['user_site_id'] = $fbuserid;
-$_SESSION['user_author_id'] = (int) getone("SELECT aut_id FROM users WHERE id = '$user_id'");
-$_SESSION['user_editor'] = (bool) getone("SELECT editor FROM users WHERE id = '$user_id'");
-$_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
-$_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
 $redirect_url = get_redirect_url($_SERVER['HTTP_REFERER']);
-$_SESSION['token'] = md5('¤3"#xS' . uniqid() );
 
 check_login_achievements();
 

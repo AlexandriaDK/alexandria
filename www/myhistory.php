@@ -92,14 +92,7 @@ if ($conventions) {
 	foreach ($conventions AS $convent) {
 		$spanid = "convent_".$convent['id']."_visited";
 		$content_myconvents .= "<tr>";
-		$content_myconvents .= "<td>".
-			                     "<span id=\"".$spanid."\">".
-			                     "<a href=\"javascript:switchicon('".$spanid."','remove','convent',".$convent['id'].",'visited')\">".
-			                     "<img src=\"gfx/visited_active.jpg\" alt=\"" . htmlspecialchars($str_visited) . "\" title=\"" . htmlspecialchars($str_visited) . "\" border=\"0\" />".
-			                     "</a>".
-			                     "</span>".
-			                     "</td>";
-
+		$content_myconvents .= "<td>" . getdynamicconventhtml( $convent['id'], 'visited', TRUE ) . "</td>";
 		$content_myconvents .= "<td>".getdatahtml('convent',$convent['id'],$convent['name'])."</td>";
 		$content_myconvents .= "<td style=\"text-align: left\">".$convent['conset_name']."</td>";
 		$content_myconvents .= "<td style=\"text-align: right\">" . yearname( $convent['year'] ) . "</td>";
@@ -126,16 +119,8 @@ if ($scenarios) {
 			$options = getuserlogoptions('scenario');
 		}
 		foreach($options AS $type) {
-			$spanid = "sce_".$scenario['id']."_".$type;
-#			$content_myscenarios .= "<td style=\"text-align: center\"><span id=\"".$spanid."\"><a href=\"javascript:switchicon('".$spanid."','".($scenario[$type]?'remove':'add')."','sce',".$scenario['id'].",'".$type."')\">".(0+$scenario[$type])."</a></td>";
 			if ($type) {
-				$content_myscenarios .= "<td style=\"text-align: center\">".
-							"<span id=\"".$spanid."\">".
-							"<a href=\"javascript:switchicon('".$spanid."','".($scenario[$type]?'remove':'add')."','sce',".$scenario['id'].",'".$type."')\">".
-							"<img src=\"gfx/".$type."_".($scenario[$type]?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]."\" title=\"".$scenariotext[$type]."\" border=\"0\" />".
-							"</a>".
-							"</span>".
-							"</td>";
+				$content_myscenarios .= "<td style=\"text-align: center\">" . getdynamicscehtml( $scenario['id'], $type, $scenario[$type] ) . "</td>";
 			} else {
 				$content_myscenarios .= "<td></td>";
 			}

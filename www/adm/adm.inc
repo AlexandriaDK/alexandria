@@ -25,7 +25,7 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
 
 		print '
 		<p align="center">
-		(This page requires admin privileges)
+		(This page requires extended admin privileges)
 		</p>';
 
 	}
@@ -37,10 +37,19 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
 	';
 	exit;
 } else {
-// Så er brugeren i orden!
+// The user is an admin and is allowed to access this section. Check for token!
 	$authuser = $_SESSION['user_name'];
+	$token = $_REQUEST['token'] ?? '';
+	if ( ! $_SESSION['token'] ) {
+		print '
+		<p align="center">
+			You are missing a token! Please <a href="../logout">log out</a> and in again.
+		</p>
+	';
+		exit;
+	}
 
-// Skal brugeren kunne se ændringer?
+	// Should the user be allowed to view the log?
 	$viewlog = TRUE;
 }
 

@@ -14,6 +14,9 @@ $intern = (string) $_REQUEST['intern'];
 $country = (string) $_REQUEST['country'];
 $countryname = getCountryName( $country );
 
+if ( $action ) {
+	validatetoken( $token );
+}
 
 if (!$action && $conset) {
 	$row = getrow("SELECT id, name, description, intern, country FROM conset WHERE id = '$conset'");
@@ -66,6 +69,7 @@ if ($action == "create") {
 htmladmstart("Con series");
 
 print "<FORM ACTION=\"conset.php\" METHOD=\"post\">\n";
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 if (!$conset) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";

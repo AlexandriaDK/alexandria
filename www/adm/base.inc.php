@@ -349,4 +349,12 @@ EOD;
 	return true;
 }
 
+function validatetoken( $token1 ) {
+	$token2 = $_SESSION['token'];
+	if ( ! compare_tokens( $token1, $token2 ) ) {
+		print "Data *not* saved! Your token is invalid. Probably just a temporary error. Please <a href=\"../logout\">logout</a> and login again.";
+		exit;
+	}
+}
+
 ?>

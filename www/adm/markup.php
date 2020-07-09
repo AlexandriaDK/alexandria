@@ -11,6 +11,10 @@ $id = (int) $_REQUEST['id'];
 $table = (string) $_REQUEST['table'];
 $text = (string) $_REQUEST['text'];
 
+if ( $action ) {
+	validatetoken( $token );
+}
+
 if ($action == 'fix') {
 	updatestuff($table, $text, $id);
 }
@@ -55,9 +59,10 @@ $total = count($trivias) + count($tags) + count($scenarios) + count($cons) + cou
 print dberror();
 
 print "<table border=\"1\">" . PHP_EOL;
-print "<th colspan=\"2\">Trivia</th>" . PHP_EOL;
+print "<tr><th colspan=\"2\">Trivia</th></tr>" . PHP_EOL;
 foreach($trivias AS $trivia) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"trivia\"><input type=\"hidden\" name=\"id\" value=\"" . $trivia['id'] . "\">";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($trivia['fact']) . "<br>";
 	print "<a href=\"redir.php?cat=" . $trivia['category'] . "&data_id=" . $trivia['data_id'] . "\">[link]</a> ";
@@ -78,9 +83,10 @@ foreach($trivias AS $trivia) {
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
-print "<th colspan=\"2\">Tags</th>" . PHP_EOL;
+print "<tr><th colspan=\"2\">Tags</th></tr>" . PHP_EOL;
 foreach($tags AS $tag) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"tag\"><input type=\"hidden\" name=\"id\" value=\"" . $tag['id'] . "\">";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($tag['description']) . "<br>";
 	print "<a href=\"tag.php?tag_id=" . $tag['id'] . "\">[tag]</a>";
@@ -100,9 +106,10 @@ foreach($tags AS $tag) {
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
-print "<th colspan=\"2\">Scenarios</th>" . PHP_EOL;
+print "<tr><th colspan=\"2\">Scenarios</th></tr>" . PHP_EOL;
 foreach($scenarios AS $scenario) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sce\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($scenario['description']) . "<br>";
 	print "<a href=\"game.php?game=" . $scenario['id'] . "\">[scenario]</a>";
@@ -121,9 +128,10 @@ foreach($scenarios AS $scenario) {
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
-print "<th colspan=\"2\">Cons</th>" . PHP_EOL;
+print "<tr><th colspan=\"2\">Cons</th></tr>" . PHP_EOL;
 foreach($cons AS $con) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convent\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . nl2br(htmlspecialchars($con['description'])) . "<br>";
 	print "<a href=\"convent.php?con=" . $con['id'] . "\">[convention]</a>";
@@ -142,9 +150,10 @@ foreach($cons AS $con) {
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
-print "<th colspan=\"2\">RPG Systems</th>" . PHP_EOL;
+print "<tr><th colspan=\"2\">RPG Systems</th></tr>" . PHP_EOL;
 foreach($syss AS $sys) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sys\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($sys['description']) . "<br>";
 	print "<a href=\"system.php?system=" . $sys['id'] . "\">[RPG system]</a>";

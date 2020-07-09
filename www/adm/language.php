@@ -127,6 +127,7 @@ if ( $label ) {
 	// find next missing translation
 	$matches = findintemplates( $label );
 	print "<form action=\"language.php\" method=\"post\">";
+	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<input type=\"hidden\" name=\"label\" value=\"" . htmlspecialchars( $label ) . "\">";
 	print "<input type=\"hidden\" name=\"action\" value=\"update\">";
 	print "<table>";
