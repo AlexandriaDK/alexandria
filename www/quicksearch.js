@@ -1,30 +1,3 @@
-var xmlhttp;
-
-/*@cc_on @*/
-/*@if (@_jscript_version >= 5)
-    try {
-        xmlhttp=new ActiveXObject("Msxml2.XMLHTTP")
-    }
-    catch (e) {
-        try {
-            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP")
-        }
-        catch (E) {
-            xmlhttp=false
-        }
-    }
-@else
- xmlhttp=false
-@end @*/
-
-if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
-    try {
-        xmlhttp = new XMLHttpRequest();
-    } catch (e) {
-        xmlhttp=false;
-    }
-}
-
 function changedata(element,action,category,data_id,type) {
 	if ( action == "add" || action == "remove" ) {
 		var doaction = action + 'userlog';
@@ -36,20 +9,13 @@ function changedata(element,action,category,data_id,type) {
 }
 
 function switchicon(element,action,category,data_id,type) {
-	var newtext;
-	if (type == 'read') { newtext = 'Læst' }
-	if (type == 'gmed') { newtext = 'Kørt' }
-	if (type == 'played') { newtext = 'Spillet' }
-	if (type == 'visited') { newtext = 'Besøgt' }
-	if (action == "add") {
-		xmlhttp.open("GET", "xmlrequest.php?action=adduserlog&category="+category+"&data_id="+data_id+"&type="+escape(type), true);
-		xmlhttp.send(null);
-		document.getElementById(element).innerHTML = "<a href=\"javascript:switchicon('"+element+"','remove','"+category+"','"+data_id+"','"+escape(type)+"')\"><img src=\"gfx/"+type+"_active.jpg\" alt=\""+newtext+" active\" title=\""+newtext+"\" border=\"0\" /></a>";
-	}
-	if (action == "remove") {
-		xmlhttp.open("GET", "xmlrequest.php?action=removeuserlog&category="+category+"&data_id="+data_id+"&type="+escape(type), true);
-		xmlhttp.send(null);
-		document.getElementById(element).innerHTML = "<a href=\"javascript:switchicon('"+element+"','add','"+category+"','"+data_id+"','"+escape(type)+"')\"><img src=\"gfx/"+type+"_passive.jpg\" alt=\""+newtext+" passive\" title=\""+newtext+"\" border=\"0\" /></a>";
+	if (action == "add" || action == "remove" ) {
+		var doaction = action + 'userlog';
+		var img = type + '_' + (action == 'add' ? 'active' : 'passive') + ".jpg";
+		$.getJSON( "xmlrequest.php", { action: doaction, category: category, data_id: data_id, type: type }, function( data ) {
+			var html = " <a href=\"javascript:switchicon('" + element + "','" + data.newdirection + "','" + category + "','" + data_id + "','" + escape(type) + "')\"><img src=\"gfx/" + img + "\" alt=\"" + ( data.newlabel ) + "\" title=\"" + ( data.newlabel ) + "\"></a>";
+			$( '#' + element ).html( html );
+		});
 	}
 }
 
