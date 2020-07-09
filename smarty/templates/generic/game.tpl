@@ -24,12 +24,13 @@ $( function() {
 
 {if $sysstring != "" || $genre != "" || $participants != "" || $tags || $user_id}
 	<form action="adm/user_tags.php" method="post">
+	<input type="hidden" name="token" value="{$token}">
 	<ul class="taglist">
 	{foreach $tags AS $tag_id => $tag}
 	<li>
 		{if isset($user_can_edit_tag[$tag_id]) && $user_can_edit_tag[$tag_id] }
 			<span id="tagdelete_{$tag_id}" class="delete"> 
-			<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete" title="{$_sce_removetag|escape}">[{$_remove|ucfirst|escape}]</a></span>
+			<a href="adm/user_tags.php?scenario={$id}&tag_id={$tag_id}&action=delete&token={$token}" title="{$_sce_removetag|escape}">[{$_remove|ucfirst|escape}]</a></span>
 		{/if}
 	<a href="data?tag={$tag|rawurlencode}" rel="tag" class="tag">{$tag|escape}</a>
 	</li>
@@ -63,6 +64,7 @@ $( function() {
 	{if ($user_id) }
 		<div id="form_participants" style="display: none">
 		<form action="adm/user_participants.php" method="post">
+		<input type="hidden" name="token" value="{$token}">
 		<table>
 		<tr><td>{$_sce_nogms}:</td><td><input type="text" name="gms" size="2" value="{$gms}" /></td></tr>
 		<tr><td>{$_sce_noplayers}:</td><td><input type="text" name="players" size="2" value="{$players}" /></td></tr>

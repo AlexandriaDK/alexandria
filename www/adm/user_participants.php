@@ -21,12 +21,15 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
+$token = $_REQUEST['token'] ?? '';
 $scenarie = (int) $_REQUEST['scenarie'];
 $user_id = $_SESSION['user_id'];
 if (!$user_id || !$scenarie) {
 	header("Location: ../data?scenarie=$scenarie");
 	exit;
 }
+
+validatetoken( $token );
 
 // valid user
 $gms = $_REQUEST['gms'];

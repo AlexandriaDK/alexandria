@@ -157,7 +157,7 @@
 	<td style="text-align: center;">
 		{foreach $user_can_edit_organizers AS $acrel_id => $true}
 		{if $ol.id == $acrel_id}
-			<a href="adm/user_organizers.php?convent={$id}&amp;acrel_id={$acrel_id}&amp;action=delete">[{$_remove}]</a>
+			<a href="adm/user_organizers.php?convent={$id}&amp;acrel_id={$acrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
 			{break}
 		{/if}
 		{/foreach}
@@ -169,6 +169,7 @@
 	{if $editmode}
 	<form action="adm/user_organizers.php" method="post">
 	<input type="hidden" name="convent" value="{$id}">
+	<input type="hidden" name="token" value="{$token}">
 	<input type="hidden" name="action" value="add">
 	<tr style="vertical-align: top">
 	<td style="padding-bottom: 250px">

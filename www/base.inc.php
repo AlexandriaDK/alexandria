@@ -127,6 +127,7 @@ if (!defined('DBERROR') ) {
 		$t->assign('user_editor',$_SESSION['user_editor'] ?? FALSE);
 		$t->assign('user_admin',$_SESSION['user_admin'] ?? FALSE);
 		$t->assign('user_achievements_to_display', get_achievements_to_display() );
+		$t->assign('token',$_SESSION['token'] ?? '');
 	}
 	$t->assign('ALEXLANGUAGES', $alexlanguages );
 	if ($lang) {

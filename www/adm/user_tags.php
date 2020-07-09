@@ -9,9 +9,14 @@ require "base.inc.php";
 $scenario = (int) $_REQUEST['scenario'];
 $action = (string) $_REQUEST['action'];
 $user_id = $_SESSION['user_id'];
+$token = $_REQUEST['token'] ?? '';
 if (!$user_id || !$scenario) {
 	header("Location: ../data?scenarie=$scenario");
 	exit;
+}
+
+if ( $action ) {
+	validatetoken( $token );
 }
 
 // valid user

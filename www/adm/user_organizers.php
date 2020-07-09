@@ -9,12 +9,18 @@ require "base.inc.php";
 $convent = (int) $_REQUEST['convent'];
 $action = (string) $_REQUEST['action'];
 $user_id = $_SESSION['user_id'];
+$token = $_REQUEST['token'] ?? '';
 $acrel_id = (int) $_REQUEST['acrel_id'];
 
 if (!$user_id) {
 	header("Location: ../data?con=$convent");
 	exit;
 }
+
+if ( $action ) {
+	validatetoken( $token );
+}
+
 
 // valid user
 
