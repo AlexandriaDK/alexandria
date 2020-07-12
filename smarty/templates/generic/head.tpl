@@ -47,8 +47,8 @@
 		</style>
 		{if isset($json_alltags) }
 		<script>
+		var availableTags = {$json_alltags};
 		$(function() {
-			var availableTags = {$json_alltags};
 			$( ".newtag" ).autocomplete({
 				source: availableTags,
 				autoFocus: true,

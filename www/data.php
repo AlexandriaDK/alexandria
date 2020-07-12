@@ -28,23 +28,20 @@ $year = (int) ($_REQUEST['year'] ?? 0);
 $tag = (string) ($_REQUEST['tag'] ?? '');
 
 if ($person) {
-	include ("person_t.inc");
-} elseif ($scenarie) {
-	include ("game_t.inc");
-//	include ("scenario_t.inc");
-} elseif ($game) {
-	include ("game_t.inc");
+	include ("person.inc.php");
+} elseif ($scenarie || $game) {
+	include ("game.inc.php");
 } elseif ($con) {
-	include ("convent_t.inc");
+	include ("convent.inc.php");
 } elseif ($conset) {
-	include ("conset_t.inc");
+	include ("conset.inc.php");
 } elseif ($system) {
-	include ("system_t.inc");
+	include ("system.inc.php");
 } elseif ($year) {
-	include ("year_t.inc");
+	include ("year.inc.php");
 } elseif ($tag) {
-	include ("tag_t.inc");
+	include ("tag.inc.php");
 } else {
-	include ("default.inc");
+	include ("default.inc.php");
 }
 ?>

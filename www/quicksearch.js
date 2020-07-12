@@ -46,6 +46,11 @@ $(function() {
 			.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
 			.appendTo ( ul );
 	}
+	$( ".newtag" ).focus(function() { 
+		// only .push works!
+		console.log(availableTags);
+
+	});
 });
 
 function selectAwardYear(year) {
