@@ -1,7 +1,7 @@
 <?php
 require("./connect.php");
 require_once("base.inc.php");
-require_once("smartfind.inc");
+require_once("smartfind.inc.php");
 
 function getjostid ($name) {
 	global $id_a, $id_b, $id_data;

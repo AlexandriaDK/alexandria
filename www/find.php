@@ -8,7 +8,7 @@ $debug = FALSE;
 
 require("./connect.php");
 require("base.inc.php");
-require("smartfind.inc");
+require("smartfind.inc.php");
 
 $find = "";
 $cat = $_REQUEST['cat'] ?? '';

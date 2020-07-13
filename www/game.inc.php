@@ -231,12 +231,6 @@ if ($r['id'] == 0) {
 		$users_entries = getalluserentries('sce', $r['id']);
 	}
 
-// April fools day
-	if ( $_REQUEST['april'] ?? 0 == 1 ) {
-		require("april_scenario.inc.php");
-		$description = aprildescription($scenarie);
-	}
-
 // Smarty
 	$t->assign('pagetitle',$r['title']);
 	$t->assign('type',$this_type);
