@@ -78,11 +78,11 @@ if ($r['id'] == 0) {
 		INNER JOIN asrel ON aut.id = asrel.aut_id
 		LEFT JOIN title ON asrel.tit_id = title.id
 		WHERE asrel.sce_id = '$scenarie'
-		ORDER BY title.priority, title.id, aut.surname, aut.firstname
+		ORDER BY title.priority, title.id, aut.surname, aut.firstname, aut.id
 	");
 	foreach($q AS $rs) {
 		$title = $t->getTemplateVars( "_" . $rs['title_label'] );
-		$note = "";
+		$htmlnote = "";
 		if ( $rs['note'] ) {
 			$htmlnote = " (" . textlinks( htmlspecialchars( $rs['note'] ) ) . ")";
 		}
