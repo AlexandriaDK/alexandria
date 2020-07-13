@@ -335,7 +335,7 @@ function htmladmstart($title = "") {
 <body>
 EOD;
 	print $html;
-	include("links.inc");
+	include("links.inc.php");
 	printinfo();
 	return true;
 }

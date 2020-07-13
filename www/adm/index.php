@@ -29,7 +29,7 @@ $(document).ready(function() {
 <body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000" >
 
 <?php
-include("links.inc");
+include("links.inc.php");
 printinfo();
 ?>
 

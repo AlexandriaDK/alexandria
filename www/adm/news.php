@@ -1,5 +1,4 @@
 <?php
-$admonly = TRUE;
 require "adm.inc";
 require "base.inc.php";
 chdir("..");
@@ -71,7 +70,7 @@ if ($id) {
 	      '<input type="hidden" name="action" value="changenews">'.
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print '<p>News ID #'.$id.'</p>';
-	print '<p><textarea name="text" cols="60" rows="5">'.htmlspecialchars($row['text']).'</textarea></p>';
+	print '<p><textarea name="text" cols="60" rows="5" placeholder="Short news post in English only">'.htmlspecialchars($row['text']).'</textarea></p>';
 	print '<p>Date <input type="text" name="published" length="20" value="'.$row['published'].'" placeholder="(leave blank for today)"></p>';
 	print '<p>Online <input type="checkbox" name="online" '.$selected.'></p>';
 	print '<p><input type="submit" name="do" value="Edit"></p>'.
@@ -82,7 +81,7 @@ if ($id) {
 	      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 	      '<input type="hidden" name="action" value="addnews">';
 	print '<p>New post:</p>';
-	print '<p><textarea name="text" cols="60" rows="5"></textarea></p>';
+	print '<p><textarea name="text" cols="60" rows="5" placeholder="Short news post in English only"></textarea></p>';
 	print '<p>Date <input type="text" name="published" length="20" placeholder="(leave blank for today)"></p>';
 	print '<p>Online <input type="checkbox" name="online" checked="checked"></p>';
 	print '<p><input type="submit" name="do" value="Create"></p>';

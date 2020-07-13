@@ -14,6 +14,8 @@
 ·
 <a href="tag.php">Tag</a>
 ·
+<a href="news.php" accesskey="n">News</a>
+·
 <a href="language.php" accesskey="o" title="Hotkey: O">Translations</a>
 ·
 <a href="showlog.php" accesskey="l" title="Hotkey: L">Log</a>
@@ -26,8 +28,6 @@ if ($_SESSION['user_admin'] ) {
 ?>
 ·
 <a href="achievements.php" accesskey="a">Achievements</a>
-·
-<a href="news.php" accesskey="n">News</a>
 ·
 <a href="feeds.php">Feeds</a>
 ·

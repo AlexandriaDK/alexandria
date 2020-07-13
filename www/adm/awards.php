@@ -196,7 +196,7 @@ if ($action == 'deletenomineeentity') {
 
 <body>
 <?php
-include("links.inc");
+include("links.inc.php");
 
 printinfo();
 
