@@ -49,7 +49,6 @@ $t->assign('latest_downloads',$latest_downloads);
 
 ob_start();
 $t->display('frontpage.tpl');
-//skinke($t->fetch('frontpage.tpl'));
 exit;
 
 ?>
