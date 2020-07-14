@@ -26,7 +26,7 @@
 			Database structure was created successfully.
 		</p>
 		<p>
-			Import content from Alexandria.dk? If you have any content in the tables in the selected database <code class="label">{$dbname|escape}</code> it will be delete.
+			Import content from Alexandria.dk? If you have any content in the tables in the selected database <code class="label">{$dbname|escape}</code> it will be deleted.
 		</p>
 		<p class="installnote">
 			Data will be fetched from <a href="https://alexandria.dk/export.php">https://alexandria.dk/export.php</a> in JSON format.
@@ -50,11 +50,10 @@
 			<input type="submit" value="Activate site">
 		</div>
 		</form>
+		{elseif $stage == 'tokenerror'}
+		<h2>Token error</h2>
 		<p>
-			Database structure was created successfully.
-		</p>
-		<p>
-			Result: {$importresult|escape}
+			Can't validate browser token. Have you enabled cookies? Please <a href="./">try again</a>.
 		</p>
 		{else}
 		<h2>Unknown territory</h2>

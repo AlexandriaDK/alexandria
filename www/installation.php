@@ -1,12 +1,26 @@
 <?php
 // from this point on we know that the setup is incomplete
 define( 'IMPORT_ENDPOINT', 'https://alexandria.dk/en/export.php' );
+$action = $_POST[ 'action' ] ?? '';
+if ( $action && ( $_SESSION['token'] !== $_POST['token'] ) ) {
+	$t->assign( 'stage', 'tokenerror' );
+	$t->assign( 'installation', TRUE );
+	$t->assign( 'dbname', DB_NAME ); 
+	$t->display( 'installation.tpl' );
+	exit;
+}
 
-function dbmultiinsert( $table, $fields, $allvalues ) {
+function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
+	if ( $fields == NULL ) {
+		$fields = [];
+		foreach ( $allvalues[0] AS $key => $list ) {
+			$fields[] = $key;
+		}
+	}
 	$dataset = [];
-	foreach( $allvalues AS $person ) {
+	foreach( $allvalues AS $list ) {
 		$set = [];
-		foreach ( $person AS $part ) {
+		foreach ( $list AS $part ) {
 			$set[] = ( is_numeric($part) ? $part : "'" . dbesc($part) . "'" ) ;
 		}
 		$dataset[] = "(" . implode(", ", $set ) . ")";
@@ -16,7 +30,6 @@ function dbmultiinsert( $table, $fields, $allvalues ) {
 		doquery( "TRUNCATE TABLE `$table` ");
 		doquery( $multisql );
 		return true;
-
 	} else {
 		return false;
 	}
@@ -36,8 +49,8 @@ if ( ! isset( $_SESSION['token'] ) ) {
 }
 $t->assign('token',$_SESSION['token'] ?? '');
 
-if ( ( $_POST['action'] ?? '' ) == 'importstructure' && ( $_SESSION['token'] === $_POST['token'] ) ) {
-	$url = IMPORT_ENDPOINT . '?dataset=sqlstructure';
+if ( $action == 'importstructure' ) {
+	$url = IMPORT_ENDPOINT . '?setup=sqlstructure';
 	$sqltables = json_decode( file_get_contents( $url ) );
 	if ( ! $sqltables ) {
 		$t->assign( 'stage', 'dbsetupnodata' );
@@ -52,13 +65,10 @@ if ( ( $_POST['action'] ?? '' ) == 'importstructure' && ( $_SESSION['token'] ===
 		header( "Location: ./" );
 		exit;
 	}
-} elseif ( ( $_POST['action'] ?? '' ) == 'populate' && ( $_SESSION['token'] === $_POST['token'] ) ) {
+} elseif ( $action == 'populate' ) {
 	$url = IMPORT_ENDPOINT;
 	$datasets = json_decode( file_get_contents( $url ) );
 	foreach ( $datasets->result->datasets AS $dataset => $description ) {
-		if ( $dataset == 'sqlstructure' ) { // don't import the structure again
-			continue;
-		}
 		$url = IMPORT_ENDPOINT . "?dataset=" . rawurlencode( $dataset );
 		doquery( "DELETE FROM installation WHERE `key` = 'currentdataset'" );
 		doquery( "INSERT INTO installation (`key`, `value`) VALUES ('currentdataset', '" . dbesc( $dataset ). "')" );
@@ -66,22 +76,66 @@ if ( ( $_POST['action'] ?? '' ) == 'importstructure' && ( $_SESSION['token'] ===
 
 		switch ( $dataset ) {
 		case 'persons':
-			dbmultiinsert( 'aut', [ 'id', 'firstname', 'surname' ], $data->result );
+		case 'conventions':
+		case 'conventionsets':
+		case 'systems':
+		case 'genres':
+		case 'tags':
+		case 'gametags':
+		case 'gameruns':
+		case 'titles':
+		case 'presentations':
+		case 'feeds':
+		case 'trivia':
+		case 'links':
+		case 'aliases':
+		case 'sitetexts':
+		case 'awards':
+		case 'award_categories':
+		case 'award_nominee_entities':
+		case 'award_nominees':
+			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags' ];
+			if ( isset( $tablemap[ $dataset ] ) ) {
+				$table = $tablemap[ $dataset ];
+			} else {
+				$table = $dataset;
+			}
+			dbmultiinsert( $table, $data->result );
 			break;
 		case 'games':
-			dbmultiinsert( 'sce', [ 'id', 'title', 'boardgame', 'sys_id', 'sys_extra', 'aut_extra', 'gms_min', 'gms_max', 'players_min', 'players_max', 'participants_extra' ], $data->result );
+			dbmultiinsert( 'sce', $data->result, [ 'id', 'title', 'boardgame', 'sys_id', 'sys_ext', 'aut_extra', 'gms_min', 'gms_max', 'players_min', 'players_max', 'participants_extra' ] );
+			break;
+		case 'person_game_title_connections':
+			dbmultiinsert( 'asrel', $data->result, [ 'id', 'aut_id', 'sce_id', 'tit_id', 'note' ] );
+			break;
+		case 'game_convention_title_connections':
+			dbmultiinsert( 'csrel', $data->result, [ 'id', 'sce_id', 'convent_id', 'pre_id' ] );
+			break;
+		case 'person_convention_connections':
+			dbmultiinsert( 'acrel', $data->result, [ 'id', 'aut_id', 'convent_id', 'aut_extra', 'role' ] );
 			break;
 		default:
+			print "Unknown table from Alexandria server!";
 			exit;
 		}
-
 	}
+	doquery( "DELETE FROM installation WHERE `key` = 'status'" );
+	doquery( "INSERT INTO installation (`key`, `value`) VALUES ('status', 'ready')" );
+	header( "Location: ./" );
 	exit;
-} elseif ( getone( "SHOW tables LIKE 'installation'" ) !== NULL && getone( "SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'empty'" ) )  {
-	$t->assign( 'stage', 'populate' );
+} elseif ( $action == 'activate' ) {
+	doquery( "DELETE FROM installation WHERE `key` = 'status'" );
+	doquery( "INSERT INTO installation (`key`, `value`) VALUES ('status', 'live')" );
+	header( "Location: ./" );
+	exit;
+} elseif ( getone( "SHOW tables LIKE 'installation'" ) !== NULL ) {
+	if ( getone( "SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'empty'" ) )  {
+		$t->assign( 'stage', 'populate' );
+	} elseif ( getone( "SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'ready'" ) )  {
+		$t->assign( 'stage', 'ready' );
+	}
 } else {
 	$t->assign( 'stage', 'dbsetup' );
-
 }
 
 $t->assign( 'installation', TRUE );

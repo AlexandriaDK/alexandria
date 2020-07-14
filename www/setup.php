@@ -5,7 +5,7 @@ $ignoreerrors = FALSE;
 $setuperror = FALSE;
 $errors = [];
 $required_include_files = [ 'db.auth.php' ];
-$required_php_extensions = [ 'mysqli', 'mbstring', 'intl' ];
+$required_php_extensions = [ 'mysqli', 'mbstring', 'intl', 'gd' ];
 $required_apache_modules = [ 'mod_rewrite' ];
 $required_smarty = 'smarty-3.1.34/libs/';
 
@@ -32,8 +32,8 @@ The following required PHP extensions are not installed or enabled: " . implode(
 
 Please check your PHP installation and configuration to make sure this extension is installed and enabled.
 
-For Ubuntu/Debian, as root try out the following console command:
-	apt install " . implode( " ", array_map( function ( $string ) { return "php-" . $string; }, $missing_php_extensions ) ) . "
+For Ubuntu/Debian, try out the following console command:
+	sudo apt install " . implode( " ", array_map( function ( $string ) { return "php-" . $string; }, $missing_php_extensions ) ) . "
 
 Remember to restart the webserver after installing the extension.
 ";
