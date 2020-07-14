@@ -21,7 +21,7 @@ function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
 	foreach( $allvalues AS $list ) {
 		$set = [];
 		foreach ( $list AS $part ) {
-			$set[] = ( is_numeric($part) ? $part : "'" . dbesc($part) . "'" ) ;
+			$set[] = ( is_null( $part ) ? 'NULL' : ( is_numeric($part) ? $part : "'" . dbesc($part) . "'" ) ) ;
 		}
 		$dataset[] = "(" . implode(", ", $set ) . ")";
 		if ( count( $dataset ) >= 1000 ) {
