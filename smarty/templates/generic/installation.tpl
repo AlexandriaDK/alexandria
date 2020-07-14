@@ -60,11 +60,11 @@
 
 		{/if}
 		<p class="installnote">
-			Data is fetched from Alexandria's API at <a href="https://alexandria.dk/export.php">https://alexandria.dk/export.php</a> (JSON format). <span id="checkserver">Checking if service is online...</span>
+			Data is fetched from Alexandria's API at <a href="https://alexandria.dk/export">https://alexandria.dk/export</a> (JSON format). <span id="checkserver">Checking if service is online...</span>
 		</p>
 	</div>
 <script>
-$.getJSON( "https://alexandria.dk/en/export.php", function( data ) {
+$.getJSON( "https://alexandria.dk/en/export", function( data ) {
 	if ( data.status == 'ready' ) {
 		$( '#checkserver' ).fadeOut( function() { $(this).html( 'Service is <b>ready</b>.' ).css( "color", "green" ).fadeIn(); } );
 	} else {
