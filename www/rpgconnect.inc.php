@@ -15,7 +15,7 @@ if (!@ ($dblink = mysqli_connect($db_host, $db_user, $db_pass) ) || @$_SERVER['Q
 	$t->display('dberror.tpl');
 	exit;
 }
-mysqli_select_db($dblink, $db_name) or die("Unable to select db\n"); // definitely need better error
+mysqli_select_db($dblink, $db_name) or die("Unable to select database\n"); // definitely need better error
 mysqli_set_charset($dblink, "utf8mb4");
 mysqli_query($dblink, "SET sql_mode = ''"); // allow dates such as 0000-00-00
 ?>

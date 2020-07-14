@@ -81,8 +81,8 @@ if ( $action == 'importstructure' ) {
 		case 'systems':
 		case 'genres':
 		case 'tags':
-		case 'gametags':
 		case 'gameruns':
+		case 'gamedescriptions':
 		case 'titles':
 		case 'presentations':
 		case 'feeds':
@@ -94,7 +94,7 @@ if ( $action == 'importstructure' ) {
 		case 'award_categories':
 		case 'award_nominee_entities':
 		case 'award_nominees':
-			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags' ];
+			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description' ];
 			if ( isset( $tablemap[ $dataset ] ) ) {
 				$table = $tablemap[ $dataset ];
 			} else {
@@ -102,9 +102,14 @@ if ( $action == 'importstructure' ) {
 			}
 			dbmultiinsert( $table, $data->result );
 			break;
+		case 'gametags':
+			dbmultiinsert( 'tags', $data->result, [ 'id', 'sce_id', 'tag' ] );
+			break;
 		case 'games':
 			dbmultiinsert( 'sce', $data->result, [ 'id', 'title', 'boardgame', 'sys_id', 'sys_ext', 'aut_extra', 'gms_min', 'gms_max', 'players_min', 'players_max', 'participants_extra' ] );
 			break;
+		case 'genre_game_connections':
+			dbmultiinsert( 'gsrel', $data->result, [ 'id', 'gen_id', 'sce_id' ] );
 		case 'person_game_title_connections':
 			dbmultiinsert( 'asrel', $data->result, [ 'id', 'aut_id', 'sce_id', 'tit_id', 'note' ] );
 			break;
@@ -115,7 +120,7 @@ if ( $action == 'importstructure' ) {
 			dbmultiinsert( 'acrel', $data->result, [ 'id', 'aut_id', 'convent_id', 'aut_extra', 'role' ] );
 			break;
 		default:
-			print "Unknown table from Alexandria server!";
+			print "Unknown table from Alexandria server: $dataset";
 			exit;
 		}
 	}
