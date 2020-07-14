@@ -13,11 +13,12 @@ if (is_dir($_SERVER['DOCUMENT_ROOT']."/$string")) {
 	if (preg_match('_^[a-z]{2}/_', $string) ) {
 		$langpath = "/" . substr($string,0,2) . '/';
 		$find = substr($string,3);
+		$url = $langpath . "find?find=" . $find;
 	} else {
 		$langpath = '/en/';
 		$find = $string;
+		$url = $langpath . $string;
 	}
-	$url = $langpath . "find?find=" . $find;
 	#$url = "https://" . $_SERVER['HTTP_HOST'] . "/" . $langpath . "find?find=" . $find;
 } else {
 	$magic = FALSE;
