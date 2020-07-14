@@ -3,6 +3,7 @@ $timestamp_start = date("c");
 require("./connect.php");
 require("base.inc.php");
 $dataset = (string) ($_REQUEST['dataset'] ?? '');
+$setup = (string) ($_REQUEST['setup'] ?? '');
 $data_id = (int) ($_REQUEST['data_id'] ?? 0);
 $output = [];
 
@@ -60,7 +61,7 @@ if ( $dataset === 'persons' ) {
 } elseif ( $dataset === 'person_convention_connections' ) {
 	$data = getall(" SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id", FALSE);
 	$output = $data;
-} elseif ( $dataset === 'sqlstructure' ) {
+} elseif ( $setup === 'sqlstructure' ) {
 	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'tag', 'tags', 'scerun', 'title', 'pre', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'installation' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
@@ -68,7 +69,7 @@ if ( $dataset === 'persons' ) {
 		$tablecreate[ $table ] = $create[1];
 	}
 	$output = $tablecreate;
-} elseif ( $dataset !== '' ) { // default
+} elseif ( $dataset !== '' ) { // unknown dataset
 	$data = [
 		"error" => "Unknown dataset"
 	];
@@ -101,6 +102,7 @@ if ( $dataset === 'persons' ) {
 		],
 		'examples' => [
 			'export.php' => 'This overview',
+			'export.php?setup=structure' => 'Get SQL structure for tables',
 			'export.php?dataset=persons' => 'Get all persons',
 //			'export.php?dataset=persons&data_id=1' => 'Get person with data id 1',
 			//		'export.php?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
