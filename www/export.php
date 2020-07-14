@@ -14,7 +14,7 @@ if ( $dataset === 'persons' ) {
 	$data = getall( "SELECT id, title, boardgame, sys_id AS system_id, sys_ext AS system_extra, aut_extra AS person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM sce ORDER BY id", FALSE );
 	$output = $data;
 } elseif ( $dataset === 'conventions' ) {
-	$data = getall( "SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.confirmed, a.cancelled, a.country, b.name AS conset_name FROM convent a LEFT JOIN conset b ON a.conset_id = b.id ORDER BY a.id", FALSE);
+	$data = getall( "SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.confirmed, a.cancelled, a.country FROM convent a ORDER BY a.id", FALSE);
 	$output = $data;
 } elseif ( $dataset === 'conventionsets' ) {
 	$data = getall( "SELECT id, name, description, country FROM conset ORDER BY id", FALSE);
