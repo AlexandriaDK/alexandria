@@ -46,7 +46,7 @@ if ( ( $_POST['action'] ?? '' ) == 'importstructure' && ( $_SESSION['token'] ===
 			doquery( "DROP TABLE IF EXISTS `$table`" );
 			doquery( $sqlstatement );
 		}
-		if ( getone( "SHOW tables LIKE 'installation" ) !== NULL ) {
+		if ( getone( "SHOW tables LIKE 'installation'" ) !== NULL ) {
 			doquery( "INSERT INTO `installation` (`key`, `value`) VALUES ('status', 'empty')" );
 		}
 		header( "Location: ./" );
@@ -77,7 +77,7 @@ if ( ( $_POST['action'] ?? '' ) == 'importstructure' && ( $_SESSION['token'] ===
 
 	}
 	exit;
-} elseif ( getone( "SHOW tables LIKE 'installation" ) !== NULL && getone( "SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'empty'" ) )  {
+} elseif ( getone( "SHOW tables LIKE 'installation'" ) !== NULL && getone( "SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'empty'" ) )  {
 	$t->assign( 'stage', 'populate' );
 } else {
 	$t->assign( 'stage', 'dbsetup' );
