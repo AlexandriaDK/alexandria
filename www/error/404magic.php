@@ -7,8 +7,8 @@ if (is_dir($_SERVER['DOCUMENT_ROOT']."/$string")) {
 	$url = "/$string/";
 } elseif (preg_match('/^[a-z]{2}$/', $string) ) { //language redirect
 	$url = '/' . $string . '/';
-} elseif (preg_match('/^[a-z]{2}\//', $string) ) { //language not found
-	$magic = FALSE;
+} elseif (preg_match('/^[a-z]{2}\//', $string) ) { // :TODO: Currently redirects when non-existing language
+	$url = "find?find=" . substr( $string, 3 );
 } elseif (substr($string,-4) != '.htm' && substr($string,-5) != '.html') {
 	if (preg_match('_^[a-z]{2}/_', $string) ) {
 		$langpath = "/" . substr($string,0,2) . '/';
@@ -25,7 +25,7 @@ if (is_dir($_SERVER['DOCUMENT_ROOT']."/$string")) {
 }
 
 if ($magic) {
-	header("Location: $url");
+	header( "Location: " . $url);
 	exit;
 } else {
 	header("HTTP/1.1 404 Not Found");
