@@ -76,8 +76,10 @@ if ( $dataset === 'persons' ) {
 } else {
 	$datasets = [
 		'info' => 'This is the export resource for all public Alexandria.dk gaming data. Export is JSON formatted.',
+		'setup' => [
+			'sqlstructure' => 'MySQL structure for all necessary tables'
+		],
 		'datasets' => [
-			'sqlstructure' => 'MySQL structure for all necessary tables',
 			'persons' => 'Persons in the Alexandria database',
 			'games' => 'Games, including role-playing scenarios, designed board games, and LARPs',
 			'conventions' => 'Gaming conventions',
