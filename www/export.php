@@ -133,11 +133,11 @@ if ( $dataset ) {
 			'person_convention_connections' => 'Relations between persons and conventions as organizers',
 		],
 		'examples' => [
-			'export.php' => 'This overview',
-			'export.php?setup=structure' => 'Get SQL structure for tables',
-			'export.php?dataset=persons' => 'Get all persons',
-//			'export.php?dataset=persons&data_id=1' => 'Get person with data id 1',
-			//		'export.php?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
+			'export' => 'This overview',
+			'export?setup=structure' => 'Get SQL structure for tables',
+			'export?dataset=persons' => 'Get all persons'
+//			'export?dataset=persons&data_id=1' => 'Get person with data id 1',
+//			'export?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
 		]
 	];
 	$output = $datasets;

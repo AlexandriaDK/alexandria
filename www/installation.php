@@ -1,6 +1,6 @@
 <?php
 // from this point on we know that the setup is incomplete
-define( 'IMPORT_ENDPOINT', 'https://alexandria.dk/en/export.php' );
+define( 'IMPORT_ENDPOINT', 'https://alexandria.dk/en/export' );
 $action = $_POST[ 'action' ] ?? '';
 if ( $action && ( $_SESSION['token'] !== $_POST['token'] ) ) {
 	$t->assign( 'stage', 'tokenerror' );
