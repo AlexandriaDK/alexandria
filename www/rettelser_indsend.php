@@ -25,12 +25,6 @@ $data_description
 Kilde: $user_source
 ";
 
-/*
-$output = $mailoutput . "
-IP: {$_SERVER['REMOTE_ADDR']}
-";
- */
-
 $output = $mailoutput;
 
 // php mail() prevent spam

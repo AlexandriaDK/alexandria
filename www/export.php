@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 $timestamp_start = date("c");
 require("./connect.php");
 require("base.inc.php");
@@ -27,6 +28,9 @@ if ( $dataset ) {
 	case 'genres':
 		$output = getall( "SELECT id, name, genre FROM gen ORDER BY id", FALSE);
 		break;
+	case 'genre_game_relations':
+		$output = getall( "SELECT id, gen_id AS genre_id, sce_id AS game_id FROM gsrel ORDER BY sce_id, gen_id, id", FALSE);
+		break;
 	case 'tags':
 		$output = getall( "SELECT id, tag, description FROM tag ORDER BY id", FALSE);
 		break;
@@ -35,6 +39,9 @@ if ( $dataset ) {
 		break;
 	case 'gameruns':
 		$output = getall( "SELECT id, sce_id AS game_id, begin, end, location, description, cancelled FROM scerun ORDER BY id", FALSE);
+		break;
+	case 'gamedescriptions':
+		$output = getall( "SELECT id, game_id, description, language, note FROM game_description ORDER BY game_id, language, id", FALSE );
 		break;
 	case 'titles':
 		$output = getall( "SELECT id, title, title_label, priority, iconfile, iconwidth, iconheight, textsymbol FROM title ORDER BY id", FALSE);
@@ -80,7 +87,7 @@ if ( $dataset ) {
 		break;
 	}
 } elseif ( $setup === 'sqlstructure' ) {
-	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'tag', 'tags', 'scerun', 'title', 'pre', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'installation' ];
+	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -105,8 +112,10 @@ if ( $dataset ) {
 			'conventionsets' => 'Sets of gaming conventions',
 			'systems' => 'Role-playing systems',
 			'genres' => 'Genres for games',
-			'tags' => 'Tags for games',
+			'tags' => 'Tag descriptions',
+			'gametags' => 'Relations between tags and games',
 			'gameruns' => 'Individual runs of games outside of conventions',
+			'gamedescriptions' => 'Descriptions and presentations of games in multitude of languages',
 			'titles' => 'Person titles in relation to games',
 			'presentations' => 'Presentation data in relation to conventions',
 			'feeds' => 'Sites with RSS feeds for syndication',
@@ -120,6 +129,7 @@ if ( $dataset ) {
 			'award_nominees' => 'Nominated persons or otherwise for an award',
 			'person_game_title_connections' => 'Relations between persons, games, and titles',
 			'game_convention_title_connections' => 'Relations between games, conventions, and presentations',
+			'genre_game_connections' => 'Relations between games and genres',
 			'person_convention_connections' => 'Relations between persons and conventions as organizers',
 		],
 		'examples' => [
@@ -137,8 +147,10 @@ $timestamp_end = date("c");
 
 $output = [
 	'result' => $output,
-	'timestamps' => [ "received" => $timestamp_start, "finished" => $timestamp_end ],
-	'export' => 'ready'
+	'request' => [ "received" => $timestamp_start, "finished" => $timestamp_end ],
+	'license' => 'The database is owned by Alexandria.dk and protected by the database rights in Danish law of Copyright ("Ophavsretsloven", § 71). You are allowed to use the API and the data for *non-commercial* purposes. Alexandria.dk must be credited, if possible with a link. Game files are not available through this API.',
+	'access' => 'Access to this API does not require login, tokens or other authentication mechanisms. Access can be restricted for various reasons, e.g. if the server is overloaded or if too many requests are sent in a short time.',
+	'status' => 'ready'
 ];
 header("Content-Type: application/json");
 print json_encode( $output );
