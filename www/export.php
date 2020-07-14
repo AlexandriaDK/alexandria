@@ -61,7 +61,7 @@ if ( $dataset === 'persons' ) {
 	$data = getall(" SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id", FALSE);
 	$output = $data;
 } elseif ( $dataset === 'sqlstructure' ) {
-	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'tag', 'tags', 'scerun', 'title', 'pre', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'log', 'searches', 'installation' ];
+	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'tag', 'tags', 'scerun', 'title', 'pre', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'installation' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );

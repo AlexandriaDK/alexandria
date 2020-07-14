@@ -9,14 +9,13 @@ $db_connector = DB_CONNECTOR;
 
 if (!@ ($dblink = mysqli_connect($db_host, $db_user, $db_pass) ) || @$_SERVER['QUERY_STRING'] == "crash") {
 	define('DBERROR',TRUE);
-	header("HTTP/1.1 500 Internal Server Error");
+	header("HTTP/1.1 503 Service Unavailable");
 	header("X-Error: Database");
 	require("base.inc.php");
 	$t->display('dberror.tpl');
 	exit;
-
 }
-mysqli_select_db($dblink, $db_name) or die("Unable to select db\n");
+mysqli_select_db($dblink, $db_name) or die("Unable to select db\n"); // definitely need better error
 mysqli_set_charset($dblink, "utf8mb4");
 mysqli_query($dblink, "SET sql_mode = ''"); // allow dates such as 0000-00-00
 ?>

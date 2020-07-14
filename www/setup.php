@@ -1,6 +1,5 @@
 <?php
 // Check if everything is set up correctly before calling functions and doing random stuff
-
 $ignoreerrors = FALSE;
 
 $setuperror = FALSE;
@@ -18,8 +17,7 @@ foreach( $required_include_files AS $file ) {
 		$errors[] = "
 Configuration file not found. Make sure the following file exists:
 	includes/" . $file . "
-
-A template file is provied. You can copy this file and fill out the credentials:
+A template file is provied. You can copy content from this file and fill out the credentials:
 	includes/default." . $file . "
 ";
 	}

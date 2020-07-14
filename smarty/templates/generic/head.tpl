@@ -109,7 +109,7 @@
 				<a href="privacy">{$_top_privacy}</a><br>
 			</div>
 
-{if not isset($dberror)}
+{if not isset($dberror) && not isset($installation) }
 			<div class="leftmenucontent">
 {if not $user_id}
 				<span class="menulogin">
@@ -298,8 +298,8 @@
 					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="text" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input"></label>
 				</div>
 			</form>
-		</div>
 {/if}
+		</div>
 
 <div id="resultbox">
 </div>

@@ -109,8 +109,14 @@ if (is_dir($template_dir . LANG) ) {
 	$t->template_dir = $template_dir .  'generic/';
 }
 
-// variables used all over the place
+// Check if SQL structure even exists
+if (getone("SHOW tables LIKE 'installation'") === NULL || getone("SELECT `value` FROM installation WHERE `key` = 'status'") != 'live' ) { // Table does not exist!
+	define("INSTALLNOW", TRUE);
+	require("installation.php");
+	exit;
+};
 
+// variables used all over the place
 if (!defined('DBERROR') ) {
 	$t->assign('stat_all_aut',getone("SELECT COUNT(*) FROM aut"));
 	$t->assign('stat_all_sce',getone("SELECT COUNT(*) FROM sce WHERE boardgame = 0"));
