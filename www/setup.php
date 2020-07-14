@@ -8,6 +8,7 @@ $required_include_files = [ 'db.auth.php' ];
 $required_php_extensions = [ 'mysqli', 'mbstring', 'intl', 'gd' ];
 $required_apache_modules = [ 'mod_rewrite' ];
 $required_smarty = 'smarty-3.1.34/libs/';
+$required_writable_path = __DIR__ . '/../smarty/templates_c';
 
 // Rquired files
 foreach( $required_include_files AS $file ) {
@@ -64,6 +65,13 @@ if ( ! file_exists( __DIR__ . '/../' . $required_smarty ) ) {
 ";
 }
 
+// remember: Writable folder!
+if ( ! is_writable( $required_writable_path ) ) {
+	$setuperror = TRUE;
+	$errors[] = "Smarty compiled template folder is writable. Give full write permission to the following directory:
+	smarty/templates_c/
+";
+}
 // should also check if  AllowOverride all  is set for the directory. Or whatever value mod_rewrite requires.
 // mod_rewrite requires  FileInfo  to be enabled.
 

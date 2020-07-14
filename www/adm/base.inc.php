@@ -46,7 +46,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 	if (!$label) $label = $default;
 
 	if ($link == TRUE) {
-		$label = '<a href="/'.$url.$data_id.'">'.$label.'</a> <a href="'.$returl.$data_id.'">[ret]</a>';
+		$label = '<a href="../'.$url.$data_id.'">'.$label.'</a> <a href="'.$returl.$data_id.'">[ret]</a>';
 	}
 	return $label;
 }

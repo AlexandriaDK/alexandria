@@ -67,8 +67,8 @@ foreach($result AS $row) {
 	} else {
 		print "<tr valign=\"top\">";
 	}
-	print "<td nowrap style=\"text-align: right\"><a href=\"ticket.php?id={$row['id']}&amp;vis=$vis\">{$row['id']}</a></td>";
-	print "<td nowrap>{$row['user_name']}</td>";
+	print "<td style=\"text-align: right\"><a href=\"ticket.php?id={$row['id']}&amp;vis=$vis\">{$row['id']}</a></td>";
+	print "<td>{$row['user_name']}</td>";
 	print "<td>$label</td>";
 	
 #	print "<td nowrap></td>";
@@ -98,12 +98,12 @@ if ($id) {
 	print "<table class=\"ticketlist\" style=\"border: 1px solid black;\" border=\"1\" cellspacing=\"0\">";
 	print "<tr>";
 	print "<td>ID: {$row['id']}</td>";
-	print "<td>Rettelse til:<br>\n$label</td>";
-	print "<td>Indsendt af:<br>\n".htmlspecialchars($row['user_name'])." &lt;<a href=\"mailto:".htmlspecialchars($row['user_email'])."\">".htmlspecialchars($row['user_email'])."</a>&gt;</td>";
-	print "<td>Modtaget:<br>\n{$row['submittime']}</td>";
+	print "<td>Correction for:<br>\n$label</td>";
+	print "<td>Submitted by:<br>\n".htmlspecialchars($row['user_name'])." &lt;<a href=\"mailto:".htmlspecialchars($row['user_email'])."\">".htmlspecialchars($row['user_email'])."</a>&gt;</td>";
+	print "<td>Received:<br>\n{$row['submittime']}</td>";
 	print "</tr>";
 
-	print '<tr style="background: #ffeebb"><th colspan="4">Kommentar:</th></tr>';
+	print '<tr style="background: #ffeebb"><th colspan="4">Comment:</th></tr>';
 	
 	print "<tr>";
 	print "<td colspan=\"4\">\n";

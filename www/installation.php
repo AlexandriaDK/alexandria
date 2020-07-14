@@ -17,18 +17,28 @@ function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
 			$fields[] = $key;
 		}
 	}
-	$dataset = [];
+	$dataset = $datasets = [];
 	foreach( $allvalues AS $list ) {
 		$set = [];
 		foreach ( $list AS $part ) {
 			$set[] = ( is_numeric($part) ? $part : "'" . dbesc($part) . "'" ) ;
 		}
 		$dataset[] = "(" . implode(", ", $set ) . ")";
+		if ( count( $dataset ) >= 1000 ) {
+			$datasets[] = $dataset;
+			$dataset = [];
+		}
 	}
 	if ( $dataset ) {
-		$multisql = "INSERT INTO `$table` (" . implode( ", ", $fields ) . ") VALUES " . implode( ", ", $dataset );
+		$datasets[] = $dataset;
+	}
+	
+	if ( $datasets ) {
 		doquery( "TRUNCATE TABLE `$table` ");
-		doquery( $multisql );
+		foreach ( $datasets AS $dataset ) {
+			$multisql = "INSERT INTO `$table` (" . implode( ", ", $fields ) . ") VALUES " . implode( ", ", $dataset );
+			doquery( $multisql );
+		}
 		return true;
 	} else {
 		return false;
