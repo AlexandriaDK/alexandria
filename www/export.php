@@ -61,7 +61,7 @@ if ( $dataset === 'persons' ) {
 	$data = getall(" SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id", FALSE);
 	$output = $data;
 } elseif ( $dataset === 'sqlstructure' ) {
-	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'tag', 'tags', 'scerun', 'title', 'pre', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'log', 'searches' ];
+	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'tag', 'tags', 'scerun', 'title', 'pre', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'log', 'searches', 'installation' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -102,8 +102,7 @@ if ( $dataset === 'persons' ) {
 			'export.php?dataset=persons' => 'Get all persons',
 //			'export.php?dataset=persons&data_id=1' => 'Get person with data id 1',
 			//		'export.php?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
-		],
-		'export' => 'ready'
+		]
 	];
 	$output = $datasets;
 }
@@ -112,7 +111,8 @@ $timestamp_end = date("c");
 
 $output = [
 	'result' => $output,
-	'timestamps' => [ "received" => $timestamp_start, "finished" => $timestamp_end ]
+	'timestamps' => [ "received" => $timestamp_start, "finished" => $timestamp_end ],
+	'export' => 'ready'
 ];
 header("Content-Type: application/json");
 print json_encode( $output );
