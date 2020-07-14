@@ -64,7 +64,7 @@ if ( $dataset == 'persons' ) {
 
 } else { // default
 	$datasets = [
-		'info' => 'This is the export resource for all Alexandria.dk gaming data. Export is JSON formatted.',
+		'info' => 'This is the export resource for all public Alexandria.dk gaming data. Export is JSON formatted.',
 		'datasets' => [
 			'sqlstructure' => 'MySQL structure for all necessary tables',
 			'persons' => 'Persons in the Alexandria database',
@@ -91,7 +91,8 @@ if ( $dataset == 'persons' ) {
 			'export.php?dataset=persons' => 'Get all persons',
 //			'export.php?dataset=persons&data_id=1' => 'Get person with data id 1',
 			//		'export.php?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
-		]
+		],
+		'export' => 'ready'
 	];
 	$output = $datasets;
 }
