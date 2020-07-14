@@ -14,7 +14,7 @@ if (is_dir($_SERVER['DOCUMENT_ROOT']."/$string")) {
 		$langpath = "/" . substr($string,0,2) . '/';
 		$find = substr($string,3);
 	} else {
-		$langpath = '/';
+		$langpath = '/en/';
 		$find = $string;
 	}
 	$url = $langpath . "find?find=" . $find;
@@ -28,7 +28,7 @@ if ($magic) {
 	exit;
 } else {
 	header("HTTP/1.1 404 Not Found");
-	print "<h1 style=\"font-family: sans-serif;\">404 Not Found</h1> <p>404 - The requested resource is not found</p>";
+	print "<h1 style=\"font-family: sans-serif;\">404 Not Found</h1> <p>404 - The requested resource is not found</p>" . PHP_EOL;
 	exit;
 }
 
