@@ -18,15 +18,18 @@ require "base.inc.php";
 			  crossorigin="anonymous"></script>
 <script>
 $(document).ready(function() {  
-	$( "#frontstattext" ).load( "frontstat.php", function() {
-		$( this ).hide().show(100);
+	$.get( "frontstat.php?days=7", function( data ) {
+		$( "tbody#stats" ).append( data );
 	});
+	$.get( "frontstat.php?days=365", function( data ) {
+		$( "tbody#stats" ).append( data );
+	})
 });
 
 </script>
 </head>
 
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000" >
+<body>
 
 <?php
 include("links.inc.php");
@@ -48,313 +51,158 @@ printinfo();
 <h3>
 	Active users
 </h3>
+<table>
+<thead>
+<tr style="font-size: 0.8em;"><th>Name</th><th>New edits</th><th>Edits</th><th>Most recent edit</th></tr>
+</thead>
+<tbody id="stats">
 
-<div id="frontstattext">Fetching statistics ...</div>
+</tbody>
+</table>
 
 <h3>
-	Oversigt
+	Overview
 </h3>
 
 <p style="width: 600px;">
-	Her finder du information om datamodellen, samt de enkelte administrations-punkter:
+	Read about the navigation and the data model:
 	<ul>
-		<li><a href="#datamodel">Datamodellen</a></li>
-		<li><a href="#navigation">Navigation og redigering</a></li>
-		<li>Menupunkter:
+		<li><a href="#navigation">Navigation and editing</a></li>
+		<li>Menu options:
 			<ul>
-				<li><a href="#personer">Personer</a></li>
-				<li><a href="#scenarier">Scenarier</a></li>
+				<li><a href="#person">Person</a></li>
+				<li><a href="#game">Game</a></li>
 				<li><a href="#con">Con</a></li>
-				<li><a href="#conserie">Con-serie</a></li>
-				<li><a href="#system">System</a></li>
-				<li><a href="#teknik">Teknik</a></li>
+				<li><a href="#conset">Con series</a></li>
+				<li><a href="#rpgsystem">RPG System</a></li>
+				<li><a href="#tag">Tag</a></li>
+				<li><a href="#news">News</a></li>
+				<li><a href="#translations">Translations</a></li>
+				<li><a href="#log">Log</a></li>
+				<li><a href="#technical">Technical</a></li>
 				<li><a href="#tickets">Tickets</a></li>
 			</ul>
 		</li>
+		<li><a href="#datamodel">The data model</a></li>
 		<li><a href="#tips">Tips &amp; tricks</a></li>
 	</ul>
 </p>
 
-<h3 id="datamodel">
-	Datamodellen
-</h3>
-
-<p>
-	For at sørge for at der ikke kommer rod i datamodellen, er det nødvendigt at nævne en række
-	retningslinjer, samt fortælle om systemets fleksibilitet og begrænsninger. Dette er måske lidt
-	kedelig læsning, men nødvendigt for at forhindre at forskellige folks data-bidrag gør mere skade
-	end gavn.
-</p>
-
-<p>
-	Alexandria-databasen består bl.a. af "mange-til-mange"-relationer. Det betyder i korte træk, at
-	en person fx kan have skrevet flere scenarier, men samtidig også at et scenarie kan være skrevet af
-	flere personer. Endnu et eksempel på dette er, at en con kan rumme flere scenarier, men at et scenarie
-	kan være spillet på flere con'er (ifbm. reruns og lignende).
-</p>
-
-<p>
-	Formålet med at have en så opdelt datamodel fremfor blot en simpel tabel med scenarier i,
-	er at give mulighed for at have selvstændig information for fx personer og con'er. Havde
-	man kun en scenarie-tabel, skulle hver con (og for den sags skyld start- og slut-datoen for
-	con'en) stå for hvert enkelt scenarie. Skulle man efterfølgende rette i person-data'en,
-	eksempelvis rette en stavefejl, tilføje en fødselsdato, etc., ville dette
-	skulle rettes mange steder, fremfor bare ét centralt sted. Der er mange andre
-	tekniske fordele ved at lave en datamodel på denne måde, men
-	det rækker ud over denne vejledning at gå i dybden med disse.
-</p>
-
-<p>
-	Modellen kan omtrent fremstilles på følgende måde:
-</p>
-
-<table cellspacing="1" cellpadding="1" style="font-size: 14px; border: 1px solid black; padding: 2px 2px 2px 2px;">
-
-	<tr>
-		<th title="Fx &quot;Peter Brodersen&quot;, &quot;Palle Schmidt&quot;">Person</th>
-	</tr>
-
-	<tr>
-		<th>⇕</th>
-	</tr>
-
-	<tr>
-		<td style="font-size: 10px" colspan=3>(mange-til-mange-relation)</td>
-		<th>⇔</th>
-		<th align="left" title="Fx &quot;Forfatter&quot;, &quot;Illustrator&quot;, &quot;Layouter&quot;">Stilling</th>
-	</tr>
-
-	<tr>
-		<th>⇕</th>
-	</tr>
-
-	<tr>
-		<th title="Fx &quot;Dødens Skygge&quot;, &quot;Dogme#1 - Pesten&quot;, &quot;De Professionelle&quot;">Scenarie</th>
-		<th>⇔</th>
-		<th align="left" title="Fx &quot;AD&amp;D&quot;, &quot;Paranoia&quot;, &quot;GURPS&quot;">System</th>
-	</tr>
-
-	<tr>
-		<th>⇕</th>
-	</tr>
-
-	<tr>
-		<td style="font-size: 10px" colspan=3>(mange-til-mange-relation)</td>
-		<th>⇔</th>
-		<th align="left" title="Fx &quot;Premiere&quot;, &quot;Re-run&quot;, &quot;Aflyst&quot;">Præsentation</th>
-	</tr>
-
-	<tr>
-		<th>⇕</th>
-	</tr>
-
-	<tr>
-		<th title="Fx &quot;Fastaval 1996&quot;, &quot;Viking Con 20&quot;">Con</th>
-		<th>⇔</th>
-		<th align="left" title="fx &quot;Fastaval&quot;, &quot;Viking Con&quot;">Con-serie</th>
-	</tr>
-
-</table>		
-
-<p>
-	En <b>person</b> kan således have medvirkende til flere scenarier, både som
-	illustrator på ét scenarie og forfatter på et andet (kaldet <b>stilling</b>).
-	Således er en person ikke overordnet stemplet som fx "Illustrator".
-</p>
-
-<p>
-	Et <b>scenarie</b> kan altså have flere personer bag sig. Til gengæld kan et
-	system af praktiske årsager kun have ét <b>system</b> tilknyttet. Et scenarie
-	kan således ikke både være AD&amp;D og Warhammer Fantasy Roleplay. I de meget få
-	tilfælde hvor det alligevel er tilfældet, må man blot angive det som en note/trivia til
-	scenariet.
-</p>
-
-<p>
-	En <b>con</b> kan rumme flere scenarier - også scenarier, der allerede er tilknyttet andre
-	con'er. I forbindelsen mellem scenarie og con angives det også hvilken form for
-	<b>præsentation</b>, der var tale om, fx om det er premiere (første gang, scenariet afvikles),
-	et re-run eller om scenariet til lige præcis denne con blev aflyst. Således er et scenarie ikke
-	overordnet set markeret som "Aflyst", idet et scenarie kan være aflyst til én con og
-	efterfølgende spillet til en anden.
-</p>
-
-<p>
-	 En <b>con-serie</b> er en række con'er, der hører under samme navn eller arrangørfortegnelse.
-	 Hver con kan kun være med i én serie - fx er con'erne "Fastaval 1990", "Fastaval 1996", etc.
-	 alle del af con-serien "Fastaval" (og kun denne).
-</p>
-
-<p>
-	Et eksempel på brug af vores datamodel er, at hvis vi skal finde ud af hvilke personer,
-	der nogensinde har skrevet til en bestemt con-serie, fx Fastaval, skal vi blot kigge på
-	tegningen og se hvordan vi kommer fra "person" til "con-serie".
-	Her skal vi bevæge os fra personer, over scenarier, over con'er, til con-serien. Eller sagt
-	på en anden måde: Vi skal finde de personer, der har skrevet scenarier, der har været spillet
-	på con'er, der er en del af Fastaval.
-</p>
-
 <h3 id="navigation">
-	Navigation og redigering
+	Navigation and editing
 </h3>
 
 <p>
-	Øverst på hver side er der menupunkter til at bladre imellem de forskellige kategorier.
+	For simple usage of the project most of all connections are located under <b>Game</b>. For every
+	game you can connect persons and cons here.
 </p>
 
 <p>
-	For at gøre datamodellen mere overskuelig og lettere at rette i, er de fleste sammenknytninger
-	flyttet ind under <b>Scenarier</b>. For hvert scenarie er der her mulighed for at angive
-	en liste af con'er og personer, der er tilknyttet.
+	The easiest way to navigate and find persons and games is to use the "Quick find" search field at the top at every page. It
+	is located at the top of every page. You can easily access it using the hotkey K (usually <b>Shift+Alt K</b>) in
+	your browser.
 </p>
 
-<p>
-	Den letteste måde at finde scenarier og personer på, er ved at bruge "Kvik-find"-feltet, som
-	du i øvrigt i de fleste browsere kan vælge, blot ved at trykke <b>Alt-k</b> på tastaturet.
-	"Kvik-find"-feltet virker ved at man blot indtaster en del af personens navn eller scenariets
-	titel, og trykker return. Man vil nu få en liste over søgeresultater, eller evt. blive smidt
-	direkte hen på den rigtige post, hvis man har været præcis nok i sin indtastning.
-</p>
-
-<p>
-	For et scenarie vil man få en liste over eksisterende personer, con'er og systemer. For at
-	oprette eller rette et scenarie, er det således en forudsætning, at de personer, der er medvirkende,
-	er oprettet i forvejen. Det samme gælder de con'er, scenariet er tilknyttet.
-</p>
-
-<p>
-	For en con vil man tilsvarende få en liste over eksisterende con-serier. For at
-	tilføje en con til en con-serie, er det ligeledes en forudsætning, at con-serien er oprettet
-	i forvejen.
-</p>
-
-<p>
-	Under enhver kategori (med undtagelse af "Scenarier") vil der i bunden være en liste over
-	alle poster i denne kategori, hvorfra man også kan vælge den post, man vil gå ind på.
-</p>
-
-<h3 id="personer">
-	Personer
+<h3 id="person">
+	Person
 </h3>
 
 <p>
-	<b>Definition:</b> En "person" er ét selvstændigt individ. Følgende betegnes <em>ikke</em>
-	som personer:
+	A person is one independent individual. The following are <em>not</em> regarded as a person:
 	<ul>
-		<li>pseudonym/alias (fx "El Prez", "Anonym")</li>
-		<li>gruppe af personer (fx "Albertslund Ungdomsskole", "Dogme-kollektivet", "Natural Born Holmers")</li>
+		<li>Pseudonym/alias (e.g. "El Prez", "Anonymous")</li>
+		<li>Group of persons (e.g. "Albertslund Ungdomsskole", "The Dogme Collective", "Natural Born Holmers")</li>
 	</ul>
+	You can add an alias to a person, and a group of persons can be added as a note under a single <a href="#game">game</a> or written in more details as a <a href="#tag">tag</a>.
+</p>
+
+<p>
 	
-	<b>Felter:</b>
+	<b>Fields:</b>
 	<ul>
-		<li><b>Navn</b><br>
-			Personens rigtige navn og evt. også mellemnavne, hvis disse er kendt.
+		<li><b>Name</b> (split into First name and Surname)<br>
+			The person's well-known name. For convenience the full name can be written in a single name field. In that case Alexandria will break the name up into First name and Surname by the last space.
 		</li>
-		<li><b>Intern note</b><br>
-			Evt. intern data til administrativ brug - fx
-			dokumentation af stavemåder og andre relevante detaljer
-			til øvrige administratorer. Disse noter vil ikke
-			fremgå på den offentlige del af Alexandria. Skriv evt.
-			initialer, hvis du indtaster spørgsmål eller svar.
+		<li><b>Internal note</b><br>
+			Optional internal note for administrative use - e.g. documentation
+			of spelling and other relevant information for other editors. These
+			notes will not appear at the public part of Alexandria or in the
+			exports of data. You can add your initials if you add notes that could
+			inspire more questions.
 		</li>
-		<li><b>Fødselsdato</b><br>
-			Personens fødselsdato (år, måned, dag), hvis
-			denne kendes, og personen i øvrigt ikke har noget
-			imod at have denne offentliggjort. Ellers bør feltet
-			efterlades blankt.
+		<li><b>Date of birth</b><br>
+			Date of birth if known and the person accepts having it publicly available. Leave it blank otherwise.
 		</li>
-		<li><b>RPGForum-ID</b><br>
-			Såfremt brugeren er oprettet på RPGForum, vil man
-			på hans egen profil her i adresselinjen kunne finde
-			id-nummeret, fx "...&amp;id=18". I dette tilfælde indtastes
-			"18". Denne information er relevant i forbindelse med en
-			evt. senere dataudveksling med RPGForum.
-		</li>
-		<li><b>Billede</b><br>
-			Filnavn på profilbillede - kun for administratorer,
-			der har direkte adgang til serveren. Der er ikke
-			mulighed for at uploade billeder eller lignende.
+		<li><b>Date of death</b><br>
+			Date of death if relevant and known. Leave it blank otherwise.
 		</li>
 	</ul>
 </p>
 
 <h3 id="scenarier">
-	Scenarier
+	Game
 </h3>
 
 <p>
-	<b>Definition:</b> Et "scenarie" er ét selvstændigt, offentligt spillet, tidsbegrænset
-		scenarie. Dette inkluderer almindelige con-scenarier, con-live-scenarier, selvstændige
-		live-scenarier.
+	A game is a single public known time limited game. This includes regular con scenarios, LARPs,
+	designer board game.
+</p>
 
-	<b>Felter:</b>
+<p>
+	<b>Fields:</b>
 	<ul>
-		<li><b>Titel</b><br>
-			Scenariets titel. Ved meget lange titler dog blot en del af den,
-			eller evt. en brugt forkortelse. Ved fortsættelser med eget navn,
-			bør den fælles titel kun stå først, hvis pladsen byder det (fx "Dogme #1: Pesten").
-			Hvis titlen blot er systemangivelsen, fx "Vampire" eller "AD&D-turnering",
-			bør man lave en titel med angivelse af premierecon'en, fx
-			"AD&D (Spiltræf 90)".
+		<li><b>Title</b><br>
+			Title of the game. For very long titles it is useful to truncate it or use a well-known
+			abbreviation and add the full title as an alias to the game. If the game has no title and is
+			only known in the programme by the RPG system it is advised to create a title based on the system
+			and add a corresponding event, e.g. "AD&amp;D (Fastaval 1990)". This suffix can also be useful if
+			multiple different scenarios happen to have the same title.
 		</li>
-		<li><b>Foromtale</b><br>
-			Såvidt muligt scenariets/forfatterens oprindelige foromtale. Evt.
-			blot en del af den (dog markeret med fx ".." for at indikere, at
-			ikke hele foromtalen er tastet ind, og resten skal tastes ind
-			på et senere tidspunkt).
+		<li><b>Description</b><br>
+			If possible the original description of the game. Several descriptions can be
+			added by pressing the [+] link. Add the language code (e.g. "sv") or the language code
+			and a location pointer if several different descriptions have been publicised (e.g. "sv (GothCon 89)").
+			Every language serves as its own tab. Double click on the tab to change the language code.
+			If the task of transcribing the description is too cumbersome simply type a couple of lines (for ease
+			of recognition) and add ".." to the end to mark that the description is not final.
 		</li>
-		<li><b>Intern note</b><br>
-			Evt. intern data til administrativ brug. For eksempel
-			relevante informationer i forbindelse med databehandling
-			og evt. fremtidig udvidelse af datamodellen (fx genrer,
-			m.m.). Skriv evt. initialer, hvis du indtaster spørgsmål
-			eller svar.
+		<li><b>Internal note</b><br>
+			E.g. details about file distribution rights for a scenario by the author. Also other stuff
+			that could be useful in the future in an expansion of Alexandria's model (e.g. payment, expected
+			game length). Add initials if you have questions or answers.
 		</li>
-		<li><b>System</b> og <b>systemnote</b><br>
-			Systemet, scenariet er skrevet til. Her er en liste over
-			eksisterende systemer. Der kan tillige indtastes bi-data
-			til systemet under systemnote, fx "2nd edition",
-			"Forgotten Realms" og "11.-15. level". Er systemet ukendt,
-			kan man nøjes med at indtaste system-navnet under systemnote
-			og lade system forblive "[Ukendt eller uspecificeret system]".
-			Findes systemet, skal det dog vælges fra system-listen i stedet
-			for at blive tastet ind under systemnote. Bemærk i øvrigt,
-			at "Systemløst" i denne model også er system. Systemløse scenarier
-			skal altså sættes til systemet "Systemløst" fremfor "[Ukendt eller
-			uspecificeret system]".
+		<li><b>Participants</b><br>
+			An integer or a range of GMs and players. E.g. type <i>4-6</i> for 4 to 6 players. You can
+			add more details as well
+		</li>
+		<li><b>Board game?</b><br>
+			Is this a board game? If in doubt ask the author of their view of their own work.
+		</li>
+		
+		<li><b>RPG System</b><br>
+			The RPG system the scenario was originally designed for. This list
+			is derived from the <a href="#rpgsystem">RPG System</a> section.
+			You can add a note here e.g. "2nd edition", "Forgotten Realms" and so on.
+			If the RPG system is unknown you can add the custom system name as a note.
+		</li>
+		<li><b>By</b><br>
+			People who have created the game. Type in the name of the person (with the help of autocomplete), select the
+			role (e.g. author, illustrator) and add a possible note (e.g. "Character design").
+			Add another row by clicking the ➕sign). A single person should be noted several times
+			if they have more than one role connected to the game. Remove a person from the list by pressing
+			the 🗑️ icon.
+			If the background of a name of a person is not green the person is not found in the current
+			list of persons in Alexandria. Press the 👤 icon to dynamically add the person.
+			You can add an optional organizer such as a group name (e.g. "TRC - Taastrup Roleplaying Club") or other
+			moniker the authors and organizers are known as.
 		</li>
 		<li><b>Con</b><br>
-			De con's, scenariet har været spillet til. På venstresiden er en liste
-			over de con's, der er knyttet til scenariet, og på højresiden er en
-			liste over alle con's. Man tilknytter en con ved at vælge den fra højresiden,
-			og derefter trykke på en passende knap for under hvilke omstændigheder,
-			scenariet blev spillet på den con (fx "Premiere"). En con fjernes fra et scenarie
-			ved at vælge con'en i venstre side, og så vælge "Fjern".
+			The conventions the game has been played at. The current connected conventions are
+			listed at the left side. At the right side all conventions in Alexandrias are listed.
+			Connect a convention by selecting it at the right side and press the appropriate button
+			to add it to the left side. Similarly select a convention at the left side and click "Remove"
+			to remove it.
 		</li>
-		<li><b>Af</b><br>
-			De medvirkende personer til scenariet. På venstresiden er en liste
-			over de personer, der er knyttet til scenariet, og på højresiden er en
-			liste over alle personer. Man tilknytter en person ved at vælge ham/hende
-			fra højresiden, og derefter trykke på den knap, der omhandler personens
-			tilknytning til scenariet (fx "Forfatter" eller "Illustrator"). En person
-			kun være listet én gang under et scenarie, under den "højeste" stilling.
-			Har en person fx både skrevet og illustreret et scenarie, skal
-			han kun optræde som forfatter. En person fjernes fra et scenarie ved at vælge
-			personen i venstre side, og så vælge "Fjern".
-		</li>
-		<li><b>Evt. arrangør</b><br>
-			Nogle scenarier præsenteres under et fællesnavn eller en forening, bl.a. en del
-			live-scenarier. Her er det muligt at angive et arrangør-navn, evt. som alternativ
-			til at angive specifikke personer, uden at det er nødvendigt at katalogisere
-			arrangør-navnet noget sted.
-		</li>
-		<li><b>Status</b><br>
-			Mulighed for at skjule enkelte entries på de offentlige sider, hvis det af en
-			eller anden årsag pludselig skulle blive nødvendig. Funktionaliteten er udelukkende
-			med som sikkerhedsventil, så medmindre, der er en meget god grund, bør man
-			altid vælge "Offentlig data".
-		</li>
-
 	</ul>
 </p>
 
@@ -363,93 +211,165 @@ printinfo();
 </h3>
 
 <p>
-	<b>Definition:</b> En "con" er ét planlagt, selvstændigt, åbent arrangement
-		med fokus på rollespil. Dette inkluderer de fleste fler-dages-arrangmenter,
-		men <em>ikke</em>:
-	<ul>
-		<li>Klubbers arrangmenter, primært/kun for daglige medlemmer (fx "TRC's hyttetur 1994")</li>
-		<li>Tilfældige overordnede arrangementer (fx biblioteksarrangementer, "Åbent hus i fritidscenteret")</li>
-		<li>Små, vilkårlige con'er (typisk under 20-30 personer med ukendte scenarier og ukendte folk)</li>
-	</ul>
+	A convention (con) is a planned open event with a focus on gaming. This includes most events spanning several days.
+</p>
 
-	<b>Felter:</b>
+<p>
+	<b>Fields:</b>
 	<ul>
-		<li><b>Navn</b><br>
-			Con'ens navn uden årstal. Flere con'er kan sagtens have det samme navn, fx blot
-			"Fastaval".
+		<li><b>Name</b><br>
+			Name of the con without the year. More cons can have the same name, e.g. "Fastaval".
 		</li>
-		<li><b>Årstal</b><br>
-			Fire-cifret årstal for con'ens afviklingstidspunkt.
+		<li><b>Year</b><br>
+			Four digit year for the time of the event.
 		</li>
-		<li><b>Startdato</b><br>
-			Præcis dato for con'ens starttidspunkt, hvis kendt. Indtastes i formatet ÅÅÅÅ-MM-DD, fx
-			"2002-04-01" for "1. april 2002". Efter indtastning vil ugedagen tillige
-			fremgå til højre for indtastningsfeltet.
+		<li><b>Start date, End date</b><br>
+			Exact date for the start and end of the con if known.
 		</li>
-		<li><b>Slutdato</b><br>
-			Præcis dato for con'ens sluttidspunkt, hvis kendt. Indtastes i formatet ÅÅÅÅ-MM-DD.
-			Efter indtastning vil ugedagen tillige fremgå til højre for indtastningsfeltet.
+		<li><b>Location</b><br>
+			Name of location of the place including name of town, e.g. "Katrinebjergskolen, Århus".
 		</li>
-		<li><b>Sted</b><br>
-			Navn på sted for con'en inkl. bynavn - fx "Katrinebjergskolen, Århus".
+		<li><b>Country code</b><br>
+			Two letter ISO country code for the location of the con, e.g. <i>se</i> for Sweden.
 		</li>
-		<li><b>Info om connen</b><br>
-			Diverse objektiv information om arrangører, gæster, evt. indgangspris, større begivenheder på con'en
-			(fx helcon live), m.m.
+		<li><b>Description</b><br>
+			Various objective information about the event, e.g. guests of honor, pricing, major events at the con.
 		</li>
-		<li><b>Con-serie</b><br>
-			Navnet på den serie, con'en er en del af. Enhver con bør være del af en con-serie,
-			også selvom der kun er én con i denne serie.
+		<li><b>Internal note</b><br>
+			Stuff that could be useful in the future in an expansion of Alexandria's model (e.g. payment).
 		</li>
-		<li><b>Datavaliditet</b><br>
-			Status på indsamling af data for den aktuelle con. Vil som udgangspunkt være "Scenarieliste mangler",
-			kan sættes til "Scenarieliste under indtastning", hvis man har erhvervet sig det aktuelle
-			con-program, og "Scenarieliste komplet jf. program", hvis alle scenarier fra programmet er lagt
-			ind i databasen (evt. uden foromtaler).
+		<li><b>Con series</b><br>
+			The series this con is connected to. Default is <i>Other</i>, a catch-all for cons not part of any series.
+		</li>
+		<li><b>Data validity</b><br>
+			Status for collection and entering data for the convention. Some selections will have the con show up on the <a href="../todo">public to-do</a> page.
+		</li>
+		<li><b>Cancelled?</b><br>
+			Whether the convention was cancelled. The details about the cancellation should be written under the description.
 		</li>
 
 	</ul>
 </p>
 
-<h3 id="conserie">
-	Con-serie
+<h3 id="conset">
+	Con series
 </h3>
 
 <p>
-	<b>Definition:</b> En "con-serie" er en gruppering af en række con'er, som har samme
-		arrangerfortegnelse, eller er arrangeret som efterfølgere til hinanden.
-	<b>Felter:</b>
+	A con series is a list of an amount of cons that are connected to each other by the same organizing group
+	or are clearly sequels to each other.
+</p>
+
+<p>
+	<b>Fields:</b>
 	<ul>
-		<li><b>Navn</b><br>
-			Det overordnede navn for alle con'er i denne serie, typisk baseret på et gennemgående
-			con-navn (fx "Fastaval") eller alternativt arrangørgruppen (fx "Con II Crew").
+		<li><b>Name</b><br>
+			The generic name for all cons in this series, usually based on a running name
+			(e.g. ARCON) or the organizing group (e.g. "Con II Crew").
 		</li>
-		<li><b>Info om con-serie</b><br>
-			Diverse objektiv information om con-serien som helhed.
+		<li><b>Description</b><br>
+			Any objective information of the con series as a whole.
+		</li>
+		<li><b>Internal note</b><br>
+			Any objective information of the con series as a whole.
+		</li>
+		<li><b>Country code</b><br>
+			Two letter ISO country code for the location of the con, e.g. <i>dk</i> for Denmark. Any
+			convention under this con series without a country present will default to this country. This
+			makes it easier to have all the conventions for a single con series located in the same country.
 		</li>
 
 	</ul>
 
 </p>
 
-<h3 id="system">
-	System
+<h3 id="rpgsystem">
+	RPG System
 </h3>
 
 <p>
-	(information om system-siden er endnu ikke skrevet)
+	An RPG system is an indepent role-playing system. A single RPG system usually contains variations such as editions within itself. These specifications will usually be added for the simple game. If a large amount of scenarios are written in specific variations (e.g. AD&amp;D vs. Dungeons &amp; Dragons 5th Editions) it makes sense to have separate entries for the two editions.
 </p>
 
-<h3 id="teknik">
-	Teknik
+<p>
+	<b>Fields:</b>
+	<ul>
+		<li><b>Name</b><br>
+			The generic name for the system.
+		</li>
+		<li><b>Description</b><br>
+			Any objective information of the system as a whole such as authors, distributors, releases, dates, expansions, and so on.
+		</li>
+	</ul>
+
+</p>
+
+<h3 id="tag">
+	 Tag
 </h3>
 
 <p>
-	Teknik-siden er udelukkende en informativ side, der oplyser om diverse
-	statistik, samt database-mæssige uregelmæssigheder i systemet. Dette inkluderer
-	blandt andet en liste over personer i systemet, der ikke er tilknyttet noget scenarie,
-	con's uden nogen kendt startdato, m.m. Siden giver blandt andet en idé om evt. uklarheder,
-	der gerne må følges op på og undersøges nærmere.
+	A tag is a keyword (one or several words) that can be attached to one or several games. This is useful for scenarios with sequels, organizer groups, themes, time periods and so on. Tags can exist without any games connected to it as a form of article of a topic.
+</p>
+
+<p>
+	<b>Fields:</b>
+	<ul>
+		<li><b>Tag</b><br>
+			The tag keyword, e.g. 
+		</li>
+		<li><b>Description</b><br>
+			Any useful information about the tag. This can be an article by itself.
+		</li>
+	</ul>
+
+</p>
+<h3 id="tag">
+	 News
+</h3>
+
+<p>
+	Short news post for the front page of Alexandria.
+</p>
+
+<p>
+	<b>Fields:</b>
+	<ul>
+		<li><b>News</b><br>
+			The text for the news post. Keep it short.
+		</li>
+		<li><b>Date and time</b><br>
+			Timestamp for the news post. Format in YYYY-MM-DD HH:MM:SS - leave blank for current date and time.
+		</li>
+		<li><b>Online</b><br>
+			Toggle to add or hide the news post from the front page.
+		</li>
+	</ul>
+</p>
+
+<h3 id="translations">
+	Translations
+</h3>
+<p>
+	Texts and translations for the public Alexandria pages. Click on a label to edit the associated text. Click on a language code (e.g. <i>de</i> for German/Deutsch) to focius on this language. This makes it easier to find missing translations for a single language.
+</p>
+
+<h3 id="log">
+	Log
+</h3>
+<p>
+	Internal log of edits by editors and users.
+</p>
+
+<h3 id="technical">
+	Technical
+</h3>
+
+<p>
+	The technical page is mostly an informative page for check-ups of irregularities in the
+	database as well as some statistics. This includes a lust of people in Alexandria without
+	any connections at all, cons without any known start date and so on. This could highlight
+	errors the be followed up upon. Also check out the <a href="../todo">public to-do</a> page.
 </p>
 
 <h3 id="tickets">
@@ -457,10 +377,112 @@ printinfo();
 </h3>
 
 <p>
-	Ticket-systemet er det organiserede feedback-system, når folk indsender rettelser.
-	Her er der mulighed for løbende at se åbne sager, skrive kommentarer undervejs (da
-	en del feedback kræver afklarende spørgsmål), og så fremdeles.
+	The ticket section is the organized system for handling corrections submitted by users.
+	It is possible to see open tickets, post internal notes (if some clarity is needed), and close tickets.
+	This system only runs internally. If the submitter needs to be contacted an editor has to email the person
+	directly. This can not be done though the ticket system.
 </p>
+
+<h3 id="datamodel">
+	The data model
+</h3>
+
+<p>
+	The dull parts: How everything is and should be connected as a database.
+</p>
+
+<p>
+	The Alexandria database is a relational database consisting of multiple relations. Basically this
+	means that we avoid redundant data and every piece of data is simply linked together. A person can
+	be the author of several scenarios, and a scenario can also be written by several persons. A
+	con can consist of many scenarios, and a scenario can be played at several cons. You get the idea.
+</p>
+
+<p>
+	Part of the model can be displayed the following way:
+</p>
+
+<!--
+Gott in Himmel, we should have some better SVG illustrations here
+-->
+
+<table cellspacing="1" cellpadding="1" style="font-size: 14px; border: 1px solid black; padding: 2px 2px 2px 2px;">
+
+	<tr>
+		<th title="E.g. &quot;Peter Brodersen&quot;, &quot;Palle Schmidt&quot;">Person</th>
+	</tr>
+
+	<tr>
+		<th>⇕</th>
+	</tr>
+
+	<tr>
+		<td style="font-size: 10px" colspan=3>(Many-to-many relationship)</td>
+		<th>⇔</th>
+		<th align="left" title="E.g. &quot;Author&quot;, &quot;Illustrator&quot;, &quot;Layouter&quot;">Role</th>
+	</tr>
+
+	<tr>
+		<th>⇕</th>
+	</tr>
+
+	<tr>
+		<th title="E.g. &quot;Dødens Skygge&quot;, &quot;Dogme#1 - Pesten&quot;, &quot;Match Madness&quot;">Game</th>
+		<th>⇔</th>
+		<th align="left" title="E.g. &quot;AD&amp;D&quot;, &quot;Paranoia&quot;, &quot;GURPS&quot;">RPG System</th>
+	</tr>
+
+	<tr>
+		<th>⇕</th>
+	</tr>
+
+	<tr>
+		<td style="font-size: 10px" colspan=3>(Many-to-many relationship)</td>
+		<th>⇔</th>
+		<th align="left" title="E.g. &quot;Premiere&quot;, &quot;Re-run&quot;, &quot;Cancelled&quot;">Presentation</th>
+	</tr>
+
+	<tr>
+		<th>⇕</th>
+	</tr>
+
+	<tr>
+		<th title="E.g. &quot;Fastaval 1996&quot;, &quot;Viking Con 20&quot;">Con</th>
+		<th>⇔</th>
+		<th align="left" title="E.g. &quot;Fastaval&quot;, &quot;Viking Con&quot;">Con series</th>
+	</tr>
+
+</table>		
+
+<p>
+	A <b>person</b> can have been involved in several games, even as an illustrator for one game and author for another game (mentioned as <b>Role</b>).
+</p>
+
+<p>
+	A <b>game</b> can have several persons connected. A game can however only have one <b>system</b> connected.
+	A scenario can't be both <i>AD&amp;D</i> and Warhammer Fantasy Roleplay. If this is still the case just
+	add a note/trivia to the game.
+</p>
+
+<p>
+	A <b>con</b> can contain several games - also games connected to other cons. In this connection
+	the <b>presentation</b> of the game is also noted, e.g. premiere or test run. This way a scenario
+	can be marked as cancelled for one con and as premiere for another con.
+</p>
+
+<p>
+	A <b>Con series</b> is a list of cons under the same moniker or organizer team. A con can only
+	be associated to one con series.
+</p>
+
+<p>
+	Example of usage of the data model for database users: We want to find out which persons
+	who have ever been an author for a specific con series, e.g. Fastaval. In this case we need to look at the
+	graph and connect "person" to "con series". From here we can see we need to move from Person across Game and Con
+	to end up at the Con series. Or in other words, we need to find the persons who have written scenarios that has
+	been played at cons who are part of Fastaval.
+</p>
+
 
 <h3 id="tips">
 	Tips &amp; tricks
@@ -468,41 +490,32 @@ printinfo();
 
 <p>
 	<ul>
-		<li>Brug "Kvik-find"-feltet! Det sparer dig for meget tid ifbm.
-			navigation i admin-systemet. Husk, at du også kan trykke
-			Alt-k (under Windows) for at flytte markøren ind i
-			"Kvik-find"-feltet.</li>
-		<li>Før du opretter ny data, så vær sikker på at personen,
-			scenariet, con'en, etc. ikke findes i forvejen - evt. blot
-			under et andet navn. Søg først efter navnet eller titlen på
-			det, du er ved at oprette.</li>
-		<li>Husk at folk kan have mellemnavne. Så selvom "Morten Jaeger"
-			fx ikke umiddelbart findes i systemet, viser en søgning på fx
-			"Morten" eller lidt bladren i personlisten i bunden på "Personer"-siden,
-			at "Morten Trøst Jaeger" faktisk findes, og således ikke skal
-			(gen)oprettes.</li>
-		<li>Er du ved at indtaste et helt con-program, kan du gå ind under den
-			relevante con på con-siden, og klikke på linket "Brug con som default con".
-			Når denne er valgt, vil systemet, når du er ved at oprette nye scenarier,
-			automatisk vælge denne con i con-listen for dig.</li>
-		<li>Du kan i de fleste indtastningsfelter lave links til andre data. Det gøres
-			blot ved at omramme den relevante tekst med klammer, fx: [[[Peter Brodersen]]].
-			På den offentlige side vil teksten så være blevet til et link,
-			fx: <a href="../find?find=Peter%20Brodersen">Peter Brodersen</a></li>
-		<li>Det er endnu ikke muligt at slette data. Det skyldes at der
-			vil være for stor risiko for fx at slette et scenarie, der eksempelvis
-			har en masse personer og con'er tilknyttet. Har du vitterligt behov
-			for at få noget slettet, så se næste punkt.
-		<li>Mangler du en eller anden triviel funktionalitet? Så tøv ikke med
-			at kontakte Peter Brodersen på adressen <a href="mailto:peter@ter.dk">peter@ter.dk</a>
-			eller smid en kommentar i <a href="https://www.facebook.com/groups/1602088646679278/">Facebook-gruppen</a>.
-		<li>Kviklink til at gå et skridt bagud: <a href="../" accesskey="q">Hotkey+Q</a>.</li>
+		<li>Use the "Quick search" field! This saves a lot of time and might
+			be the only way to access a data entry. Note the hotkey
+			(Hotkey + K) for the search field.
+		</li>
+		<li>
+			If you need to enter a program for a con you can go to the related con page. From
+			here you can click the "Use con as default con" link. With this selected the con will
+			be placed at the top at the scenario page for an easy way to select this.
+		</li>
+		<li>
+			For most input fields you can link to other entries by adding sets of three brackets around
+			the topic, e.g. [[[Peter Brodersen]]]. On the public page this will display as a link, e.g:
+			<a href="../find?find=Peter%20Brodersen">Peter Brodersen</a>
+		</li>
+		<li>
+			Are you missing a feature that could make your life as an editor easier? 
+			Drop a note in the <a href="https://www.facebook.com/groups/1602088646679278/">Facebook editor group</a> or
+			mail administrator Peter Brodersen at <a href="mailto:peter@ter.dk">peter@ter.dk</a>
+		</li>
+		<li>
+			Hotkey to go up a page: <a href="../" accesskey="q">Hotkey + Q</a>.
+		</li>
 	</ul>
 </p>
 
-
 </div>
-
 
 </body>
 </html>

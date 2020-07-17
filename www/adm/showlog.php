@@ -77,7 +77,7 @@ if ($data_id && $category) {
 	}
 	$title = getone($q);
 	
-	$query = "SELECT id, time, user, ip, ip_forward, note FROM log WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id DESC";
+	$query = "SELECT id, time, user, note FROM log WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id DESC";
 	$result = getall($query);
 
 } else {
@@ -90,10 +90,10 @@ if ($data_id && $category) {
 		'tag' => getassoc("tag","tag")
 	];
 	if ($user_id) {
-		$query = "SELECT id, data_id, category, time, user, user_id, ip, ip_forward, note FROM log WHERE user_id = $user_id ORDER BY id DESC LIMIT $listlimit";
+		$query = "SELECT id, data_id, category, time, user, user_id, note FROM log WHERE user_id = $user_id ORDER BY id DESC LIMIT $listlimit";
 		$user_name = getone("SELECT name FROM users WHERE id = $user_id");
 	} else {
-		$query = "SELECT id, data_id, category, time, user, user_id, ip, ip_forward, note FROM log ORDER BY id DESC LIMIT $listlimit";
+		$query = "SELECT id, data_id, category, time, user, user_id, note FROM log ORDER BY id DESC LIMIT $listlimit";
 	}
 	$listresult = getall($query);
 
@@ -111,18 +111,13 @@ if ($result) {
 	      "<th style=\"width: 180px\">Edited by</th>".
 	      "<th style=\"width: 180px\">Time</th>".
 	      "<th style=\"width: 160px\">Description</th>".
-	      "<th style=\"width: 120px\">IP</th>".
 	      "</tr>\n";
 
         foreach($result AS $row) {
-		$ip = $row['ip'];
 		print "<tr>\n".
 		      "<td>".$row['user']."</td>\n".
 		      "<td style=\"text-align: right;\">".pubdateprint($row['time'])."</td>\n".
-#		      "<td style=\"text-align: right;\">".date("j/n Y, H:i",strtotime($row['time']))."</td>\n".
-#		      "<td>{$row['time']}</td>\n".
 		      "<td style=\"text-align: center;\">{$row['note']}</td>\n".
-		      "<td style=\"text-align: center;\">$ip</td>\n".
 		      "</tr>\n";
 	}
 	print "</table>\n";
@@ -130,15 +125,13 @@ if ($result) {
 	print "<table align=\"center\" border=0>".
 	      "<tr><th colspan=5>$listlimit recent edits" . ($user_name ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n".
 	      "<tr>\n".
-	      "<th>Category</th>".
+	      "<th>Entity</th>".
 	      "<th style=\"width: 180px\">Edited by</th>".
 	      "<th style=\"width: 180px\">Time</th>".
 	      "<th style=\"width: 160px\">Description</th>".
-	      "<th style=\"width: 120px\">IP</th>".
 	      "</tr>\n";
 
         foreach($listresult AS $row) {
-		$ip = $row['ip'];
 		if ($data[$row['category']][$row['data_id']]) {
 			$subject = $data[$row['category']][$row['data_id']];
 			$link = admLink($row['category'], $row['data_id']);
@@ -154,7 +147,6 @@ if ($result) {
 		      "<td>".$row['user']."</td>\n".
 		      "<td style=\"text-align: right;\">".pubdateprint($row['time'])."</td>\n".
 		      "<td style=\"text-align: right;\">{$row['note']}</td>\n".
-		      "<td style=\"text-align: right;\">$ip</td>\n".
 		      "</tr>\n";
 	}
 
