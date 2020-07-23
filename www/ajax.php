@@ -13,7 +13,7 @@ $separator_limit = 3;
 if (strlen($query) >= 2) {
 	$query = "
 			SELECT aut.id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart, 'person' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id IN (1,5) LEFT JOIN sce ON asrel.sce_id = sce.id WHERE CONCAT(firstname,' ',surname) LIKE '$escapequery%' GROUP BY aut.id
-		UNION ALL
+		UNION
 			SELECT aut.id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart, 'person' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id IN (1,5) LEFT JOIN sce ON asrel.sce_id = sce.id WHERE CONCAT(surname, ' ', firstname) LIKE '$escapequery%' GROUP BY aut.id
 		UNION ALL
 			SELECT sce.id, title AS label, 'sce' AS type, 'scenarie' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(aut.firstname,' ',aut.surname) ORDER BY aut.popularity DESC, aut.id SEPARATOR '$separator'), '') AS note FROM sce LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id IN (1,5) LEFT JOIN aut ON asrel.aut_id = aut.id  WHERE title LIKE '$escapequery%' GROUP BY sce.id
@@ -23,6 +23,8 @@ if (strlen($query) >= 2) {
 			SELECT convent.id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convent WHERE name LIKE '$escapequery%' OR CONCAT(name,' (',year,')') LIKE '$escapequery%' OR CONCAT(name,' ',year) LIKE '$escapequery%'
 		UNION ALL
 			SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tags WHERE tag LIKE '$escapequery%' GROUP BY tag
+		UNION
+			SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tag WHERE tag LIKE '$escapequery%' GROUP BY tag
 		ORDER BY label
 	";
 
