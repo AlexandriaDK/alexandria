@@ -8,9 +8,14 @@ $totaltags = getone("SELECT COUNT(*) FROM tags");
 $articles = getcol("SELECT tag FROM tag");
 
 $tags = getall("
-	SELECT COUNT(*) AS count, tag
-	FROM tags
-	GROUP BY tag
+	SELECT COUNT(tags.id) AS count, alltags.tag
+	FROM (
+		SELECT DISTINCT tag FROM tags
+		UNION
+		SELECT tag FROM tag
+	) alltags
+	LEFT JOIN tags ON alltags.tag = tags.tag
+	GROUP BY alltags.tag
 	ORDER BY $order
 ");
 
@@ -24,19 +29,9 @@ foreach($tags AS $tag) {
 	$count = $tag['count'];
 	$dataset = ['url' => $url, 'tagname' => $tagname, 'has_article' => $has_article, 'count' => $count];
 	$taglist[] = $dataset;
-
-	$htmltag = "";
-	$htmltag = "<a href=\"data?tag=" . rawurlencode($tag['tag']) . "\">".htmlspecialchars($tag['tag'])."</a>";
-	if (in_array($tag['tag'], $articles) ) {
-		$htmltag = "<b>" . $htmltag . "</b>";
-	}
-	$htmltag .= " (" . $tag['count'] . ")";
-	$htmltag .= "<br />\n";
-	$list .= $htmltag;
 }
 
 // Smarty
-$t->assign('list',$list);
 $t->assign('taglist',$taglist);
 
 $t->display('tags.tpl');

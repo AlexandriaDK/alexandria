@@ -131,15 +131,10 @@ function search_blogposts ($find) {
 }
 
 function search_tags ($find) {
-	$output = "";
-
 	$sql = "
-		SELECT tags.tag, tag.description
-		FROM tags
-		LEFT JOIN tag ON tags.tag = tag.tag
-		WHERE tags.tag LIKE '%" . dbesc($find) . "%'
-		GROUP BY tags.tag, tag.description
-		ORDER BY tags.tag
+		(SELECT tag FROM tag WHERE tag LIKE '%" . dbesc($find) . "%')
+		UNION
+		(SELECT DISTINCT tag FROM tags WHERE tag LIKE '%" . dbesc($find) . "%' ORDER BY tag)
 	";
 	$result = getall($sql);
 	if (!$result) return false;

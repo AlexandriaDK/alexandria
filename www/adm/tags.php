@@ -19,7 +19,8 @@ if ($action == "changetag" && $do != "Remove") {
 	$url = trim($url);
 	$description = trim($description);
 	$q = "UPDATE tags SET " .
-	     "tag = '" . dbesc($tag) . "' " .
+	     "tag = '" . dbesc($tag) . "', " .
+	     "added_by_user_id = '" . (int) $_SESSION['user_id'] . "' " .
 	     "WHERE id = $id";
 	$r = doquery($q);
 	if ($r) {
@@ -44,8 +45,8 @@ if ($action == "changetag" && $do == "Remove") {
 // Add tag
 if ($action == "addtag" && $tag != "") {
 	$q = "INSERT INTO tags " .
-	     "(sce_id, tag) VALUES ".
-	     "($data_id, '". dbesc($tag) . "')";
+	     "(sce_id, tag, added_by_user_id) VALUES ".
+	     "($data_id, '". dbesc($tag) . "', " . (int) $_SESSION['user_id'] . ")";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
