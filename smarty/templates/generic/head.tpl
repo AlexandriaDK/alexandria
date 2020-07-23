@@ -259,6 +259,7 @@
 		</div>
 
 
+		<nav>
 		<div id="topmenu" itemscope itemtype="http://schema.org/WebSite">
 			<meta itemprop="url" content="https://alexandria.dk/" />
 			<form action="find" itemprop="potentialAction" itemscope itemtype="http://schema.org/SearchAction">
@@ -286,6 +287,7 @@
 			</form>
 {/if}
 		</div>
+		</nav>
 
 <div id="resultbox">
 </div>

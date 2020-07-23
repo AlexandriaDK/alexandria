@@ -1,5 +1,6 @@
 <div id="content">
 
+<article>
 	<h2 class="datatitle">{$tag|escape}</h2>
 
 {if $description != ""}
@@ -7,6 +8,7 @@
 		{$description|textlinks|nl2br}
 	</p>
 {/if}
+</article>
 
 	{* clear for picture *}
 	<div style="clear: both;">
