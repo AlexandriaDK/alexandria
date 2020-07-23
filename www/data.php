@@ -1,20 +1,4 @@
 <?php
-/*
-Ideer til forside:
-nyeste tilføjelser
-nyeste anmeldelser
-ugens scenarie?
-links til div. top 10-lister - eller direkte på forsiden?
-links til genrer? systemer?
-afstemning?
-link til "min side" - den personlige login
-link til con, scenarie, forfatter oversigt?
-søgefelt
-kommende cons
-
-Forslag: Citatboks, folks citater
-*/
-
 require("./connect.php");
 require("base.inc.php");
 
@@ -26,6 +10,7 @@ $conset = (int) ($_REQUEST['conset'] ?? 0);
 $system = (int) ($_REQUEST['system'] ?? 0);
 $year = (int) ($_REQUEST['year'] ?? 0);
 $tag = (string) ($_REQUEST['tag'] ?? '');
+$review = (int) ($_REQUEST['review'] ?? 0);
 
 if ($person) {
 	include ("person.inc.php");
@@ -41,6 +26,8 @@ if ($person) {
 	include ("year.inc.php");
 } elseif ($tag) {
 	include ("tag.inc.php");
+} elseif ($review) {
+	include ("review.inc.php");
 } else {
 	include ("default.inc.php");
 }

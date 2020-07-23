@@ -7,11 +7,6 @@ require "base.inc.php";
 
 $this_type = 'game';
 
-/*
- * Ny løsning pr. 22. oktober 2002 - kræver javascript, men outputtet fylder kun 1 gang con-liste
- * og 1 gang forfatter-liste
- */
-
 function strSplitParticipants($str) {
 	if (!preg_match('/^\d+(-\d+)?$/',$str) ) {
 		return [ NULL, NULL ];
@@ -142,7 +137,7 @@ if ($action == "update" && $game) {
 			chlog($game,$this_type,"Scenarie rettet");
 		}
 
-// Relation-systemet virker kun, hvis javascript er enabled:
+// Only change relations if javascript is enabled
 		if ($jsenabled == "1") {
 	
 	// Add person-game relations
@@ -163,7 +158,7 @@ if ($action == "update" && $game) {
 			}
 		}
 
-// Færdig!
+// Done!
 		$_SESSION['admin']['info'] = "Game updated! " . dberror();
 		rexit($this_type, ['game' => $game] );
 	}
@@ -264,7 +259,7 @@ if ($action == "create") {
 	}
 }
 
-# Find existing game persons
+# Get existing person relations
 
 if ($game) {
 	$qrel = getall("
@@ -278,7 +273,7 @@ if ($game) {
 	print dberror();
 }
 
-# Find eksisterende con-tilknytninger
+# Get existing con relations
 
 if ($game) {
 	$qcrel = getall("
@@ -313,17 +308,14 @@ if ($game) {
 	print dberror();
 }
 
-// Find alle con'er
-
+// Get all cons
 $con = [];
-#$con[0] = "[ingen eller ukendt con]";
 $q = getall("SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id ORDER BY setname, year, begin, end, name") OR die(dberror());
 foreach($q AS $r) {
 	$con[$r['id']] = $r['name']." (".$r['year'].")";
 }
 
-// Find alle systemer
-
+// Get all systems
 $sys = [];
 $sys[0] = "[unknown or unspecified RPG system]";
 $q = getall("SELECT id, name FROM sys ORDER BY name");
@@ -332,32 +324,15 @@ foreach($q AS $r) {
 }
 
 
-// Find alle personer
-
-// Nyeste x personer først
-$autnew = [];
-$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY id DESC LIMIT 10");
-foreach($q AS $r) {
-	$autnew[$r['id']] = $r['name'];
-}
-
-$aut = [];
-$q = getall("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut ORDER BY name, id");
-foreach($q AS $r) {
-	$aut[$r['id']] = $r['name'];
-}
-
-// Find alle arbejdstitler
-
-unset($tit);
+// Get all person titles
+$tit = [];
 $q = getall("SELECT id, title FROM title ORDER BY id");
 foreach($q AS $r) {
 	$tit[$r['id']] = $r['title'];
 }
 
-// Find alle slags events
-
-unset($pre);
+// Get all types of presentations
+$pre = [];
 $q = getall("SELECT id, event FROM pre ORDER BY id");
 foreach($q AS $r) {
 	$pre[$r['id']] = $r['event'];
@@ -743,8 +718,18 @@ if ($game) {
 	print changeuserlog($game,$this_type);
 	print showpicture($game,$this_type);
 	print showtickets($game,$this_type);
-}	
 
+	$reviews = getcolid( "SELECT id, title FROM reviews WHERE category = 'game' AND data_id = $game" );
+	print "<tr><td>Reviews:</td><td>";
+	if ( $reviews ) {
+		foreach ($reviews AS $rid => $title ) {
+			print '<a href="review.php?review_id=' . $rid . '">' . ( $title !== "" ? htmlspecialchars( $title ) : "(unknown)" ) . '</a><br>';
+		}
+	} else {
+		print "None";
+	}
+	print "</td></tr>";
+}
 ?>
 
 </table>

@@ -23,6 +23,7 @@ function admLink ($category, $data_id) {
 	if ($category == 'aut') return 'person.php?person=' . $data_id;
 	if ($category == 'sys') return 'system.php?system=' . $data_id;
 	if ($category == 'tag') return 'tag.php?tag_id=' . $data_id;
+	if ($category == 'review') return 'review.php?review_id=' . $data_id;
 
 	return $link;
 }
@@ -70,6 +71,11 @@ if ($data_id && $category) {
 		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
 		$mainlink = "tag.php?tag_id=$data_id";
 		break;
+	case 'review':
+		$cat = 'review';
+		$q = "SELECT title FROM reviews WHERE id = $data_id";
+		$mainlink = "review.php?review_id=$data_id";
+		break;
 	default:
 		$cat = 'aut';
 		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
@@ -87,7 +93,8 @@ if ($data_id && $category) {
 		'convent' => getassoc("CONCAT(name,' (',COALESCE(year,'?'),')')","convent"),
 		'conset' => getassoc("name","conset"),
 		'sys' => getassoc("name","sys"),
-		'tag' => getassoc("tag","tag")
+		'tag' => getassoc("tag","tag"),
+		'review' => getassoc("title","review")
 	];
 	if ($user_id) {
 		$query = "SELECT id, data_id, category, time, user, user_id, note FROM log WHERE user_id = $user_id ORDER BY id DESC LIMIT $listlimit";
@@ -106,7 +113,7 @@ if ($info) {
 
 if ($result) {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Log for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Log for: <a href=\"$mainlink\" accesskey=\"q\">" . ( $title != "" ? htmlspecialchars($title) : '(unknown)' ) . "</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th style=\"width: 180px\">Edited by</th>".
 	      "<th style=\"width: 180px\">Time</th>".

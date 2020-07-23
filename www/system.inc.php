@@ -9,8 +9,8 @@ if ($system == 3)  award_achievement(68); // Paranoia
 $r = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
 
 if ($r['id'] == 0) {
-	$t->assign('content',"Beklager - intet system fundet!");
-	$t->assign('pagetitle',"Ikke fundet");
+	$t->assign('content', $t->getTemplateVars('_nomatch') );
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 } else {
 	if ($_SESSION['user_id']) {
@@ -30,7 +30,7 @@ if ($r['id'] == 0) {
 				}
 			}
 			$sce_id = $rs['id'];
-			// query-i-løkke... skal optimeres!
+			// query-i-lï¿½kke... skal optimeres!
 			$slist[$sl]['files'] = $rs['files'];
 			$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 			$slist[$sl]['title'] = $rs['title'];

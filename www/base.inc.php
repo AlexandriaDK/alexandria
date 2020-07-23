@@ -592,10 +592,15 @@ function _textlink ($string, $absolute_url = 0) {
 			return $html;
 		}
 		if ($cat == "tag") {
-			$html = "<a href=\"data?tag=" . rawurlencode($text) . "\" class=\"tag\">" . htmlspecialchars($text) . "</a>";
+			if ( strpos( $text, '|') !== FALSE) {
+				list($taglink, $text) = explode( "|", $text, 2);
+			} else {
+				$taglink = $text;
+			}
+			$html = '<a href="data?tag=' . rawurlencode( $taglink ) . '" class="tag">' . htmlspecialchars( $text ) . '</a>';
 			return $html;
 		}
-		$html = "<a href=\"/find?find=".rawurlencode($text)."&amp;cat=$search\" class=\"$class\">$text</a>";
+		$html = '<a href="/find?find='.rawurlencode( $text ).'&amp;cat=$search" class="' . $class . '">' . htmlspecialchars( $text ) . '</a>';
 		return $html;
 	}
 	$text = "<a href=\"$urlpart?find=".rawurlencode($string)."\">$string</a>";
@@ -734,29 +739,29 @@ function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 
 	switch ($cat) {
 		case 'aut':
-		$css = "person";
-		break;
+			$css = "person";
+			break;
 	
 		case 'sce':
-		$css = "scenarie";
-		break;
+		case 'game':
+				$css = "scenarie";
+			break;
 	
 		case 'conset':
-		$css = "con";
-		break;
+			$css = "con";
+			break;
 
 		case 'sys':
-		$css = "system";
-		break;
+			$css = "system";
+			break;
 	
 		case 'convent':
-		$css = "con";
-		break;
+			$css = "con";
+			break;
 	
 		default:
-		case 'aut':
-		$css = "person";
-		break;
+			$css = "person";
+			break;
 	}
 
 	$html = "<a href=\"$link\" class=\"$css\">".htmlspecialchars($text)."</a>";
@@ -788,7 +793,8 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 		break;
 	
 		case 'sce':
-		$value = ($admin ? "/adm/game.php?game=$data_id" : "data?scenarie=$data_id");
+		case 'game':
+			$value = ($admin ? "/adm/game.php?game=$data_id" : "data?scenarie=$data_id");
 		break;
 	
 		case 'conset':

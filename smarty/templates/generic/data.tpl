@@ -35,5 +35,8 @@
 {elseif $type eq "tag"}
 {assign var="typename" value="Tag"}
 {include file="tag.tpl"}
+{elseif $type eq "review"}
+{assign var="typename" value="Review"}
+{include file="review.tpl"}
 {/if}
 {include file="end.tpl"}

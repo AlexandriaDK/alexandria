@@ -55,6 +55,10 @@ function tr($tekst, $name, $def="", $opt="", $placeholder = "", $type="text", $a
 	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"".htmlspecialchars($def)."\" placeholder=\"" . htmlspecialchars($placeholder) . "\" size=50" . ($autofocus ? " autofocus" : "") . "></td><td>$opt</td></tr>\n";
 }
 
+function tt($tekst, $name, $content = "") {
+	print "<tr valign=top><td>$tekst</td><td><textarea name=\"$name\" cols=60 rows=8>\n" . htmlspecialchars($content) . "</textarea></td></tr>\n";
+}
+
 function chlog($data_id, $category, $note="") {
 	global $authuser;
 	if ($category == 'game') $category = 'sce';
@@ -263,7 +267,8 @@ function rexit($this_type, $dataset = [] ) {
 		case 'awards':
 		case 'language':
 		case 'users':
-			$location = $this_type . '.php';
+		case 'review':
+				$location = $this_type . '.php';
 			break;
 		case 'sce':
 			$location = 'game.php';

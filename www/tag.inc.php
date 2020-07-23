@@ -5,8 +5,8 @@ list ($tag_id, $ttag, $description) = getrow("SELECT id, tag, description FROM t
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
-	$t->assign('content',"Beklager - dette tag findes ikke!");
-	$t->assign('pagetitle',"Ikke fundet");
+	$t->assign('content', $t->getTemplateVars('_nomatch') );
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 } else {
 	if (!$tag) {
@@ -31,7 +31,7 @@ if (!$tag && !$tag_id) {
 				}
 			}
 			$sce_id = $rs['id'];
-			// query-i-løkke... skal optimeres!
+			// query-i-lÃ¸kke... skal optimeres!
 			$slist[$sl]['files'] = $rs['files'];
 			$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 			$slist[$sl]['title'] = $rs['title'];

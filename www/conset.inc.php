@@ -5,8 +5,8 @@ $condata = [];
 
 $r = getrow("SELECT id, name, description, intern FROM conset WHERE id = '$conset'");
 if ($r['id'] == 0) {
-	$t->assign('content',"Beklager - ingen con-serie fundet!");
-	$t->assign('pagetitle',"Ikke fundet");
+	$t->assign('content', $t->getTemplateVars('_nomatch') );
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 } else {
 	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor

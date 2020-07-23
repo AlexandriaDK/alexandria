@@ -3,8 +3,8 @@ $this_type = 'aut';
 
 $r = getrow("SELECT id, intern, CONCAT(firstname,' ',surname) AS name, birth, death FROM aut WHERE id = $person");
 if ($r['id'] == 0) {
-	$t->assign('content',"Beklager - ingen forfatter fundet");
-	$t->assign('pagetitle',"Ikke fundet");
+	$t->assign('content', $t->getTemplateVars('_nomatch') );
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 
 } else {

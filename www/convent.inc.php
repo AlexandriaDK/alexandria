@@ -33,8 +33,8 @@ if ($con == 127 || $con == 743) award_achievement(80); // 1. Copenhagen Gamecon 
 
 $r = getrow("SELECT convent.id, convent.name, convent.intern, convent.year, convent.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname, COALESCE(convent.country, conset.country) AS country FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE convent.id = $con");
 if (is_null($r['id']) ) {
-	$t->assign('content',"Sorry - no con found!");
-	$t->assign('pagetitle',"Not found");
+	$t->assign('content', $t->getTemplateVars('_nomatch') );
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 } else {
 	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor

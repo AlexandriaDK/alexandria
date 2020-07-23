@@ -1,4 +1,6 @@
 <?php
+// Lookup service for various editor pages.
+
 require "adm.inc";
 require "base.inc.php";
 chdir("..");
@@ -8,6 +10,7 @@ require "base.inc.php";
 $type = (string) $_REQUEST['type'];
 $label = trim( (string) $_REQUEST['label'] );
 $id = (int) $_REQUEST['currentid'];
+$term = (string) $_REQUEST['term'] ?? '';
 
 function resultexit( $data ) {
 	print json_encode( $data );
@@ -17,6 +20,13 @@ function resultexit( $data ) {
 if ($type == 'sce' && $label != "") {
 	$num = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($label) . "'");
 	print $num;
+}
+
+if ($type == 'games' && $term !== "") {
+	$games = getcol("SELECT CONCAT(id, ' - ', title) AS label FROM sce WHERE title LIKE '" . dbesc($term) . "%'");
+	header("Content-Type: application/json");
+	print json_encode( $games );
+	exit;
 }
 
 if ($type == 'countrycode' && $label != "") {
