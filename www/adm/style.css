@@ -140,3 +140,19 @@ input.personunsure:enabled {
 input.persondoesnotexist:enabled {
 	background-color: #c66;
 }
+
+.ui-autocomplete {
+	max-height: 600px ! important;
+	max-width: 300px ! important;
+	overflow-y: auto ! important;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden ! important;
+	font-size: 0.8em ! important;
+	margin-right: 30px ! important;
+}
+
+.autosearchnote {
+	color: #999;
+	padding-left: 2em;
+	font-size: 0.7em;
+}

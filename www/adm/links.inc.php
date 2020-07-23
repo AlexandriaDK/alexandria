@@ -1,3 +1,21 @@
+<script>
+$(function() {
+	$( "#ffind" ).autocomplete({
+		source: '../ajax.php',
+		minLength: 2,
+		delay: 100,
+		select: function( event, ui ) {
+			window.location = 'redir.php?cat=' + ui.item.linkpart + '&data_id=' + ui.item.id;
+		}
+	})
+	.autocomplete( "instance" )._renderItem = function( ul, item ) {
+		return $( "<li>" )
+			.append(" <a>" + item.label + "</a>" )
+			.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
+			.appendTo ( ul );
+	}
+});
+</script>
 <div align="center" class="headlink">
 <form action="find.php">
 <a href="./" accesskey="i">Info</a>
@@ -51,5 +69,7 @@ if ($langlock) {
 	print "<br>Language: <a href=\"language.php?do=next\">" . htmlspecialchars( $langlock ). "</a> <sup><a href=\"/" . htmlspecialchars( $langlock ) ."/\">(show)</a></sup> - <a href=\"language.php?setlang=none\">release</a>";
 }
 ?></span><br></form>
+<div id="resultbox">
+</div>
 
 </div>

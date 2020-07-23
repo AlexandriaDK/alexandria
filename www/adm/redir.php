@@ -13,6 +13,7 @@ switch ($cat) {
 
 	case 'sce':
 	case 'game':
+	case 'scenarie':
 	$returl = 'game.php?game=';
 	break;
 
@@ -21,15 +22,21 @@ switch ($cat) {
 	break;
 
 	case 'sys':
+	case 'system':
 	$returl = 'system.php?system=';
 	break;
 
+	case 'con':
 	case 'convent':
 	$returl = 'convent.php?con=';
 	break;
 
 	case 'tag':
-	$returl = 'tag.php?tag_id=';
+	if ( ctype_digit( $id ) ) {
+		$returl = 'tag.php?tag_id=';
+	} else {
+		$returl = 'tag.php?tag=';
+	}
 	break;
 
 	case 'aut':

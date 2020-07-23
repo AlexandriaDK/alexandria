@@ -33,18 +33,6 @@
 			  crossorigin="anonymous"></script>
 		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script src="/quicksearch.js"></script>
-		<style>
-			.ui-autocomplete {
-				max-height: 600px;
-				max-width: 400px;
-				overflow-y: auto;
-				/* prevent horizontal scrollbar */
-				overflow-x: hidden;
-				font-size: 0.9em;
-				margin-right: 30px;
-			}
-			
-		</style>
 		{if isset($json_alltags) }
 		<script>
 		var availableTags = {$json_alltags};
@@ -56,7 +44,6 @@
 			});
 		});
 		</script>
-
 		{/if}
 
 		{if isset($todo_tabs) } 
@@ -82,7 +69,6 @@
 		});
 		</script>
 		{/if}
-
 	</head>
 
 	<body>

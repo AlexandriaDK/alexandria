@@ -9,13 +9,15 @@ require "base.inc.php";
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - Main page</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/uistyle.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
 <script
 			  src="https://code.jquery.com/jquery-3.4.1.min.js"
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 $(document).ready(function() {  
 	$.get( "frontstat.php?days=7", function( data ) {
