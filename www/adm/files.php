@@ -382,9 +382,11 @@ if ($data_id && $category) {
 	print "</td><td>";
 	$descriptions = ['{$_sce_file_scenario}' => "Scenario", '{$_sce_file_characters}' => "Characters", "Handouts" => "Handouts", '{$_sce_file_rules}' => "Regler", '{$_sce_file_programme}' => "Programme" ];
 	foreach( $descriptions AS $templatecode => $label ) {
+		print '<div class="descriptionexamples">';
 		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.title;\" title=\"" . htmlspecialchars( $templatecode ) . "\">";
 		print htmlspecialchars( $label );
-		print "</a><br />\n";
+		print '</a><br><span onclick="console.log(this); navigator.clipboard.writeText(this.innerHTML);">' . htmlspecialchars( $templatecode ) . '</span>';
+		print '</div>';
 	}
 
 	print "</tr>\n";

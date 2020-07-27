@@ -156,3 +156,17 @@ input.persondoesnotexist:enabled {
 	padding-left: 2em;
 	font-size: 0.7em;
 }
+
+div.descriptionexamples {
+	margin-bottom: 4px;
+}
+
+div.descriptionexamples a {
+	cursor: alias;
+}
+
+div.descriptionexamples span {
+	font-size: 0.8em;
+	color: #321;
+	cursor: copy;
+}
