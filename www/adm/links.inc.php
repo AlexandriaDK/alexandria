@@ -23,6 +23,7 @@ $(function() {
 function reviewSubmit() {
 	var data_id = parseInt( $( "#data_id" ).val() );
 	var review_title = $( "input[name=review_title]" ).val();
+	var language = $( "#language" ).val();
 	if ( ! data_id ) {
 		alert('No game selected.');
 		return false;
@@ -31,6 +32,21 @@ function reviewSubmit() {
 		alert('No title entered');
 		return false;
 	}
+	if ( language == 'dk' ) {
+		alert('Language \'dk\' does not exist. Use \'da\' for Danish.')
+		return false;
+	}
+	if ( language == 'us' || language == 'gb'  ) {
+		alert('Language \'' + language + '\' does not exist. Use \'en\' for English.')
+		return false;
+	}
+	if ( language == 'se' ) {
+		return confirm('Language \'se\' is Northern Sami, not Swedish. Are you sure you want to submit?')
+	}
+	if ( language == 'uk' ) {
+		return confirm('Language \'uk\' is Ukrainian, not English. Are you sure you want to submit?')
+	}
+	
 	return true;
 }
 

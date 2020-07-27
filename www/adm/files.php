@@ -347,7 +347,7 @@ if ($data_id && $category) {
 		      '<td >'.$row['filename'].'</td>'.
 		      '<td ><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="40"></td>'.
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
-		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="2" placeholder="da"></td>'.
+		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
 		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Delete"></td>'.
 		      '<td ><a href="http://download.alexandria.dk/files/'.$paths[$category].'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
 		      "</tr>\n";
@@ -363,7 +363,7 @@ if ($data_id && $category) {
 	      '<td><input type="text" name="path" id="newpath" value="" size="40" maxlength="150"></td>'.
 	      '<td><input type="text" name="description" id="newdescription" value="" size="40" maxlength="150"></td>'.
 	      '<td style="text-align: center"><input type="checkbox" name="downloadable" checked="checked"></td>'.
-	      '<td ><input type="text" name="language" value="" size="2" maxlength="2" placeholder="da"></td>'.
+	      '<td ><input type="text" name="language" value="" size="2" maxlength="20" placeholder="da"></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      '<td></td>'.
 	      "</tr>\n";
@@ -380,9 +380,10 @@ if ($data_id && $category) {
 		print "<br />\n";
 	}
 	print "</td><td>";
-	foreach( ["Scenariet","Scenario (English)","Spilpersoner","Handouts","Regler","Programmet"] AS $label) {
-		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.innerHTML;\">";
-		print $label;
+	$descriptions = ['{$_sce_file_scenario}' => "Scenario", 'Scenario (English)' => "Scenario (English)", '{$_sce_file_characters}' => "Characters", "Handouts" => "Handouts", '{$_sce_file_rules}' => "Regler", '{$_sce_file_programme}' => "Programme" ];
+	foreach( $descriptions AS $templatecode => $label ) {
+		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.title;\" title=\"" . htmlspecialchars( $templatecode ) . "\">";
+		print htmlspecialchars( $label );
 		print "</a><br />\n";
 	}
 

@@ -838,11 +838,22 @@ function getaliaslist ($data_id, $cat) {
 }
 
 function getfilelist ($data_id, $cat) {
-	$files = getall("SELECT filename, description FROM files WHERE data_id = '$data_id' AND category = '$cat' AND downloadable = 1 ORDER BY id");
+	global $t;
+	$files = getall("SELECT filename, description, language FROM files WHERE data_id = '$data_id' AND category = '$cat' AND downloadable = 1 ORDER BY id");
 	foreach($files AS $id => $file) {
+		$template_description = $t->fetch( "string:" . $file['description'] );
+		if ( $file['language'] ) {
+			$languages = explode( ",", $file['language']);
+			$fulllanguages = [];
+			foreach( $languages AS $language ) {
+				$fulllanguages[] = getLanguageName( $language );
+			}
+			$template_description .= " [" . implode( ", ", $fulllanguages) . "]";
+		}
 		$path = ALEXFILES.getcategorydir($cat).'/'.$data_id.'/'.$file['filename'];
 		$files[$id]['path'] = $path;
 		$files[$id]['extension'] = strtolower(substr(strrchr($file['filename'], "."), 1));
+		$files[$id]['template_description'] = $template_description;
 		if (file_exists($path)) {
 			$files[$id]['filesize'] = filesize($path);
 			$files[$id]['filesizetext'] = number_format(max(0.1,round($files[$id]['filesize']/1024/1024*10)/10),1,',','.');

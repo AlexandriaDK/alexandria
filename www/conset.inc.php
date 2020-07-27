@@ -50,16 +50,12 @@ if ($r['id'] == 0) {
 
 	}
 
-// Liste over aliaser
 	$aliaslist = getaliaslist($conset,$this_type);
-// Trivia:
 	$trivialist = gettrivialist($conset,$this_type);
-// Links:
 	$linklist = getlinklist($conset,$this_type);
-
 	$filelist = getfilelist($conset,$this_type);
 
-// Evt. forside-billede
+// Picture on front page?
 	$available_pic = 0;
 	// Create thumbnail
 	if (file_exists("gfx/conset/l_".$conset.".jpg") && !file_exists("gfx/conset/s_".$conset.".jpg")) {

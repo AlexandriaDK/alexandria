@@ -172,10 +172,10 @@ function display_result ($match,$linkpart,$class,$short) {
 // Achievements?
 check_search_achievements($find);
 
-// Først lidt kvik-find-kode:
+// Some quick find code:
 
 if ($find) {
-	if (preg_match("/^([cspfg]|cs)(\d+)$/i",$find,$regs)) {
+	if (preg_match("/^([cspfgr]|cs)(\d+)$/i",$find,$regs)) {
 		$pref = strtolower($regs[1]);
 		$id = $regs[2];
 	
@@ -196,11 +196,17 @@ if ($find) {
 				header("Location: data?person=$id");
 				exit;
 				break;
+
 			case "cs":
 				header("Location: data?conset=$id");
 				exit;
 				break;
 
+			case "r":
+				header("Location: data?review=$id");
+				exit;
+				break;
+	
 		}
 	}
 

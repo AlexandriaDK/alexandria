@@ -94,7 +94,7 @@ if ($data_id && $category) {
 		'conset' => getassoc("name","conset"),
 		'sys' => getassoc("name","sys"),
 		'tag' => getassoc("tag","tag"),
-		'review' => getassoc("title","review")
+		'review' => getassoc("title","reviews")
 	];
 	if ($user_id) {
 		$query = "SELECT id, data_id, category, time, user, user_id, note FROM log WHERE user_id = $user_id ORDER BY id DESC LIMIT $listlimit";
@@ -137,12 +137,11 @@ if ($result) {
 	      "<th style=\"width: 180px\">Time</th>".
 	      "<th style=\"width: 160px\">Description</th>".
 	      "</tr>\n";
-
         foreach($listresult AS $row) {
-		if ($data[$row['category']][$row['data_id']]) {
-			$subject = $data[$row['category']][$row['data_id']];
-			$link = admLink($row['category'], $row['data_id']);
-		} else {
+			if ($data[$row['category']][$row['data_id']]) {
+				$subject = $data[$row['category']][$row['data_id']];
+				$link = admLink($row['category'], $row['data_id']);
+			} else {
 			$subject = $row['category'];
 			if ( $row['data_id'] != NULL ) {
 				$subject .= ": #" . $row['data_id'];
@@ -161,8 +160,7 @@ if ($result) {
 	
 }
 
-print "<p>&nbsp;</p>\n<p style=\"text-align: center\">Logging blev først påbegyndt i marts 2002;<br />\nder kan derfor forefindes entries uden log-data.</p>\n";
-print "<p style=\"text-align: center\">Ændringer i hvilke personer, der er tilknyttet scenarier, samt<br />\nhvilke conner, et scenarie har været spillet på, logges<br />\nkun som en scenarie-ændring.</p>\n";
+print "<p>&nbsp;</p>\n<p style=\"text-align: center\">Logging was enabled in March 2002.</p>\n";
 
 ?>
 

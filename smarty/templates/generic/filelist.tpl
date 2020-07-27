@@ -15,7 +15,7 @@
 		{if $file.extension == "gif"}<span title="{$_picture|ucfirst}">🖼️</span>{/if}
 	</td>
 	<td>
-		<a href="/download/{$filedir}/{$id}/{$file.filename|rawurlencode}">{$file.description}</a>
+		<a href="/download/{$filedir}/{$id}/{$file.filename|rawurlencode}">{$file.template_description}</a>
 	</td>
 	<td>
 	{if isset($file.filesizetext) }

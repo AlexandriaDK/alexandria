@@ -1,10 +1,8 @@
-{assign var="pagetitle" value="$_review_title"}
-
-<article>
 <div id="content">
 
+<article>
 	<h2 class="pagetitle systemsselect">
-		{$_review_title} of {$target_html}
+		{$_review_review_of|sprintf:$target_html}
 	</h2>
 
 	<h3>
@@ -14,7 +12,13 @@
 	<p>
 		{$review.description|escape|textlinks|nl2br}
 	</p>
-</div>
+
+	<p>
+		<em>{$_review_published} {$review.published|fulldate}</em>
+	<p>
 </article>
 
-{include file="end.tpl"}
+{include file="updatelink.tpl"}
+
+</div>
+

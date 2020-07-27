@@ -15,6 +15,9 @@ $description = (string) $_REQUEST['description'];
 $spoilertext = (string) $_REQUEST['description'];
 $reviewer = (string) $_REQUEST['reviewer'];
 $syndicatedurl = (string) $_REQUEST['syndicatedurl'];
+$published = (string) ( $_REQUEST['published'] ?? date("Y-m-d H:i:s") );
+$visible = (int) (bool) $_REQUEST['visible'];
+$language = (string) $_REQUEST['language'];
 $user_id = (int) $_REQUEST['user_id'] ?? NULL;
 $gameidtitle = "";
 
@@ -23,7 +26,7 @@ if ( $action ) {
 }
 
 if ( ! $action && $review_id) {
-	list($id, $data_id, $category, $review_title, $description, $reviewer, $syndicatedurl) = getrow("SELECT id, data_id, category, title, description, reviewer, syndicatedurl FROM reviews WHERE id = $review_id");
+	list($id, $data_id, $category, $review_title, $description, $reviewer, $syndicatedurl, $published, $visible, $language) = getrow("SELECT id, data_id, category, title, description, reviewer, syndicatedurl, published, visible, language FROM reviews WHERE id = $review_id");
 	$game_title = getone( "SELECT title FROM sce WHERE id = $data_id");
 	$gameidtitle = $data_id . " - " . $game_title;
 }
@@ -53,7 +56,10 @@ if ( ( $action == "edit" || $action == "create" ) ) {
 			"title = '" . dbesc( $review_title ) . "', " .
 			"description = '" . dbesc( $description) . "', ".
 			"reviewer = '" . dbesc( $reviewer) . "', ".
-			"syndicatedurl = '" . dbesc( $syndicatedurl) . "' ".
+			"syndicatedurl = '" . dbesc( $syndicatedurl) . "', ".
+			"published = '" . dbesc( $published) . "', ".
+			"visible = '" . dbesc( $visible) . "', ".
+			"language = '" . dbesc( $language) . "' ".
 			"WHERE id = " . $review_id;
 		$r = doquery($q);
 		$logtext = "Review " . ( $action == 'edit' ? 'edited' : 'created');
@@ -75,6 +81,10 @@ $(function() {
 
 htmladmstart( "Review" );
 
+$languagename = "";
+if ( $language ) {
+	$languagename = getLanguageName( $language );
+}
 print '<form action="review.php" method="post" onsubmit="return reviewSubmit();">';
 print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 if (!$review_id) {
@@ -105,6 +115,9 @@ tr( "Review title", "review_title", $review_title, '', "E.g. 'Best fun ever'" );
 tt( "Description", "description", $description );
 tr( "Reviewer", "reviewer", $reviewer, '', 'Name of person or group who reviewed the game' );
 tr( "URL", "syndicatedurl", $syndicatedurl, '', 'URL of review if imported from external site' );
+tr( "Review date", "published", $published, '', 'YYYY-MM-DD - leave blank for today' );
+print '<tr><td>Language code</td><td><input type="text" id="language" name="language" value="' . htmlspecialchars( $language ) . '" placeholder="Two letter ISO language code, e.g.: sv" size="40" maxlength="6"></td><td id="languagenote">' . htmlspecialchars($languagename) . '</td></tr>';
+print '<tr valign=top><td>Visible?</td><td><input type="checkbox" name="visible" ' . ($visible ? 'checked="checked"' : '') . '></td></tr>';
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($review_id ? "Update" : "Create").' review">' . ($review_id ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete review?\n\nAs a safety precaution all relations will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
@@ -116,6 +129,14 @@ if ($review_id) {
 
 </table>
 </form>
+
+<script>
+$("#language").change(function() {
+	$.get( "lookup.php", { type: 'languagecode', label: $("#language").val() } , function( data ) {
+		$("#languagenote").text( data );
+	});
+});
+</script>
 
 </body>
 </html>

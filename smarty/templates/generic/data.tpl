@@ -1,8 +1,4 @@
-{if $user_admin}
 {include file="head.tpl"}
-{else}
-{include file="head.tpl"}
-{/if}
 {if $type eq "aut"}
 {assign var="typename" value="Person"}
 {include file="person.tpl"}
@@ -13,13 +9,6 @@
 {assign var="typename" value="Scenarie"}
 {/if}
 {include file="game.tpl"}
-{elseif $type eq "sce"}
-{if $boardgame}
-{assign var="typename" value="Brætspil"}
-{else}
-{assign var="typename" value="Scenarie"}
-{/if}
-{include file="scenario.tpl"}
 {elseif $type eq "sys"}
 {assign var="typename" value="System"}
 {include file="system.tpl"}

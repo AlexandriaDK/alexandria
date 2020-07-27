@@ -24,6 +24,8 @@ if ( ! $r['reviewer'] ) {
 	$r['reviewer'] = $t->getTemplateVars('_unknown');
 }
 
+$t->assign('id',$review);
+$t->assign('pagetitle', sprintf( $t->getTemplateVars( '_review_review_of' ), $target_title ) );
 $t->assign('type',$this_type);
 $t->assign('target_title',$target_title);
 $t->assign('target_link',$target_link);
