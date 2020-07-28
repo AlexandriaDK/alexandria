@@ -14,6 +14,7 @@ $do = (string) $_REQUEST['do'];
 $label = (string) $_REQUEST['label'];
 $newlabel = (string) $_REQUEST['newlabel'];
 $text = (array) $_REQUEST['text'];
+$filter = (string) $_REQUEST['filter'];
 if ( ! $admin ) {
 	$newlabel = $label; // only admins can change labels
 }
@@ -163,12 +164,14 @@ if ( $admin ) {
 	print "</tr>";
 }
 foreach( $overview AS $label => $string ) {
-	print "<tr onclick=\"location.href=this.firstChild.firstChild.href\">";
-	print "<td><a href=\"language.php?label=" . rawurlencode( $label ) ."\" id=\"label_" . rawurlencode( $label ) ."\">" . $label . "</a></td>";
-	foreach ($languages AS $language => $dummy) {
-		print "<td>" . htmlspecialchars( $string[$language] ) . "</td>";
+	if ( ! $filter || ( $filter && strpos( $label, $filter ) !== FALSE ) ) {
+		print "<tr onclick=\"location.href=this.firstChild.firstChild.href\">";
+		print "<td><a href=\"language.php?label=" . rawurlencode( $label ) ."\" id=\"label_" . rawurlencode( $label ) ."\">" . $label . "</a></td>";
+		foreach ($languages AS $language => $dummy) {
+			print "<td>" . htmlspecialchars( $string[$language] ) . "</td>";
+		}
+		print "</tr>" . PHP_EOL;
 	}
-	print "</tr>" . PHP_EOL;
 }
 print "</tbody></table>";
 

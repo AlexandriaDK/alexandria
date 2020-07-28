@@ -389,7 +389,7 @@ if ($data_id && $category) {
 		print '</div>';
 	}
 
-	print "</tr>\n";
+	print "</td></tr>\n";
 
 	print "</table>\n";
 

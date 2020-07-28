@@ -872,10 +872,12 @@ function gettrivialist ($data_id, $cat) {
 }
 
 function getlinklist ($data_id, $cat) {
+	global $t;
 	$linklist = "";
 	$q = getall("SELECT url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id");
 	foreach($q AS $rs) {
-		$linklist .= linkbullet($rs['url'],$rs['description']) . PHP_EOL;
+		$template_description = $t->fetch( "string:" . $rs['description'] );
+		$linklist .= linkbullet($rs['url'], $template_description ) . PHP_EOL;
 	}
 	return $linklist;
 }
