@@ -16,8 +16,8 @@ $data_id = $_REQUEST['data_id'];
 if ($category == 'game') $category = 'sce';
 
 $url = trim($url);
-if ($url && substr($url,0,4) != 'http') {
-	$url = 'http://' . $url;
+if ($url && substr($url,0,4) != 'http' && substr($url,0,1) != '{') {
+	$url = 'https://' . $url;
 }
 
 function rlyehlink ($text) {
