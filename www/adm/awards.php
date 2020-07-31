@@ -264,7 +264,7 @@ if ($category == 'convent') {
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Nominee</th>".
-	      "<th>Scenario (optional)</th>".
+	      "<th>Game (optional)</th>".
 	      "<th>Nominee text</th>".
 	      "<th>Winner?</th>".
 	      "<th>Position (optional)</th>".
