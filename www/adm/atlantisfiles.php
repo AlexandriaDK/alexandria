@@ -17,6 +17,7 @@ $map = [
 	'Min Lille Skat 2' => 'Min Lille Skat 2: Næsten Hjemme',
 	'New York Coppers' => 'New York Coppers: Gaden uden nåde!',
 	'Røde Helte' => 'Røde Helte: Hånden i hvepseboet',
+	'Crossroads' => 'Crossroads (Fastaval 93)',
 
 ];
 

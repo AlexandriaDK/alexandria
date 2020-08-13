@@ -146,8 +146,8 @@ if ($data_id && $category) {
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
+		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=200></td>'.
+		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=200></td>'.
 		      '<td><input type="submit" name="do" value="Update"></td>'.
 		      '<td><input type="submit" name="do" value="Remove"></td>'.
 		      "</tr>\n";
@@ -160,8 +160,8 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
 	      '<td style="text-align:right;">New</td>'.
-	      '<td><input type="text" name="url" value="" size=40 maxlength=100></td>'.
-	      '<td><input type="text" name="description" id="newdescription" value="" size=40 maxlength=100></td>'.
+	      '<td><input type="text" name="url" value="" size=40 maxlength=200></td>'.
+	      '<td><input type="text" name="description" id="newdescription" value="" size=40 maxlength=200></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Add"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
