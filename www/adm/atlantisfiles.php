@@ -35,7 +35,7 @@ foreach ( $filelist AS $file ) {
 	$sid = getone( "SELECT id FROM sce WHERE title = '" . dbesc( $scenario ) . "'" );
 	if ( $sid ) {
 		$auts = getcol( "SELECT CONCAT(firstname, ' ', surname) FROM aut INNER JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.sce_id = $sid" );
-		$files = getcol( "SELECT filename FROM files WHERE category = 'sce' AND data_id = $sid" );
+		$files = getcol( "SELECT filename FROM files WHERE category = 'sce' AND data_id = $sid AND downloadable = 1" );
 	}
 	$result[] = [
 		'basename' => $basename,
@@ -46,19 +46,25 @@ foreach ( $filelist AS $file ) {
 	];
 }
 
-$candidates = 0;
-$html  = '<html><head><title>Atlantis to Alexandria PDFs</title></head><body>';
+$candidates = $filecandidates = 0;
+$authorscore = [];
+$htmla  = '<!DOCTYPE html><html><head><title>Atlantis to Alexandria PDFs</title></head><body>';
+$htmla .= '<ul><li>Files:<ul><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/">Scenariedatabasen</a><ul><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Artikler/">Artikler</a></li><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Scenarier/">Scenarier</a></li><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Fixes/">Fixes</a> (repaired and rotated PDF files)</li></ul></li></ul></li></ul>' . PHP_EOL;
 $html .= '<table style="vertical-align: top"><thead><tr><th>Atlantis file</th><th>Title</th><th>Authors</th><th>Files</th></tr></thead>';
 $html .= '<tbody>';
 foreach ( $result AS $row ) {
 	$color = "white";
 	if (! $row['id'] ) {
 		$color = "#c33";
-	} elseif (! $row['files'] ) {
+	} elseif (! $row['files'] ) { // candidate
 		$color = "#3c3";
 		$candidates++;
+		foreach ( $row['auts'] AS $aut ) {
+			$authorscore[$aut]++;
+		}
 	} elseif ( strpos( implode(" ", $row['files']), '.pdf') === FALSE ) {
 		$color = "#c90";
+		$filecandidates++;
 	}
 	$html .= '<tr style="background-color: ' . $color . ';">';
 	$html .= '<td><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Scenarier/' . rawurlencode( $row['basename'] ) . '">[download]</a></td>';
@@ -73,8 +79,22 @@ foreach ( $result AS $row ) {
 }
 $html .= '</tbody></table>';
 
-$html .= "<p>Candidates: $candidates</p>";
+#ksort($authorscore);
+arsort($authorscore);
 
+print $htmla;
+print "<p>Candidates for upload: $candidates (green background)<br>";
+print "Candidates for possible better file: $filecandidates (orange background)</p>";
 print $html;
+
+print "<p>Authors, sorted by number of scenario candidates (green background):</p>";
+print "<ul>";
+foreach($authorscore AS $author => $num) {
+	print "<li>" . $num . " - " . $author . "</li>";
+}
+print "</ul>";
+
+print '</body></html>';
+
 
 ?>
