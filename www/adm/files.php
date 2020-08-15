@@ -91,7 +91,7 @@ if ( $action == 'uploadfile' &&
  	$paths[$category]
    ) {
 	$urldata = parse_url($remoteurl);
-	$basename = basename($urldata['path']);
+	$basename = urldecode(basename($urldata['path']));
 	if (!$basename) {
 		$basename = "scenarie_" . $data_id . ".pdf";
 	}

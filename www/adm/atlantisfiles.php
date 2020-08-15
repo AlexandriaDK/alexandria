@@ -18,6 +18,7 @@ $map = [
 	'New York Coppers' => 'New York Coppers: Gaden uden nåde!',
 	'Røde Helte' => 'Røde Helte: Hånden i hvepseboet',
 	'Crossroads' => 'Crossroads (Fastaval 93)',
+	'Husk sovepose!' => 'Husk sovepose ...',
 
 ];
 
@@ -34,7 +35,7 @@ foreach ( $filelist AS $file ) {
 	}
 	$sid = getone( "SELECT id FROM sce WHERE title = '" . dbesc( $scenario ) . "'" );
 	if ( $sid ) {
-		$auts = getcol( "SELECT CONCAT(firstname, ' ', surname) FROM aut INNER JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.sce_id = $sid" );
+		$auts = getcol( "SELECT CONCAT(firstname, ' ', surname) FROM aut INNER JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.sce_id = $sid AND asrel.tit_id = 1" );
 		$files = getcol( "SELECT filename FROM files WHERE category = 'sce' AND data_id = $sid AND downloadable = 1" );
 	}
 	$result[] = [
