@@ -11,14 +11,13 @@ $map = [
 	'Area51' => 'Area 51',
 	'Za Rodinu' => 'Za Rodinu - For Fædrelandet',
 	'USS Atlantis' => 'U.S.S. Atlantis',
-	'Skyggespor i Helvedets Forgård' => 'Skyggedans i helvedes forgård',
+	'Skyggespor i Helvedets Forgård' => 'Skyggespor i helvedets forgård',
 	'Dommedag 2056 - New Orleans' => 'Dommedag 2056: New Orleans',
 	'MS Titanic II' => 'M/S Titanic II',
-	'Min Lille Skat 2' => 'Min Lille Skat 2: Næsten Hjemme',
 	'New York Coppers' => 'New York Coppers: Gaden uden nåde!',
-	'Røde Helte' => 'Røde Helte: Hånden i hvepseboet',
-	'Crossroads' => 'Crossroads (Fastaval 93)',
 	'Husk sovepose!' => 'Husk sovepose ...',
+	'Sarajevo 2001' => 'Sarajevo-2001',
+	'Crossroads' => 'Crossroads (Fastaval 93)',
 
 ];
 
@@ -69,7 +68,7 @@ foreach ( $result AS $row ) {
 	}
 	$html .= '<tr style="background-color: ' . $color . ';">';
 	$html .= '<td><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Scenarier/' . rawurlencode( $row['basename'] ) . '">[download]</a></td>';
-	$html .= '<td>' . ($row['id'] ? '<a href="https://alexandria.dk/en/data?scenarie=' . $row['id'] .'">' . $row['title'] . '</a>' : $row['title'] ) . '</td>';
+	$html .= '<td>' . ($row['id'] ? '<a href="../data?scenarie=' . $row['id'] .'">' . $row['title'] . '</a>' : $row['title'] ) . '</td>';
 	$html .= '<td>' . implode(', ', $row['auts'] ) . '</td>';
 	$html .= '<td>';
 	foreach($row['files'] AS $file) {
