@@ -122,7 +122,7 @@ function changealias($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM alias WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Alias</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"alias":"aliases"));
-	$html .= " - <a href=\"alias.php?category=$category&amp;data_id=$data_id\">Edit aliases</a>";
+	$html .= " - <a href=\"alias.php?category=$category&amp;data_id=$data_id\" accesskey=\"a\">Edit aliases</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }

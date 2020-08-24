@@ -59,7 +59,7 @@ function reviewSubmit() {
 <?php
 if ($_SESSION['user_admin'] ) {
 ?>
-· <a href="achievements.php" accesskey="a">Achievements</a> · <a href="feeds.php">Feeds</a> · <a href="users.php" accesskey="u">Users</a> · <a href="markup.php" accesskey="m">Markup</a> · <a href="debug.php" accesskey="d">Debug</a>
+· <a href="achievements.php">Achievements</a> · <a href="feeds.php">Feeds</a> · <a href="users.php" accesskey="u">Users</a> · <a href="markup.php" accesskey="m">Markup</a> · <a href="debug.php" accesskey="d">Debug</a>
 <?php
 }
 ?>
