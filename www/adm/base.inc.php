@@ -79,7 +79,7 @@ function changelinks($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM links WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Links</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"link":"links"));
-	$html .= " - <a href=\"links.php?category=$category&amp;data_id=$data_id\">Edit links</a>";
+	$html .= " - <a href=\"links.php?category=$category&amp;data_id=$data_id\" accesskey=\"l\">Edit links</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -113,7 +113,7 @@ function changetrivia($data_id, $category) {
 	$numlinks = getone("SELECT COUNT(*) FROM trivia WHERE data_id = '$data_id' AND category = '$category'");
 	$html  = "<tr valign=top><td>Trivia</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"trivia fact":"trivia facts"));
-	$html .= " - <a href=\"trivia.php?category=$category&amp;data_id=$data_id\">Edit trivia</a>";
+	$html .= " - <a href=\"trivia.php?category=$category&amp;data_id=$data_id\" accesskey=\"t\">Edit trivia</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
