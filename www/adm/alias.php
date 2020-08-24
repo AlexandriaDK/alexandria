@@ -6,13 +6,14 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'alias';
 
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$label = $_REQUEST['label'];
-$visible = $_REQUEST['visible'];
-$id = $_REQUEST['id'];
-$data_id = $_REQUEST['data_id'];
-$category = $_REQUEST['category'];
+$action = (string) $_REQUEST['action'];
+$do = (string) $_REQUEST['do'];
+$label = (string) $_REQUEST['label'];
+$language = (string) $_REQUEST['language'];
+$visible = (string) $_REQUEST['visible'];
+$id = (int) $_REQUEST['id'];
+$data_id = (int) $_REQUEST['data_id'];
+$category = (string) $_REQUEST['category'];
 if ($category == 'game') $category = 'sce';
 
 // Edit alias
@@ -21,6 +22,7 @@ if ($action == "changealias" && $do != "Delete") {
 	$visible = ($visible == "on" ? 1 : 0);
 	$q = "UPDATE alias SET " .
 	     "label = '" . dbesc($label) . "', " .
+	     "language = '" . dbesc($language) . "', " .
 	     "visible = '$visible' " .
 	     "WHERE id = '$id'";
 	$r = doquery($q);
@@ -47,8 +49,8 @@ if ($action == "addalias") {
 	$url = trim($url);
 	$visible = ($visible == "on" ? 1 : 0);
 	$q = "INSERT INTO alias " .
-	     "(data_id, category, label, visible) VALUES ".
-	     "('$data_id', '$category', '" . dbesc($label) ."', '$visible')";
+	     "(data_id, category, label, language, visible) VALUES ".
+	     "('$data_id', '$category', '" . dbesc($label) ."', '" . dbesc( $language ) . "', '$visible')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -94,7 +96,7 @@ if ($data_id && $category) {
 	}
 	$title = getone($q);
 	
-	$query = "SELECT id, label, visible FROM alias WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
+	$query = "SELECT id, label, language, visible FROM alias WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
 	$result = getall($query);
 }
 
@@ -107,6 +109,7 @@ if ($data_id && $category) {
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Alias</th>".
+	      "<th>Language code</th>".
 	      "<th>Visible</th>".
 	      "</tr>\n";
 
@@ -120,6 +123,7 @@ if ($data_id && $category) {
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="text" name="label" value="'.htmlspecialchars($row['label']).'" size="40" maxlength="150"></td>'.
+		      '<td><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
 		      '<td><input type="checkbox" name="visible" '.$selected.'></td>'.
 		      '<td><input type="submit" name="do" value="Update"></td>'.
 		      '<td><input type="submit" name="do" value="Delete"></td>'.
@@ -134,6 +138,7 @@ if ($data_id && $category) {
 	print "<tr>\n".
 	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="label" value="" size="40" maxlength="150"></td>'.
+	      '<td><input type="text" name="language" value="" size="2" maxlength="20" placeholder="da"></td>'.
 	      '<td><input type="checkbox" name="visible"></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
