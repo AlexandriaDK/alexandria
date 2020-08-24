@@ -16,8 +16,8 @@ $data_id = $_REQUEST['data_id'];
 if ($category == 'game') $category = 'sce';
 
 $url = trim($url);
-if ($url && substr($url,0,4) != 'http') {
-	$url = 'http://' . $url;
+if ($url && substr($url,0,4) != 'http' && substr($url,0,1) != '{') {
+	$url = 'https://' . $url;
 }
 
 function rlyehlink ($text) {
@@ -146,8 +146,8 @@ if ($data_id && $category) {
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=100></td>'.
+		      '<td><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=40 maxlength=200></td>'.
+		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size=40 maxlength=200></td>'.
 		      '<td><input type="submit" name="do" value="Update"></td>'.
 		      '<td><input type="submit" name="do" value="Remove"></td>'.
 		      "</tr>\n";
@@ -160,11 +160,32 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
 	print "<tr>\n".
 	      '<td style="text-align:right;">New</td>'.
-	      '<td><input type="text" name="url" value="" size=40 maxlength=100></td>'.
-	      '<td><input type="text" name="description" value="" size=40 maxlength=100></td>'.
+	      '<td><input type="text" name="url" value="" size=40 maxlength=200></td>'.
+	      '<td><input type="text" name="description" id="newdescription" value="" size=40 maxlength=200></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Add"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
+
+	$descriptions = [
+		'{$_links_website}' => 'Website',
+		'{$_links_website_scenario}' => 'Scenario website',
+		'{$_links_website_con}' => 'Con website',
+		'{$_links_facebook_event}' => 'Facebook event',
+		'{$_links_facebook_event_scenario}' => 'Facebook event for scenario',
+		'{$_links_facebook_event_con}' => 'Facebook event for con',
+		'{$_links_rules}' => 'Rules',
+		'{$_links_description}' => 'description',
+	];
+	print "<tr><td></td><td></td><td>";
+	foreach( $descriptions AS $templatecode => $label ) {
+		print '<div class="descriptionexamples">';
+		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.title;\" title=\"" . htmlspecialchars( $templatecode ) . "\">";
+		print htmlspecialchars( $label );
+		print '</a><br><span onclick="console.log(this); navigator.clipboard.writeText(this.innerHTML);">' . htmlspecialchars( $templatecode ) . '</span>';
+		print '</div>';
+	}
+
+	print "</td></tr>\n";
 
 	print "</table>\n";
 } else {

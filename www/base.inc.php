@@ -873,10 +873,13 @@ function gettrivialist ($data_id, $cat) {
 }
 
 function getlinklist ($data_id, $cat) {
+	global $t;
 	$linklist = "";
 	$q = getall("SELECT url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id");
 	foreach($q AS $rs) {
-		$linklist .= linkbullet($rs['url'],$rs['description']) . PHP_EOL;
+		$template_url = $t->fetch( "string:" . $rs['url'] );
+		$template_description = $t->fetch( "string:" . $rs['description'] );
+		$linklist .= linkbullet( $template_url, $template_description ) . PHP_EOL;
 	}
 	return $linklist;
 }
@@ -1230,4 +1233,11 @@ function smarty_function_con($con) {
 	return $html;
 }
 
+// currently not in use.
+// risk of bad template such as "{bgglink 204498}" instead of "{bgglink id=204498}"
+function smarty_function_bgglink( $bgg ) {
+	$id = (int) $bgg['id'] ?? 0;
+	$url = 'https://boardgamegeek.com/boardgame/' . $id . '/';
+	return $url;
+}
 ?>

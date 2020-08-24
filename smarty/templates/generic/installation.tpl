@@ -38,7 +38,7 @@
 		{elseif $stage == 'ready'}
 		<h2>Part 3 of 3: Activate site</h2>
 		<p>
-			Data has been succesfully imported. Active the site? This is a local action and does not contact or notify any external services.
+			Data has been successfully imported. Active the site? This is a local action and does not contact or notify any external services.
 		</p>
 		<form action="./" method="post">
 		<div>
@@ -59,9 +59,11 @@
 		</p>
 
 		{/if}
+		{if $stage != 'ready'}
 		<p class="installnote">
 			Data is fetched from Alexandria's API at <a href="https://alexandria.dk/export">https://alexandria.dk/export</a> (JSON format). <span id="checkserver">Checking if service is online...</span>
 		</p>
+		{/if}
 	</div>
 <script>
 $.getJSON( "https://alexandria.dk/en/export", function( data ) {
