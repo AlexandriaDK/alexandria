@@ -824,14 +824,30 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 	return $value;
 }
 
-function getaliaslist ($data_id, $cat) {
+function getaliaslist ($data_id, $cat, $ignore_title = "") {
 	$aliases = array();
-	$q = getcol("SELECT label FROM alias WHERE data_id = '$data_id' AND category = '$cat' AND visible = 1");
-	foreach($q AS $label) {
-		$aliases[] = $label;
+	$q = getall("SELECT label, language FROM alias WHERE data_id = '$data_id' AND category = '$cat' AND visible = 1");
+	foreach($q AS $row) {
+		$languagecode = $languagename = "";
+		if ( $row['label'] == $ignore_title ) {
+			continue;
+		}
+		if (preg_match('/^[a-z]{2}$/', $row['language'] ) ) {
+			$languagecode = $row['language'];
+			$languagename = getLanguageName( $languagecode );
+		}
+		$aliastext = "<span";
+		if ( $languagecode ) {
+			$aliastext .= ' lang="' . $languagecode . '"';
+			if ( $languagename != $languagecode ) {
+				$aliastext .= ' title="' . htmlspecialchars( $languagename ) .'"';
+			}
+		}
+		$aliastext .= '>' . htmlspecialchars( $row['label'] ) . '</span>';
+		$aliases[] = $aliastext;
 	}
 	if ($aliases) {
-		$aliaslist = join(', ',$aliases);
+		$aliaslist = join(', ', $aliases);
 	} else {
 		$aliaslist = '';
 	}

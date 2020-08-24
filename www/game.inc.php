@@ -9,8 +9,9 @@ $r = getrow("
 	LEFT JOIN sys ON sys.id = sys_id
 	WHERE sce.id = $scenarie
 ");
+$showtitle = $gametitle = $r['title'];
 
-// achievements
+// Achievements
 if ($scenarie == 161)      award_achievement(55); // De Professionelle
 if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
 if ($scenarie == 3827)     award_achievement(57); // Paninaro
@@ -35,7 +36,7 @@ if ($r['id'] == 0) {
 	}
 	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
 
-// Beskrivelse af deltagere:
+// Description of participants
 	$participants = [];
 	$gms = $players = "";
 	if ($r['gms_min'] !== NULL) {
@@ -65,13 +66,24 @@ if ($r['id'] == 0) {
 	}
 	$participants = implode(', ',$participants);
 
-// Liste over aliaser
-	$aliaslist = getaliaslist($scenarie,$this_type);
+// List of aliases, alternative title?
+	$alttitle = getcol("SELECT label FROM alias WHERE data_id = '$scenarie' AND category = '$this_type' AND language = '$lang' AND visible = 1");
+	if ( count( $alttitle ) == 1 ) {
+		$showtitle = $alttitle[0];
+		$aliaslist = getaliaslist($scenarie, $this_type, $showtitle);
+		if ( $aliaslist ) {
+			$aliaslist = "<b>" . htmlspecialchars( $gametitle ) . "</b>, " . $aliaslist;
+		} else {
+			$aliaslist = "<b>" . $gametitle . "</b>";
+		}
+	} else {
+		$aliaslist = getaliaslist($scenarie, $this_type);
+	}
 
-// Liste over filer
+// List of files
 	$filelist = getfilelist($scenarie,$this_type);
 
-// Liste over forfattere, m.m.
+// List of authors, ...
 	$forflist = $scenlist = "";
 	$q = getall("
 		SELECT aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.tit_id, asrel.note, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol
@@ -109,7 +121,7 @@ if ($r['id'] == 0) {
 	}
 
 
-// System:
+// System
 	if ($r['sysname']) {
 		$syspart = "<a href=\"data?system={$r['sys_id']}\" class=\"system\">".htmlspecialchars($r['sysname'])."</a>";
 		if ($r['sys_ext']) $syspart .= " ".htmlspecialchars($r['sys_ext']);
@@ -120,8 +132,7 @@ if ($r['id'] == 0) {
 		$sysstring = "";
 	}
 
-// Liste over cons, scenariet har været spillet på:
-// Nu kan vi sortere efter cons' tidspunkt, så ingen grund til at sortere på pre.id, medmindre ingen dato er kendt på cons fra samme år.
+// List of cons, the game has been played at
 	$conlist = "";
 	$q = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled, pre.event, pre.event_label, pre.iconfile, pre.textsymbol FROM convent, csrel, pre WHERE convent.id = csrel.convent_id AND csrel.pre_id = pre.id AND csrel.sce_id = '$scenarie' ORDER BY convent.year, convent.begin, pre.id, convent.name");
 	foreach($q AS $rs) {
@@ -140,7 +151,7 @@ if ($r['id'] == 0) {
 		$conlist .= "</td></tr>" . PHP_EOL;
 	}
 
-// Liste over afviklinger for evt. live-scenarier
+// List of runs
 	$runlist = "";
 	$q = getall("SELECT begin, end, location, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end, id");
 	foreach($q AS $rs) {
@@ -166,7 +177,7 @@ if ($r['id'] == 0) {
 		$runlist .= "<br>\n";
 	}
 
-// Priser
+// Awards
 	$awarddata = [];
 	$q = getall("SELECT a.id, a.nominationtext, a.winner, a.ranking, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.conset_id FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id INNER JOIN convent c ON b.convent_id = c.id WHERE a.sce_id = $scenarie ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC");
 	foreach($q AS $rs) {
@@ -181,7 +192,6 @@ if ($r['id'] == 0) {
 
 		}
 
-		// $awardtext .=  " – " . $rs['conventname'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") . "<br>" . PHP_EOL;
 		$awarddata[$rs['convent_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
 		$awarddata[$rs['convent_id']]['conset_id'] = $rs['conset_id'];
 		$awarddata[$rs['convent_id']]['text'][] = $awardtext;
@@ -193,7 +203,7 @@ if ($r['id'] == 0) {
 		$awards[] = [ 'con_award_url' => $con_award_url, 'con_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text']) ];
 	}
 
-// Genre:
+// Genre
 	$genre = [];
 	$q = getall("SELECT gen.id, gen.name FROM gsrel, gen WHERE gen.id = gsrel.gen_id AND gsrel.sce_id = '$scenarie' ORDER BY gen.name");
 	foreach($q AS $rs) {
@@ -213,7 +223,7 @@ if ($r['id'] == 0) {
 	$alltags = getalltags();
 	$json_alltags = json_encode($alltags);
 
-// Evt. forside-billede
+// Possible picture?
 	$available_pic = 0;
  
 	// Create thumbnail
@@ -238,7 +248,7 @@ if ($r['id'] == 0) {
 	$t->assign('type2','game');
 
 	$t->assign('id',$scenarie);
-	$t->assign('title',$r['title']);
+	$t->assign('title', $showtitle);
 	$t->assign('pic',$available_pic);
 	$t->assign('ogimage', getimageifexists($scenarie, 'scenarie') );
 	$t->assign('sysstring',$sysstring);
