@@ -72,9 +72,9 @@ if ($r['id'] == 0) {
 		$showtitle = $alttitle[0];
 		$aliaslist = getaliaslist($scenarie, $this_type, $showtitle);
 		if ( $aliaslist ) {
-			$aliaslist = "<b>" . htmlspecialchars( $gametitle ) . "</b>, " . $aliaslist;
+			$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $gametitle ) . "</b>, " . $aliaslist;
 		} else {
-			$aliaslist = "<b>" . $gametitle . "</b>";
+			$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $gametitle ) . "</b>";
 		}
 	} else {
 		$aliaslist = getaliaslist($scenarie, $this_type);
