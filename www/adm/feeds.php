@@ -20,7 +20,7 @@ if ( $action ) {
 	validatetoken( $token );
 }
 
-// Ret link
+// Edit link
 if ($action == "changelink" && $do != "Slet") {
 	$url = trim($url);
 	$pageurl = trim($pageurl);
@@ -41,23 +41,23 @@ if ($action == "changelink" && $do != "Slet") {
 	$info = "Link rettet! " . dberror();
 }
 
-// Tøm feed
-if ($action == "changelink" && $do == "Tøm") {
+// Empty feed
+if ($action == "changelink" && $do == "Empty") {
 	$q = "DELETE FROM feedcontent WHERE feed_id = '$id'";
 	$r = doquery($q);
-	$info = "Indhold slettet! " . dberror();
+	$info = "Feed emptied! " . dberror();
 	if ($r) {
 //		chlog($id,$this_type,"Link slettet");
 	}
 }
 
-// Slet feed
-if ($action == "changelink" && $do == "Slet") {
+// Delete feed
+if ($action == "changelink" && $do == "Delete") {
 	$q = "DELETE FROM feedcontent WHERE feed_id = '$id'";
 	$r = doquery($q);
 	$q = "DELETE FROM feeds WHERE id = '$id'";
 	$r = doquery($q);
-	$info = "Feed slettet! " . dberror();
+	$info = "Feed deleted! " . dberror();
 	if ($r) {
 //		chlog($id,$this_type,"Link slettet");
 	}
@@ -91,13 +91,13 @@ if ($info) {
 }
 
 print "<table align=\"center\" border=0>".
-      "<tr><th colspan=7>Ret feeds:</th></tr>\n".
+      "<tr><th colspan=7>Edit feeds:</th></tr>\n".
       "<tr>\n".
       "<th>ID</th>".
       "<th colspan='2'>URL</th>".
-      "<th>Ejer</th>".
-      "<th>Navn</th>".
-      "<th>Antal</th>".
+      "<th>Owner</th>".
+      "<th>Name</th>".
+      "<th>Count</th>".
       "</tr>\n";
 
 foreach($result AS $row) {
@@ -107,14 +107,14 @@ foreach($result AS $row) {
 	      '<input type="hidden" name="id" value="'.$row['id'].'">';
 	print "<tr valign='top'>\n".
 	      '<td style="text-align:right;">'.$row['id'].'</td>'.
-	      '<td>Side:<br />Feed:</td>'.
+	      '<td>Page:<br />Feed:</td>'.
 	      '<td><input type="text" name="pageurl" value="'.htmlspecialchars($row['pageurl']).'" size=50 maxlength=100><br /><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=50 maxlength=100></td>'.
 	      '<td><input type="text" name="owner" value="'.htmlspecialchars($row['owner']).'" size=30 maxlength=100><br /><input type="text" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size=3 maxlength=10></td>'.
       '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=20 maxlength=100></td>'.
 	      '<td>'.htmlspecialchars($row['count']).'</td>'.
-	      '<td><input type="submit" name="do" value="Ret"></td>'.
-	      '<td><input type="submit" name="do" value="Tøm"></td>'.
-	      '<td><input type="submit" name="do" value="Slet"></td>'.
+	      '<td><input type="submit" name="do" value="Update"></td>'.
+	      '<td><input type="submit" name="do" value="Empty"></td>'.
+	      '<td><input type="submit" name="do" value="Delete"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
 }
@@ -122,8 +122,8 @@ foreach($result AS $row) {
 print '<form action="feeds.php" method="post">'.
       '<input type="hidden" name="action" value="addlink">';
 print "<tr>\n".
-      '<td style="text-align:right;">Ny</td>'.
-      '<td>Side:<br />Feed:</td>'.
+      '<td style="text-align:right;">New</td>'.
+      '<td>Page:<br />Feed:</td>'.
       '<td><input type="text" name="pageurl" value="" size=50 maxlength=100><br /><input type="text" name="url" value="" size=50 maxlength=100></td>'.
       '<td><input type="text" name="owner" value="" size=20 maxlength=100><br /><input type="text" name="aut_id" value="" size=3 maxlength=10></td>'.
       '<td><input type="text" name="name" value="" size=20 maxlength=100></td>'.

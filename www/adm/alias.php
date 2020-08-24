@@ -15,7 +15,7 @@ $data_id = $_REQUEST['data_id'];
 $category = $_REQUEST['category'];
 if ($category == 'game') $category = 'sce';
 
-// Ret alias
+// Edit alias
 if ($action == "changealias" && $do != "Delete") {
 	$label = trim($label);
 	$visible = ($visible == "on" ? 1 : 0);
@@ -103,7 +103,7 @@ htmladmstart("Alias");
 if ($data_id && $category) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Ret aliaser for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit aliases for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Alias</th>".
