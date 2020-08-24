@@ -243,18 +243,18 @@ if ($r['id'] == 0) {
 	}
 
 // Smarty
-	$t->assign('pagetitle',$r['title']);
-	$t->assign('type',$this_type);
-	$t->assign('type2','game');
+	$t->assign('pagetitle', $showtitle);
+	$t->assign('type', $this_type);
+	$t->assign('type2', 'game');
 
-	$t->assign('id',$scenarie);
+	$t->assign('id', $scenarie);
 	$t->assign('title', $showtitle);
-	$t->assign('pic',$available_pic);
+	$t->assign('pic', $available_pic);
 	$t->assign('ogimage', getimageifexists($scenarie, 'scenarie') );
-	$t->assign('sysstring',$sysstring);
-	$t->assign('alias',$aliaslist);
-	$t->assign('filelist',$filelist);
-	$t->assign('filedir','scenario');
+	$t->assign('sysstring', $sysstring);
+	$t->assign('alias', $aliaslist);
+	$t->assign('filelist', $filelist);
+	$t->assign('filedir', 'scenario');
 
 	$t->assign('forflist',$forflist);
 	$t->assign('aut_extra',$r['aut_extra']);
