@@ -41,10 +41,10 @@ function reviewSubmit() {
 		return false;
 	}
 	if ( language == 'se' ) {
-		return confirm('Language \'se\' is Northern Sami, not Swedish. Are you sure you want to submit?')
+		return confirm('Language \'se\' is Northern Sami, not Swedish (sv). Are you sure you want to submit?')
 	}
 	if ( language == 'uk' ) {
-		return confirm('Language \'uk\' is Ukrainian, not English. Are you sure you want to submit?')
+		return confirm('Language \'uk\' is Ukrainian, not English (en). Are you sure you want to submit?')
 	}
 	
 	return true;

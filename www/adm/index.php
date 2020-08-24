@@ -42,6 +42,8 @@ printinfo();
 
 <p style="font-style: italic;">Translator? <a href="language.php">Over here!</a></p>
 
+<p style="font-style: italic;">Atlantis - work in progress? <a href="atlantisfiles.php">Over here!</a></p>
+
 <p>
 	You are logged in as: <b><?php print htmlspecialchars($authuser); ?></b>.
 </p>
