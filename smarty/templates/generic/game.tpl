@@ -105,7 +105,7 @@ $( function() {
 <div id="tabs" style="margin-top: 0">
 <ul>
 {foreach $descriptions AS $d_id => $d}
-<li><a href="#description-{$d_id}">{$d.language|escape}{if $d.note} ({$d.note}){/if}</a></li>
+<li><a href="#description-{$d_id}" {if isset($d.langname)}title="{$d.langname|escape}"{/if}>{$d.language|escape}{if $d.note} ({$d.note}){/if}</a></li>
 {/foreach}
 </ul>
 

@@ -30,6 +30,7 @@ if ($r['id'] == 0) {
 		list($language) = explode( " ", $description['language'] );
 		if (preg_match('/^[a-z]{2}$/', $language) ) {
 			$descriptions[$d_id]['langcode'] = $language;
+			$descriptions[$d_id]['langname'] = getLanguageName( $language );
 		}
 	}
 	$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
@@ -91,9 +92,9 @@ if ($r['id'] == 0) {
 		}
 		$forflist .= '<tr><td style="text-align: center">';
 		if ($rs['textsymbol']) { // unicode-ikoner
-			$forflist .= '<span class="titicon" title="' . htmlspecialchars( $title ) . '">' . $rs['textsymbol'] . '</span>';
+			$forflist .= '<span class="titicon" title="' . htmlspecialchars( ucfirst( $title ) ) . '">' . $rs['textsymbol'] . '</span>';
 		} elseif ($rs['iconfile']) {
-			$forflist .= '<img src="/gfx/' . rawurlencode( $rs['iconfile'] ) . '" alt="' . htmlspecialchars( $title ) . '" title="' . htmlspecialchars( $title ) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
+			$forflist .= '<img src="/gfx/' . rawurlencode( $rs['iconfile'] ) . '" alt="' . htmlspecialchars( ucfirst( $title ) ) . '" title="' . htmlspecialchars( ucfirst( $title ) ) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
 		} else {
 			$forflist .= ' ';
 		}
