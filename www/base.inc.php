@@ -501,10 +501,11 @@ function getdynamicscehtml($sce_id,$type,$active) {
 function getdynamicconventhtml($convent_id,$type,$active) {
 	global $t;
 	$conventtext = [ "visited" => htmlspecialchars( $t->getTemplateVars('_top_visited_pt') ) ];
+	$jsurl = getdynamicjavascripturl( $convent_id, 'convent', $type, $active);
 	$span_id = "convent_" . $convent_id . "_" . $type;
 	$html = 
 		"<span id=\"".$span_id."\">".
-		"<a href=\"javascript:switchicon('".$span_id."','".($active?'remove':'add')."','convent',".$convent_id.",'".$type."','".$token."')\">".
+		"<a href=\"" . $jsurl . "\">".
 		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$conventtext[$type]."\" title=\"".$conventtext[$type]."\" border=\"0\" />".
 		"</a>".
 		"</span>"
