@@ -175,6 +175,7 @@ if ($data_id && $category) {
 		'{$_links_facebook_event_scenario}' => 'Facebook event for scenario',
 		'{$_links_facebook_event_con}' => 'Facebook event for con',
 		'{$_links_rules}' => 'Rules',
+		'{$_links_bgg}' => 'BoardGameGeek entry',
 		'{$_links_description}' => 'description',
 	];
 	print "<tr><td></td><td></td><td>";
@@ -182,7 +183,7 @@ if ($data_id && $category) {
 		print '<div class="descriptionexamples">';
 		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.dataset.smartycode;\" data-smartycode=\"" . htmlspecialchars( $templatecode ) . "\" title=\"Add to new description\">";
 		print htmlspecialchars( $label );
-		print '</a> <span onclick="console.log(this); navigator.clipboard.writeText(this.innerHTML);">' . htmlspecialchars( $templatecode ) . '</span>';
+		print '</a> <span onclick="navigator.clipboard.writeText(this.innerHTML); $(this).fadeOut(100).fadeIn(100);">' . htmlspecialchars( $templatecode ) . '</span>';
 		print '</div>';
 	}
 
