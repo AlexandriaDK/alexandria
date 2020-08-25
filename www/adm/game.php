@@ -371,12 +371,19 @@ $('form').keydown(function(event) {
  */
 
 $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
-	if (event.key == "Enter") {
+	if (event.key == "Enter" && ! event.ctrlKey) {
 		if ( event.target.id !== 'ffind' ) {
 			event.preventDefault();
 		}
 	}
 });
+
+$(document).on("keydown", "#theForm textarea", function(event) {
+	if (event.key == "Enter" && event.ctrlKey) {
+		$('#theForm').submit();
+	}
+});
+
 
 $(function() {
 	$( ".personlookup" ).autocomplete({
@@ -493,13 +500,13 @@ var tabs;
   } );
 
 function changeLanguage( elem ) {
+	console.log(elem);
 	dcount = elem.getAttribute( 'data-id' );
 	language = elem.innerHTML;
 	var language = prompt("Language", language);
 	if ( language ) {
-		var id = '#ui-id-' + dcount;
 		var lid = '#d-' + dcount + ' input:first-child';
-		$(id).text( language );
+		$(elem).text( language );
 		$(lid).attr( 'value', language )
 		
 	}
