@@ -61,7 +61,7 @@ function search_files ($find, $category = '') {
 			$last_id = $row['data_id'];
 		}
 		$output .= "<li>".
-		           htmlspecialchars($row['description']);
+		           htmlspecialchars(parseTemplate($row['description']));
 #		           " (".htmlspecialchars($page).")";
 		if ((stripos($row['content'],$find)) !== FALSE) {
 			$output .= "<br />".
