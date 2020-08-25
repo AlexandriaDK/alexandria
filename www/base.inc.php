@@ -714,6 +714,13 @@ function nicedateset ($begin, $end) {
 	return $out;
 }
 
+function parseTemplate($string) {
+	$string = preg_replace_callback('/\{\$_(.*?)\}/', function($matches) {
+		global $t; return $t->getTemplateVars('_' . $matches[1] );
+	}, $string);
+	return $string;
+}
+
 function getuserlogoptions($type) {
 	if ($type == 'boardgame') {
 		return [ 'read', NULL, 'played' ];
@@ -858,7 +865,7 @@ function getfilelist ($data_id, $cat) {
 	global $t;
 	$files = getall("SELECT filename, description, language FROM files WHERE data_id = '$data_id' AND category = '$cat' AND downloadable = 1 ORDER BY id");
 	foreach($files AS $id => $file) {
-		$template_description = $t->fetch( "string:" . $file['description'] );
+		$template_description = parseTemplate( $file['description'] );
 		if ( $file['language'] ) {
 			$languages = explode( ",", $file['language']);
 			$fulllanguages = [];
@@ -889,12 +896,11 @@ function gettrivialist ($data_id, $cat) {
 }
 
 function getlinklist ($data_id, $cat) {
-	global $t;
 	$linklist = "";
 	$q = getall("SELECT url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id");
 	foreach($q AS $rs) {
-		$template_url = $t->fetch( "string:" . $rs['url'] );
-		$template_description = $t->fetch( "string:" . $rs['description'] );
+		$template_url = $rs['url'];
+		$template_description = parseTemplate( $rs['description'] );
 		$linklist .= linkbullet( $template_url, $template_description ) . PHP_EOL;
 	}
 	return $linklist;
