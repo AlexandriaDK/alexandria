@@ -16,7 +16,7 @@
 
 {if $slist}
 	<h3 class="parttitle">
-		{$_scenarios|ucfirst}
+		{$_games|ucfirst}
 	</h3>
 
 	<table class="indata">
