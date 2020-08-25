@@ -108,7 +108,7 @@ if ($action == "update" && $game) {
 			$inserts = [];
 			foreach($descriptions AS $d) {
 				if ($d['description'] !== "") {
-					$inserts[] = "($game, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+					$inserts[] = "($game, '" . dbesc(ltrim($d['description'])) . "', '" . dbesc(trim($d['language'])) . "','" . dbesc(trim($d['note'])) . "')";
 				}
 			}
 			if ($inserts) {
