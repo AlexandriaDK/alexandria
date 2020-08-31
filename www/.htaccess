@@ -1,6 +1,7 @@
 # Options +MultiViews
 RewriteEngine On
 RewriteCond "%{REQUEST_URI}" "!(adm)" [NC]
+RewriteCond "%{REQUEST_URI}" "!(login)" [NC]
 RewriteRule "^../([^\.]+)$" "$1.php" [NC,L]
 RewriteRule "^download/(.*)$" "download.php/$1" [NC,L]
 RewriteRule "^../download/(.*)$" "download.php/$1" [NC,L]
@@ -12,11 +13,6 @@ AddDefaultCharset utf-8
 
 Redirect /gfx/english /gfx/scenarie/english
 
-<FilesMatch "\.(inc|tpl)$">
-        deny from all
-        allow from none
-</FilesMatch>
-
 # redirects for convenience
 Redirect /otto /awards?cid=1
 
@@ -27,13 +23,11 @@ RedirectPermanent /uk /en
 RedirectPermanent /gb /en
 RedirectPermanent /no /nb
 
-
-
 <Files ~ "^apple-touch-icon">
-	deny from all
+	Require all denied
 </Files>
 
 <Files "wp-login.php">
-        deny from all
+	Require all denied
 </Files>
 	

@@ -1,6 +1,6 @@
 <?php
 $admonly = TRUE;
-require "adm.inc";
+require "adm.inc.php";
 require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
