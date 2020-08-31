@@ -50,7 +50,7 @@ The following required Apache modules are not installed or enabled: " . implode(
 Please check your Apache installation and configuration to make sure these modules are installed and enabled.
 
 As root (or Administrator) try out the following console command:
-	a2enmod " . implode( " ", $missing_apache_modules ) . "
+	a2enmod " . str_replace( 'mod_', '', implode( " ", $missing_apache_modules ) ) . "
 
 Remember to restart the webserver after enabling the module.
 ";
