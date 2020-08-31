@@ -118,7 +118,7 @@
 	{if $user_editor}
 				<a href="profile">{$_top_profile}</a><br>
 	{/if}
-				<a href="login?logout">{$_top_logout}</a><br>
+				<a href="logout">{$_top_logout}</a><br>
 	{if $user_admin}
 				<br>
 				<a href="adm/" accesskey="a">{$_top_admin}</a><br>
