@@ -103,7 +103,7 @@ if ( $action == 'uploadfile' &&
 	}
 	if (!in_array($urldata['scheme'], $allowed_schemes ) ) {
 		$_SESSION['admin']['info'] = "Error: Not a valid URL";
-	} elseif (!in_array($pathinfo['extension'], $allowed_extensions) ) {
+	} elseif ( ! in_array( strtolower($pathinfo['extension']), $allowed_extensions) ) {
 		$_SESSION['admin']['info'] = "Error: Not a valid file type (" . (!is_null($pathinfo['extension']) ? "." . htmlspecialchars($pathinfo['extension']) : "blank" ) . ")";
 	} elseif (file_exists($upload_path) ) {
 		$_SESSION['admin']['info'] = "Error: A file with this file name already exists";
@@ -193,7 +193,7 @@ if ($action == "addfile") {
 			$file = $path;
 		}
 		$valid_extensions = [ "pdf", "jpg", "jpeg", "gif", "png", "webp" ];
-		if (!in_array($extension, $valid_extensions) ) {
+		if ( ! in_array( strtolower($extension), $valid_extensions) ) {
 			$_SESSION['admin']['info'] = "Error: Can't recognize file type as image.";
 		} else {
 			if (class_exists("imagick") ) { // use imagemagick module if present
