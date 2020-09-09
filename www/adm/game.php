@@ -357,18 +357,9 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="adm.js"></script>
 <script type="text/javascript">
 var availableNames = <?php print json_encode($people); ?>;
-
-/*
-$('form').keydown(function(event) {
-	console.log("foo");
-	if (event.ctrlKey && event.keyCode === 13) {
-		console.log("bar");
-		$(this).trigger('submit');
-	}
-})
- */
 
 $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
 	if (event.key == "Enter" && ! event.ctrlKey) {

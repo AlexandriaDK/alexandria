@@ -298,27 +298,7 @@ if ($data_id && $category) {
 	$result = getall($query);
 }
 
-?>
-<!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - files</TITLE>
-<link rel="stylesheet" type="text/css" href="style.css">
-
-<script type="text/javascript">
-function filenameToDescription(filename) {
-	description = filename.charAt(0).toUpperCase() + filename.slice(1);
-	description = description.substr(0,description.lastIndexOf('.'));
-	return description;
-}
-
-</script>
-
-</HEAD>
-
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
-<?php
-include("links.inc.php");
-
-printinfo();
+htmladmstart("Files");
 
 if ($data_id && $category) {
 	print "<div align=\"center\" style=\"margin: auto; padding: auto;\">\n";
@@ -385,7 +365,7 @@ if ($data_id && $category) {
 		print '<div class="descriptionexamples">';
 		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.title;\" title=\"" . htmlspecialchars( $templatecode ) . "\">";
 		print htmlspecialchars( $label );
-		print '</a><br><span onclick="console.log(this); navigator.clipboard.writeText(this.innerHTML);">' . htmlspecialchars( $templatecode ) . '</span>';
+		print '</a> <span onclick="navigator.clipboard.writeText(this.innerHTML); $(this).fadeOut(100).fadeIn(100);">' . htmlspecialchars( $templatecode ) . '</span>';
 		print '</div>';
 	}
 

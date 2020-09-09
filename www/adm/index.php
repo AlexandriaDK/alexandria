@@ -18,6 +18,7 @@ require "base.inc.php";
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="adm.js"></script>
 <script>
 $(document).ready(function() {  
 	$.get( "frontstat.php?days=7", function( data ) {
