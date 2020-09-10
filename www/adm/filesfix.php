@@ -53,10 +53,11 @@ foreach ($sce AS $sid => $s) {
 	print '<td><a href="game.php?game=' . $sid . '">' . $sid . '</a></td>';
 	print '<td><a href="../data?scenarie=' . $sid . '">' . htmlspecialchars($s['title']) . '</a></td>';
 	foreach($s['files'] AS $file) {
+		$url = 'https://download.alexandria.dk/files/scenario/' . $sid . '/' . rawurlencode($file['filename']);
 		if ($file['language']) {
-			print '<td><b>' . htmlspecialchars($file['description']) . ' [' . $alias['language'] . ']</b></td>';
+			print '<td><a href="' . $url . '"><b>' . htmlspecialchars($file['description']) . '</a> [' . $file['language'] . ']</b></td>';
 		} else {
-			print '<td>' . htmlspecialchars($alias['description']) . ' ';
+			print '<td><a href="' . $url . '">' . htmlspecialchars($file['description']) . '</a> ';
 			foreach ($languages AS $language) {
 				print '[<a href="filesfix.php?game_id='. $sid . '&file_id=' . $file['fileid'] . '&language=' . $language . '">' . $language . ']</a> ';
 			}
