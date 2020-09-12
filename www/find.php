@@ -32,15 +32,16 @@ function check_search_achievements ($find) {
 }
 
 function search_files ($find, $category = '') {
+	global $t;
 	$where_category = ($category ? "AND a.category = '$category'" : "");
 	$preview_length = 30;
 	$output = "";
 
 	$sql = "
-		SELECT a.id, a.category, a.data_id, a.description, b.label, GROUP_CONCAT(b.label SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
-		FROM files a, filedata b
-		WHERE a.id = b.files_id
-		AND MATCH(content) AGAINST ('\"".dbesc($find)."\"' IN BOOLEAN MODE)
+		SELECT a.id, a.category, a.data_id, a.description, a.language, b.label, GROUP_CONCAT(b.label SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
+		FROM files a
+		INNER JOIN filedata b ON a.id = b.files_id
+		WHERE MATCH(content) AGAINST ('\"".dbesc($find)."\"' IN BOOLEAN MODE)
 		$where_category
 		GROUP BY a.id
 		ORDER BY a.category, a.data_id, b.label
@@ -60,9 +61,19 @@ function search_files ($find, $category = '') {
 			           "<ul>";
 			$last_id = $row['data_id'];
 		}
+		$languagetext = "";
+		if ( $row['language'] ) {
+			$languages = explode( ",", $row['language']);
+			$fulllanguages = [];
+			foreach( $languages AS $language ) {
+				$fulllanguages[] = getLanguageName( $language );
+			}
+			$languagetext .= " [" . implode( ", ", $fulllanguages) . "]";
+		}
 		$output .= "<li>".
-		           htmlspecialchars(parseTemplate($row['description']));
-#		           " (".htmlspecialchars($page).")";
+				   htmlspecialchars(parseTemplate($row['description'])) .
+				   $languagetext .
+		           " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($page) . ")";
 		if ((stripos($row['content'],$find)) !== FALSE) {
 			$output .= "<br />".
 			           "&nbsp;&nbsp;.. ".preg_replace('/^.*?\s(.{0,40})('.preg_quote($find,'/').')(.{0,40})\s.*$/si','$1<span class="highlightsearch">$2</span>$3',htmlspecialchars($row['content']))." ..";
