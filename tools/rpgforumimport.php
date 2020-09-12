@@ -1,0 +1,54 @@
+<?php
+chdir("../www/");
+require "rpgconnect.inc.php";
+require "base.inc.php";
+
+$file = '../loot.alexandria.dk/rpgforum/posts-wip.html';
+
+function timefix($timestamp) {
+    $from = ['maj', 'okt'];
+    $to = ['may', 'oct'];
+    $time = str_replace($from, $to, $timestamp);
+    return date("Y-m-d H:i:s", strtotime($time));
+}
+
+$posts = [];
+
+$fp = fopen($file, "r");
+
+$title = $author = $timestamp = $post = "";
+$views = 0;
+
+$lines = 0;
+$postcount = 0;
+while (($line = fgets($fp)) != FALSE) {
+    $lines++;
+    if (! $title ) {
+        if (preg_match('_^<h1>(.*?)</h1>_', $line, $match)) {
+            $title = html_entity_decode($match[1]);
+#            print "Found title: $title" . PHP_EOL;
+        }
+    } elseif ( ! $author ) {
+        if (preg_match('_^<p><em>af (.*?)</em>, (.*?,.*?), (\d+) visninger</p>_', $line, $match) ) {
+            $author = html_entity_decode($match[1]);
+            $timestamp = html_entity_decode($match[2]);
+            $views = html_entity_decode($match[3]);
+#            print "Found author: $author, $timestamp, $views" . PHP_EOL;
+        }
+    } else { // part of string
+        if (preg_match('_^(.*)</em></b></i></ul></ol></li><hr/>$_', $line, $match) ) {
+            $post .= html_entity_decode($match[1]);
+            doquery("INSERT INTO rpgforum_posts(title, author, timestamp, views, post) values ('" . dbesc($title) . "', '" . dbesc($author) . "', '" . timefix($timestamp) . "', $views, '" . dbesc($post) . "')");
+            $postcount++;
+            $title = $author = $timestamp = $post = "";
+            $views = 0;
+            if ($postcount % 100 == 0) {
+                print "Posts: $postcount" . PHP_EOL;
+            }
+        } else {
+            $post .= html_entity_decode($line);
+        }
+    }
+}
+
+?>
