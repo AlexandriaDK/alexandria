@@ -102,6 +102,7 @@ function search_files ($find, $category = '') {
 }
 
 function search_blogposts ($find) {
+	global $t;
 	$preview_length = 30;
 	$output = "";
 
@@ -117,8 +118,9 @@ function search_blogposts ($find) {
 	$output = "<ul>";
 	foreach($result AS $row) {
 		
-		$output .= "<li><a href=\"".$row['link']."\">".htmlspecialchars($row['title'])."</a> (".date("j/n Y",strtotime($row['pubdate'])).")";
-		$output .= "<ul><li>Fra bloggen <i>".htmlspecialchars($row['name'])."</i>, af ".htmlspecialchars($row['owner']);
+		$output .= "<li><a href=\"".$row['link']."\">".htmlspecialchars($row['title'])."</a> (" . fulldate( date("Y-m-d", strtotime($row['pubdate']) ) ) . ")";
+		$output .= "<ul><li>";
+		$output .= sprintf( $t->getTemplateVars('_find_blogposthit'), '<i>' . htmlspecialchars($row['name']) . '</i>', htmlspecialchars($row['owner']) );
 		if ((stripos($row['content'],$find)) !== FALSE) {
 			$output .= "<br />".
 			           "&nbsp;&nbsp;.. ".preg_replace('/^.*?\s(.{0,40})('.preg_quote($find,'/').')(.{0,40})\s.*$/si','$1<span class="highlightsearch">$2</span>$3',htmlspecialchars($row['content']))." ..";
