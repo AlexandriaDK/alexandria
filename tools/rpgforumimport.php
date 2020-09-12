@@ -1,4 +1,20 @@
 <?php
+/*
+
+CREATE TABLE `rpgforum_posts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `author` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `timestamp` datetime DEFAULT NULL,
+  `views` int DEFAULT NULL,
+  `post` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `post_idx` (`author`,`title`,`post`),
+  FULLTEXT KEY `post_aut_idx` (`author`)
+) ENGINE=InnoDB AUTO_INCREMENT=63867 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci
+
+ */
+
 chdir("../www/");
 require "rpgconnect.inc.php";
 require "base.inc.php";
