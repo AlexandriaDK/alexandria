@@ -1,7 +1,7 @@
 <div align="center" class="headlink">
 <nav>
 <form action="find.php">
-<a href="./" accesskey="i">Info</a> · <a href="person.php" accesskey="p" title="Hotkey: P">Person</a> · <a href="game.php" accesskey="g" title="Hotkey: G">Game</a> · <a href="convent.php" accesskey="c" title="Hotkey: C">Con</a> · <a href="conset.php" accesskey="s" title="Hotkey: S">Con series</a> · <a href="system.php" accesskey="r" title="Hotkey: R">RPG System</a> · <a href="tag.php">Tag</a> · <a href="news.php" accesskey="n">News</a> · <a href="review.php">Reviews</a> · <a href="language.php" accesskey="o" title="Hotkey: O">Translations</a> ·
+<a href="./" accesskey="i">Info</a> · <a href="person.php" accesskey="p" title="Hotkey: P">Person</a> · <a href="game.php" accesskey="g" title="Hotkey: G">Game</a> · <a href="convent.php" accesskey="c" title="Hotkey: C">Con</a> · <a href="conset.php" accesskey="s" title="Hotkey: S">Con series</a> · <a href="system.php" accesskey="r" title="Hotkey: R">RPG System</a> · <a href="tag.php">Tag</a> · <a href="news.php" accesskey="n">News</a> · <a href="rpgforum.php">RPGFORUM</a> · <a href="review.php">Reviews</a> · <a href="language.php" accesskey="o" title="Hotkey: O">Translations</a> ·
 <a href="showlog.php">Log</a> · <a href="teknik.php">Technical</a> · <a href="ticket.php">Tickets</a>
 <?php
 if ($_SESSION['user_admin'] ) {
