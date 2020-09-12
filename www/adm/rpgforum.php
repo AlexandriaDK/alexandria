@@ -27,7 +27,8 @@ htmladmstart("RPGFORUM");
 
 print "<h1>RPGFORUM Archive search</h1>";
 
-print '<form action="rpgforum.php"><div>Search text: <input type="text" name="search" value="' . htmlspecialchars($search) . '"> Or author: <input type="text" name="author" value="' . htmlspecialchars($author) . '"> <input type="submit"></div></form>';
+print '<form action="rpgforum.php"><div>Search text: <input type="text" name="search" value="' . htmlspecialchars($search) . '"></div></form>';
+print '<form action="rpgforum.php"><div>Or author: <input type="text" name="author" value="' . htmlspecialchars($author) . '"></div></form>';
 
 if ($search !== '' || $author !== '') {
     print "<hr>";
@@ -44,7 +45,7 @@ if ($search !== '' || $author !== '') {
     foreach ($result AS $post) {
         print '<div class="rpgforumpost">';
         print '<h2 style="margin-bottom: 0">' . htmlspecialchars($post['title']) . '</h2>';
-        print '<p style="font-weight: bold;">By ' . htmlspecialchars($post['author']) . ", " . fulldatetime($post['timestamp']) . ", " . $post['views'] . " views.</p>";
+        print '<p style="font-weight: bold;">By <a href="rpgforum.php?author=' . rawurlencode($post['author']) . '">' . htmlspecialchars($post['author']) . "</a>, " . fulldatetime($post['timestamp']) . ", " . $post['views'] . " views.</p>";
         print fixpost($post['post']);
         print "<hr>";
     }
