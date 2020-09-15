@@ -79,9 +79,9 @@
 	<div style="clear: both;">
 	</div>
 
-{if $scenlist != "" || $boardlist != ""}
+{if $scenlistdata || $boardlistdata }
 	<table class="indata">
-	{if $scenlist != "" }
+	{if $scenlistdata}
 		<tr><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="roleplay">
 			{$_scenarios|ucfirst}:
@@ -98,11 +98,10 @@
 		<td>{$scenarios.runsymbol}</td>
 		<td><a href="data?scenarie={$scenarios.id}" class="scenarie">{$scenarios.title|escape}</a></td>
 		<td style="padding-left: 10px">{$scenarios.authtml}{if $scenarios.autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.autextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{$scenarios.systemhtml}</td>
-		</tr>
+		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_name|escape}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
 	{/foreach}
 	{/if}
-	{if $boardlist != "" }
+	{if $boardlistdata}
 		<tr><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="boardgames">
 			{$_boardgames|ucfirst}:
@@ -112,7 +111,7 @@
 
 		<tr>
 		<td>{$boardgames.userdyn.read}</td>
-		<td>{$boardgames.userdyn.gmed}</td>
+		<td></td>
 		<td>{$boardgames.userdyn.played}</td>
 		<td style="width: 10px;"></td>
 		<td>{if $boardgames.filescount}<a href="data?scenarie={$boardgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>

@@ -2,6 +2,10 @@
 require("./connect.php");
 require("base.inc.php");
 
+if ($_SESSION['user_id']) {
+	$userlog = getuserloggames($_SESSION['user_id']);
+}
+
 $titlepart = "";
 $beginchar = "";
 
@@ -18,14 +22,12 @@ foreach($chars AS $char) {
 }
 
 // fetch genres
-$genre = array();
+$genre = [];
 $genres = getcolid("SELECT gen.id, gen.name FROM gen ORDER BY gen.name");
 foreach($genres AS $gid => $gname) {
-	#$genre[] = '<a href="'.$_SERVER['PHP_SELF'].'?g='.$g['id'].'">'.htmlspecialchars($g['name']).'</a>';
 	$genre[] = '<a href="scenarier?g='.$gid.'">'.htmlspecialchars($gname).'</a>';
 }
 $genre = join(", ",$genre);
-
 
 $b = (string) ($_REQUEST["b"] ?? "");
 $g = (int) ($_REQUEST["g"] ?? "");
@@ -36,23 +38,15 @@ if ($b == "") {
 
 if ($g) {
 	$wherepart = "LEFT JOIN gsrel ON sce.id = gsrel.sce_id WHERE gsrel.gen_id = $g";
-	if (isset($genres[$g])) {
-		$titlepart = $genres[$g];
-	} else {
-		$titlepart = "Ukendt kategori";
-	}
 } else {
 	if ($b == "1") {
 		$beginchar = "1";
-		$titlepart = "Begynder med tal eller specialtegn";	
 		$wherepart = "sce.title REGEXP '^[^a-zæøå]'";
 	} elseif (in_array($b,$chars)) {
 		$beginchar = $b;
-		$titlepart = "Begynder med bogstavet $b";
 		$wherepart = "sce.title LIKE '$b%'";
 	} else {
 		$beginchar = "a";
-		$titlepart = "Begynder med bogstavet a";
 		$wherepart = "sce.title LIKE 'a%'";
 	}
 	if ($wherepart) {
@@ -63,42 +57,22 @@ if ($wherepart) {
 	$wherepart .= " AND sce.boardgame = 0";
 } else {
 	$wherepart = "WHERE sce.boardgame = 0";
-	
 }
 
-// Find alle scenarier, inkl. personer og cons - medtag dog kun én premierecon.
-// ... havde før i tiden "USE INDEX(sce_id)" efter csrel og asrel-joins for at sikre sig
-// at den rette key blev brugt, men "ANALYZE TABLE csrel" og "ANALYZE TABLE asrel"
-// sørgede for dette i første omgang
+// Find all games, including persons and cons - restrict to one premiere convent
+$r = getall("
+	SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files
+	FROM sce
+	LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
+	LEFT JOIN convent ON csrel.convent_id = convent.id
+	LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id = 1
+	LEFT JOIN aut ON asrel.aut_id = aut.id
+	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	$wherepart
+	GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
+	ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
+");
 
-if ($_SESSION['user_id']) {
-	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played, COUNT(files.id) AS files
-		FROM sce
-		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
-		LEFT JOIN convent ON csrel.convent_id = convent.id
-		LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id = 1
-		LEFT JOIN aut ON asrel.aut_id = aut.id
-		LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-		LEFT JOIN userlog ON sce.id = userlog.data_id AND userlog.category = 'sce' AND userlog.user_id = '{$_SESSION['user_id']}'
-		$wherepart
-		GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-		ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
-	");
-} else {
-	$r = getall("
-		SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files
-		FROM sce
-		LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
-		LEFT JOIN convent ON csrel.convent_id = convent.id
-		LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id = 1
-		LEFT JOIN aut ON asrel.aut_id = aut.id
-		LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-		$wherepart
-		GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-		ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
-	");
-}
 
 $last_sce_id = 0;
 $xscenlist = "";
@@ -113,9 +87,6 @@ foreach ($r AS $row) {
 #	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'] ];
 	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'id' => $row['convent_id'], 'name' => $row['convent_name'], 'year' => $row['year'], 'cancelled' => $row['cancelled'], 'begin' => $row['begin'], 'end' => $row['end'] ];
 	$scenarios[$sce_id]['downloadable'] = ($row['files'] > 0);
-	if ($_SESSION['user_id']) {
-		$scenarios[$sce_id]['userdata'] = ['read' => $row['read'], 'gmed' => $row['gmed'], 'played' => $row['played'] ]; 
-	}
 }
 
 foreach($scenarios AS $scenario_id => $scenario) {
@@ -130,7 +101,7 @@ foreach($scenarios AS $scenario_id => $scenario) {
 		foreach( $options AS $type) {
 			$xscenlist .= "<td>";
 			if ($type != NULL) {
-				$xscenlist .= getdynamicscehtml($scenario_id,$type,$scenario['userdata'][$type]);
+				$xscenlist .= getdynamicscehtml($scenario_id,$type,$userlog[$scenario_id][$type] ?? FALSE);
 			}
 			$xscenlist .= "</td>";
 		}
@@ -170,8 +141,6 @@ if ($g == 9)   award_achievement(74); // Scenario in Thriller genre
 $t->assign('keys',$keys);
 $t->assign('genre',$genre);
 $t->assign('scenlist',$xscenlist);
-$t->assign('titlepart',$titlepart);
 $t->assign('beginchar',$beginchar);
 $t->display('games.tpl');
-
 ?>

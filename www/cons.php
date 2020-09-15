@@ -2,25 +2,17 @@
 require("./connect.php");
 require("base.inc.php");
 
+
 if ($_SESSION['user_id']) {
-	$result = getall("
-		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, userlog.type IS NOT NULL AS visited, COALESCE(convent.country, conset.country) AS country
-		FROM convent
-		LEFT JOIN userlog ON
-			convent.id = userlog.data_id AND
-			userlog.category = 'convent' AND
-			userlog.user_id = '{$_SESSION['user_id']}'
-		LEFT JOIN conset ON convent.conset_id = conset.id
-		ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
-	");
-} else {
-	$result = getall("
-		SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, COALESCE(convent.country, conset.country) AS country
-		FROM convent
-		LEFT JOIN conset ON convent.conset_id = conset.id
-		ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
-	");
+	$userlog = getuserlogconvents($_SESSION['user_id']);
 }
+
+$result = getall("
+	SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, COALESCE(convent.country, conset.country) AS country
+	FROM convent
+	LEFT JOIN conset ON convent.conset_id = conset.id
+	ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
+");
 
 $conset = "";
 $part = 1;
@@ -39,6 +31,9 @@ foreach( $result AS $c ) {
 			'countries' => [],
 			'cons' => []
 		];
+	}
+	if ($userlog) {
+		$c['userloghtml'] = getdynamicconventhtml($conid, 'visited', in_array($conid, $userlog) );
 	}
 	$cons[$setid]['cons'][$conid] = $c;
 	$cons[$setid]['countries'][$c['country']] = TRUE;

@@ -4,8 +4,6 @@
 {$uatd.description}
 </div>
 {/foreach}
-
 {achievements_shown}
-
 </body>
 </html>

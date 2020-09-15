@@ -27,22 +27,31 @@
 	<div style="clear: both;">
 	</div>
 
-{if $slist}
+{if $gamelist}
 	<h3 class="parttitle">
 		{$_scenarios|ucfirst}
 	</h3>
 
 	<table class="indata">
-	{foreach from=$slist item=$game}
+	{foreach $gamelist as $game}
 		<tr>
-			{if $game.read}<td>{$game.read}</td>{/if}
-			{if $game.gmed}<td>{$game.gmed}</td>{/if}
-			{if $game.played}<td>{$game.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
-			<td>{if $game.files}<a href="{$game.link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-			<td><a href="{$game.link}" class="scenarie">{$game.title|escape}</a></td>
-			<td class="lpad">{$game.forflist}</td>
-			<td>{if $game.conlink}<a href="{$game.conlink}" class="con" title="{$game.coninfo}">{$game.conname|escape}</a>{/if}</td>
-
+			{if $game.userdata.html}
+			<td>{$game.userdata.html.read}</td>
+			<td>{$game.userdata.html.gmed}</td>
+			<td>{$game.userdata.html.played}</td><td style="width: 5px;"></td>
+			{/if}
+			<td>{if $game.game.files}<a href="data?scenarie={$game@key}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+			<td><a href="data?scenarie={$game@key}" class="scenarie">{$game.game.title|escape}</a></td>
+			<td class="lpad">
+			{foreach $game.person as $person}
+			<a href="data?person={$person@key}" class="person">{$person|escape}</a><br>
+			{/foreach}
+			</td>
+			<td>
+			{foreach $game.convent AS $convent}
+			{con dataset=$convent}<br>
+			{/foreach}
+		</tr>
 	{/foreach}
 	</table>
 {/if}

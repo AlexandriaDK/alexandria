@@ -466,7 +466,6 @@ function getsitesalt ($site) {
 
 function getuserlog($user_id,$category,$data_id) {
 	return getcol("SELECT type FROM userlog WHERE user_id = '$user_id' AND category = '$category' AND data_id = '$data_id'");
-
 }
 
 function adduserlog($user_id,$category,$data_id,$type) {
@@ -477,6 +476,26 @@ function adduserlog($user_id,$category,$data_id,$type) {
 
 function removeuserlog($user_id,$category,$data_id,$type) {
 	doquery("DELETE FROM userlog WHERE user_id = '$user_id' AND category = '$category' AND data_id = '$data_id' AND type = '$type'");
+}
+
+function getuserloggames($user_id) {
+	return getallid("
+		SELECT data_id, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played
+		FROM userlog
+		WHERE userlog.user_id = '$user_id' AND userlog.category = 'sce'
+		GROUP BY data_id
+		ORDER BY data_id
+	");
+}
+
+function getuserlogconvents($user_id) {
+	return getcol("
+		SELECT data_id
+		FROM userlog
+		WHERE userlog.user_id = '$user_id' AND userlog.category = 'convent'
+		GROUP BY data_id
+		ORDER BY data_id
+	");
 }
 
 function getdynamicscehtml($sce_id,$type,$active) {
@@ -1137,6 +1156,29 @@ function getcolid ($query) {
 	while (list($id,$field) = mysqli_fetch_row($result)) {
 		$data[$id] = $field;
 	}
+	return $data;
+}
+
+function getallid ($query, $array = TRUE) {
+	global $dblink;
+	$result = mysqli_query($dblink, $query);
+	if (!$result) {
+		trigger_error("Error in query: $query - error: ".mysqli_error($dblink)."<br>\n",E_USER_WARNING);
+		return false;
+	}
+	$data = [];
+	if ($array) {
+		while ($row = mysqli_fetch_array($result)) {
+			$id = array_values($row)[0];
+			$data[$id] = $row;
+		}
+	} else {
+		while ($row = mysqli_fetch_assoc($result)) {
+			$id = array_values($row)[0];
+			$data[$id] = $row;
+		}
+	}
+
 	return $data;
 }
 
