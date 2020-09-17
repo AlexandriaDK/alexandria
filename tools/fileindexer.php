@@ -18,7 +18,7 @@ require "base.inc.php";
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
 $limit = intval($_SERVER['argv']['1'] ?? 1); // How many files should this script check in one run
 
-define('ALEXFILEPATH','/home/penguin/Dokumenter/dev/alexandria/loot.alexandria.dk/files/');
+define('ALEXFILEPATH','/home/penguin/web/loot.alexandria.dk/files/');
 
 $paths = [
 	"sce" => "scenario",
