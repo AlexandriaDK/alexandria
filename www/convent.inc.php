@@ -164,11 +164,19 @@ foreach($gamelist AS $game_id => $game) {
 		$personextrahtml =  join("<br>", $personlistextra);
 	}
 
+	if ( $game['game']['pre_textsymbol'] ) { // unicode icons
+		$runsymbol = "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $game['game']['pre_event_label'] ) ) ) . "\">" . $game['game']['pre_textsymbol'] . "</span>";
+	} elseif ( $game['game']['pre_iconfile'] ) {
+		$runsymbol = "<img src=\"/gfx/" . $game['game']['pre_iconfile'] . "\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $game['game']['pre_event_label'] ) ) ) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $game['game']['pre_event_label'] ) ) ) . "\" width=\"15\" height=\"15\" />";
+	} else {
+		$runsymbol = "";
+	}
+
 	$datalistdata = [
 		'id' => $game_id,
 		'userdyn' => $useroptions,
 		'filescount' => $game['game']['files'],
-		'runsymbol' => $runsymbol ?? FALSE,
+		'runsymbol' => $runsymbol,
 		'title' => $game['game']['title_translation'],
 		'authtml' => $personhtml,
 		'autextracount' => count($personlistextra),
