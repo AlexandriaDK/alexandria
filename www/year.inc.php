@@ -64,12 +64,13 @@ foreach($q AS $row) {
 #		$coninfo = intval(substr($row['begin'],8,2)).".-".intval(substr($row['end'],8,2)).".";
 	if ($month != 0) {
 		if (substr($row['begin'],8,2) == "00") {
-			$timeinfo = htmlspecialchars($t->getTemplateVars('_year_unknowndate')) . ": ";
+			$timeinfo = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
 		} elseif ($row['begin'] == $row['end'] || !$row['end']) {
-			$timeinfo = intval(substr($row['begin'],8,2)).": ";
+			$timeinfo = specificdate( $row['begin'] );
 		} else {
-			$timeinfo = intval(substr($row['begin'],8,2)).".-".intval(substr($row['end'],8,2)).": ";
+			$timeinfo = specificdate( $row['begin'] ) . "-" . specificdate( $row['end'] );
 		}
+		$timeinfo .= " ";
 		
 	}
 	if ($row['cancelled']) {

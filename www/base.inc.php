@@ -36,7 +36,7 @@ define( 'LANG', $lang );
 
 $locale = ('eb_GB.utf-8');
 if ( LANG == 'da') {
-	$locale = 'da_DK';
+	$locale = 'da_DK.utf-8';
 } elseif ( LANG == 'en' ) {
 	$locale = ('eb_GB.utf-8');
 } elseif ( LANG == 'sv' ) {
@@ -705,6 +705,109 @@ function fulldatetime ( $dateString ) {
 	return $output;
 }
 
+function customdateformat( $lang, $pattern, $dateString ) {
+	$formatter = new IntlDateFormatter($lang, 0, 0, null, null, $pattern);
+	$datetime = new DateTime($dateString);
+	$output = $formatter->format($datetime);
+	return $output;
+}
+
+function monthyear ( $dateString ) {
+	// generated using custom DateTimePatternGenerator: IntlDateTimePatternGenerator intl_dtpg from https://github.com/ksimka/intl_dtpg
+	// MMMM y
+	$patterns = [
+		'ru' => 'LLLL y \'г\'.',
+		'en' => 'MMMM y',
+		'da' => 'MMMM y',
+		'sv' => 'MMMM y',
+		'nb' => 'MMMM y',
+		'de' => 'MMMM y',
+		'fr' => 'MMMM y',
+		'be' => 'LLLL y',
+		'fi' => 'LLLL y',
+		'pl' => 'LLLL y',
+		'it' => 'MMMM y',
+		'ar' => 'MMMM y',
+		'zh' => 'y年M月',
+		'ja' => 'y年M月',
+		'he' => 'MMMM y',
+		'fo' => 'MMMM y',
+		'kl' => 'y MMMM',
+		'hi' => 'MMMM y',
+		'tl' => 'MMMM y',
+		'sa' => 'MMMM y',
+		'ta' => 'MMMM y',
+		'bn' => 'MMMM y',
+		'nv' => 'MMMM y',
+	];
+	$pattern = $patterns[LANG] ?? $patterns['en'];
+	return customdateformat(LANG, $pattern, $dateString);
+}
+
+function datemonth ( $dateString ) {
+	// generated using custom DateTimePatternGenerator: IntlDateTimePatternGenerator intl_dtpg from https://github.com/ksimka/intl_dtpg
+	// MMMMd
+	$patterns = [
+		'ru' => 'd MMMM',
+		'en' => 'MMMM d',
+		'da' => 'd. MMMM',
+		'sv' => 'd MMMM',
+		'nb' => 'd. MMMM',
+		'de' => 'd. MMMM',
+		'fr' => 'd MMMM',
+		'be' => 'd MMMM',
+		'fi' => 'd. MMMM',
+		'pl' => 'd MMMM',
+		'it' => 'd MMMM',
+		'ar' => 'd MMMM',
+		'zh' => 'M月d日',
+		'ja' => 'M月d日',
+		'he' => 'd בMMMM',
+		'fo' => 'd. MMMM',
+		'kl' => 'MMMM d',
+		'hi' => 'd MMMM',
+		'tl' => 'MMMM d',
+		'sa' => 'MMMM d',
+		'ta' => 'd MMMM',
+		'bn' => 'd MMMM',
+		'nv' => 'MMMM d',
+	];
+	$pattern = $patterns[LANG] ?? $patterns['en'];
+	return customdateformat(LANG, $pattern, $dateString);
+}
+
+function specificdate ( $dateString ) {
+	// generated using custom DateTimePatternGenerator: IntlDateTimePatternGenerator intl_dtpg from https://github.com/ksimka/intl_dtpg
+	// d
+	$patterns = [
+		'ru' => 'd',
+		'en' => 'd',
+		'da' => 'd.',
+		'sv' => 'd',
+		'nb' => 'd.',
+		'de' => 'd',
+		'fr' => 'd',
+		'be' => 'd',
+		'fi' => 'd',
+		'pl' => 'd',
+		'it' => 'd',
+		'ar' => 'd',
+		'zh' => 'd日',
+		'ja' => 'd日',
+		'he' => 'd',
+		'fo' => 'd.',
+		'kl' => 'd',
+		'hi' => 'd',
+		'tl' => 'd',
+		'sa' => 'd',
+		'ta' => 'd',
+		'bn' => 'd',
+		'nv' => 'd',
+	];
+	$pattern = $patterns[LANG] ?? $patterns['en'];
+	return customdateformat(LANG, $pattern, $dateString);
+}
+
 function nicedateset ($begin, $end) {
 	$out = "";
 	if ( ($begin && $begin != "0000-00-00") || ($end && $end != "0000-00-00") ) {
@@ -883,6 +986,7 @@ function getaliaslist ($data_id, $cat, $ignore_title = "") {
 function getfilelist ($data_id, $cat) {
 	global $t;
 	$files = getall("SELECT filename, description, language FROM files WHERE data_id = '$data_id' AND category = '$cat' AND downloadable = 1 ORDER BY id");
+	$fmt = new NumberFormatter( Locale::getDefault(), NumberFormatter::DECIMAL );
 	foreach($files AS $id => $file) {
 		$template_description = parseTemplate( $file['description'] );
 		if ( $file['language'] ) {
@@ -899,7 +1003,7 @@ function getfilelist ($data_id, $cat) {
 		$files[$id]['template_description'] = $template_description;
 		if (file_exists($path)) {
 			$files[$id]['filesize'] = filesize($path);
-			$files[$id]['filesizetext'] = number_format(max(0.1,round($files[$id]['filesize']/1024/1024*10)/10),1,',','.');
+			$files[$id]['filesizetext'] = $fmt->format(round( $files[$id]['filesize']/1024/1024, 1) );
 		}
 	}
 	return $files;
@@ -1015,13 +1119,13 @@ function parseupcomingevents($eventset) {
 		if ($lastbegin != $beginpart) {
 			$lastbegin = $beginpart;
 			list($conyear,$conmonth) = explode("-",$beginpart);
-			$calout .= "<tr><th colspan=\"2\">".ucfirst(monthname($conmonth))." " . yearname( $conyear ) ."</th></tr>\n";
+			$calout .= "<tr><th colspan=\"2\">" . ucfirst( monthyear( $beginpart ) ) . "</th></tr>\n";
 		}
 		$coninfo = nicedateset($begin,$end);
 		if ($begin == $end) {
-			$daypart = intval(substr($begin,8,2)).": ";
+			$daypart = specificdate( $begin );
 		} else {
-			$daypart = intval(substr($begin,8,2)).".-".intval(substr($end,8,2)).": ";
+			$daypart = specificdate( $begin ) . "-" . specificdate( $end);
 		}
 		$calout .= "<tr " . ($cancelled ? "class=\"cancelled\"" : "") . ">\n<td>$daypart</td>\n";
 		if ($type == 'convent') {
@@ -1036,13 +1140,15 @@ function parseupcomingevents($eventset) {
 }
 
 // translator overview
-
 function getTranslationOverview() {
 	$alltext = getcolid("SELECT language, COUNT(*) AS count FROM weblanguages WHERE language != 'xx' GROUP BY language ORDER BY COUNT(*) DESC");
 	$max = max($alltext);
 	$result = [];
+	$nf = new NumberFormatter(LANG, NumberFormatter::PERCENT);
 	foreach($alltext AS $isocode => $count) {
-		$result[] = [ 'isocode' => $isocode, 'llanguage' => getLanguageName($isocode), 'count' => $count, 'percentage' => floor( $count / $max * 100 ) ];
+		$percentage = floor( $count / $max * 100 );
+		$percentagestring = $nf->format( $count / $max );
+		$result[] = [ 'isocode' => $isocode, 'llanguage' => getLanguageName($isocode), 'count' => $count, 'percentage' => $percentage, 'percentagestring' => $percentagestring ];
 	}
 	return $result;
 }
@@ -1063,8 +1169,7 @@ function getCountryNameFallback($countrycode) {
 	return $name;
 }
 
-// MySQL-kald:
-
+// MySQL lookup:
 function getentry ($cat, $data_id, $with_category = FALSE) {
 	$value = $label = FALSE;
 	$data_id = (int) $data_id;
@@ -1104,7 +1209,6 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 	}
 
 	if ($value) {
-#		$label = getone("SELECT $value FROM $cat WHERE id = '$data_id'");
 		$label = getone("
 			SELECT COALESCE(alias.label, $value) AS label_translation
 			FROM $cat AS tbl
@@ -1125,7 +1229,6 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 /*
  * Generic SQL
  */
-
 function getone ($query) {
 	global $dblink;
 	$result = mysqli_query($dblink, $query);
@@ -1196,7 +1299,6 @@ function getallid ($query, $array = TRUE) {
 			$data[$id] = $row;
 		}
 	}
-
 	return $data;
 }
 
@@ -1217,7 +1319,6 @@ function getall ($query, $array = TRUE) {
 			$data[] = $row;
 		}
 	}
-
 	return $data;
 }
 

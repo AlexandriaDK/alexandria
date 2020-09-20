@@ -217,7 +217,7 @@
 			{$_top_translationprogress}:
 			<br><br>
 			{foreach from=$translations item=$translation}
-			<a href="adm/language.php?setlang={$translation.isocode|rawurlencode}">{$translation.llanguage|ucfirst|escape}</a>: {$translation.percentage}%<br>
+			<a href="adm/language.php?setlang={$translation.isocode|rawurlencode}">{$translation.llanguage|ucfirst|escape}</a>: {$translation.percentagestring}<br>
 			{/foreach}
 		</div>
 	{/if}
