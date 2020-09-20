@@ -3,11 +3,11 @@
 
 CREATE TABLE `rpgforum_posts` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `author` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
+  `author` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
   `timestamp` datetime DEFAULT NULL,
   `views` int DEFAULT NULL,
-  `post` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `post` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `post_idx` (`author`,`title`,`post`),
   FULLTEXT KEY `post_aut_idx` (`author`)
@@ -19,7 +19,7 @@ chdir("../www/");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$file = '../loot.alexandria.dk/rpgforum/posts-wip.html';
+$file = '../../loot.alexandria.dk/rpgforum/posts-wip.html';
 
 function timefix($timestamp) {
     $from = ['maj', 'okt'];
