@@ -41,13 +41,13 @@ if ($g) {
 } else {
 	if ($b == "1") {
 		$beginchar = "1";
-		$wherepart = "sce.title REGEXP '^[^a-zæøå]'";
+		$wherepart = "COALESCE(alias.label, sce.title) REGEXP '^[^a-zæøå]'";
 	} elseif (in_array($b,$chars)) {
 		$beginchar = $b;
-		$wherepart = "sce.title LIKE '$b%'";
+		$wherepart = "COALESCE(alias.label, sce.title) LIKE '$b%'";
 	} else {
 		$beginchar = "a";
-		$wherepart = "sce.title LIKE 'a%'";
+		$wherepart = "COALESCE(alias.label, sce.title) LIKE 'a%'";
 	}
 	if ($wherepart) {
 		$wherepart = "WHERE ".$wherepart;
@@ -61,18 +61,18 @@ if ($wherepart) {
 
 // Find all games, including persons and cons - restrict to one premiere convent
 $r = getall("
-	SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files
+	SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
 	FROM sce
 	LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 	LEFT JOIN convent ON csrel.convent_id = convent.id
 	LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id = 1
 	LEFT JOIN aut ON asrel.aut_id = aut.id
 	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	$wherepart
 	GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-	ORDER BY title, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
+	ORDER BY title_translation, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
 ");
-
 
 $last_sce_id = 0;
 $xscenlist = "";
@@ -81,7 +81,8 @@ $xscenlist = "";
 $scenarios = [];
 foreach ($r AS $row) {
 	$sce_id = $row['id'];
-	$scenarios[$sce_id]['title'] = $row['title'];
+	$scenarios[$sce_id]['title'] = $row['title_translation'];
+	$scenarios[$sce_id]['origtitle'] = $row['title'];
 	$scenarios[$sce_id]['boardgame'] = $row['boardgame'];
 	$scenarios[$sce_id]['aut'][$row['autid']] = [ 'name' => $row['autname'] ];
 #	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'] ];
@@ -112,7 +113,7 @@ foreach($scenarios AS $scenario_id => $scenario) {
 	} else {
 		$xscenlist .= "<td></td>";
 	}
-	$xscenlist .= "\t\t<td><a href=\"data?scenarie=" . $scenario_id . "\" class=\"scenarie\">".htmlspecialchars($scenario['title'])."</a></td>\n";
+	$xscenlist .= "\t\t<td><a href=\"data?scenarie=" . $scenario_id . "\" class=\"scenarie\" title=\"" . htmlspecialchars($scenario['origtitle']) . "\">" . htmlspecialchars($scenario['title']) . "</a></td>\n";
 
 	// authors
 	$xscenlist .= "\t\t<td>";

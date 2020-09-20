@@ -34,7 +34,8 @@ $q = getall("
 		title.iconwidth,
 		title.iconheight,
 		title.textsymbol,
-		COUNT(files.id) AS files
+		COUNT(files.id) AS files,
+		COALESCE(alias.label, sce.title) AS title_translation
 	FROM
 		asrel,
 		title,
@@ -45,6 +46,8 @@ $q = getall("
 		csrel.convent_id = convent.id
 	LEFT JOIN files ON
 		sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON
+		sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE
 		sce.id = asrel.sce_id AND
 		asrel.tit_id = title.id AND
@@ -55,6 +58,7 @@ $q = getall("
 		firstyear,
 		firstbegin,
 		title.id,
+		title_translation,
 		sce.title
 ");
 $slist = array();
@@ -84,7 +88,8 @@ if (count($q) > 0) {
 		$slist[$sl]['iconwidth'] = $rs['iconwidth'];
 		$slist[$sl]['iconheight'] = $rs['iconheight'];
 		$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
-		$slist[$sl]['title'] = $rs['title'];
+		$slist[$sl]['title'] = $rs['title_translation'];
+		$slist[$sl]['origtitle'] = $rs['title'];
 
 		$conlist = [];
 		$qq = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled FROM convent, csrel WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = '{$rs['id']}' ORDER BY convent.name");
@@ -107,16 +112,17 @@ $awarddata = [];
 // awards if your are an author (1), organizer (4), or designer (5)
 $q = getall("
 	(
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.begin, c.conset_id, e.title 
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.begin, c.conset_id, e.title, COALESCE(f.label,e.title) AS title_translation
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	INNER JOIN convent c ON b.convent_id = c.id
 	INNER JOIN asrel d ON a.sce_id = d.sce_id AND d.tit_id IN (1,4,5) AND d.aut_id = $person
 	INNER JOIN sce e ON a.sce_id = e.id
+	LEFT JOIN alias f ON e.id = f.data_id AND f.category = 'sce' AND f.language = '" . LANG . "' AND f.visible = 1
 	)
 	UNION ALL
 	(
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.begin, c.conset_id, '' AS title
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.begin, c.conset_id, '' AS title, '' as title_translation
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	INNER JOIN convent c ON b.convent_id = c.id
@@ -124,10 +130,11 @@ $q = getall("
 	)
 	ORDER BY year ASC, begin ASC, convent_id ASC, winner DESC, id ASC
 ");
+
 foreach($q AS $rs) {
 	$awardtext = "";
-	if ($rs['title']) {
-		$awardtext .= htmlspecialchars($rs['title']) . ": ";
+	if ($rs['title_translation']) {
+		$awardtext .= '<span title="' . htmlspecialchars($rs['title']) . '">' . htmlspecialchars($rs['title_translation']) . "</span>: ";
 	}
 	$awardtext .= ($rs['winner'] ? "Vinder" : "Nomineret" ) . ", " . htmlspecialchars($rs['name']);
 	if ($rs['ranking']) {

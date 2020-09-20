@@ -147,7 +147,7 @@ foreach($gamelist AS $game_id => $game) {
 	}
 	*/
 	$personlist = [];
-	$listextra = [];
+	$personlistextra = [];
 	$person_count = 0;
 	foreach($game['person'] AS $person_id => $person_name) {
 		$person_count++;
@@ -212,7 +212,16 @@ foreach($gamelist AS $game_id => $game) {
 }
 
 // List of awards
-$award_nominees = getall("SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.sce_id, b.id AS category_id, b.convent_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id LEFT JOIN convent c ON b.convent_id = c.id LEFT JOIN sce d ON a.sce_id = d.id WHERE c.id = $con ORDER BY c.year DESC, a.winner DESC, a.id");
+$award_nominees = getall("
+	SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.sce_id, b.id AS category_id, b.convent_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title, COALESCE(e.label,d.title) AS title_translation
+	FROM award_nominees a
+	INNER JOIN award_categories b ON a.award_category_id = b.id
+	LEFT JOIN convent c ON b.convent_id = c.id
+	LEFT JOIN sce d ON a.sce_id = d.id
+	LEFT JOIN alias e ON d.id = e.data_id AND e.category = 'sce' AND e.language = '" . LANG . "' AND e.visible = 1
+	WHERE c.id = $con
+	ORDER BY c.year DESC, a.winner DESC, a.id
+");
 
 $awardset = [];
 $awardnominees = [];
@@ -225,7 +234,7 @@ foreach ($award_nominees AS $nominee) {
 	$awardnominees[$cid][$con_id]['name'] = $nominee['con_name'];
 	$awardnominees[$cid][$con_id]['year'] = $nominee['year'];
 	$awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
-	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'sce_id' => $nominee['sce_id'], 'title' => $nominee['title'] ];
+	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'sce_id' => $nominee['sce_id'], 'title' => $nominee['title_translation'] ];
 }
 
 if ($awardnominees) {

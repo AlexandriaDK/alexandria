@@ -51,7 +51,7 @@ if ($r['gms_min'] !== NULL) {
 	}
 	$participants[] = $gms_text;
 	$gms = ($r['gms_max'] != $r['gms_min'] ? $r['gms_min'] . "-" . $r['gms_max'] : $r['gms_min']);
-}	
+}
 if ($r['players_min'] !== NULL) {
 	$players_text = $r['players_min'];
 	if ($r['players_max'] != $r['players_min']) {

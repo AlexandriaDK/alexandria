@@ -40,23 +40,23 @@
 	<h3 class="parttitle">{$_scenarios|ucfirst}</h3>
 
 	<table class="scenariolist indata">
-	{foreach from=$slist item=$scenario}
+	{foreach from=$slist item=$game}
 		<tr>
-			{if $scenario.read}<td>{$scenario.read}</td>{else}<td></td>{/if}
-			{if isset($scenario.gmed) && $scenario.gmed}<td>{$scenario.gmed}</td>{else}<td></td>{/if}
-			{if $scenario.played}<td>{$scenario.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
-			<td>{if $scenario.files}<a href="{$scenario.link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+			{if $game.read}<td>{$game.read}</td>{else}<td></td>{/if}
+			{if isset($game.gmed) && $game.gmed}<td>{$game.gmed}</td>{else}<td></td>{/if}
+			{if $game.played}<td>{$game.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
+			<td>{if $game.files}<a href="{$game.link}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
 			<td style="text-align: center;">
-			{if $scenario.textsymbol}
-			<span title="{$scenario.icontitle|escape}">{$scenario.textsymbol}</span>
-			{elseif $scenario.iconfile}
-			<img src="gfx/{$scenario.iconfile}" alt="{$scenario.icontitle|escape}" title="{$scenario.icontitle|escape}" width="{$scenario.iconwidth}" height="{$scenario.iconheight}" />
+			{if $game.textsymbol}
+			<span title="{$game.icontitle|escape}">{$game.textsymbol}</span>
+			{elseif $game.iconfile}
+			<img src="gfx/{$game.iconfile}" alt="{$game.icontitle|escape}" title="{$game.icontitle|escape}" width="{$game.iconwidth}" height="{$game.iconheight}" />
 			{else}
 
 			{/if}
 			</td>
-			<td><a href="{$scenario.link}" class="scenarie">{$scenario.title|escape}</a></td>
-			<td style="padding-left: 10px;">{$scenario.conlist}</td>
+			<td><a href="{$game.link}" class="scenarie" title="{$game.origtitle|escape}">{$game.title|escape}</a></td>
+			<td style="padding-left: 10px;">{$game.conlist}</td>
 		</tr>
 	{/foreach}
 	</table>
