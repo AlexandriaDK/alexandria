@@ -1056,6 +1056,7 @@ function getCountryNameFallback($countrycode) {
 
 function getentry ($cat, $data_id, $with_category = FALSE) {
 	$value = $label = FALSE;
+	$data_id = (int) $data_id;
 
 	switch ($cat) {
 		case 'aut':
@@ -1092,7 +1093,13 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 	}
 
 	if ($value) {
-		$label = getone("SELECT $value FROM $cat WHERE id = '$data_id'");
+#		$label = getone("SELECT $value FROM $cat WHERE id = '$data_id'");
+		$label = getone("
+			SELECT COALESCE(alias.label, $value) AS label_translation
+			FROM $cat AS tbl
+			LEFT JOIN alias ON tbl.id = alias.data_id AND alias.category = '$cat' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			WHERE tbl.id = $data_id
+		");
 	}
 
 	if ($label && $with_category) {

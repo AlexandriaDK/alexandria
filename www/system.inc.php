@@ -19,7 +19,7 @@ if ($r['id'] == 0) {
 	exit;
 }
 $q = getall("
-	SELECT sce.id, sce.title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, convent.cancelled, convent.country, aut_extra, COUNT(files.id) AS files, aut.id AS aut_id, CONCAT(aut.firstname,' ',aut.surname) AS autname, pre.id AS pre_id, pre.event_label, pre.iconfile, pre.textsymbol
+	SELECT sce.id, sce.title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, convent.cancelled, convent.country, aut_extra, COUNT(files.id) AS files, aut.id AS aut_id, CONCAT(aut.firstname,' ',aut.surname) AS autname, pre.id AS pre_id, pre.event_label, pre.iconfile, pre.textsymbol, COALESCE(alias.label, sce.title) AS title_translation
 	FROM sce
 	LEFT JOIN asrel ON asrel.sce_id = sce.id AND asrel.tit_id IN (1,5)
 	LEFT JOIN aut ON asrel.aut_id = aut.id
@@ -27,9 +27,10 @@ $q = getall("
 	LEFT JOIN convent ON csrel.convent_id = convent.id
 	LEFT JOIN pre ON csrel.pre_id = pre.id
 	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE sys_id = '$system'
 	GROUP BY sce.id, convent.id, aut.id
-	ORDER BY sce.title, convent.year, convent.begin, convent.end, aut.surname, aut.firstname
+	ORDER BY title_translation, convent.year, convent.begin, convent.end, aut.surname, aut.firstname
 ");
 
 $gamelist = [];
@@ -38,7 +39,7 @@ if (count($q) > 0) {
 	foreach($q AS $rs) { // Put all together
 		$sce_id = $rs['id'];
 		if ( ! isset($gamelist[$rs['id']]) ) {
-			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title'], 'person_extra' => $rs['aut_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
+			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['aut_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
 		}
 		if ($rs['aut_id']) {
 			$gamelist[$rs['id']]['person'][$rs['aut_id']] = $rs['autname'];
@@ -56,7 +57,6 @@ if (count($q) > 0) {
 		}
 	}
 }
-#	print "<pre>"; print_r($gamelist); exit;
 
 // List of aliases
 $aliaslist = getaliaslist($system,$this_type);
@@ -77,7 +77,6 @@ if (file_exists("gfx/system/s_".$system.".jpg")) {
 }
 
 // Smarty
-
 $t->assign('pagetitle',$r['name']);
 $t->assign('type',$this_type);
 

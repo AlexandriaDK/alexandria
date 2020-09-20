@@ -18,15 +18,16 @@ if (!$tag) {
 	$tag = $ttag;
 }
 $q = getall("
-	SELECT sce.id, title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, aut_extra, COUNT(files.id) AS files
+	SELECT sce.id, title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
 	FROM sce
 	INNER JOIN tags ON sce.id = tags.sce_id
 	LEFT JOIN csrel ON csrel.sce_id = sce.id AND csrel.pre_id = 1
 	LEFT JOIN convent ON csrel.convent_id = convent.id
 	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE tags.tag = '" . dbesc($tag). "'
 	GROUP BY sce.id, convent.id
-	ORDER BY title
+	ORDER BY title_translation
 ");
 
 $slist = [];
@@ -43,7 +44,8 @@ if (count($q) > 0) {
 		// query-i-løkke... skal optimeres!
 		$slist[$sl]['files'] = $rs['files'];
 		$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
-		$slist[$sl]['title'] = $rs['title'];
+		$slist[$sl]['title'] = $rs['title_translation'];
+		$slist[$sl]['origtitle'] = $rs['title'];
 
 		$forflist = array();
 		$qq = getall("SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut, asrel WHERE asrel.sce_id = '$sce_id' AND asrel.aut_id = aut.id AND asrel.tit_id = '1' ORDER BY firstname, surname");

@@ -136,7 +136,7 @@ foreach($q AS $rs) {
 	if ($rs['title_translation']) {
 		$awardtext .= '<span title="' . htmlspecialchars($rs['title']) . '">' . htmlspecialchars($rs['title_translation']) . "</span>: ";
 	}
-	$awardtext .= ($rs['winner'] ? "Vinder" : "Nomineret" ) . ", " . htmlspecialchars($rs['name']);
+	$awardtext .= ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner') ) : ucfirst($t->getTemplateVars('_award_nominated') ) ) . ", " . htmlspecialchars($rs['name']);
 	if ($rs['ranking']) {
 		$awardtext .= " (" . htmlspecialchars($rs['ranking']) . ")";
 	}

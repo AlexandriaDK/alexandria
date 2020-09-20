@@ -26,7 +26,7 @@
 			{if $game.gmed}<td>{$game.gmed}</td>{/if}
 			{if $game.played}<td>{$game.played}</td><td style="width: 5px;">&nbsp;</td>{/if}
 			<td>{if $game.files}<a href="{$game.link}"  title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-			<td><a href="{$game.link}" class="scenarie">{$game.title|escape}</a></td>
+			<td><a href="{$game.link}" class="scenarie" title="{$game.origtitle|escape}">{$game.title|escape}</a></td>
 			<td class="lpad">{$game.forflist}</td>
 			<td>{if isset($game.conlink)}<a href="{$game.conlink}" class="con" title="{$game.coninfo}">{$game.conname|escape}</a>{/if}</td>
 		</tr>

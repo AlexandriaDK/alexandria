@@ -95,22 +95,19 @@ if ($mainperson && $subperson) {
 					t2.aut_id AS link,
 					sce.id AS sceid,
 					sce.title,
+					COALESCE(alias.label, sce.title) AS title_translation,
 					t2.tit_id,
 					t1.aut_id AS rlink,
 					t1.tit_id AS rtit_id
-				FROM
-					asrel AS t1,
-					sce,
-					asrel AS t2,
-					aut AS a1,
-					aut AS a2
+				FROM aut AS a1
+				INNER JOIN asrel t1 ON t1.aut_id = a1.id
+				INNER JOIN sce ON sce.id = t1.sce_id
+				INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
+				INNER JOIN aut a2 ON a2.id = t2.aut_id
+				LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 				WHERE
 					t1.aut_id IN ($inlist) AND
-					sce.id = t1.sce_id AND
-					t1.sce_id = t2.sce_id AND
 					t2.aut_id NOT IN ($notlist) AND
-					t1.aut_id = a1.id AND
-					t2.aut_id = a2.id AND
 					t1.tit_id = 1 AND t2.tit_id = 1
 				GROUP BY
 					link
@@ -121,7 +118,7 @@ if ($mainperson && $subperson) {
 					a2.surname,
 					t1.tit_id,
 					t2.tit_id,
-					sce.title
+					title_translation
 			";
 		
 		// New query including cons
@@ -138,21 +135,16 @@ if ($mainperson && $subperson) {
 					convent.name,
 					convent.year
 				FROM
-					asrel AS t1,
-					sce,
-					asrel AS t2,
-					aut AS a1,
-					aut AS a2
-				LEFT JOIN csrel ON sce.id = csrel.sce_id
+					aut AS a1
+				INNER JOIN asrel t1 ON t1.aut_id = a1.id
+				INNER JOIN sce ON sce.id = t1.sce_id
+				INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
+				INNER JOIN aut a2 ON a2.id = t2.aut_id
+				LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
 				LEFT JOIN convent ON convent.id = csrel.convent_id
 				WHERE
 					t1.aut_id IN ($inlist) AND
-					sce.id = t1.sce_id AND
-					t1.sce_id = t2.sce_id AND
-					t2.aut_id NOT IN ($notlist) AND
-					t1.aut_id = a1.id AND
-					t2.aut_id = a2.id AND
-					(csrel.pre_id IS NULL OR csrel.pre_id = 1)
+					t2.aut_id NOT IN ($notlist)
 				GROUP BY
 					link
 				ORDER BY
@@ -171,11 +163,13 @@ if ($mainperson && $subperson) {
 		
 			if ($showquery == TRUE) $content .= "<br>$query<br>\n";
 			$q = getall($query);
+			print dberror();
 			$qnums++;
 			foreach($q AS $row) {
 				$kobling[$row['link']] = $row['rlink'];
 		#		$content .= "($qnums) ".$row['link'] . " => " . $row['rlink']."<br>";
-				$scenarie[$row['link']]['title'] = $row['title'];
+				$scenarie[$row['link']]['title'] = $row['title_translation'];
+				$scenarie[$row['link']]['origtitle'] = $row['title'];
 				$scenarie[$row['link']]['sceid'] = $row['sceid'];
 				$scenarie[$row['link']]['antal'] = $row['antal'];
 				if ($row['link'] == $mainperson) {

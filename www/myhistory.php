@@ -48,17 +48,19 @@ function getmyachievements ($user_id) {
 
 function getmysce ($user_id, $o = 0) {
 	switch ($o) {
-		case 1: $order = "title, `read` desc, gmed desc, played desc"; break;
-		case 2: $order = "`read` desc, title, gmed desc, played desc"; break;
-		case 3: $order = "gmed desc, title, `read` desc, played desc"; break;
-		case 4: $order = "played desc, title, `read` desc, gmed desc"; break;
-		default: $order = "title, `read` desc, gmed desc, played desc"; break;
+		case 1: $order = "title_translation, `read` desc, gmed desc, played desc"; break;
+		case 2: $order = "`read` desc, title_translation, gmed desc, played desc"; break;
+		case 3: $order = "gmed desc, title_translation, `read` desc, played desc"; break;
+		case 4: $order = "played desc, title_translation, `read` desc, gmed desc"; break;
+		default: $order = "title_translation, `read` desc, gmed desc, played desc"; break;
 	}
-	$q = "SELECT sce.id, sce.title, sce.boardgame, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played ".
-	     "FROM userlog, sce ".
-	     "WHERE userlog.user_id = '$user_id' AND userlog.category = 'sce' AND userlog.data_id = sce.id ".
-	     "GROUP BY userlog.data_id ".
-	     "ORDER BY $order";
+	$q = "SELECT sce.id, sce.title, sce.boardgame, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played, COALESCE(alias.label, sce.title) AS title_translation
+	     FROM userlog
+		 INNER JOIN sce ON userlog.data_id = sce.id
+		 LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	     WHERE userlog.user_id = '$user_id' AND userlog.category = 'sce'
+	     GROUP BY userlog.data_id
+	     ORDER BY $order";
 	$data = getall($q);
 	return $data;
 }
@@ -102,25 +104,20 @@ if ($conventions) {
 
 }
 
-$scenarios = getmysce($user_id,$o);
-if ($scenarios) {
-	$scenariotext = [
-		"read" => htmlspecialchars($t->getTemplateVars('_top_read_pt') ),
-		"gmed" => htmlspecialchars($t->getTemplateVars('_top_gmed_pt') ),
-		"played" => htmlspecialchars($t->getTemplateVars('_top_played_pt') ),
-	];
+$games = getmysce($user_id,$o);
+if ($games) {
 
-	foreach ($scenarios AS $scenario) {
+	foreach ($games AS $game) {
 		$content_myscenarios .= "<tr>";
-		$content_myscenarios .= "<td>".getdatahtml('sce',$scenario['id'],$scenario['title'])."</td>";
-		if ($scenario['boardgame']) {
+		$content_myscenarios .= "<td><span title=\"" . htmlspecialchars($game['title']) . "\">".getdatahtml('sce',$game['id'],$game['title_translation'])."</span></td>";
+		if ($game['boardgame']) {
 			$options = getuserlogoptions('boardgame');
 		} else {
 			$options = getuserlogoptions('scenario');
 		}
 		foreach($options AS $type) {
 			if ($type) {
-				$content_myscenarios .= "<td style=\"text-align: center\">" . getdynamicscehtml( $scenario['id'], $type, $scenario[$type] ) . "</td>";
+				$content_myscenarios .= "<td style=\"text-align: center\">" . getdynamicscehtml( $game['id'], $type, $game[$type] ) . "</td>";
 			} else {
 				$content_myscenarios .= "<td></td>";
 			}
@@ -130,10 +127,10 @@ if ($scenarios) {
 
 	// check for achievements
 	$read = $gmed = $played = $visited = 0;
-	foreach ($scenarios AS $scenario) {
-		if ($scenario['read'] == 1) $read++;
-		if ($scenario['gmed'] == 1) $gmed++;
-		if ($scenario['played'] == 1) $played++;
+	foreach ($games AS $game) {
+		if ($game['read'] == 1) $read++;
+		if ($game['gmed'] == 1) $gmed++;
+		if ($game['played'] == 1) $played++;
 	}
 	$visited = count($conventions);
 	if ($read >= 100)   award_achievement(6);  // read +100 scenarios
@@ -171,7 +168,7 @@ $t->assign('content_myconvents',$content_myconvents);
 $t->assign('content_myscenarios',$content_myscenarios);
 $t->assign('content_personal_achievements',$content_personal_achievements);
 $t->assign('con_count',count($conventions) );
-$t->assign('game_count',count($scenarios) );
+$t->assign('game_count',count($games) );
 $t->assign('game_read',$read);
 $t->assign('game_gmed',$gmed);
 $t->assign('game_played',$played);

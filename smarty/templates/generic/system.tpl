@@ -41,7 +41,7 @@
 			<td>{$game.userdata.html.played}</td><td style="width: 5px;"></td>
 			{/if}
 			<td>{if $game.game.files}<a href="data?scenarie={$game@key}" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-			<td><a href="data?scenarie={$game@key}" class="scenarie">{$game.game.title|escape}</a></td>
+			<td><a href="data?scenarie={$game@key}" class="scenarie" title="{$game.game.origtitle|escape}">{$game.game.title|escape}</a></td>
 			<td class="lpad">
 			{foreach $game.person as $person}
 			<a href="data?person={$person@key}" class="person">{$person|escape}</a><br>
