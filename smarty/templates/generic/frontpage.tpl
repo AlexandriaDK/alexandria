@@ -43,7 +43,7 @@
 		</h3>
 		<ul>
 		{foreach from=$latest_downloads item=$scenario}
-			<li><a href="data?scenarie={$scenario.id}" class="scenarie">{$scenario.title|escape}</a></li>
+			<li><a href="data?scenarie={$scenario.id}" class="scenarie" title="{$scenario.origtitle|escape}">{$scenario.title|escape}</a></li>
 		{/foreach}
 		</ul>
 			

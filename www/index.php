@@ -30,22 +30,32 @@ if ($_SESSION['user_editor'] ?? FALSE) {
 // fetching latest scenarios for download
 $latest_downloads = [];
 $i = 0;
-$files = getall("SELECT a.id, a.title FROM sce a, files b WHERE a.id = b.data_id AND b.category = 'sce' AND downloadable = 1 AND a.boardgame != 1 GROUP BY a.id ORDER BY MIN(b.inserted) DESC LIMIT 40");
+$files = getall("SELECT sce.id, sce.title, COALESCE(alias.label, sce.title) AS title_translation
+	FROM sce
+	INNER JOIN files ON sce.id = files.data_id AND files.category = 'sce'
+	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	WHERE files.downloadable = 1 AND sce.boardgame != 1
+	GROUP BY sce.id
+	ORDER BY MIN(files.inserted) DESC
+	LIMIT 40
+");
+
 foreach($files AS $file) {
 	$latest_downloads[$i]['id'] = $file['id'];
-	$latest_downloads[$i]['title'] = $file['title'];
+	$latest_downloads[$i]['title'] = $file['title_translation'];
+	$latest_downloads[$i]['origtitle'] = $file['title'];
 	$i++;
 }
 
 $scenarios_downloadable = getone("SELECT COUNT(DISTINCT data_id) FROM files WHERE category = 'sce' AND downloadable = 1");
 
-$t->assign('type','front');
-$t->assign('recentlog',$recentlog);
-$t->assign('translations',$translations);
-$t->assign('newslist',$newslist);
-$t->assign('scenarios_downloadable',$scenarios_downloadable);
-$t->assign('html_nextevents',getnexteventstable());
-$t->assign('latest_downloads',$latest_downloads);
+$t->assign('type', 'front');
+$t->assign('recentlog', $recentlog);
+$t->assign('translations', $translations);
+$t->assign('newslist', $newslist);
+$t->assign('scenarios_downloadable', $scenarios_downloadable);
+$t->assign('html_nextevents', getnexteventstable() );
+$t->assign('latest_downloads', $latest_downloads);
 
 ob_start();
 $t->display('frontpage.tpl');
