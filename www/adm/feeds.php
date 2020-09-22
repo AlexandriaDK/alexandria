@@ -38,7 +38,7 @@ if ($action == "changelink" && $do != "Slet") {
 	if ($r) {
 //		chlog($id,$this_type,"Link rettet");
 	}
-	$info = "Link rettet! " . dberror();
+	$info = "Feed updated! " . dberror();
 }
 
 // Empty feed
@@ -78,7 +78,7 @@ if ($action == "addlink") {
 		$id = dbid();
 //		chlog($id,$this_type,"Link oprettet");
 	}
-	$info = "Link oprettet! " . dberror();
+	$info = "Feed created! " . dberror();
 }
 
 	$query = "SELECT a.id, a.url, a.owner, a.name, a.pageurl, a.aut_id, COUNT(b.id) AS count FROM feeds a LEFT JOIN feedcontent b ON a.id = b.feed_id GROUP BY a.id ORDER BY a.id";
@@ -121,6 +121,7 @@ foreach($result AS $row) {
 
 print '<form action="feeds.php" method="post">'.
       '<input type="hidden" name="action" value="addlink">';
+print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 print "<tr>\n".
       '<td style="text-align:right;">New</td>'.
       '<td>Page:<br />Feed:</td>'.
@@ -128,7 +129,7 @@ print "<tr>\n".
       '<td><input type="text" name="owner" value="" size=20 maxlength=100><br /><input type="text" name="aut_id" value="" size=3 maxlength=10></td>'.
       '<td><input type="text" name="name" value="" size=20 maxlength=100></td>'.
       '<td></td>'.
-      '<td colspan=3><input type="submit" name="do" value="Opret"></td>'.
+      '<td colspan=3><input type="submit" name="do" value="Create"></td>'.
       "</tr>\n";
 print "</form>\n\n";
 
