@@ -88,14 +88,16 @@ if ($id) {
 	      "</tr>\n";
 
 	foreach($result AS $row) {
+		$typebegin = (preg_match( '/-00$/', $row['begin'] ) ? 'text' : 'date' );
+		$typeend = (preg_match( '/-00$/', $row['end'] ) ? 'text' : 'date' );
 		print '<form action="run.php" method="post">'.
 		      '<input type="hidden" name="action" value="changerun">'.
 		      '<input type="hidden" name="id" value="'.$id.'">'.
 		      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><input type="date" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
-		      '<td><input type="date" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
+		      '<td><input type="' . $typebegin . '" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
+		      '<td><input type="' . $typeend . '" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
 			  '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
 			  '<td><input type="text" id="country" name="country" value="' . htmlspecialchars( $row['country'] ) . '" placeholder="E.g. se" size="8"></td>'.
 		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="30" ></td>'.
