@@ -153,15 +153,21 @@ foreach($q AS $rs) {
 
 // List of runs
 $runlist = "";
-$q = getall("SELECT begin, end, location, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end, id");
+$q = getall("SELECT begin, end, location, country, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end, id");
 foreach($q AS $rs) {
 	$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
 	$runlist .= nicedateset($rs['begin'],$rs['end']);
-	if ( $rs['location'] || $rs['description'] ) {
+	if ( $rs['location'] || $rs['description'] || $rs['country'] ) {
 		if ( nicedateset($rs['begin'],$rs['end']) ) {
 			$runlist .= ", ";
 		}
 		$runlist .= htmlspecialchars($rs['location']);
+		if ( $rs['country'] ) {
+			if ( $rs['location'] ) {
+				$runlist .= ", ";
+			}
+			$runlist .= getCountryName( $rs['country'] );
+		}
 	}
 	if ( $rs['location'] && $rs['description'] ) {
 		$runlist .= ": ";

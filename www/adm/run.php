@@ -8,9 +8,10 @@ $this_type = 'run';
 
 $action = $_REQUEST['action'];
 $do = $_REQUEST['do'];
-$begin = $_REQUEST['begin'];
-$end = $_REQUEST['end'];
-$location = (string) $_REQUEST['location'];
+$begin = trim( $_REQUEST['begin'] );
+$end = trim( $_REQUEST['end'] );
+$location = trim( (string) $_REQUEST['location'] );
+$country = trim( (string) $_REQUEST['country'] );
 $description = (string) $_REQUEST['description'];
 $id = (int) $_REQUEST['id'];
 $run_id = (int) $_REQUEST['run_id'];
@@ -21,16 +22,14 @@ $title = getone($q);
 
 // Update run
 if ($action == "changerun" && $do != "Delete") {
-	$begin = trim($begin);
-	$end = trim($end);
 	if (strlen($begin) == 4) $begin .= "-00-00"; // add blank month+date
 	if (strlen($begin) == 7) $begin .= "-00"; // add blank date
 	if (!$end) $end = $begin;
-	$location = trim($location);
 	$q = "UPDATE scerun SET " .
 	     "begin = '$begin', " .
 	     "end = '$end', " .
 	     "location = '" . dbesc($location) . "', " .
+	     "country = '" . dbesc($country) . "', " .
 	     "description = '" . dbesc($description) . "', " .
 	     "cancelled = $cancelled " .
 	     "WHERE id = '$run_id'";
@@ -55,14 +54,12 @@ if ($action == "changerun" && $do == "Delete") {
 
 // Tilføj afvikling
 if ($action == "addrun") {
-	$begin = trim($begin);
-	$end = trim($end);
 	if (strlen($begin) == 4) $begin .= "-00-00"; // add blank month+date
 	if (strlen($begin) == 7) $begin .= "-00"; // add blank date
 	if (!$end) $end = $begin;
 	$q = "INSERT INTO scerun " .
-	     "(sce_id, begin, end, location, description, cancelled) VALUES ".
-	     "('$id', '$begin', '$end', '" . dbesc($location). "', '" . dbesc($description) . "', $cancelled)";
+	     "(sce_id, begin, end, location, country, description, cancelled) VALUES ".
+	     "('$id', '$begin', '$end', '" . dbesc($location). "', '" . dbesc($country). "', '" . dbesc($description) . "', $cancelled)";
 	$r = doquery($q);
 	if ($r) {
 		chlog($id,'sce',"Afvikling oprettet");
@@ -71,7 +68,7 @@ if ($action == "addrun") {
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
-$query = "SELECT id, begin, end, location, description, cancelled FROM scerun WHERE sce_id = '$id' ORDER BY begin, end, id";
+$query = "SELECT id, begin, end, location, country, description, cancelled FROM scerun WHERE sce_id = '$id' ORDER BY begin, end, id";
 $result = getall($query);
 
 htmladmstart("Run");
@@ -85,6 +82,7 @@ if ($id) {
 	      "<th>Start date</th>".
 	      "<th>End date</th>".
 	      "<th>Location</th>".
+	      "<th title=\"Two letter ISO code\">Country</th>".
 	      "<th>Note</th>".
 	      "<th>Run cancelled?</th>".
 	      "</tr>\n";
@@ -98,7 +96,8 @@ if ($id) {
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="date" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
 		      '<td><input type="date" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
-		      '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
+			  '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
+			  '<td><input type="text" id="country" name="country" value="' . htmlspecialchars( $row['country'] ) . '" placeholder="E.g. se" size="8"></td>'.
 		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="30" ></td>'.
 		      '<td align="center"><input type="checkbox" name="cancelled" value="yes" ' . ($row['cancelled'] ? 'checked' : '' ) . '></td>'.
 		      '<td><input type="submit" name="do" value="Update"></td>'.
@@ -115,6 +114,7 @@ if ($id) {
 	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
 	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
 	      '<td><input type="text" name="location" value="" size="30" maxlength="80"></td>'.
+		  '<td><input type="text" id="country" name="country" value="" placeholder="E.g. se" size="8"></td>'.
 	      '<td><input type="text" name="description" value="" size="30" ></td>'.
 	      '<td align="center"><input type="checkbox" name="cancelled" value="yes"></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
