@@ -28,7 +28,9 @@ function rlyehlink ($text) {
 	}
 }
 
-unset($result);
+if ( $action ) {
+	validatetoken( $token );
+}
 
 // Ret link
 if ($action == "changelink" && $do != "Remove") {
@@ -140,7 +142,8 @@ if ($data_id && $category) {
 
 	foreach($result AS $row) {
 		print '<form action="links.php" method="post">'.
-		      '<input type="hidden" name="action" value="changelink">'.
+			  '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
+			  '<input type="hidden" name="action" value="changelink">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
@@ -155,6 +158,7 @@ if ($data_id && $category) {
 	}
 
 	print '<form action="links.php" method="post">'.
+	      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 	      '<input type="hidden" name="action" value="addlink">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
 	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">';
@@ -178,7 +182,7 @@ if ($data_id && $category) {
 		'{$_links_bgg}' => 'BoardGameGeek entry',
 		'{$_links_description}' => 'description',
 	];
-	print "<tr><td></td><td></td><td>";
+	print '<tr><td></td><td></td><td colspan="3">';
 	foreach( $descriptions AS $templatecode => $label ) {
 		print '<div class="descriptionexamples">';
 		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.dataset.smartycode;\" data-smartycode=\"" . htmlspecialchars( $templatecode ) . "\" title=\"Add to new description\">";
