@@ -169,7 +169,7 @@ foreach($q AS $rs) {
 			$runlist .= getCountryName( $rs['country'] );
 		}
 	}
-	if ( $rs['location'] && $rs['description'] ) {
+	if ( ( $rs['location'] || $rs['country'] ) && $rs['description'] ) {
 		$runlist .= ": ";
 	}
 	if ($rs['description']) {
