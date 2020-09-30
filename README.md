@@ -13,6 +13,7 @@ Please note:
 - Apache directive `AllowOverride all` needs to be set.
 - The web site requires template system Smarty, which is currently not included per default: https://www.smarty.net/
 - Remember to check out the config files under `includes/`. The database file (db.auth.php) is the only crucial file to have configured.
+- Need login through third party sites? Remember to install OAuth for PHP (`sudo apt install php-oauth`)
 
 ## TODO
 * Config file
