@@ -68,7 +68,7 @@ if ( ! file_exists( __DIR__ . '/../' . $required_smarty ) ) {
 // remember: Writable folder!
 if ( ! is_writable( $required_writable_path ) ) {
 	$setuperror = TRUE;
-	$errors[] = "Smarty compiled template folder is writable. Give full write permission to the following directory:
+	$errors[] = "Smarty compiled template folder is not writable. Give full write permission to the following directory:
 	smarty/templates_c/
 ";
 }
