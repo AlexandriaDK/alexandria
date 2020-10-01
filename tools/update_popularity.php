@@ -3,8 +3,8 @@
 # Popularity helps order search results and previews for a result (e.g. most popular scenarios for an autor and so on)
 # This script should be run nightly
 
-require("../www/connect.php");
-require("../www/base.inc.php");
+require( __DIR__ . "/../www/connect.php");
+require( __DIR__ . "/../www/base.inc.php");
 
 // Update popularity for persons
 // Simply award 1 point for every distinct user who has added any of the person's scenario to their log (read, gmed, played)
