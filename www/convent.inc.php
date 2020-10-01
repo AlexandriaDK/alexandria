@@ -305,8 +305,8 @@ if (file_exists("gfx/convent/s_".$con.".jpg")) {
 // Userdata
 $userlog = array();
 if ($_SESSION['user_id']) {
-	$userlog = getuserlog($_SESSION['user_id'],$this_type,$r['id']);
-	$users_entries = getalluserentries('convent', $r['id']);
+	$userlog = getuserlog($_SESSION['user_id'],$this_type,$convent['id']);
+	$users_entries = getalluserentries('convent', $convent['id']);
 }
 
 // Edit mode?
