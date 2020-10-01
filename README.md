@@ -14,6 +14,7 @@ Please note:
 - The web site requires template system Smarty, which is currently not included per default: https://www.smarty.net/
 - Remember to check out the config files under `includes/`. The database file (db.auth.php) is the only crucial file to have configured.
 - Need login through third party sites? Remember to install OAuth for PHP (`sudo apt install php-oauth`)
+- You can install ImageMagick (`sudo apt install php-imagick`) to be able to convert PDFs to thumbnails
 
 ## TODO
 * Config file
@@ -22,3 +23,5 @@ Please note:
 * Bulk download of downloadable files
 * And much more ...
 
+## Troubleshooting
+- Getting the error "attempt to perform an operation not allowed by the security policy PDF" when creating thumbnails on file page at editor section? Remove the line `<policy domain="coder" rights="none" pattern="PDF" />` in /etc/ImageMagick-6/policy.xml
