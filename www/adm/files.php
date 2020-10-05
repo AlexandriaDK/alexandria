@@ -317,6 +317,7 @@ if ($data_id && $category) {
 
         foreach($result AS $row) {
 		$selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
+		$path = DOWNLOAD_PATH . $paths[ $category ] . '/' . $data_id . '/' . $row['filename'];
 		print '<form action="files.php" method="post">'.
 		      '<input type="hidden" name="action" value="changefile">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
@@ -324,7 +325,10 @@ if ($data_id && $category) {
 		      '<input type="hidden" name="id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td >'.$row['filename'].'</td>'.
+		      '<td>' .
+		      htmlspecialchars( $row['filename'] ) .
+		      ( file_exists( $path ) ? '' : ' <span style="color: #c00" title="File does not exist">⚠</span>' ) .
+		      '</td>' .
 		      '<td ><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="40"></td>'.
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
 		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
