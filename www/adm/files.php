@@ -81,7 +81,7 @@ if ( $action == 'uploadfile' &&
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"Fil uploadet: " . $basename);
 	} else {
-		$_SESSION['admin']['info'] = "Unknown error when uploading.";
+		$_SESSION['admin']['info'] = "Error: Can't save uploaded file. Make sure the web server can write to file path: $upload_path";
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ( $action == 'uploadremotefile' &&
