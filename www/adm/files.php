@@ -356,10 +356,11 @@ if ($data_id && $category) {
 	print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
 	foreach(glob( DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/*") AS $file) {
-		print '<a href="http://download.alexandria.dk/files/' . $paths[$category] . '/' . $data_id . '/' . rawurlencode(basename($file)) . '" title="Download file">💾</a>&nbsp;';
-		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode(basename($file)) . "\" title=\"Create thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
+		$basename = end( explode( '/', $file ) ); // basename() chokes on file names beginning with a utf-8 character such as "æble.txt"
+		print '<a href="http://download.alexandria.dk/files/' . $paths[$category] . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
+		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode( $basename ) . "\" title=\"Create thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
-		print basename($file);
+		print htmlspecialchars( $basename );
 		print "</a>";
 		print "<br />\n";
 	}
