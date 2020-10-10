@@ -19,6 +19,8 @@ chdir("../www/");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
+doquery("ALTER TABLE rpgforum_posts DISABLE KEYS");
+
 $file = '../../loot.alexandria.dk/rpgforum/posts-wip.html';
 
 function timefix($timestamp) {
@@ -33,6 +35,9 @@ function hed ($string) {
 	return $string;
 }
 
+function uhed ($string) {
+	return utf8_encode( hed( $string ) );
+}
 /*
 $x = 'Test &aelig; Test';
 $x = hed($x);
@@ -55,14 +60,14 @@ while (($line = fgets($fp)) != FALSE) {
     $lines++;
     if (! $title ) {
         if (preg_match('_^<h1>(.*?)</h1>_', $line, $match)) {
-            $title = hed($match[1]);
+            $title = uhed($match[1]);
 #            print "Found title: $title" . PHP_EOL;
         }
     } elseif ( ! $author ) {
         if (preg_match('_^<p><em>af (.*?)</em>, (.*?,.*?), (\d+) visninger</p>_', $line, $match) ) {
-            $author = hed($match[1]);
-            $timestamp = hed($match[2]);
-            $views = hed($match[3]);
+            $author = uhed($match[1]);
+            $timestamp = uhed($match[2]);
+            $views = uhed($match[3]);
 #            print "Found author: $author, $timestamp, $views" . PHP_EOL;
         }
     } else { // part of string
@@ -84,6 +89,7 @@ while (($line = fgets($fp)) != FALSE) {
         }
     }
 }
-print "Posts: $postcount" . PHP_EOL;
+print "Total posts: $postcount" . PHP_EOL;
 
+doquery("ALTER TABLE rpgforum_posts ENABLE KEYS");
 ?>
