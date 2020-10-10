@@ -54,7 +54,9 @@ while (($line = fgets($fp)) != FALSE) {
     } else { // part of string
         if (preg_match('_^(.*)</em></b></i></ul></ol></li><hr/>$_', $line, $match) ) {
             $post .= html_entity_decode($match[1]);
-            doquery("INSERT INTO rpgforum_posts(title, author, timestamp, views, post) values ('" . dbesc($title) . "', '" . dbesc($author) . "', '" . timefix($timestamp) . "', $views, '" . dbesc($post) . "')");
+	    $post = str_replace( "\x92", "'", $post ); // fix invalid char that prevents inserts
+            $query = "INSERT INTO rpgforum_posts(title, author, timestamp, views, post) values ('" . dbesc($title) . "', '" . dbesc($author) . "', '" . timefix($timestamp) . "', $views, '" . dbesc($post) . "')";
+	    doquery( $query );
             $postcount++;
             $title = $author = $timestamp = $post = "";
             $views = 0;
@@ -66,5 +68,6 @@ while (($line = fgets($fp)) != FALSE) {
         }
     }
 }
+print "Posts: $postcount" . PHP_EOL;
 
 ?>
