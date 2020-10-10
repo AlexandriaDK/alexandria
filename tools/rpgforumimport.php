@@ -28,6 +28,20 @@ function timefix($timestamp) {
     return date("Y-m-d H:i:s", strtotime($time));
 }
 
+function hed ($string) {
+	$string = html_entity_decode( $string, ENT_COMPAT | ENT_HTML401, 'iso-8859-1' );
+	return $string;
+}
+
+/*
+$x = 'Test &aelig; Test';
+$x = hed($x);
+
+print $x . PHP_EOL;
+print utf8_encode($x) . PHP_EOL;
+exit;
+ */
+
 $posts = [];
 
 $fp = fopen($file, "r");
@@ -41,21 +55,23 @@ while (($line = fgets($fp)) != FALSE) {
     $lines++;
     if (! $title ) {
         if (preg_match('_^<h1>(.*?)</h1>_', $line, $match)) {
-            $title = html_entity_decode($match[1]);
+            $title = hed($match[1]);
 #            print "Found title: $title" . PHP_EOL;
         }
     } elseif ( ! $author ) {
         if (preg_match('_^<p><em>af (.*?)</em>, (.*?,.*?), (\d+) visninger</p>_', $line, $match) ) {
-            $author = html_entity_decode($match[1]);
-            $timestamp = html_entity_decode($match[2]);
-            $views = html_entity_decode($match[3]);
+            $author = hed($match[1]);
+            $timestamp = hed($match[2]);
+            $views = hed($match[3]);
 #            print "Found author: $author, $timestamp, $views" . PHP_EOL;
         }
     } else { // part of string
         if (preg_match('_^(.*)</em></b></i></ul></ol></li><hr/>$_', $line, $match) ) {
-            $post .= html_entity_decode($match[1]);
+            $post .= hed($match[1]);
 	    $post = str_replace( "\x92", "'", $post ); // fix invalid char that prevents inserts
+	    $post = utf8_encode( $post );
             $query = "INSERT INTO rpgforum_posts(title, author, timestamp, views, post) values ('" . dbesc($title) . "', '" . dbesc($author) . "', '" . timefix($timestamp) . "', $views, '" . dbesc($post) . "')";
+	    #print $query . PHP_EOL;
 	    doquery( $query );
             $postcount++;
             $title = $author = $timestamp = $post = "";
@@ -64,7 +80,7 @@ while (($line = fgets($fp)) != FALSE) {
                 print "Posts: $postcount" . PHP_EOL;
             }
         } else {
-            $post .= html_entity_decode($line);
+            $post .= hed($line);
         }
     }
 }
