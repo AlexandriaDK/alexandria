@@ -15,6 +15,7 @@ $orderlist = ['score','title','timestamp'];
 function fixpost($post) {
     $post = str_replace('<img src="../newpics/quote.gif">','<span style="font-size:1.5em;">"</span>', $post);
     $post = str_replace('<img src="../pics/quote.gif">','<span style="font-size:1.5em;">"</span>', $post);
+    $post = str_replace('<img src="../xmas/quote.gif">','<span style="font-size:1.5em;">"</span>', $post);
     $content = $post;
     $doc = new DOMDocument();
     $doc->substituteEntities = false;
@@ -35,6 +36,7 @@ print '<form action="rpgforum.php"><div>Search text: <input type="text" name="se
 print '<form action="rpgforum.php"><div>Or author: <input type="text" name="author" value="' . htmlspecialchars($author) . '"></div></form>' . PHP_EOL;
 
 if ($search !== '' || $author !== '' || $postid != 0) {
+    $max_id = getone("SELECT MAX(id) FROM rpgforum_posts");
     print "<hr>";
     if( ! in_array($order,$orderlist) ) {
         $order = 'timestamp';
@@ -51,6 +53,14 @@ if ($search !== '' || $author !== '' || $postid != 0) {
     foreach ($result AS $post) {
         print '<div class="rpgforumpost">' . PHP_EOL;
         print '<h2 style="margin-bottom: 0"><a href="rpgforum.php?postid=' . $post['id'] . '">' . htmlspecialchars($post['title']) . '</a></h2>' . PHP_EOL;
+	print '<div class="nav">';
+        if ( $post['id'] > 0) {
+		print '<a href="rpgforum.php?postid=' . ( $post['id'] - 1 ) . '" title="Previous post by time">&ShortLeftArrow;</a> ';
+	}
+	if ( $post['id'] < $max_id) {
+		print '<a href="rpgforum.php?postid=' . ( $post['id'] + 1 ) . '" title="Next post by time">&ShortRightArrow;</a> ';
+	}
+	print '</div>';
         print '<p style="font-weight: bold;">By <a href="rpgforum.php?author=' . rawurlencode($post['author']) . '">' . htmlspecialchars($post['author']) . "</a>, " . fulldatetime($post['timestamp']) . ", " . $post['views'] . " views.</p>";
         print fixpost($post['post']);
         print '</div>' . PHP_EOL;

@@ -375,28 +375,28 @@ if ($data_id && $category) {
 
 	print "</td></tr>\n";
 
-	print "</table>\n";
+	print "</table>\n\n";
 
 	// upload file
 	print '<form action="files.php" method="post" enctype="multipart/form-data">' .
 	      '<input type="hidden" name="action" value="uploadfile">' . 
 	      '<input type="hidden" name="' . ini_get("session.upload_progress.name") . '" value="file" /> '.
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+	      '<input type="hidden" name="category" value="' . htmlspecialchars( $category ) . '">'.
 	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
 	      '<p>Upload: <input type="file" name="file" />' .
 	      '<input type="submit" value="Upload" />' .
 	      '</p>' .
-	      '</form>'
+	      '</form>' . PHP_EOL . PHP_EOL
 	      ;
 
 	print '<form action="files.php" method="post">' .
 	      '<input type="hidden" name="action" value="uploadremotefile">' . 
-	      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.
+	      '<input type="hidden" name="category" value="' . htmlspecialchars( $category ) . '">'.
 	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
 	      '<p>Remote upload from URL: <input type="text" name="remoteurl" size="60" placeholder="http://www.example.com/blog/scenario.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
 	      '<input type="submit" value="Upload" />' .
 	      '</p>' .
-	      '</form>'
+	      '</form>' . PHP_EOL . PHP_EOL
 	;
 
 	if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
