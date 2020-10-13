@@ -14,6 +14,9 @@
 		<p lang="nb">
 			Alexandria oppdateres. Prøv igjen om et par minutter.
 		</p>
+		<p lang="de">
+			Alexandria wird derzeit aufdatiert. Versuche in ein Paar Minuten nochmals.
+		</p>
 	</div>
 
 {include file="end.tpl"}
