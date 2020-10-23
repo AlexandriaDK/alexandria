@@ -152,7 +152,9 @@ $output = [
 	'access' => 'Access to this API does not require login, tokens or other authentication mechanisms. Access can be restricted for various reasons, e.g. if the server is overloaded or if too many requests are sent in a short time.',
 	'status' => 'ready'
 ];
-header("Content-Type: application/json");
-print json_encode( $output );
 
+$json_output = json_encode( $output );
+header( "Content-Type: application/json" );
+header( "Content-Length: " . strlen( $json_output) );
+print $json_output;
 ?>
