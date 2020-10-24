@@ -1186,7 +1186,7 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 		break;
 	
 		case 'convent':
-		$value = "CONCAT(name,' (',COALESCE(year,'?'),')')";
+		$value = "name";
 		$fullcat = "Con";
 		break;
 	
@@ -1200,6 +1200,15 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 			LEFT JOIN alias ON tbl.id = alias.data_id AND alias.category = '$cat' AND alias.language = '" . LANG . "' AND alias.visible = 1
 			WHERE tbl.id = $data_id
 		");
+	}
+	if ( $cat == 'convent' ) {
+		$year = getone( "SELECT year FROM convent WHERE id = $data_id" );
+		if ( $year ) {
+			$label .= " (" . yearname( $year ) . ")";
+		} else {
+			$label .= " (?)";
+		}
+
 	}
 
 	if ($label && $with_category) {
