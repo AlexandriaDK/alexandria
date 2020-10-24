@@ -35,7 +35,7 @@ $(function() {
 		minLength: 2,
 		delay: 100,
 		select: function( event, ui ) {
-			window.location = 'data?' + ui.item.linkpart + '=' + ui.item.id;
+			window.location = 'data?' + ui.item.linkpart + '=' + encodeURIComponent(ui.item.id);
 		}
 	})
 	.autocomplete( "instance" )._renderItem = function( ul, item ) {
