@@ -14,7 +14,7 @@ if ($r['id'] == 0) {
 	exit;
 }
 $intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
-$cname = ($r['id'] == 40 ? $t->getTemplatevars('_cons_other') : $r['name'] );
+$showtitle = $cname = ($r['id'] == 40 ? $t->getTemplatevars('_cons_other') : $r['name'] );
 $q = getall("
 	SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, convent.place, convent.cancelled, COALESCE(convent.country, conset.country) AS country
 	FROM convent 
@@ -39,7 +39,20 @@ foreach($q AS $rs) {
 	];
 }
 
-$aliaslist = getaliaslist($conset,$this_type);
+// List of aliases, alternative title?
+$alttitle = getcol("SELECT label FROM alias WHERE data_id = '$conset' AND category = '$this_type' AND language = '$lang' AND visible = 1");
+if ( count( $alttitle ) == 1 ) {
+	$showtitle = $alttitle[0];
+	$aliaslist = getaliaslist($conset, $this_type, $showtitle);
+	if ( $aliaslist ) {
+		$aliaslist = htmlspecialchars( $cname ) . ", " . $aliaslist;
+	} else {
+		$aliaslist = htmlspecialchars( $cname );
+	}
+} else {
+	$aliaslist = getaliaslist($conset, $this_type);
+}
+
 $trivialist = gettrivialist($conset,$this_type);
 $linklist = getlinklist($conset,$this_type);
 $filelist = getfilelist($conset,$this_type);
@@ -57,11 +70,11 @@ if (file_exists("gfx/conset/s_".$conset.".jpg")) {
 
 
 // Smarty
-$t->assign('pagetitle',$cname);
+$t->assign('pagetitle',$showtitle);
 $t->assign('type',$this_type);
 
 $t->assign('id',$conset);
-$t->assign('name',$cname);
+$t->assign('name',$showtitle);
 $t->assign('pic',$available_pic);
 $t->assign('description',$r['description']);
 $t->assign('intern',$intern);
