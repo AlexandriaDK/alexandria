@@ -33,57 +33,8 @@ if (preg_match( '_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|hi|tl
 	}
 }
 define( 'LANG', $lang );
+$locale = getLocaleFromLang( LANG );
 
-$locale = ('eb_GB.utf-8');
-if ( LANG == 'da') {
-	$locale = 'da_DK.utf-8';
-} elseif ( LANG == 'en' ) {
-	$locale = ('eb_GB.utf-8');
-} elseif ( LANG == 'sv' ) {
-	$locale = ('sv_SE.utf-8');
-} elseif ( LANG == 'nb' ) {
-	$locale = ('nb_NO.utf-8');
-} elseif ( LANG == 'de' ) {
-	$locale = ('de_DE.utf-8');
-} elseif ( LANG == 'fr' ) {
-	$locale = ('fr_FR.utf-8');
-} elseif ( LANG == 'es' ) {
-	$locale = ('es_ES.utf-8');
-} elseif ( LANG == 'ru' ) {
-	$locale = ('ru_RU.utf-8');
-} elseif ( LANG == 'be' ) {
-	$locale = ('be_BY.utf-8');
-} elseif ( LANG == 'fi' ) {
-	$locale = ('fi_FI.utf-8');
-} elseif ( LANG == 'pl' ) {
-	$locale = ('pl_PL.utf-8');
-} elseif ( LANG == 'it' ) {
-	$locale = ('it_IT.utf-8');
-} elseif ( LANG == 'ar' ) {
-	$locale = ('ar_PL.utf-8');
-} elseif ( LANG == 'zh' ) {
-	$locale = ('zh_CN.utf-8');
-} elseif ( LANG == 'ja' ) {
-	$locale = ('ja_JP.utf-8');
-} elseif ( LANG == 'he' ) {
-	$locale = ('he_IL.utf-8');
-} elseif ( LANG == 'fo' ) {
-	$locale = ('fo_FO.utf-8');
-} elseif ( LANG == 'kl' ) {
-	$locale = ('kl_GL.utf-8');
-} elseif ( LANG == 'hi' ) {
-	$locale = ('hi_IN.utf-8');
-} elseif ( LANG == 'tl' ) {
-	$locale = ('tl_PH.utf-8');
-} elseif ( LANG == 'sa' ) {
-	$locale = ('sa_IN.utf-8');
-} elseif ( LANG == 'ta' ) {
-	$locale = ('ta_IN.utf-8');
-} elseif ( LANG == 'bn' ) {
-	$locale = ('bn_IN.utf-8');
-} elseif ( LANG == 'nv' ) {
-	$locale = ('nv_US.utf-8');
-}
 setlocale(LC_TIME, $locale);
 Locale::setDefault($locale);
 
@@ -1167,6 +1118,40 @@ function getCountryNameFallback($countrycode) {
 		return $countrycode;
 	}
 	return $name;
+}
+
+function getLocaleFromLang( $lang ) {
+	$langlocales = [
+		'da' => 'da_DK.utf-8',
+		'en' => 'eb_GB.utf-8',
+		'sv' => 'sv_SE.utf-8',
+		'nb' => 'nb_NO.utf-8',
+		'de' => 'de_DE.utf-8',
+		'fr' => 'fr_FR.utf-8',
+		'es' => 'es_ES.utf-8',
+		'ru' => 'ru_RU.utf-8',
+		'be' => 'be_BY.utf-8',
+		'fi' => 'fi_FI.utf-8',
+		'pl' => 'pl_PL.utf-8',
+		'it' => 'it_IT.utf-8',
+		'ar' => 'ar_PL.utf-8',
+		'zh' => 'zh_CN.utf-8',
+		'ja' => 'ja_JP.utf-8',
+		'he' => 'he_IL.utf-8',
+		'fo' => 'fo_FO.utf-8',
+		'kl' => 'kl_GL.utf-8',
+		'hi' => 'hi_IN.utf-8',
+		'tl' => 'tl_PH.utf-8',
+		'sa' => 'sa_IN.utf-8',
+		'ta' => 'ta_IN.utf-8',
+		'bn' => 'bn_IN.utf-8',
+		'nv' => 'nv_US.utf-8'
+	];
+	$locale = ('eb_GB.utf-8');
+	if ( isset( $langlocales[$lang] ) ) {
+		$locale = $langlocales[$lang];
+	}
+	return $locale;
 }
 
 // MySQL lookup:
