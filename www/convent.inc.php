@@ -41,6 +41,7 @@ if (is_null($convent['id']) ) {
 	$t->display('default.tpl');
 	exit;
 }
+$showtitle = $conventname = $convent['name'];
 $intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $convent['intern'] : ""); // only set intern if editor
 
 // List of files
@@ -285,8 +286,20 @@ if ($oo == 'id') { // oo = organizer order
 	$organizerlist = getorganizerlist($con,$this_type);
 }
 
-// List of aliases
-$aliaslist = getaliaslist($con,$this_type);
+// List of aliases, alternative title?
+$alttitle = getcol("SELECT label FROM alias WHERE data_id = '$con' AND category = '$this_type' AND language = '$lang' AND visible = 1");
+if ( count( $alttitle ) == 1 ) {
+	$showtitle = $alttitle[0];
+	$aliaslist = getaliaslist($con, $this_type, $showtitle);
+	if ( $aliaslist ) {
+		$aliaslist = htmlspecialchars( $conventname ) . ", " . $aliaslist;
+	} else {
+		$aliaslist = htmlspecialchars( $conventname );
+	}
+} else {
+	$aliaslist = getaliaslist($con, $this_type);
+}
+
 // Trivia and links
 $trivialist = gettrivialist($con,$this_type);
 $linklist = getlinklist($con,$this_type);
@@ -319,11 +332,11 @@ if ($editmode) {
 $json_people = json_encode($people);
 
 // Smarty
-$t->assign('pagetitle',$convent['name']." (" . ( $convent['year'] ? $convent['year'] : "?" ) . ")");
+$t->assign('pagetitle',$showtitle." (" . ( $convent['year'] ? yearname($convent['year']) : "?" ) . ")");
 $t->assign('type',$this_type);
 
 $t->assign('id',$con);
-$t->assign('name',$convent['name']);
+$t->assign('name', $showtitle);
 $t->assign('year',($convent['year'] ? $convent['year'] : "?") );
 $t->assign('arrowset',$arrows);
 $t->assign('pic',$available_pic);
