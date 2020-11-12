@@ -79,6 +79,9 @@ if ( $action == 'importstructure' ) {
 	$url = IMPORT_ENDPOINT;
 	$datasets = json_decode( file_get_contents( $url ) );
 	foreach ( $datasets->result->datasets AS $dataset => $description ) {
+		if ( $dataset == 'all' ) { // Don't fetch all in one result; request individually and skip special case for "all" 
+			continue;
+		}
 		$url = IMPORT_ENDPOINT . "?dataset=" . rawurlencode( $dataset );
 		doquery( "DELETE FROM installation WHERE `key` = 'currentdataset'" );
 		doquery( "INSERT INTO installation (`key`, `value`) VALUES ('currentdataset', '" . dbesc( $dataset ). "')" );
