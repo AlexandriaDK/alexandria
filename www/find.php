@@ -285,7 +285,7 @@ if ($find) {
 		}
 	}
 	
-	if (!$search_title && !$search_description && !$search_system && !$search_genre && !$search_conset && !$search_download && !$search_players && !$search_no_gm && !$search_boardgames) { // searched for nothing - blank results
+	if (!$search_title && !$search_description && !$search_system && !$search_genre && !$search_conset && !$search_download && ! $search_filelanguage && !$search_players && !$search_no_gm && !$search_boardgames) { // searched for nothing - blank results
 		$match['sce'] = [];
 	} elseif ($search_title && !($match['sce']) ) { // title searched, but no match
 		$match['sce'] = [];
@@ -355,7 +355,7 @@ if ($find) {
 		}
 
 		// search found, check for download
-		if ($search_download && $match['sce']) {
+		if ( ( $search_download || $search_filelanguage ) && $match['sce'] ) {
 			$q = "
 				SELECT DISTINCT data_id
 				FROM files

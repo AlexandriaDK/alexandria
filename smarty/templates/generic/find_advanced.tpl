@@ -80,7 +80,7 @@
 
 				<tr>
 					<td>{$_find_gamelanguage}</td>
-					<td><select name="search_filelanguage[]" size="{$suggestlanguages|@count}" multiple>{foreach $suggestlanguages as $language}<option value="{$language.code|escape}" selected>{$language.name|escape} ({$language.count})</option>{/foreach}</select>
+					<td><select name="search_filelanguage[]" size="{$suggestlanguages|@count}" multiple>{foreach $suggestlanguages as $language}<option value="{$language.code|escape}">{$language.name|escape} ({$language.count})</option>{/foreach}</select>
 				</tr>
 
 				<tr>
