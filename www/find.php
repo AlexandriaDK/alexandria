@@ -19,6 +19,7 @@ $search_system = (int) ( $_REQUEST['search_system'] ?? '');
 $search_genre = array_unique((array) ( $_REQUEST['search_genre'] ?? []) );
 $search_conset = (int) ( $_REQUEST['search_conset'] ?? 0);
 $search_download = (string) ( $_REQUEST['search_download'] ?? '');
+$search_filelanguage = array_unique((array) ( $_REQUEST['search_filelanguage'] ?? []) );
 $search_players = (int) ( $_REQUEST['search_players'] ?? 0);
 $search_no_gm = (string) ( $_REQUEST['search_no_gm'] ?? '');
 $search_boardgames = (string) ( $_REQUEST['search_boardgames'] ?? '');
@@ -290,7 +291,7 @@ if ($find) {
 		$match['sce'] = [];
 	} else {
 		if ($match['sce']) { // found specific titles
-			$where[] = "id IN (".join(",",$match['sce']).")";				
+			$where[] = "id IN (".implode(",",$match['sce']).")";
 		}
 		if ($search_system) {
 			$where[] = "sys_id = '".(int)$search_system."'";
@@ -308,7 +309,7 @@ if ($find) {
 			$where[] = "boardgame = 1";
 		}
 		$q = "SELECT id FROM sce";
-		if ($where) $q .= " WHERE ".join(" AND ",$where);
+		if ($where) $q .= " WHERE ".implode(" AND ",$where);
 		$match['sce'] = getcol($q);
 
 		// search found, check for description
@@ -318,7 +319,7 @@ if ($find) {
 				FROM sce
 				INNER JOIN game_description ON sce.id = game_description.game_id
 				WHERE game_description.description LIKE '%".dbesc($search_description)."%'
-				AND sce.id IN (".join(",",$match['sce']).")
+				AND sce.id IN (".implode(",",$match['sce']).")
 				GROUP BY sce.id
 			";
 			$match['sce'] = getcol($q);
@@ -332,7 +333,7 @@ if ($find) {
 				WHERE sce.id = csrel.sce_id
 				AND csrel.convent_id = convent.id
 				AND convent.conset_id = '$search_conset'
-				AND sce.id IN (".join(",",$match['sce']).")
+				AND sce.id IN (".implode(",",$match['sce']).")
 				GROUP BY sce.id
 			";
 			$match['sce'] = getcol($q);
@@ -345,8 +346,8 @@ if ($find) {
 				SELECT sce.id
 				FROM sce, gsrel
 				WHERE sce.id = gsrel.sce_id
-				AND gsrel.gen_id IN ('".join("','",$search_genre)."')
-				AND sce.id IN (".join(",",$match['sce']).")
+				AND gsrel.gen_id IN ('".implode("','",$search_genre)."')
+				AND sce.id IN (".implode(",",$match['sce']).")
 				GROUP BY sce.id
 				HAVING COUNT(*) = $num_genre
 			";
@@ -360,8 +361,16 @@ if ($find) {
 				FROM files
 				WHERE category = 'sce'
 				AND downloadable = 1
-				AND data_id IN (".join(",",$match['sce']).")
+				AND data_id IN (".implode(",",$match['sce']).")
 			";
+			if ( $search_filelanguage ) {
+				$languages = [];
+				foreach ( $search_filelanguage AS $language ) {
+					$languages[] = '"' . $language . '"';
+				}
+				$q .= " AND language IN (" . implode(',', $languages) . ")";
+			}
+
 			$match['sce'] = getcol($q);
 		}
 
@@ -387,9 +396,9 @@ if ($find) {
 $out = "";
 
 if ($debug) {
-	print "<h2>Klasse 1-links:</h2>".join("<br>",$link_a);
-	print "<h2>Klasse 2-links:</h2>".join("<br>",$link_b);
-	print "<h2>Alle links:</h2>".join("<br>",$match['aut']);
+	print "<h2>Klasse 1-links:</h2>".implode("<br>",$link_a);
+	print "<h2>Klasse 2-links:</h2>".implode("<br>",$link_b);
+	print "<h2>Alle links:</h2>".implode("<br>",$match['aut']);
 }
 
 // Smarty
