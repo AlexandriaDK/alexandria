@@ -6,7 +6,7 @@ $systems = getall("SELECT id, name FROM sys ORDER BY name");
 $genres = getall("SELECT id, name FROM gen WHERE genre = 1 ORDER BY name");
 $categories = getall("SELECT id, name FROM gen WHERE genre = 0 ORDER BY name");
 $consets = getall("SELECT id, name FROM conset ORDER BY name");
-$filelanguages = getall( "SELECT COUNT(DISTINCT data_id) AS count, language FROM files WHERE category = 'sce' AND language != '' GROUP BY language ORDER BY count DESC", FALSE);
+$filelanguages = getall( "SELECT COUNT(DISTINCT data_id) AS count, language FROM files WHERE category = 'sce' AND language != '' AND downloadable = 1 GROUP BY language ORDER BY count DESC", FALSE);
 
 $suggestlanguages = [];
 foreach ( $filelanguages AS $filelanguage ) {
