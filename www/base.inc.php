@@ -508,12 +508,40 @@ function compare_token_error( $usertoken, $sessiontoken ) {
 // generic functions
 
 function getcategorydir($category) {
-	$paths = array(
+	$paths = [
 		"sce" => "scenario",
 		"convent" => "convent",
-		"conset" => "conset"
-	);
+		"conset" => "conset",
+		"tag" => "tag"
+	];
 	return $paths[$category];
+}
+
+function getcategorythumbdir($category) {
+	$thumbpaths = [
+		"sce" => "scenarie",
+		"convent" => "convent",
+		"conset" => "conset",
+		"tag" => "tag"
+	];
+	return $thumbpaths[$category];
+}
+
+function hasthumbnailpic($id, $category) { 
+	$available_pic = FALSE;
+
+	$folder = getcategorythumbdir($category);
+	// create thumbnail if large image exists
+	$path_large = "gfx/" . $folder . "/l_" . $id . ".jpg";
+	$path_small = "gfx/" . $folder . "/s_" . $id . ".jpg";
+	if (file_exists( $path_large ) && ! file_exists( $path_small) ) {
+		image_rescale_save( $path_large, $path_small, 200, 200);
+	}
+
+	if (file_exists( $path_small ) ) {
+		$available_pic = TRUE;
+	}
+	return $available_pic;
 }
 
 function getimageifexists($id, $category_dir) {
@@ -948,9 +976,9 @@ function getfilelist ($data_id, $cat) {
 			}
 			$template_description .= " [" . implode( ", ", $fulllanguages) . "]";
 		}
-		$path = ALEXFILES.getcategorydir($cat).'/'.$data_id.'/'.$file['filename'];
+		$path = ALEXFILES . getcategorydir($cat) . '/' . $data_id . '/' . $file['filename'];
 		$files[$id]['path'] = $path;
-		$files[$id]['extension'] = strtolower(substr(strrchr($file['filename'], "."), 1));
+		$files[$id]['extension'] = strtolower(substr(strrchr($file['filename'], "."), 1)); // any reason not to use pathinfo() ?
 		$files[$id]['template_description'] = $template_description;
 		if (file_exists($path)) {
 			$files[$id]['filesize'] = filesize($path);

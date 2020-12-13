@@ -195,18 +195,8 @@ if ($r['death'] && $r['death'] != "0000-00-00")	{
 	}
 }
 
-// Picture
-$available_pic = 0;
-
-// Create thumbnail
-if (file_exists("gfx/person/l_".$person.".jpg") && !file_exists("gfx/person/s_".$person.".jpg")) {
-	image_rescale_save('gfx/person/l_'.$person.'.jpg','gfx/person/s_'.$person.'.jpg',200,200);
-}
-
-if (file_exists("gfx/person/s_".$person.".jpg")) {
-	$personpic = "<a href=\"gfx/person/l_".$person.".jpg\"><img src=\"gfx/person/s_".$person.".jpg\" alt=\"Billede af ".htmlspecialchars($r['name'])."\" style=\"float:right; border: 1px solid black; margin: 2px;\" /></a>";
-	$available_pic = 1;
-}
+// Thumbnail
+$available_pic = hasthumbnailpic($tag_id, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$r['name']);

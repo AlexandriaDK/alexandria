@@ -101,22 +101,12 @@ print "<tr valign=top><td>Description</td><td><textarea name=description cols=10
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($tag_id ? "Update" : "Create").' tag description">' . ($tag_id ? ' <input type="submit" name="action" value="Remove" onclick="return confirm(\'Remove tag description?\n\nOnly the description of the tag will be deleted. The tag will still be present for any scenario with this tag.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($tag_id) {
-// Mulighed for at rette links
 	print changelinks($tag_id,$this_type);
-
-// Mulighed for at rette trivia
 	print changetrivia($tag_id,$this_type);
-
-// Mulighed for at rette alias
-//	print changealias($tag_id,$this_type);
-
-// Vis evt. billede
-//	print showpicture($tag_id,$this_type);
-
-// Vis tickets
+	print changefiles($tag_id,$this_type);
 	print showtickets($tag_id,$this_type);
 
-// Scenarier under dette tag
+// Games with this tag
 	$q = getall("SELECT sce.id, sce.title FROM sce INNER JOIN tags ON sce.id = tags.sce_id WHERE tag = '" . dbesc($tag) . "' ORDER BY sce.title, sce.id");
 	print "<tr valign=top><td align=right>Contains the<br>following scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {

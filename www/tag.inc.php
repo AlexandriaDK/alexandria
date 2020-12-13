@@ -73,9 +73,15 @@ if (count($q) > 0) {
 	}
 }
 
+// List of files
+$filelist = getfilelist($tag_id,$this_type);
+
 // Links and trivia
 $linklist = getlinklist($tag_id,$this_type);
 $trivialist = gettrivialist($tag_id,$this_type);
+
+// Thumbnail
+$available_pic = hasthumbnailpic($tag_id, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$tag);
@@ -83,10 +89,13 @@ $t->assign('type',$this_type);
 
 $t->assign('id',$tag_id);
 $t->assign('tag',$tag);
+$t->assign('pic',$available_pic);
 $t->assign('description',$description);
 $t->assign('slist',$slist);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
+$t->assign('filelist',$filelist);
+$t->assign('filedir', getcategorydir($this_type) );
 
 $t->display('data.tpl');
 ?>

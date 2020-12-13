@@ -229,17 +229,8 @@ if ($_SESSION['can_edit_participant'][$scenarie] ?? FALSE) {
 $alltags = getalltags();
 $json_alltags = json_encode($alltags);
 
-// Possible picture?
-$available_pic = 0;
-
-// Create thumbnail
-if (file_exists("gfx/scenarie/l_".$scenarie.".jpg") && !file_exists("gfx/scenarie/s_".$scenarie.".jpg")) {
-	image_rescale_save('gfx/scenarie/l_'.$scenarie.'.jpg','gfx/scenarie/s_'.$scenarie.'.jpg',200,200);
-}
-
-if (file_exists("gfx/scenarie/s_".$scenarie.".jpg")) {
-	$available_pic = 1;
-}
+// Thumbnail
+$available_pic = hasthumbnailpic($tag_id, $this_type);
 
 // Userdata, entries from all users
 $userlog = [];
@@ -260,7 +251,7 @@ $t->assign('ogimage', getimageifexists($scenarie, 'scenarie') );
 $t->assign('sysstring', $sysstring);
 $t->assign('alias', $aliaslist);
 $t->assign('filelist', $filelist);
-$t->assign('filedir', 'scenario');
+$t->assign('filedir', getcategorydir($this_type) );
 
 $t->assign('forflist',$forflist);
 $t->assign('aut_extra',$r['aut_extra']);

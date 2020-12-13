@@ -193,13 +193,8 @@ function showpicture($data_id, $category) {
 }
 
 function getthumbnailpath($data_id, $category) {
-	switch($category) {
-		case 'convent': $folder = "convent"; break;
-		case 'aut': $folder = "person"; break;
-		case 'sce': $folder = "scenarie"; break;
-		case 'sys': $folder = "system"; break;
-		default: $folder = FALSE;
-	}
+	$folder = getcategorythumbdir($category);
+
 	# assuming that script has chdir .. and is in webroot now
 	if ($folder === FALSE || !(file_exists($path = "./gfx/$folder/l_".$data_id.".jpg")) ) {
 		return FALSE;

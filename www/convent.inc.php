@@ -304,16 +304,8 @@ if ( count( $alttitle ) == 1 ) {
 $trivialist = gettrivialist($con,$this_type);
 $linklist = getlinklist($con,$this_type);
 
-// Thumbnail?
-$available_pic = 0;
-// Create thumbnail
-if (file_exists("gfx/convent/l_".$con.".jpg") && !file_exists("gfx/convent/s_".$con.".jpg")) {
-	image_rescale_save('gfx/convent/l_'.$con.'.jpg','gfx/convent/s_'.$con.'.jpg',200,200);
-}
-
-if (file_exists("gfx/convent/s_".$con.".jpg")) {
-	$available_pic = 1;
-}
+// Thumbnail
+$available_pic = hasthumbnailpic($tag_id, $this_type);
 
 // Userdata
 $userlog = array();
@@ -357,7 +349,7 @@ $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
 $t->assign('alias',$aliaslist);
 $t->assign('filelist',$filelist);
-$t->assign('filedir','convent');
+$t->assign('filedir', getcategorydir($this_type) );
 
 $t->assign('editorganizers', $editorganizers);
 $t->assign('editmode', $editmode );

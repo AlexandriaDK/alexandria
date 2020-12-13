@@ -26,19 +26,7 @@ function createThumbnail($filename) {
 
 }
 
-$paths = array(
-	"sce" => "scenario",
-	"convent" => "convent",
-	"conset" => "conset"
-);
-
-$thumbpaths = array(
-	"sce" => "scenarie",
-	"convent" => "convent",
-	"conset" => "conset"
-);
-
-// Slet fil
+// Remove file from database
 if ($action == "changefile" && $do == "Delete") {
 	
 	$q = "DELETE FROM files WHERE id = '$id'";
@@ -61,14 +49,14 @@ if ($action == "changefile" && $do == "Delete") {
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 }
 
-// Upload fil
+// Upload file
 if ( $action == 'uploadfile' &&
      $data_id &&
-     $category &&
-     $paths[$category]
+	 $category &&
+	 getcategorydir($category)
    ) {
 	$basename = $_FILES['file']['name'];
-	$upload_path = DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/" . $basename;
+	$upload_path = DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/" . $basename;
 	$upload_dir = dirname($upload_path);
 	if (!is_dir($upload_dir) ) {
 		mkdir($upload_dir, 0755);
@@ -88,14 +76,14 @@ if ( $action == 'uploadfile' &&
     	$data_id &&
 	$category &&
 	$remoteurl &&
- 	$paths[$category]
+	getcategorydir($category)
    ) {
 	$urldata = parse_url($remoteurl);
 	$basename = urldecode(basename($urldata['path']));
 	if (!$basename) {
 		$basename = "scenarie_" . $data_id . ".pdf";
 	}
-	$upload_path = DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/" . $basename;
+	$upload_path = DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/" . $basename;
 	$upload_dir = dirname($upload_path);
 	$pathinfo = pathinfo($upload_path);
 	if (!is_dir($upload_dir) ) {
@@ -117,7 +105,7 @@ if ( $action == 'uploadfile' &&
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id, 'remoteurl' => $remoteurl] );
 }
 
-// Tilføj fil
+// Add file
 $path = $_REQUEST['path'];
 $description = $_REQUEST['description'];
 $downloadable = $_REQUEST['downloadable'];
@@ -125,7 +113,7 @@ $downloadable = $_REQUEST['downloadable'];
 if ($action == "addfile") {
 	$path = trim($path);
 	if (substr($path,0,1) != "/") {
-		$subdir = $paths[$category];
+		$subdir = getcategorydir($category);
 		$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" . $path;
 	}
 	$filename = basename($path);
@@ -137,47 +125,14 @@ if ($action == "addfile") {
 	} elseif (!in_array($extension, $allowed_extensions)) {
 		$_SESSION['admin']['info'] = "Error: Not a vaild file type: $path";
 	} else {
-/*
-		if ($extension == "pdf") {
-			$command = "pdftotext ".escapeshellarg($path)." -";
-			$content = `$command`;
-		} elseif ($extension == "doc") {
-			$command = "antiword ".escapeshellarg($path);
-			$content = `$command`;
-		} elseif ($extension == "txt") {
-			$content = file_get_contents($path);
-		} else {
-			$content = "";
-		}
-//		$content = utf8_encode($content); // all output is assumed iso-8859-1 for the time being
-		$pages = explode("\x0c",$content);
-		if ($pages) {
-			mysql_query("INSERT INTO files (data_id, category, filename, description, downloadable, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable', NOW() )");
-			print dberror();
-			$fileid = mysql_insert_id();
-			chlog($data_id,$category,"Fil oprettet");
-		}
-		$numpages = 0;
-		foreach($pages AS $page => $text) {
-			if ($text) {
-				$numpages++;
-				$sql = "INSERT INTO filedata (files_id, label, content) VALUES ('$fileid','Side ".($page+1)."','".dbesc($text)."')";
-				print dberror();
-				mysql_query($sql);
-			}
-		}
-		if ($pages) {
-			$_SESSION['admin']['info'] = "Fil oprettet! ($numpages sider) " . dberror();
-		}
-*/
 		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, language, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
 		$_SESSION['admin']['info'] = "The file has been created." . dberror();
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == "thumbnail") {
 	$path = $basename =  basename( $_REQUEST['filename'] );
-	$subdir = $paths[$category];
-	$target_subdir = $thumbpaths[$category];
+	$subdir = getcategorydir($category);
+	$target_subdir = getcategorythumbdir($category);
 
 	$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" .$path;
 	$target = "gfx/" . $target_subdir . "/l_" . $data_id . ".jpg";
@@ -231,13 +186,7 @@ if ($action == "addfile") {
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == 'deletethumbnail') {
-	switch($category) {
-		case 'convent': $folder = "convent"; break;
-		case 'aut': $folder = "person"; break;
-		case 'sce': $folder = "scenarie"; break;
-		case 'sys': $folder = "system"; break;
-		default: $folder = FALSE;
-	}
+	$folder = getcategorythumbdir($category);
 	$deleted = FALSE;
 	// Ingen ../ idet vi har chdir()'et et trin ud fra adm-mappen
 	$path_large = "gfx/$folder/l_".$data_id.".jpg";
@@ -287,6 +236,11 @@ if ($data_id && $category) {
 		$q = "SELECT name FROM sys WHERE id = '$data_id'";
 		$mainlink = "system.php?system=$data_id";
 		break;
+	case 'tag':
+		$cat = 'tag';
+		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
+		$mainlink = "tag.php?tag_id=$data_id";
+		break;
 	default:
 		$cat = 'aut';
 		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
@@ -317,7 +271,7 @@ if ($data_id && $category) {
 
         foreach($result AS $row) {
 		$selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
-		$path = DOWNLOAD_PATH . $paths[ $category ] . '/' . $data_id . '/' . $row['filename'];
+		$path = DOWNLOAD_PATH . getcategorydir($category) . '/' . $data_id . '/' . $row['filename'];
 		print '<form action="files.php" method="post">'.
 		      '<input type="hidden" name="action" value="changefile">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
@@ -333,7 +287,7 @@ if ($data_id && $category) {
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
 		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
 		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Delete"></td>'.
-		      '<td ><a href="http://download.alexandria.dk/files/'.$paths[$category].'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
+		      '<td ><a href="http://download.alexandria.dk/files/'.getcategorydir($category).'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -355,9 +309,9 @@ if ($data_id && $category) {
 
 	print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
-	foreach(glob( DOWNLOAD_PATH . $paths[$category] . "/" . $data_id . "/*") AS $file) {
+	foreach(glob( DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") AS $file) {
 		$basename = end( explode( '/', $file ) ); // basename() chokes on file names beginning with a utf-8 character such as "æble.txt"
-		print '<a href="http://download.alexandria.dk/files/' . $paths[$category] . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
+		print '<a href="http://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
 		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode( $basename ) . "\" title=\"Create thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
 		print htmlspecialchars( $basename );
@@ -400,7 +354,7 @@ if ($data_id && $category) {
 	      '</form>' . PHP_EOL . PHP_EOL
 	;
 
-	if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
+	if ( ($path = getthumbnailpath($data_id, $category)) !== FALSE ) {
 		print '<form action="files.php" method="post" onsubmit="return confirm(\'Delete thumbnail?\');">' .
 		      '<input type="hidden" name="action" value="deletethumbnail">' . 
 		      '<input type="hidden" name="category" value="'.htmlspecialchars($category).'">'.

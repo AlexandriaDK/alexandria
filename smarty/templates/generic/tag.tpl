@@ -3,12 +3,22 @@
 <article>
 	<h2 class="datatitle">{$tag|escape}</h2>
 
+{if $pic}
+	<div style="float: right;">
+		<a href="/gfx/tag/l_{$id}.jpg">
+			<img src="/gfx/tag/s_{$id}.jpg" alt="{$tag|escape}" title="{$tag|escape}" style="border: 1px solid black; margin: 2px;" />
+		</a>
+	</div>
+{/if}
+
 {if $description != ""}
 	<p class="indata">
 		{$description|textlinks|nl2br}
 	</p>
 {/if}
 </article>
+
+{include file="filelist.tpl"}
 
 	{* clear for picture *}
 	<div style="clear: both;">

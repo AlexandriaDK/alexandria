@@ -6,16 +6,11 @@ require "base.inc.php";
 define('ALEXFILEPATH','../loot.alexandria.dk/files/');
 define('ALEXURL','https://download.alexandria.dk/files/');
 
-$paths = [
-	"sce" => "scenario",
-	"convent" => "convent",
-	"conset" => "conset"
-];
-
 $files = getall("SELECT id, data_id, category, filename FROM files WHERE downloadable = 1");
 
 foreach ( $files AS $file ) {
-	$folder = $paths[$file['category']] . '/' . $file['data_id'] . '/';
+	$categorydir = getcategorydir( $file['category'] );
+	$folder = $categorydir . '/' . $file['data_id'] . '/';
 	$path = $folder . $file['filename'];
 	$folderpath = ALEXFILEPATH . $folder;
 	$filepath = ALEXFILEPATH . $path;

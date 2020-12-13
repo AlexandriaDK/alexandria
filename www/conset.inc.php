@@ -57,17 +57,8 @@ $trivialist = gettrivialist($conset,$this_type);
 $linklist = getlinklist($conset,$this_type);
 $filelist = getfilelist($conset,$this_type);
 
-// Picture on front page?
-$available_pic = 0;
-// Create thumbnail
-if (file_exists("gfx/conset/l_".$conset.".jpg") && !file_exists("gfx/conset/s_".$conset.".jpg")) {
-	image_rescale_save('gfx/conset/l_'.$conset.'.jpg','gfx/conset/s_'.$conset.'.jpg',200,200);
-}
-
-if (file_exists("gfx/conset/s_".$conset.".jpg")) {
-	$available_pic = 1;
-}
-
+// Thumbnail
+$available_pic = hasthumbnailpic($tag_id, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$showtitle);
@@ -83,7 +74,7 @@ $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
 $t->assign('alias',$aliaslist);
 $t->assign('filelist',$filelist);
-$t->assign('filedir','conset');
+$t->assign('filedir', getcategorydir($this_type) );
 
 $t->display('data.tpl');
 ?>

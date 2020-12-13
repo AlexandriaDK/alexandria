@@ -66,15 +66,7 @@ $linklist = getlinklist($system,$this_type);
 $trivialist = gettrivialist($system,$this_type);
 
 // Thumbnail
-$available_pic = 0;
-// Create thumbnail
-if (file_exists("gfx/system/l_".$system.".jpg") && ! file_exists("gfx/system/s_".$system.".jpg")) {
-	image_rescale_save('gfx/system/l_'.$system.'.jpg','gfx/system/s_'.$system.'.jpg',200,200);
-}
-
-if (file_exists("gfx/system/s_".$system.".jpg")) {
-	$available_pic = 1;
-}
+$available_pic = hasthumbnailpic($tag_id, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$r['name']);
