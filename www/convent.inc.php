@@ -305,7 +305,7 @@ $trivialist = gettrivialist($con,$this_type);
 $linklist = getlinklist($con,$this_type);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($tag_id, $this_type);
+$available_pic = hasthumbnailpic($con, $this_type);
 
 // Userdata
 $userlog = array();

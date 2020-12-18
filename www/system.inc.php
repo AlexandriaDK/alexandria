@@ -66,7 +66,7 @@ $linklist = getlinklist($system,$this_type);
 $trivialist = gettrivialist($system,$this_type);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($tag_id, $this_type);
+$available_pic = hasthumbnailpic($system, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$r['name']);

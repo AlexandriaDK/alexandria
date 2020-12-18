@@ -58,7 +58,7 @@ $linklist = getlinklist($conset,$this_type);
 $filelist = getfilelist($conset,$this_type);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($tag_id, $this_type);
+$available_pic = hasthumbnailpic($conset, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$showtitle);

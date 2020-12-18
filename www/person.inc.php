@@ -196,7 +196,7 @@ if ($r['death'] && $r['death'] != "0000-00-00")	{
 }
 
 // Thumbnail
-$available_pic = hasthumbnailpic($tag_id, $this_type);
+$available_pic = hasthumbnailpic($person, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$r['name']);

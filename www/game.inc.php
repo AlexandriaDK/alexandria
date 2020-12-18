@@ -230,7 +230,7 @@ $alltags = getalltags();
 $json_alltags = json_encode($alltags);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($tag_id, $this_type);
+$available_pic = hasthumbnailpic($scenarie, $this_type);
 
 // Userdata, entries from all users
 $userlog = [];
