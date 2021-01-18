@@ -97,6 +97,10 @@ $( function() {
 
 {include file="filelist.tpl"}
 
+{if count($descriptions) gt 1}
+<div class="clear">{* Make tab menu clear of picture *}
+{/if}
+
 {if $descriptions}
 <h3 class="parttitle">
 	{$_sce_description}
