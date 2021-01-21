@@ -2,15 +2,15 @@
 require("./connect.php");
 require("base.inc.php");
 
+$term = (string) ($_REQUEST['query'] ?? $_REQUEST['term'] ?? '');
+$type = (string) ($_REQUEST['type'] ?? 'website');
 
-$query = (string) ($_REQUEST['query'] ?? $_REQUEST['term'] ?? '');
-
-$escapequery = dbesc($query);
-$result = [];
+$escapequery = dbesc($term);
+$result = $suggestions = [];
 $separator = "__SEPARATOR__";
 $separator_limit = 3;
 
-if (strlen($query) >= 2) {
+if (strlen($term) >= 2) {
 	$query = "
 			SELECT aut.id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart, 'person' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id IN (1,5) LEFT JOIN sce ON asrel.sce_id = sce.id WHERE CONCAT(firstname,' ',surname) LIKE '$escapequery%' GROUP BY aut.id
 		UNION
@@ -31,6 +31,7 @@ if (strlen($query) >= 2) {
 	$all = getall($query, FALSE);
 
 	foreach($all AS &$data) {
+		$suggestions[] = $data['label'];
 		$picfile = "gfx/" . $data['filepart'] . "/s_" . $data['id'] . ".jpg";
 		if (file_exists($picfile) ) {
 			$data['thumbnail'] = $picfile;
@@ -49,7 +50,13 @@ if (strlen($query) >= 2) {
 	$result = $all;
 }
 
-header("Content-Type: application/json");
-print json_encode($result);
+if ($type == 'suggestions') {
+	header("Content-Type: application/x-suggestions+json");
+	$suggestionsresult = [ $term, $suggestions ];
+	print json_encode($suggestionsresult);
+} else {
+	header("Content-Type: application/json");
+	print json_encode($result);
+}
 
 ?>
