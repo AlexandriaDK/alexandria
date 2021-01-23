@@ -155,9 +155,14 @@ function changerun($sce_id) {
 }
 
 function changefiles($data_id, $category) {
-	$numfiles = getone("SELECT COUNT(*) FROM files WHERE data_id = '$data_id' AND category = '$category'");
+	$dbfiles = getone("SELECT COUNT(*) FROM files WHERE data_id = '$data_id' AND category = '$category'");
+	$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*"));
+	$textfiles = "0 files";
+	if ($dirfiles || $dbfiles) {
+		$textfiles = "<span title=\"Files registered in database\">$dbfiles</span>/<span title=\"Files uploaded\">$dirfiles</span> " . ( $dbfiles == 1 && $dirfiles == 1 ? "file" : "files");
+	}
 	$html  = "<tr valign=top><td>Files</td><td>\n";
-	$html .= "$numfiles ".($numfiles == 1?"file":"files");
+	$html .= $textfiles;
 	$html .= " - <a href=\"files.php?category=$category&amp;data_id=$data_id\" accesskey=\"f\">Edit files</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
