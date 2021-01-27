@@ -1,12 +1,12 @@
 <?php
-// Fetch scenarios with descriptions from old ARCON websites and 
+// Fetch scenarios with descriptions from old ARCON websites and import them
 require("../../www/connect.php");
 require("../../www/base.inc.php");
 
-$originalurl = 'https://www.spillfestival.no/arcon15/rolle.html';
+$originalurl = 'https://www.spillfestival.no/arcon16/rolle.html';
 
-$convent_id = 805;
-$convent_setname = "ARCON 15";
+$convent_id = 806;
+$convent_setname = "ARCON 16";
 
 $html = file_get_contents($originalurl);
 $html = utf8_encode($html);
@@ -62,6 +62,9 @@ foreach( $matches AS $match) {
 #	if (is_numeric($data['participants']) ) {
 #		$players_max = $data['participants'];
 #	}
+
+#    print_r($data);
+#    exit;
 
 	// authors
 	$aut_id = NULL;
