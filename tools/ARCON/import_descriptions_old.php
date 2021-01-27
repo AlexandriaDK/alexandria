@@ -3,10 +3,10 @@
 require("../../www/connect.php");
 require("../../www/base.inc.php");
 
-$originalurl = 'https://www.spillfestival.no/arcon16/rolle.html';
+$originalurl = 'https://www.spillfestival.no/arcon17/rolle.html';
 
-$convent_id = 806;
-$convent_setname = "ARCON 16";
+$convent_id = 807;
+$convent_setname = "ARCON 17";
 
 $html = file_get_contents($originalurl);
 $html = utf8_encode($html);
