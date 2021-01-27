@@ -3,12 +3,13 @@
 require("../../www/connect.php");
 require("../../www/base.inc.php");
 
-$originalurl = 'https://www.spillfestival.no/arcon14/rollespill.html';
+$originalurl = 'https://www.spillfestival.no/arcon15/rolle.html';
 
-$convent_id = 804;
-$convent_setname = "ARCON 14";
+$convent_id = 805;
+$convent_setname = "ARCON 15";
 
 $html = file_get_contents($originalurl);
+$html = utf8_encode($html);
 
 function chlog($data_id, $category, $note="") {
 	$user = 'Peter Brodersen';
@@ -31,19 +32,15 @@ function cleanField ($html) {
 }
 
 $regexp = '_' .
-          '<TR><TD CLASS="head" COLSPAN="4".*?<A NAME="(?<short>.*?)">(?<title>.*?) <IMG.*?' .
-          '<TR>' .
+          '<TR><TD CLASS="head".*?<A NAME="(?<short>.*?)">(?<title>.*?)</A>.*?' .
+          '<TR>.*?' .
           '<TD.*?>(?<person>.*?)</TD>.*?' .
           '<TD.*?>(?<timeslot>.*?)</TD>.*?' .
-          '<TD.*?>(?<round>.*?)</TD>.*?' .
           '<TD.*?>(?<participants>.*?)</TD>.*?' .
           '<TR><TD.*?>(?<description>.*?)</TD>' .
-          '_ms';
+          '_msi';
 
 preg_match_all($regexp, $html, $matches, PREG_SET_ORDER);
-#print_r($matches);
-#exit;
-
 
 // get data
 foreach( $matches AS $match) {
@@ -54,8 +51,8 @@ foreach( $matches AS $match) {
 		'description' => cleanField($match['description']),
         'intern' => 'Autoimport by PB from:' . PHP_EOL .
                     $originalurl . PHP_EOL . PHP_EOL .
+                    'Code: ' . cleanField($match['short']) . PHP_EOL .
                     'Timeslot: ' . cleanField($match['timeslot']) . PHP_EOL .
-                    'Rounds: ' . cleanField($match['round']) . PHP_EOL .
                     'Total participants: ' . cleanField($match['participants']) . PHP_EOL
 	];
 	$data['title'] .= " (" . $convent_setname . ")";
@@ -74,17 +71,22 @@ foreach( $matches AS $match) {
 		$aut_extra = $data['organizer'];
 		print "EXTRA: " . $aut_extra . PHP_EOL;
 	} else { // find author
-		preg_match('_(.*) (.*)_', $data['person'], $names);
-		$aut_id = getone("SELECT id FROM aut WHERE firstname = '" . dbesc($names[1]). "' AND surname = '" . dbesc($names[2]) . "'");
-        print "Got person $aut_id" . PHP_EOL;
-		if (!$aut_id) {
-            print "Creating person" . PHP_EOL;
-			$intern = "Autoimport from ARCON data by PB" . PHP_EOL;
-			$sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
-			$aut_id = doquery($sql);
-			chlog($aut_id, 'aut', 'Person oprettet');
-		}
-	}
+        preg_match('_(.*) (.*)_', $data['person'], $names);
+        if ($names[1] == "" || $names[2] == "") {
+            $aut_extra = $data['person'];
+        } else {
+            $aut_id = getone("SELECT id FROM aut WHERE firstname = '" . dbesc($names[1]). "' AND surname = '" . dbesc($names[2]) . "'");
+            if (!$aut_id) {
+                $intern = "Autoimport from ARCON data by PB" . PHP_EOL;
+                $sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
+                $aut_id = doquery($sql);
+                chlog($aut_id, 'aut', 'Person oprettet');
+                print "Created person $aut_id" . PHP_EOL;
+            } else {
+                print "Got person $aut_id" . PHP_EOL;
+            }
+        }
+    }
 
 	// system
 	$sys_extra = "";
