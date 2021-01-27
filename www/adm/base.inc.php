@@ -319,6 +319,12 @@ function sqlifnull($string) {
 	return "'" . dbesc($string) . "'";
 }
 
+function invaliddate($string) {
+	if ($string == "") { return false; }
+	$parts = explode("-",$string);
+	return ! checkdate($parts[1], $parts[2], $parts[0]);
+}
+
 function htmladmstart($title = "", $headcontent = "") {
 	$find = $_REQUEST['find'] ?? '';
 	$htmltitle = "";

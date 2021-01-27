@@ -128,8 +128,8 @@ if ($person) {
 tr("First name","firstname",$firstname, "", "", "text", TRUE);
 tr("Surname","surname",$surname);
 print "<tr valign=\"top\"><td>Internal note</td><td><textarea name=\"intern\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
-tr("Date of birth", "birth", $birth, "", "ÅÅÅÅ-MM-DD", "date");
-tr("Date of death","death", $death, "", "ÅÅÅÅ-MM-DD", "date");
+tr("Date of birth", "birth", $birth, "", "YYYY-MM-DD", (invaliddate($birth) ? "text" : "date") );
+tr("Date of death","death", $death, "", "YYYY-MM-DD", (invaliddate($death) ? "text" : "date") );
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($person ? "Update" : "Create").' person">' . ($person ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete person?\n\nAs a safety mecanism it will be checked if all references are removed.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
