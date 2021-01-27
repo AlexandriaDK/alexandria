@@ -91,7 +91,7 @@ $q = getall("
 	INNER JOIN asrel ON aut.id = asrel.aut_id
 	LEFT JOIN title ON asrel.tit_id = title.id
 	WHERE asrel.sce_id = '$scenarie'
-	ORDER BY title.priority, title.id, aut.surname, aut.firstname, aut.id
+	ORDER BY title.priority, title.id, asrel.note = '' DESC, asrel.note, aut.surname, aut.firstname, aut.id
 ");
 foreach($q AS $rs) {
 	$title = $t->getTemplateVars( "_" . $rs['title_label'] );
