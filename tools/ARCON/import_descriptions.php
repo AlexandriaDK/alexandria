@@ -1,6 +1,6 @@
 <?php
-require("../www/connect.php");
-require("../www/base.inc");
+require("../../www/connect.php");
+require("../../www/base.inc.php");
 
 $originalurl = 'https://www.spillfestival.no/arcon36/program.php';
 
@@ -85,7 +85,7 @@ foreach( glob( $glob ) AS $file) {
 		$aut_id = getone("SELECT id FROM aut WHERE firstname = '" . dbesc($names[1]). "' AND surname = '" . dbesc($names[2]) . "'");
 		if (!$aut_id) {
 			$intern = "Autoimport from ARCON data by PB" . PHP_EOL;
-			$sql = "INSERT INTO aut (firstname, surname, description) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
+			$sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
 			$aut_id = doquery($sql);
 			chlog($aut_id, 'aut', 'Person oprettet');
 		}
