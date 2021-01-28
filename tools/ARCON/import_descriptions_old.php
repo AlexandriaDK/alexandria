@@ -3,10 +3,10 @@
 require("../../www/connect.php");
 require("../../www/base.inc.php");
 
-$originalurl = 'https://www.spillfestival.no/arcon17/rolle.html';
+$originalurl = 'https://web.archive.org/web/20070831131248/http://www.spillfestival.no/arcon18/index.php?page=rolle';
 
-$convent_id = 807;
-$convent_setname = "ARCON 17";
+$convent_id = 808;
+$convent_setname = "ARCON 18";
 
 $html = file_get_contents($originalurl);
 $html = utf8_encode($html);
@@ -97,6 +97,21 @@ foreach( $matches AS $match) {
 	if (!$sys_id) {
 		$sys_id = 0;
 		$sys_extra = $data['system'];
+		if ( preg_match('/^D&D/i', $data['system']) ) {
+			$sys_id = 117;
+		} elseif ( preg_match('/^GURPS/i', $data['system']) ) {
+			$sys_id = 6;
+		} elseif ( preg_match('/^Werewolf/i', $data['system']) ) {
+			$sys_id = 36;
+		} elseif ( preg_match('/^Vampire Masquerade/i', $data['system']) ) {
+			$sys_id = 33;
+		} elseif ( preg_match('/^Mage/i', $data['system']) ) {
+			$sys_id = 259;
+		} elseif ( $data['system'] == 'Call of Chtulhu' ) {
+			$sys_id = 11;
+			$sys_extra = '';
+		}
+		
 	}
 
 	// insert scenario
