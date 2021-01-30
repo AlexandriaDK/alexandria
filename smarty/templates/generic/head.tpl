@@ -6,11 +6,10 @@
 		</title>
 <meta name="viewport" content="width=1024">
 		<meta name="robots" content="index, follow" />
-{if isset($ogimage) }
+{if isset($ogimage) && $ogimage != ''}
 		<meta property="og:image" content="https://alexandria.dk/{$ogimage}" />
 {else}
 		<meta property="og:image" content="https://alexandria.dk/gfx/alexandria_logo_og_crush.png" />
-
 {/if}
 		<meta property="fb:admins" content="745283070">
 		<link rel="stylesheet" type="text/css" href="/alexstyle.css" />
@@ -76,7 +75,7 @@
 		{* Logo: Traditional Arabic, 30px, bold *}
 		<div id="leftmenu">
 			<p>
-				<a href="./" accesskey="q"><img src="gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
+				<a href="./" accesskey="q"><img src="/gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
 			</p>
 			<div class="leftmenucontent">
 				<a href="todo">{$_top_helpalexandria}</a><br>

@@ -75,6 +75,7 @@ $t->assign('type',$this_type);
 $t->assign('id',$system);
 $t->assign('name',$r['name']);
 $t->assign('pic',$available_pic);
+$t->assign('ogimage', getimageifexists($system, 'system') );
 $t->assign('alias',$aliaslist);
 $t->assign('description',$r['description']);
 $t->assign('gamelist',$gamelist);

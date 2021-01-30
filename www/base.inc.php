@@ -522,7 +522,8 @@ function getcategorythumbdir($category) {
 		"sce" => "scenarie",
 		"convent" => "convent",
 		"conset" => "conset",
-		"tag" => "tag"
+		"tag" => "tag",
+		"sys" => "system"
 	];
 	return $thumbpaths[$category];
 }
