@@ -29,7 +29,6 @@ if ($action == "update" && $id) {
 	exit;
 }
 
-
 $title = "Administration - tickets";
 if ($id > 0) $title .= " - #$id";
 
@@ -37,7 +36,6 @@ htmladmstart("Tickets");
 
 $query = "SELECT id, data_id, category, title, submittime, user_name, user_email, status FROM updates ORDER BY id DESC";
 $result = getall($query) or die(dberror());
-
 
 print "<table><tr valign=\"top\"><td>";
 
@@ -58,10 +56,6 @@ foreach($result AS $row) {
 		$label = $row['title'];
 	}
 
-#	list($date,$time) = explode(" ",$row['submittime']);
-#	if ($date == date("Y-m-d")) {
-#		$timeinfo = 
-
 	if ($id == $row['id']) {
 		print "<tr valign=\"top\" style=\"background: #fa9;\">";
 	} else {
@@ -71,7 +65,6 @@ foreach($result AS $row) {
 	print "<td>{$row['user_name']}</td>";
 	print "<td>$label</td>";
 	
-#	print "<td nowrap></td>";
 	print "<td nowrap>{$row['status']}</td>";
 	
 	print "</tr>";
@@ -127,8 +120,6 @@ if ($id) {
 print "</td></tr></table>\n";
 
 ?>
-	
-
 
 </body>
 </html>
