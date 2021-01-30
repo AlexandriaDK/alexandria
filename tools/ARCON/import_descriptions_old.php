@@ -105,8 +105,10 @@ foreach( $matches AS $match) {
 			$sys_id = 36;
 		} elseif ( preg_match('/^Vampire Masquerade/i', $data['system']) ) {
 			$sys_id = 33;
-		} elseif ( preg_match('/^Mage/i', $data['system']) ) {
+		} elseif ( preg_match('/^Fabula/i', $data['system']) ) {
 			$sys_id = 259;
+		} elseif ( preg_match('/^Mage/i', $data['system']) ) {
+			$sys_id = 58;
 		} elseif ( $data['system'] == 'Call of Chtulhu' ) {
 			$sys_id = 11;
 			$sys_extra = '';
