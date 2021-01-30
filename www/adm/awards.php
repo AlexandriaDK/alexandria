@@ -156,17 +156,16 @@ if ($action == 'deletenomineeentity') {
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
-
-
 ?>
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - Awards</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-	<script src="adm.js"></script>
-	<script type="text/javascript">
+<link rel="stylesheet" href="/uistyle.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
+<script src="adm.js"></script>
+<script type="text/javascript">
 	$(function() {
 		var availablePeople = <?php print json_encode($people); ?>;
 		$( ".peopletags" ).autocomplete({
@@ -181,19 +180,8 @@ if ($action == 'deletenomineeentity') {
 			delay: 10
 		});
 	});
-	</script>
-	<style type="text/css">
-		.ui-autocomplete {
-			max-height: 300px;
-			overflow-y: auto;
-			/* prevent horizontal scrollbar */
-			    overflow-x: hidden;
-			font-size: 0.7em;
-		  }
-	</style>
-
-
-</HEAD>
+</script>
+</head>
 
 <body>
 <?php
