@@ -10,8 +10,8 @@ $( function() {
 
 {if $pic}
 	<div class="thumb">
-		<a href="gfx/scenarie/l_{$id}.jpg">
-			<img src="gfx/scenarie/s_{$id}.jpg" alt="{$_sce_frontpagefor} {$title|escape}" title="{$_sce_frontpagefor} {$title|escape}">
+		<a href="/gfx/scenarie/l_{$id}.jpg">
+			<img src="/gfx/scenarie/s_{$id}.jpg" alt="{$_sce_frontpagefor} {$title|escape}" title="{$_sce_frontpagefor} {$title|escape}">
 		</a>
 	</div>
 {/if}

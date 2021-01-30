@@ -4,8 +4,8 @@
 
 {if $pic}
 	<div style="float: right;">
-		<a href="gfx/person/l_{$id}.jpg">
-			<img src="gfx/person/s_{$id}.jpg" alt="{$name|escape}" title="{$name|escape}" style="border: 1px solid black; margin: 2px;" />
+		<a href="/gfx/person/l_{$id}.jpg">
+			<img src="/gfx/person/s_{$id}.jpg" alt="{$name|escape}" title="{$name|escape}" style="border: 1px solid black; margin: 2px;" />
 		</a>
 	</div>
 {/if}
@@ -50,7 +50,7 @@
 			{if $game.textsymbol}
 			<span title="{$game.icontitle|escape}">{$game.textsymbol}</span>
 			{elseif $game.iconfile}
-			<img src="gfx/{$game.iconfile}" alt="{$game.icontitle|escape}" title="{$game.icontitle|escape}" width="{$game.iconwidth}" height="{$game.iconheight}" />
+			<img src="/gfx/{$game.iconfile}" alt="{$game.icontitle|escape}" title="{$game.icontitle|escape}" width="{$game.iconwidth}" height="{$game.iconheight}" />
 			{else}
 
 			{/if}

@@ -4,8 +4,8 @@
 
 {if $pic}
 	<div style="float: right;">
-		<a href="gfx/system/l_{$id}.jpg">
-			<img src="gfx/system/s_{$id}.jpg" alt="{$name|escape}" title="{$name|escape}" style="border: 1px solid black; margin: 2px;" />
+		<a href="/gfx/system/l_{$id}.jpg">
+			<img src="/gfx/system/s_{$id}.jpg" alt="{$name|escape}" title="{$name|escape}" style="border: 1px solid black; margin: 2px;" />
 		</a>
 	</div>
 {/if}

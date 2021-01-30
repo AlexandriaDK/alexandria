@@ -458,12 +458,13 @@ function getdynamicscehtml($sce_id,$type,$active) {
 	];
 	$jsurl = getdynamicjavascripturl( $sce_id, 'sce', $type, $active);
 	$span_id = "sce_" . $sce_id . "_" . $type;
+	$ap = ($active ? 'active' : 'passive');
 	$html = 
-		"<span id=\"".$span_id."\">".
-		"<a href=\"" . $jsurl . "\">".
-		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$scenariotext[$type]." ".($active?'active':'passive')."\" title=\"".$scenariotext[$type]."\">".
-		"</a>".
-		"</span>"
+		'<span id="' . $span_id . '">' .
+		'<a href="' . $jsurl . '">' .
+		'<img src="/gfx/' . $type . '_' . $ap . '.jpg" alt=' . htmlspecialchars($scenariotext[$type]) . ' ' . $ap . '" title="' . htmlspecialchars($scenariotext[$type]) . '">' .
+		'</a>' .
+		'</span>'
 	;
 	return $html;
 }
@@ -473,12 +474,13 @@ function getdynamicconventhtml($convent_id,$type,$active) {
 	$conventtext = [ "visited" => htmlspecialchars( $t->getTemplateVars('_top_visited_pt') ) ];
 	$jsurl = getdynamicjavascripturl( $convent_id, 'convent', $type, $active);
 	$span_id = "convent_" . $convent_id . "_" . $type;
+	$ap = ($active ? 'active' : 'passive');
 	$html = 
-		"<span id=\"".$span_id."\">".
-		"<a href=\"" . $jsurl . "\">".
-		"<img src=\"gfx/".$type."_".($active?'active':'passive').".jpg\" alt=\"".$conventtext[$type]."\" title=\"".$conventtext[$type]."\" border=\"0\" />".
-		"</a>".
-		"</span>"
+		'<span id="' . $span_id . '">' .
+		'<a href="' . $jsurl . '">' .
+		'<img src="/gfx/' . $type . '_' . $ap . '.jpg" alt=' . htmlspecialchars($conventtext[$type]) . ' ' . $ap . '" title="' . htmlspecialchars($conventtext[$type]) . '">' .
+		'</a>' .
+		'</span>'
 	;
 	return $html;
 }
