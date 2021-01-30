@@ -6,20 +6,23 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $id = (int) $_REQUEST['id'];
-$vis = $_REQUEST['vis'];
-$action = $_REQUEST['action'];
-$intern = $_REQUEST['intern'];
-$status = $_REQUEST['status'];
+$display = (string) $_REQUEST['display'];
+$action = (string) $_REQUEST['action'];
+$intern = (string) $_REQUEST['intern'];
+$status = (string) $_REQUEST['status'];
+$display = ($display == 'all' ? 'all' : '');
+
+$options = ['open', 'in progress', 'closed'];
 
 if ( $action ) {
 	validatetoken( $token );
 }
 
-if ($action == "ret" && $id) {
+if ($action == "update" && $id) {
 	$query = "UPDATE updates SET intern = '" . dbesc($intern) . "', status = '$status' WHERE id = $id";
 	doquery($query);
-	if ($_REQUEST['vis'] == 'alle') {
-		header("Location: ticket.php?id=$id&vis=alle");
+	if ($_REQUEST['display'] == 'all') {
+		header("Location: ticket.php?id=$id&display=all");
 	} else {
 		header("Location: ticket.php?id=$id");
 	}
@@ -35,22 +38,19 @@ htmladmstart("Tickets");
 $query = "SELECT id, data_id, category, title, submittime, user_name, user_email, status FROM updates ORDER BY id DESC";
 $result = getall($query) or die(dberror());
 
-$vis = ($_REQUEST['vis'] == 'alle' ? 'alle' : '');
 
 print "<table><tr valign=\"top\"><td>";
 
-if ($vis == 'alle') {
-	$vislink = '<a href="ticket.php?id='.$id.'">[ikke&nbsp;lukkede]</a>';
+if ($display == 'all') {
+	$showlink = '<a href="ticket.php?id='.$id.'">[only show non-closed]</a>';
 } else {
-	$vislink = '<a href="ticket.php?id='.$id.'&amp;vis=alle">[alle]</a>';
+	$showlink = '<a href="ticket.php?id='.$id.'&amp;display=all">[show all]</a>';
 }
 
-// Lav oversigt
-#print '<table class="ticketlist" cellspacing=2><tr style="background: #ffeebb"><td>ID</td><td>Afsender</td><td>Materiale</td><td>Indsendt</td><td>Status</td></tr>';
-#print '<table class="ticketlist" cellspacing=2><tr style="background: #ffeebb"><td>ID</td><td>Afsender</td><td>Data</td><td>Indsendt</td><td>Status&nbsp;'.$vislink.'</td></tr>';
-print '<table class="ticketlist" cellspacing="0" cellpadding="2"><tr style="background: #ffeebb"><td>ID</td><td>Afsender</td><td>Indsendt</td><td>Status&nbsp;'.$vislink.'</td></tr>';
+// Create overview
+print '<table class="ticketlist" cellspacing="0" cellpadding="2"><tr style="background: #ffeebb"><th>ID</th><th>Sender</th><th>Topic</th><th>Status&nbsp;<br>' . $showlink . '</th></tr>';
 foreach($result AS $row) {
-	if ($row['status'] == "lukket" && $vis != "alle") continue;
+	if ($row['status'] == "closed" && $display != "all") continue;
 	if ($row['data_id'] && $row['category']) {
 		$label = getlabel($row['category'],$row['data_id']);
 		if (!$label) $label = $row['title'];
@@ -67,7 +67,7 @@ foreach($result AS $row) {
 	} else {
 		print "<tr valign=\"top\">";
 	}
-	print "<td style=\"text-align: right\"><a href=\"ticket.php?id={$row['id']}&amp;vis=$vis\">{$row['id']}</a></td>";
+	print "<td style=\"text-align: right\"><a href=\"ticket.php?id={$row['id']}&amp;display=$display\">{$row['id']}</a></td>";
 	print "<td>{$row['user_name']}</td>";
 	print "<td>$label</td>";
 	
@@ -81,7 +81,7 @@ print '</table>';
 print "</td><td>";
 
 
-// Vis enkelt entry
+// Show single entry
 if ($id) {
 	$row = getrow("SELECT id, data_id, category, title, description, submittime, user_name, user_email, intern, status FROM updates WHERE id = '$id'") or die(dberror());
 	if ($row['data_id'] && $row['category']) {
@@ -92,9 +92,9 @@ if ($id) {
 
 	print "<form action=\"ticket.php\" method=\"post\">\n";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
-	print "<input type=\"hidden\" name=\"action\" value=\"ret\">\n";
+	print "<input type=\"hidden\" name=\"action\" value=\"update\">\n";
 	print "<input type=\"hidden\" name=\"id\" value=\"$id\">\n";
-	print "<input type=\"hidden\" name=\"vis\" value=\"$vis\">\n";
+	print "<input type=\"hidden\" name=\"display\" value=\"$display\">\n";
 	print "<table class=\"ticketlist\" style=\"border: 1px solid black;\" border=\"1\" cellspacing=\"0\">";
 	print "<tr>";
 	print "<td>ID: {$row['id']}</td>";
@@ -110,16 +110,16 @@ if ($id) {
 	print nl2br(htmlspecialchars($row['description']));
 	print "</td></tr>\n";
 
-	print '<tr style="background: #ffeebb"><th colspan="4">Vores log:</th></tr>';
+	print '<tr style="background: #ffeebb"><th colspan="4">Internal log:</th></tr>';
 
 	print '<tr><td colspan="4"><textarea name="intern" rows="6" cols="60">'.htmlspecialchars($row['intern']).'</textarea></td></tr>';
 
 	print "<tr><td colspan=\"4\">Status: <select name=\"status\">\n";
-	printf('<option value="åben" %s>Åben</option>',($row['status']=='åben'?'selected':'') );
-	printf('<option value="i gang" %s>I gang</option>',($row['status']=='i gang'?'selected':'') );
-	printf('<option value="lukket" %s>Lukket</option>',($row['status']=='lukket'?'selected':'') );
+	foreach ($options AS $option) {
+		printf('<option value="%s" %s>%s</option>',$option, ($row['status'] == $option ? 'selected' : ''), ucfirst($option) );	
+	}
 	print "</select>\n";
-	print "<input type=\"submit\" value=\"Gem\"></td></tr>\n";
+	print "<input type=\"submit\" value=\"Update\"></td></tr>\n";
 
 	print "</table>";	
 }
