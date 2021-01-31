@@ -558,7 +558,6 @@ function getimageifexists($id, $category_dir) {
 function pubdateprint($datetime) {
 	global $t;
 	$pubdatetime = strtotime($datetime);
-	$start = strftime('%e. %B, %R',$pubdatetime);
 	if (date("Y-m-d",$pubdatetime) == date("Y-m-d")) {
 		$start = htmlspecialchars( $t->getTemplateVars('_year_today') ) . ", " . date("H:i",$pubdatetime);
 	} elseif (date("Y-m-d",$pubdatetime) == date("Y-m-d",strtotime("- 1 day")) ) {
