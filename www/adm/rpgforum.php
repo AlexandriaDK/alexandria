@@ -10,7 +10,10 @@ $search = trim((string) $_GET['search']);
 $author = trim((string) $_GET['author']);
 $order = (string) $_GET['order'];
 $orderlist = ['score','title','timestamp'];
-
+$limit = (int) $_GET['limit'];
+if ($limit < 1) {
+    $limit = 1000;
+}
 
 function fixpost($post) {
     $post = str_replace('<img src="../newpics/quote.gif">','<span style="font-size:1.5em;">"</span>', $post);
@@ -42,10 +45,10 @@ if ($search !== '' || $author !== '' || $postid != 0) {
         $order = 'timestamp';
     }
     if ($search !== '') {
-        $query = ("SELECT id, title, author, timestamp, views, post, MATCH(title,post) AGAINST('" . dbesc($search) . "' IN NATURAL LANGUAGE MODE) AS score FROM rpgforum_posts WHERE MATCH(title,post) AGAINST('" . dbesc($search) . "' IN NATURAL LANGUAGE MODE) ORDER BY $order DESC LIMIT 100");
+        $query = ("SELECT id, title, author, timestamp, views, post, MATCH(title,post) AGAINST('" . dbesc($search) . "' IN NATURAL LANGUAGE MODE) AS score FROM rpgforum_posts WHERE MATCH(title,post) AGAINST('" . dbesc($search) . "' IN NATURAL LANGUAGE MODE) ORDER BY $order DESC LIMIT $limit");
     } elseif ($author !== '') {
         $order = 'score desc, timestamp desc';
-        $query = ("SELECT id, title, author, timestamp, views, post, MATCH(author) AGAINST('" . dbesc($author) . "' IN NATURAL LANGUAGE MODE) AS score FROM rpgforum_posts WHERE MATCH(author) AGAINST('" . dbesc($author) . "' IN NATURAL LANGUAGE MODE) ORDER BY $order LIMIT 100");
+        $query = ("SELECT id, title, author, timestamp, views, post, MATCH(author) AGAINST('" . dbesc($author) . "' IN NATURAL LANGUAGE MODE) AS score FROM rpgforum_posts WHERE MATCH(author) AGAINST('" . dbesc($author) . "' IN NATURAL LANGUAGE MODE) ORDER BY $order LIMIT $limit");
     } else {
         $query = ("SELECT id, title, author, timestamp, views, post FROM rpgforum_posts WHERE id = $postid");
     }
@@ -66,8 +69,8 @@ if ($search !== '' || $author !== '' || $postid != 0) {
         print '</div>' . PHP_EOL;
         print "<hr>" . PHP_EOL . PHP_EOL;
     }
-    if (count($result) == 100) {
-        print "<p><i>Limit of 100 results has been reached</i></p>";
+    if (count($result) == $limit) {
+        print "<p><i>Limit of $limit results has been reached</i></p>";
     }
 }
 
