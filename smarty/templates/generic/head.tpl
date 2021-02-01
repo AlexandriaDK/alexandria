@@ -78,6 +78,7 @@
 				<a href="./" accesskey="q"><img src="/gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
 			</p>
 			<div class="leftmenucontent">
+				<a href="about">{$_top_aboutalex}</a><br>
 				<a href="todo">{$_top_helpalexandria}</a><br>
 				<a href="rettelser">{$_top_submit}</a><br>
 				<br>
