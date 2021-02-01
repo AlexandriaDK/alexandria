@@ -245,6 +245,20 @@ foreach($result AS $row) {
 	$htmlnodownloadaut .= "<a href=\"person.php?person={$row['id']}\">{$row['firstname']} {$row['surname']}</a> ({$row['missing']})<br>\n";
 }
 
+// Same persons?
+$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM aut");
+$htmlnames = "<b>Possible duplicate authors (based on middle name):</b><br>\n";
+foreach ($names AS $id => $name) {
+    $parts = explode(' ', $name);
+    if (count($parts) > 2) {
+        $newname = $parts[0] . ' ' . $parts[count($parts)-1];
+        $newid = array_search($newname, $names);
+        if ($newid) {
+			$htmlnames .= '<a href="person.php?person=' . $id . '">' . htmlspecialchars($name) . ' </a> =?= <a href="person.php?person=' . $newid . '">' . htmlspecialchars($newname) . ' </a><br>';
+        }
+    }
+}
+
 
 // OUTPUT DATA
 
@@ -260,11 +274,10 @@ print "<table cellspacing=3 cellpadding=4>".
       "<td>$htmlorganizer</td>".
       "<td>$htmlorganizermatch</td>".
       "</tr><tr valign=\"top\">".
-      "<td>$htmlnodownloadaut</td>".
+      "<td>$htmlnodownloadaut<br><br>$htmlnames</td>".
       "<td>$htmlcondate</td>".
-      "<td>$htmlnotindex</td>"
-#      "</tr><tr><td colspan=\"3\" style=\"columns: 3\">$htmllone</td></tr></table>"
-      ;
+      "<td>$htmlnotindex</td>" .
+	  "</tr></table>";
 
 
 ?>
