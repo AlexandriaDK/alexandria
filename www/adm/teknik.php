@@ -246,7 +246,7 @@ foreach($result AS $row) {
 }
 
 // Same persons?
-$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM aut");
+$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM aut ORDER BY name");
 $htmlnames = "<b>Possible duplicate authors (based on middle name):</b><br>\n";
 foreach ($names AS $id => $name) {
     $parts = explode(' ', $name);
