@@ -54,7 +54,7 @@ $last_id = doquery($query);
 award_achievement(20);
 
 // send en mail med rettelserne
-$email = (strstr($user_email,'@') ? $user_email : 'robot@alexandria.dk');
+$email = (strstr($user_email,'@') ? $user_email : 'peter@ter.dk');
 $from = "\"$user_name\" <$email>"; // :TODO: should probably be sanitized
 $link = "https://alexandria.dk/adm/ticket.php?id=$last_id";
 if ($data_id && $cat) {
@@ -63,7 +63,7 @@ if ($data_id && $cat) {
 	$label = $data_label;
 }
 
-$to = "peter@alexandria.dk";
+$to = "peter@ter.dk";
 $subject = "[Alexandria] Rettelser (#$last_id)";
 $headers = "From: $from\r\nContent-Type: text/plain; charset=\"utf-8\"";
 $body = "Alexandria-rettelse:\r\n\r\n$label\r\n".wordwrap(stripslashes($mailoutput))."\r\n\r\n$link";

@@ -8,7 +8,7 @@
 	</h2>
 
 		<p>
-			{$_contact_corrections|sprintf:'rettelser':'mailto:peter@alexandria.dk':'peter@alexandria.dk'|textlinks|nl2br}
+			{$_contact_corrections|sprintf:'rettelser':'mailto:peter@ter.dk':'peter@ter.dk'|textlinks|nl2br}
 		</p>
 	
 </div>

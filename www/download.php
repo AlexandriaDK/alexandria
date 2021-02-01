@@ -31,7 +31,7 @@ if (file_exists($fileondisk) ) {
 
 } else {
 	header("HTTP/1.1 404 Not Found");
-	die("The file was not found - please contact <a href=\"mailto:peter@alexandria.dk\">peter@alexandria.dk</a>.");
+	die("The file was not found - please contact <a href=\"mailto:peter@ter.dk\">peter@ter.dk</a>.");
 }
 
 

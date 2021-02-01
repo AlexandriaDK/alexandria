@@ -8,7 +8,7 @@
 		</h2>
 
 		<p>
-			{$_privacy_content|sprintf:'mailto:privacy@alexandria.dk':'privacy@alexandria.dk'|nl2br}
+			{$_privacy_content|sprintf:'mailto:peter@ter.dk':'peter@ter.dk'|nl2br}
 		</p>
 
 
