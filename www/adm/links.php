@@ -174,13 +174,14 @@ if ($data_id && $category) {
 		'{$_links_website}' => 'Website',
 		'{$_links_website_scenario}' => 'Scenario website',
 		'{$_links_website_con}' => 'Con website',
+		'{$_links_programme}' => 'Programme',
 		'{$_links_facebook_page}' => 'Facebook page',
 		'{$_links_facebook_event}' => 'Facebook event',
 		'{$_links_facebook_event_scenario}' => 'Facebook event for scenario',
 		'{$_links_facebook_event_con}' => 'Facebook event for con',
 		'{$_links_rules}' => 'Rules',
 		'{$_links_bgg}' => 'BoardGameGeek entry',
-		'{$_links_description}' => 'description',
+		'{$_links_description}' => 'Description',
 	];
 	print '<tr><td></td><td></td><td colspan="3">';
 	foreach( $descriptions AS $templatecode => $label ) {
