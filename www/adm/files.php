@@ -29,9 +29,9 @@ function createThumbnail($filename) {
 // Remove file from database
 if ($action == "changefile" && $do == "Delete") {
 	
-	$q = "DELETE FROM files WHERE id = '$id'";
-	$r = doquery($q);
 	$q = "DELETE FROM filedata WHERE files_id = '$id'";
+	$r = doquery($q);
+	$q = "DELETE FROM files WHERE id = '$id'";
 	$r = doquery($q);
 	$_SESSION['admin']['info'] = "File data deleted! " . dberror();
 	if ($r) {
