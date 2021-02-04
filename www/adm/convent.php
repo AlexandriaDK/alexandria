@@ -133,8 +133,8 @@ if ($action == "create") {
 		     "VALUES (NULL, ".
 			 "'".dbesc($name)."', ".
 			 "$year, ".
-			 "'".dbesc($begin)."', ".
-			 "'".dbesc($end)."', ".
+			 sqlifnull($begin).", ".
+			 sqlifnull($end).", ".
 			 "'".dbesc($place)."', ".
 			 "'".dbesc($conset_id)."', ".
 			 "'".dbesc($description)."', ".
