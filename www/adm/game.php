@@ -7,23 +7,6 @@ require "base.inc.php";
 
 $this_type = 'game';
 
-function strSplitParticipants($str) {
-	$str = trim($str);
-	if (!preg_match('/^(\d+)\s*([–-]\s*(\d+))?$/u',$str, $match) ) {
-		return [ NULL, NULL ];
-	}
-	$str_min = $match[1];
-	$str_max = $match[3];
-	if (!$str_max) {
-		$str_max = $str_min;
-	} elseif ($str_min > $str_max) {
-		$str_tmp = $str_min;
-		$str_min = $str_max;
-		$str_max = $str_tmp;
-	}
-	return [ $str_min, $str_max ];
-}
-
 $action = $_REQUEST['action'];
 $jsenabled = $_REQUEST['jsenabled'];
 

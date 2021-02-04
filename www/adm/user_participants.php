@@ -1,21 +1,5 @@
 <?php
 // save page for users editing amount of participants for a game
-
-function strSplitParticipants($str) {
-	if (!preg_match('/^\d+(-\d+)?$/',$str) ) {
-		return [ NULL, NULL ];
-	}
-	list ($str_min, $str_max) = explode("-", $str);
-	if (!$str_max) {
-		$str_max = $str_min;
-	} elseif ($str_min > $str_max) {
-		$str_tmp = $str_min;
-		$str_min = $str_max;
-		$str_max = $str_tmp;
-	}
-	return [ $str_min, $str_max ];
-}
-
 require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
