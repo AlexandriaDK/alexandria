@@ -8,10 +8,12 @@ require "base.inc.php";
 $this_type = 'game';
 
 function strSplitParticipants($str) {
-	if (!preg_match('/^\d+(-\d+)?$/',$str) ) {
+	$str = trim($str);
+	if (!preg_match('/^(\d+)\s*([–-]\s*(\d+))?$/u',$str, $match) ) {
 		return [ NULL, NULL ];
 	}
-	list ($str_min, $str_max) = explode("-", $str);
+	$str_min = $match[1];
+	$str_max = $match[3];
 	if (!$str_max) {
 		$str_max = $str_min;
 	} elseif ($str_min > $str_max) {
@@ -80,10 +82,7 @@ if (!$action && $game) {
 	}
 }
 
-//
-// Edit game
-//
-
+// Update game
 if ($action == "update" && $game) {
 	if (!$title) {
 		$_SESSION['admin']['info'] = "You are missing a title!";
@@ -164,10 +163,7 @@ if ($action == "update" && $game) {
 	}
 }
 
-//
 // Delete game
-//
-
 if ($action == "Delete" && $game) { // should check if game exists
 	$error = [];
 	if (getCount('asrel', $game, FALSE, 'sce') ) $error[] = "person";
@@ -186,11 +182,11 @@ if ($action == "Delete" && $game) { // should check if game exists
 	} else {
 		$title = getone("SELECT title FROM sce WHERE id = $game");
 
+		doquery("DELETE FROM game_description WHERE game_id = $game");
 		$q = "DELETE FROM sce WHERE id = $game";
 		$r = doquery($q);
 
 		if ($r) {
-			doquery("DELETE FROM game_description WHERE game_id = $game");
 			chlog($game,$this_type,"Scenarie slettet: $title");
 		}
 		$_SESSION['admin']['info'] = "Game deleted! " . dberror();
@@ -198,10 +194,7 @@ if ($action == "Delete" && $game) { // should check if game exists
 	}
 }
 
-//
 // Create game
-//
-
 if ($action == "create") {
 	if (!$title) {
 		$info = "Title is missingl!";
@@ -733,9 +726,7 @@ if ($game) {
 </table>
 
 <script type="text/javascript">
-<!--
 	document.write('<input type="hidden" name="jsenabled" value="1">');
-//-->
 </script>
 
 </form>
