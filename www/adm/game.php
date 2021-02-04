@@ -90,7 +90,7 @@ if ($action == "update" && $game) {
 		$title = trim($title);
 		$q = "UPDATE sce SET " .
 		     "title = '".dbesc($title)."', " .
-		     "sys_id = $sys_id, " .
+		     "sys_id = " . sqlifnull($sys_id) . ", " .
 		     "sys_ext = '".dbesc($sys_ext)."', " .
 		     "aut_extra = '".dbesc($aut_extra)."', " .
 		     "intern = '".dbesc($intern)."', " .
@@ -197,11 +197,11 @@ if ($action == "Delete" && $game) { // should check if game exists
 // Create game
 if ($action == "create") {
 	if (!$title) {
-		$info = "Title is missingl!";
+		$info = "Title is missing!";
 	} else {
 		$title = trim($title);
 		$q = "INSERT INTO sce (id, title, description, intern, sys_id, sys_ext, aut_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
-		     "VALUES (NULL, '".dbesc($title)."', '".dbesc($description)."', '".dbesc($intern)."', '".dbesc($sys_id)."', '".dbesc($sys_ext)."', '".dbesc($aut_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
+			 "VALUES (NULL, '".dbesc($title)."', '".dbesc($description)."', '".dbesc($intern)."', ".sqlifnull($sys_id).", '".dbesc($sys_ext)."', '".dbesc($aut_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
 		$r = doquery($q);
 		if ($r) {
 			$game = dbid();

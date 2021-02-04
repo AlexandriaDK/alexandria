@@ -7,14 +7,14 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'rss';
 
-$action = $_REQUEST['action'];
-$url = $_REQUEST['url'];
-$pageurl = $_REQUEST['pageurl'];
-$aut_id = $_REQUEST['aut_id'];
-$id = $_REQUEST['id'];
-$owner = $_REQUEST['owner'];
-$name = $_REQUEST['name'];
-$do = $_REQUEST['do'];
+$action = (string) $_REQUEST['action'];
+$url = (string)  $_REQUEST['url'];
+$pageurl = (string)  $_REQUEST['pageurl'];
+$aut_id = (int) $_REQUEST['aut_id'];
+$id = (int) $_REQUEST['id'];
+$owner = (string) $_REQUEST['owner'];
+$name = (string)  $_REQUEST['name'];
+$do = (string)  $_REQUEST['do'];
 
 if ( $action ) {
 	validatetoken( $token );
@@ -24,7 +24,6 @@ if ( $action ) {
 if ($action == "changelink" && $do != "Slet") {
 	$url = trim($url);
 	$pageurl = trim($pageurl);
-	$aut_id = trim($aut_id);
 	$owner = trim($owner);
 	$name = trim($name);
 	$q = "UPDATE feeds SET " .
@@ -32,8 +31,8 @@ if ($action == "changelink" && $do != "Slet") {
 	     "pageurl = '$pageurl', " .
 	     "owner = '$owner', " .
 	     "name = '$name', " .
-	     "aut_id = '$aut_id' " .
-	     "WHERE id = '$id'";
+	     "aut_id = " . sqlifnull($aut_id) . " " .
+		 "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
 //		chlog($id,$this_type,"Link rettet");
@@ -63,16 +62,15 @@ if ($action == "changelink" && $do == "Delete") {
 	}
 }
 
-// Tilføj link
+// Add feed
 if ($action == "addlink") {
 	$url = trim($url);
 	$owner = trim($owner);
 	$name = trim($name);
 	$pageurl = trim($pageurl);
-	$aut_id = trim($aut_id);
 	$q = "INSERT INTO feeds " .
 	     "(url, owner, name, pageurl, aut_id) VALUES ".
-	     "('$url', '$owner', '$name', '$pageurl','$aut_id')";
+	     "('$url', '$owner', '$name', '$pageurl', " . sqlifnull($aut_id) . ")";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
