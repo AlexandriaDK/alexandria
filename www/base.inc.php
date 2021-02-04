@@ -665,7 +665,9 @@ function monthname ( $monthNo ) {
 
 function yearname ( $year ) {
 	$year = (int) $year;
-	if ($year < 0 || $year > 9999 ) { // Y10K BUG!
+	if ($year == 0) {
+		return "?";
+	} elseif ($year < 0 || $year > 9999 ) { // Y10K BUG!
 		return false;
 	}
 	$f = new IntlDateFormatter(null, null, null, null, null, 'y');
