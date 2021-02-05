@@ -14,12 +14,10 @@ $html = utf8_encode($html);
 function chlog($data_id, $category, $note="") {
 	$user = 'Peter Brodersen';
 	$authuserid = 4;
-	$ip = '127.0.0.1';
-	$ip_forward = '';
 	$data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
 	$note = dbesc($note);
-	$query = "INSERT INTO log (data_id,category,time,user,user_id,ip,ip_forward,note) " .
-	         "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$ip','$ip_forward','$note')";
+	$query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
+	         "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
 	$result = doquery($query);
 	return $result;
 	

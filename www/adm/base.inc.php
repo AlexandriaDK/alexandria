@@ -64,13 +64,11 @@ function chlog($data_id, $category, $note="") {
 	if ($category == 'game') $category = 'sce';
 	$authuser = $_SESSION['user_name'];
 	$authuserid = $_SESSION['user_id'];
-	$ip = addslashes($_SERVER['REMOTE_ADDR']);
-	$ip_forward = addslashes($_SERVER['HTTP_X_FORWARDED_FOR']);
 	$user = addslashes($authuser);
 	$note = addslashes($note);
 	$data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
-	$query = "INSERT INTO log (data_id,category,time,user,user_id,ip,ip_forward,note) " .
-	         "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$ip','$ip_forward','$note')";
+	$query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
+	         "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
 	$result = doquery($query);
 	return $result;
 }
