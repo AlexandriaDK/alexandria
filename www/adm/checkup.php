@@ -5,11 +5,11 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-htmladmstart("Technical");
+htmladmstart("Checkup");
 
-// TJEK AF ORPHANS
+// Check of orphans isn't necessary anymore after using InnoDB and foreign keys
 
-// Orphan, person<=>scenarie
+// Orphan, person<=>game
 $query = "
 	SELECT
 		asrel.id,
@@ -32,7 +32,7 @@ $query = "
 
 $result = getall($query);
 
-$htmlorpaut = "Tjek af orphans, person&lt;=&gt;scenarie: ";
+$htmlorpaut = "Check of orphans, person&lt;=&gt;game: ";
 
 if ($result) {
 	$htmlorpaut .=  "<table border=1 cellspacing=0 >";
@@ -49,10 +49,10 @@ if ($result) {
 
 	$htmlorpaut .= "</table>";
 } else {
-	$htmlorpaut .= "<br><b>Ingen!</b>";
+	$htmlorpaut .= "<br><b>All good!</b>";
 }
 
-// Orphan, scenarie<=>con
+// Orphan, game<=>con
 $query = "
 	SELECT
 		csrel.id,
@@ -75,7 +75,7 @@ $query = "
 
 $result = getall($query);
 
-$htmlorpsce .= "Tjek af orphans, scenarie&lt;=&gt;con: ";
+$htmlorpsce .= "Check of orphans, game&lt;=&gt;con: ";
 
 if ($result) {
 	$htmlorpsce .= "<table border=1 cellspacing=0 >";
@@ -92,10 +92,10 @@ if ($result) {
 
 	$htmlorpsce .= "</table>";
 } else {
-	$htmlorpsce .= "<br><b>Ingen!</b>";
+	$htmlorpsce .= "<br><b>All good!</b>";
 }
 
-// Orphan, scenarie=>system
+// Orphan, game=>system
 $query = "
 	SELECT
 		sce.id,
@@ -110,7 +110,7 @@ $query = "
 		sys.id IS NULL
 	";
 $result = getall($query);
-$htmlorpscesys .= "Tjek af orphans, scenarie=&gt;system: ";
+$htmlorpscesys .= "Check of orphans, game=&gt;system: ";
 if ($result) {
 	$htmlorpscesys .= "<table border=1 cellspacing=0 >";
 	$htmlorpscesys .= "<tr><th>ID</th><th>title</th><th>sys_id</th></tr>";
@@ -124,7 +124,7 @@ if ($result) {
 
 	$htmlorpscesys .= "</table>";
 } else {
-	$htmlorpscesys .= "<br><b>Ingen!</b>";
+	$htmlorpscesys .= "<br><b>All good!</b>";
 }
 
 
@@ -149,7 +149,7 @@ while ($row = mysql_fetch_array($result)) {
 }
 */
 
-$htmlorganizer = "<b>Arrangører uden ID:</b><br>\n";
+$htmlorganizer = "<b>Organizers without ID:</b><br>\n";
 
 // html inside SQL - yuck!
 $query = "SELECT COUNT(*) AS antal, aut_extra AS navn, GROUP_CONCAT(CONCAT('<a href=\"organizers.php?category=convent&data_id=', convent.id, '\">', convent.name, ' (', convent.year, ')', '</a>' ) ORDER BY convent.year DESC, convent.begin DESC, convent.name ASC SEPARATOR '\n') AS convents FROM acrel INNER JOIN convent ON acrel.convent_id = convent.id WHERE aut_extra != '' GROUP BY aut_extra HAVING antal >= 2 ORDER BY antal DESC, navn";
@@ -162,11 +162,9 @@ foreach($result AS $row) {
 	$htmlorganizer .= " <span onclick=\"document.getElementById('$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Vis kongresser\">[+]</span>";
 	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nameid\">" . nl2br($row['convents'], FALSE) . "</div>" . PHP_EOL;
 	$htmlorganizer .= "</div>" . PHP_EOL;
-
-	
 }
 
-$htmlorganizermatch = "<b>Arrangører uden ID, måske eksisterende?</b><br>\n";
+$htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
 
 $query = "SELECT COUNT(*) AS antal, GROUP_CONCAT(convent_id ORDER BY convent_id) AS convent_ids, aut_extra AS navn, aut.id AS aut_id FROM acrel INNER JOIN aut ON acrel.aut_extra = CONCAT(aut.firstname, ' ', aut.surname) WHERE aut_extra != '' GROUP BY aut_extra ORDER BY antal DESC, navn";
 $result = getall($query);
@@ -179,24 +177,19 @@ foreach($result AS $row) {
 	$htmlorganizermatch .= "<br>\n";
 }
 
-// TJEK AF SYSTEMER
-
-$htmlnotindex = "<b>Mest brugte ikke-indekserede systemer:</b><br>\n";
+// RPG SYSTEMS CHECK
+$htmlgamenotregistered = "<b>Most used non-registered systems:</b><br>\n";
 
 $minantal = 2;
 $query = "SELECT COUNT(*) AS antal, sys_ext FROM sce WHERE (sys_id IS NULL OR sys_id = 0) AND sys_ext != '' GROUP BY sys_ext HAVING antal >= $minantal ORDER BY antal DESC ";
 $result = getall($query);
 foreach($result AS $row) {
-	$htmlnotindex .= $row['sys_ext']." ($row[antal])<br>\n";
+	$htmlgamenotregistered .= $row['sys_ext']." ($row[antal])<br>\n";
 }
 
 
-// TJEK AF PERSONER UDEN SCENARIER
-
-$htmlloneper = "<b>Personer uden scenarie/arrangør/pris-tilknytning:</b><br>\n";
-
-// Tjekker kun scenarier
-// $query = "SELECT aut.id, CONCAT(firstname,' ',surname) AS name, asrel.id AS aid FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.id IS NULL";
+// PERSONS WITHOUT ANY RELATIONS
+$htmlloneper = "<b>Persons without relation to game, organizer or award:</b><br>\n";
 
 // Tjekker både scenarier og arrangør-poster
 $query = "
@@ -226,8 +219,7 @@ foreach($result AS $row) {
 #}
 
 // TJEK AF KONGRESSER UDEN STARTDATO
-
-$htmlcondate = "<b>Kongresser uden præcis startdato:</b><br>\n";
+$htmlcondate = "<b>Conventions missing exact start date:</b><br>\n";
 
 $query = "SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE begin IS NULL OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
 
@@ -237,8 +229,17 @@ foreach($result AS $row) {
 }
 
 // Forfattere med flest scenarier, man ikke kan downlaode
-$htmlnodownloadaut = "<b>Forfattere med flest ikke-downloadable scenarier:</b><br>\n";
-$query = "select aut.id, firstname, surname, COUNT(*) as missing FROM aut INNER JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id = 1 LEFT JOIN files ON asrel.sce_id = files.data_id AND files.category = 'sce' WHERE files.id IS NULL GROUP BY aut.id ORDER BY missing DESC LIMIT 40";
+$htmlnodownloadaut = "<b>Authors with most non-downloadable scenarios:</b><br>\n";
+$query = "
+	SELECT aut.id, firstname, surname, COUNT(*) as missing
+	FROM aut
+	INNER JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id = 1
+	LEFT JOIN files ON asrel.sce_id = files.data_id AND files.category = 'sce'
+	WHERE files.id IS NULL
+	GROUP BY aut.id
+	ORDER BY missing DESC
+	LIMIT 40
+";
 
 $result = getall($query);
 foreach($result AS $row) {
@@ -259,11 +260,8 @@ foreach ($names AS $id => $name) {
     }
 }
 
-
 // OUTPUT DATA
-
 print "<p>\n";
-
 print "<table cellspacing=3 cellpadding=4>".
       "<tr valign=\"top\">".
       "<td>$htmlorpaut</td>".
@@ -274,15 +272,10 @@ print "<table cellspacing=3 cellpadding=4>".
       "<td>$htmlorganizer</td>".
       "<td>$htmlorganizermatch</td>".
       "</tr><tr valign=\"top\">".
-      "<td>$htmlnodownloadaut<br><br>$htmlnames</td>".
+      "<td>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>".
       "<td>$htmlcondate</td>".
-      "<td>$htmlnotindex</td>" .
+      "<td>$htmlnames</td>" .
 	  "</tr></table>";
-
-
 ?>
-	
-
-
 </body>
 </html>
