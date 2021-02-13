@@ -40,26 +40,30 @@ if (count($q) > 0) {
 				$slist[$sl][$type] = getdynamicscehtml($rs['id'],$type,$userlog[$rs['id']][$type] ?? FALSE);
 			}
 		}
-		$sce_id = $rs['id'];
+		$sce_id = (int) $rs['id'];
 		// query-i-løkke... skal optimeres!
 		$slist[$sl]['files'] = $rs['files'];
 		$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 		$slist[$sl]['title'] = $rs['title_translation'];
 		$slist[$sl]['origtitle'] = $rs['title'];
+		$slist[$sl]['personlist'] = "";
 
-		$forflist = array();
-		$qq = getall("SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut, asrel WHERE asrel.sce_id = '$sce_id' AND asrel.aut_id = aut.id AND asrel.tit_id = '1' ORDER BY firstname, surname");
+		$personlist = [];
+		$qq = getall("
+			SELECT aut.id, CONCAT(firstname,' ',surname) AS name
+			FROM aut, asrel
+			WHERE asrel.sce_id = $sce_id AND asrel.aut_id = aut.id AND asrel.tit_id IN(1,5)
+			ORDER BY firstname, surname
+		");
 		foreach($qq AS $thisforfatter) {
 			list($forfid,$forfname) = $thisforfatter;
-			$forflist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
+			$personlist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
 		}
-		if (!$forflist && $rs['aut_extra']) {
-			$forflist[] = $rs['aut_extra'];
+		if (!$personlist && $rs['aut_extra']) {
+			$personlist[] = $rs['aut_extra'];
 		}
-		if ($forflist) {
-			$slist[$sl]['forflist'] = join("<br />",$forflist);
-		} else {
-			$slist[$sl]['forflist'] = "&nbsp;";
+		if ($personlist) {
+			$slist[$sl]['personlist'] = join("<br />",$personlist);
 		}
 
 		if ($rs['con_id']) {
