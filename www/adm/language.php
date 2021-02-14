@@ -33,7 +33,7 @@ function findintemplates( $string ) {
 	return $matches;
 }
 
-// Sæt sprog?
+// Set language?
 if ( $setlang ) {
 	if ( $setlang == 'none') {
 		setcookie( "langlock" );
@@ -44,7 +44,7 @@ if ( $setlang ) {
 	exit;
 }
 
-// Ret tekster
+// Edit texts
 if ($action == "update") {
 	$old = getcolid("SELECT language, text FROM weblanguages WHERE label = '".  dbesc( $label ) . "'");
 	$q = "DELETE FROM weblanguages WHERE label = '" . dbesc( $label ) . "'";
@@ -93,6 +93,19 @@ ksort( $languages );
 $labelcount = count( $overview );
 
 htmladmstart("Translations");
+
+?>
+<script>
+$(document).ready(function(){
+  $("#filterSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#translations tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+<?php
 
 // Edit?
 $begin = $nextlabel = FALSE;
@@ -148,6 +161,8 @@ if ( $label ) {
 if ( $nextlabel != FALSE ) {
 	print "<div class=\"nextlanguage\"><a href=\"language.php?label=" . rawurlencode( $nextlabel ) . "\">Go to next label with missing translation</a></div>";
 }
+
+print '<p>Filter translations: <input id="filterSearch" type="text" placeholder="Search term"></p>';
 
 // overview
 print "<table id=\"translations\"><thead>";
