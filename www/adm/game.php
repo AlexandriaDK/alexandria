@@ -19,7 +19,7 @@ $title = $_REQUEST['title'];
 $description = $_REQUEST['description'];
 $descriptions = (array) $_REQUEST['descriptions'];
 if (!$descriptions) {
-	$descriptions = [1 => [ 'id' => 1, 'language' => ($_COOKIE['langlock'] ? $_COOKIE['langlock'] : 'da'), 'description' => '', 'note' => '' ] ];
+	$descriptions = [1 => [ 'id' => 1, 'language' => ($_COOKIE['langlock'] ? $_COOKIE['langlock'] : 'en'), 'description' => '', 'note' => '' ] ];
 }
 $intern = $_REQUEST['intern'];
 $sys_id = (int) $_REQUEST['sys_id'];
@@ -44,7 +44,7 @@ if (!$action && $game) {
 		$description = $row['description'];
 		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $game ORDER BY priority, language");
 		if (!$descriptions) {
-			$descriptions = [1 => [ 'id' => 1, 'language' => 'da', 'description' => '', 'note' => '' ] ];
+			$descriptions = [1 => [ 'id' => 1, 'language' => 'en', 'description' => '', 'note' => '' ] ];
 		}
 		$intern = $row['intern'];
 		$sys_id = $row['sys_id'];
