@@ -17,19 +17,27 @@
 		{/foreach}
 		</table>
 	</td>
-	
-	<td rowspan="2"><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
+
+	<td><span class="stathead">{$_stat_descriptionsbylanguage|nl2br}</span><br>
 		<table class="tablestat tablestartpad">
-		{foreach from=$stat_con_year item=$scy}
-		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		{foreach from=$stat_description_language item=$sdl}
+		<tr><td class="statnumber">{$sdl.placeout}</td><td>{$sdl.localecountry|ucfirst}</td><td class="statnumber">{$sdl.count} </td></tr>
 		{/foreach}
 		</table>
 	</td>
+
 	</tr>
 	
 	<tr>	
 	<td class="statleft"><span class="stathead">{$_stat_largestcons|nl2br}</span><br>
 		{$stat_con_sce}
+	</td>
+	<td><span class="stathead">{$_stat_conscelist|nl2br}</span><br>
+		<table class="tablestat tablestartpad">
+		{foreach from=$stat_con_year item=$scy}
+		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		{/foreach}
+		</table>
 	</td>
 	</tr>
 

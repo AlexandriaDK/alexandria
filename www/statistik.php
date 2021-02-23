@@ -328,6 +328,7 @@ foreach($yearstat AS $year => $row) {
 	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['sce'] ?? 0 ];
 }
 
+// Countries
 $concountry = [];
 $place = 0;
 $lastcount = 0;
@@ -338,7 +339,18 @@ foreach ($r AS $row) {
 	$lastcount = $row['count'];
 	$concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => getCountryName($row['ccountry']) ];
 }
-$stat_con_country = $r;
+
+// Description languages
+$descriptionlanguage = [];
+$place = 0;
+$lastcount = 0;
+$r = getall("SELECT COUNT(*) AS count, LEFT(language, 2) AS language FROM game_description GROUP BY LEFT(language, 2) ORDER BY count DESC, language");
+foreach ($r AS $row) {
+	$place++;
+	$placeout = ($lastcount != $row['count'] ? "$place." : "");
+	$lastcount = $row['count'];
+	$descriptionlanguage[] = ['count' => $row['count'], 'placeout' => $placeout, 'lcode' => $row['language'], 'localecountry' => getLanguageName( $row['language'] ) ];
+}
 
 award_achievement(51); // visit statistics page
 
@@ -352,6 +364,7 @@ $t->assign('stat_sce_auts',$stat_sce_auts);
 $t->assign('stat_con_sce',$stat_con_sce);
 $t->assign('stat_con_year',$yearstatpart);
 $t->assign('stat_con_country',$concountry);
+$t->assign('stat_description_language',$descriptionlanguage);
 
 $t->display('statistics.tpl');
 
