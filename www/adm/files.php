@@ -20,9 +20,14 @@ $remoteurl = (string) $_REQUEST['remoteurl'];
 $allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png","gif","webp"];
 $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
 
-setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
+setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to ImageMagick escapeshellarg() if imagick is not installed as module
 
-if (! function_exists('mb_basename') ) { // PHP's basename() removes first letter in file name if it is a highbit (Århus.pdf => rhus.pdf)
+// PHP's basename() removes first letter in file name if it is a highbit (Århus.pdf => rhus.pdf)
+// Or, more precise, basename() only works if
+//   1. the locale for setlocale does exist (e.g. running "locale-gen da_DK.UTF-8")
+//   2. setlocale() is run for LC_ALL (none of the other LC_* works) for that locale
+// E.g.: setlocale(LC_ALL, 'da_DK.UTF-8')
+if (! function_exists('mb_basename') ) { 
 	function mb_basename ( $path ) {
 		return array_reverse(explode("/",$path))[0];
 	}
