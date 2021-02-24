@@ -22,8 +22,10 @@ $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
 
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
 
-function createThumbnail($filename) {
-
+if (! function_exists('mb_basename') ) { // PHP's basename() removes first letter in file name if it is a highbit (Århus.pdf => rhus.pdf)
+	function mb_basename ( $path ) {
+		return array_reverse(explode("/",$path))[0];
+	}
 }
 
 // Remove file from database
@@ -79,7 +81,7 @@ if ( $action == 'uploadfile' &&
 	getcategorydir($category)
    ) {
 	$urldata = parse_url($remoteurl);
-	$basename = urldecode(basename($urldata['path']));
+	$basename = urldecode(mb_basename($urldata['path']));
 	if (!$basename) {
 		$basename = "scenarie_" . $data_id . ".pdf";
 	}
@@ -116,7 +118,7 @@ if ($action == "addfile") {
 		$subdir = getcategorydir($category);
 		$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" . $path;
 	}
-	$filename = basename($path);
+	$filename = mb_basename($path);
 	$description = trim($description);
 	$downloadable = ($downloadable?1:0);
 	$extension = strtolower(substr(strrchr($path, "."), 1));
@@ -130,7 +132,7 @@ if ($action == "addfile") {
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == "thumbnail") {
-	$path = $basename =  basename( $_REQUEST['filename'] );
+	$path = $basename =  mb_basename( $_REQUEST['filename'] );
 	$subdir = getcategorydir($category);
 	$target_subdir = getcategorythumbdir($category);
 
@@ -310,7 +312,7 @@ if ($data_id && $category) {
 	print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
 	foreach(glob( DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") AS $file) {
-		$basename = end( explode( '/', $file ) ); // basename() chokes on file names beginning with a utf-8 character such as "æble.txt"
+		$basename = mb_basename( $file );
 		print '<a href="http://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
 		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode( $basename ) . "\" title=\"Create thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
