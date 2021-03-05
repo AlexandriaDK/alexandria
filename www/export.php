@@ -27,7 +27,7 @@ $exportqueries = [
 	'links' => "SELECT id, data_id, category, url, description FROM links ORDER BY id",
 	'aliases' => "SELECT id, data_id, category, label, visible FROM alias WHERE visible = 1 ORDER BY category, data_id, id", // Don't expose hidden aliases yet
 	'files' => "SELECT id, data_id, category, filename, description, downloadable, inserted, language, indexed FROM files WHERE downloadable = 1 ORDER BY category, data_id, id",
-	'sitetexts' => "SELECT id, label, text, language, lastupdated FROM weblanguages ORDER BY language, label, id",
+	'sitetexts' => "SELECT id, label, text, language, lastupdated FROM weblanguages ORDER BY language, id",
 	'awards' => "SELECT id, name, conset_id, description, label FROM awards ORDER BY id",
 	'award_categories' => "SELECT id, name, convent_id, description, award_id FROM award_categories ORDER BY id",
 	'award_nominee_entities' => "SELECT id, award_nominee_id, data_id, category, label FROM award_nominee_entities ORDER BY award_nominee_id, id",
