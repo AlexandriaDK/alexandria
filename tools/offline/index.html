@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- Offline edition of Alexandria -->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/offlinestyle.css" />
+</head>
+<body>
+    <h1>Alexandria - offline edition</h1>
+    <h2 id="startup">Loading ...</h2>
+    <h2 id="missingfiles">Something went wrong: <span id="missingfiledata"></span> - Please extract the entire .zip file instead of only the HTML file.</h2>
+    <form id="search">
+    <ul id="menu">
+        <li><a href="#persons" >Persons</a></li>
+        <li><a href="#scenarios">Scenarios</a></li>
+        <li><a href="#boardgames">Board games</a></li>
+        <li><a href="#conventionsets">Convention sets</a></li>
+        <li><a href="#rpgsystems">RPG Systems</a></li>
+        <li><input type="text" name="search" placeholder="Search" id="searchtext"></li>        
+    </ul>
+    </form>
+
+    <div id="content"></div>
+
+    <div id="signout">This is the offline edition of role-playing and board gaming library <a href="https://alexandria.dk">Alexandria.dk</a>. <span id="currentdatainfo"></span></div>
+    <script>
+        var data, a, license, access;
+        document.getElementById('missingfiles').style.display='none';
+        function showLoadError(missing) {
+            document.getElementById('missingfiles').style.display='block';
+            document.getElementById('missingfiledataerror').innerText = "Can't load " + missing;
+        }
+    </script>
+    <script src="lib/jquery-3.6.0.min.js" onerror="showLoadError('jquery')"></script>
+    <script src="lib/offline.js" onerror="showLoadError('offline.js')"></script>
+    <script src="data/alexandria_content.js" onerror="showLoadError('data')"></script>
+
+</body>
+</html>
