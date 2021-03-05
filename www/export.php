@@ -33,7 +33,7 @@ $exportqueries = [
 	'award_nominee_entities' => "SELECT id, award_nominee_id, data_id, category, label FROM award_nominee_entities ORDER BY award_nominee_id, id",
 	'award_nominees' => "SELECT id, award_category_id, sce_id, name, nominationtext, winner, ranking FROM award_nominees ORDER BY id",
 	'person_game_title_connections' => "SELECT id, aut_id AS person_id, sce_id AS game_id, tit_id AS title_id, note FROM asrel ORDER BY aut_id, sce_id, id",
-	'game_convention_title_connections' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
+	'game_convention_presentation_connections' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
 	'person_convention_connections' => "SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id",
 ];
 
