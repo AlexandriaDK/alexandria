@@ -1,3 +1,5 @@
+document.getElementById('startup').style.display = 'block';
+
 $(function() {
     initialize();
 });
@@ -21,18 +23,21 @@ function loadData() {
     a = [];
     license = data.license;
     access = data.access;
-    categories = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'asrel', 'csrel', 'acrel', 'tag', 'tags'];
-    categories.forEach(function(category) {
+    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations'];
+    categories_without_ids = ['person_game_title_connections', 'game_convention_presentation_connections', 'person_convention_connections', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia'];
+    categories_with_ids.forEach(function(category) {
         a[category] = {};
         for (element of data.result[category]) {
             a[category][element.id] = element;
         }
     });
-
+    categories_without_ids.forEach(function(category) {
+        a[category] = data.result[category];
+    });
     $("#startup").hide();
     $("#menu").show();
     $("#currentdatainfo").text("Date of current data set: " + data.request.received)
-    data = null; // Free up memory
+//    data = null; // Free up memory
 }
 
 function showContent(html) {
@@ -58,7 +63,8 @@ function showPersons() {
     }
     html += '</ul>';
     showContent(html);
-    $('a[href="#' + anchor + '"]').click(showPerson);
+    $('a[data-category="' + datatype + '"]').click(showPerson);
+    onlineLink('personer');
 }
 
 function showGames(data) {
@@ -81,7 +87,8 @@ function showGames(data) {
     }
     html += '</ul>';
     showContent(html);
-    $('a[href="#' + anchor + '"]').click(showGame);
+    $('a[data-category="' + datatype + '"]').click(showGame);
+    onlineLink(boardgames ? 'boardgames' : 'scenarier' );
 }
 
 function showConventionSets() {
@@ -103,16 +110,18 @@ function showConventionSets() {
     }
     html += '</ul>';
     showContent(html);
-    $('a[href="#' + anchor + '"]').click(showConventions);
+    $('a[data-category="' + datatype + '"]').click(showConventions);
+    onlineLink('cons' + id);
 }
 
 function showConventions(data) {
     id = data.target.dataset.id;
+//    conset = data.conventionsets[id]
 //    showCategoryList('Conventions', 'conventions', 'convention', 'convention', 'name')
-    title = 'Conventions';
     category = 'conventions';
     datatype = 'convention';
     anchor = 'convention';
+    title = 'Conventions for ' + esc(a.conventionsets[id].name);
 
     var list = [];
     for (var element in a[category]) {
@@ -130,16 +139,14 @@ function showConventions(data) {
     }
     html += '</ul>';
     showContent(html);
-    $('a[href="#' + anchor + '"]').click(showConvention);
-}
+    $('a[data-category="' + datatype + '"]').click(showConvention);
+    onlineLink('data?conset=' + id);
 
-function makeLink(anchor, datatype, elementid, linktext) {
-    html = '<li><a href="#' + anchor + '" data-type="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a></li>';
-    return html;
 }
 
 function showRPGSystems() {
-    showCategoryList('RPG Systems', 'systems', 'rpgsystem', 'system', 'name')
+    showCategoryList('RPG Systems', 'systems', 'rpgsystem', 'system', 'name');
+    onlineLink('systemer');
 }
 
 function showCategoryList(title, category, anchor, datatype, label) {
@@ -152,11 +159,12 @@ function showCategoryList(title, category, anchor, datatype, label) {
         return a[label].toUpperCase() > b[label].toUpperCase();
     });
     for (element of list) {
-        html += '<li><a href="#' + anchor + '" data-type="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
+        html += '<li><a href="#' + anchor + '" data-category="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
     }
     html += '</ul>';
     showContent(html);
-    $('a[href="#' + anchor + '"]').click(showSingleData);
+    $('a[data-category="' + datatype + '"]').click(showSingleData);
+
 }
 
 function showRPGSystem(data) {
@@ -178,10 +186,73 @@ function showGame(data) {
     id = data.target.dataset.id;
     game = a.games[id];
     title = game.title;
-    console.log(game);
+    persons = a.person_game_title_connections.filter(rel => rel.game_id == id);
+    files = a.files.filter(rel => rel.data_id == id && rel.category == 'sce');
+    descriptions = a.gamedescriptions.filter(rel => rel.game_id == id);
+    cons = a.game_convention_presentation_connections.filter(rel => rel.game_id == id);
+    // awards :TODO:
+    // runs :TODO:
+    // tags :TODO:
+    links = a.links.filter(rel => rel.data_id == id && rel.category == 'sce');
+    trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'sce');
+
     html = '<h2>' + esc(title) + '</h2>';
+    if (game.gms_min || game.players_min) {
+        html += '<p class="indata">';
+        if (game.gms_min) {
+            html += game.gms_min + (game.gms_max > game.gms_min ? '-' + game.gms_max : '') + ' ' + (game.gms_min == 1 && game.gms_max <= 1 ? 'GM' : 'GMs') + (game.players_min ? ', ' : '');
+        }
+        if (game.players_min) {
+            html += game.players_min + (game.players_max > game.players_min ? '-' + game.players_max : '') + ' ' + (game.players_min == 1 && game.players_max <= 1 ? 'player' : 'players');
+        }
+        if (game.participants_extra) {
+            html += ', ' + esc(game.participants_extra);
+        }
+        html += '</p>';
+    }
+    if (persons.length > 0) {
+        html += '<h3>By</h3>';
+        html += '<ul>';
+        for (element of persons) {
+            pid = element.person_id;
+            html += makeLink('person', 'person', element.person_id, a.persons[pid].firstname + ' ' + a.persons[pid].surname, a.titles[element.title_id].title + (element.note ? ' (' + esc(element.note) + ')' : '' ) );
+        }
+        html += '</ul>';
+    }
+    if (files.length > 0) {
+        html += makeFileSection(files, id, 'sce');
+    }
+    if (descriptions.length > 0) {
+        html += '<h3>Description</h3>';
+        for (description of descriptions) {
+            if (descriptions.length > 1) {
+                html += '<hr>';
+                html += "<h4>" + esc(description.language) + "</h4>";
+            }
+            html += '<p>' + esc(description.description).replace(/\n/g, '</br>');
+        }
+    }
+    if (cons.length > 0) {
+        html += '<h3>Played at</h3>';
+        html += '<ul>';
+        for (con of cons) {
+            cid = con.convention_id;
+            console.log(con);
+            html += makeLink('convention', 'convention', cid, a.conventions[cid].name + ' (' + a.conventions[cid].year + ')', esc('(' + replaceTemplateDirect(a.presentations[con.presentation_id].event_label) + ')' ) );
+        }
+        html += '</ul>';
+    }
+    if (trivia.length > 0) {
+        html += makeTriviaSection(trivia);
+    }
+    if (links.length > 0) {
+        html += makeLinkSection(links);
+    }
+
+    $('a[data-category="convention"]').click(showConvention);
+    $('a[data-category="person"]').click(showPerson);
+    onlineLink('data?scenarie=' + id);
     showContent(html);
-    authors = a.
 }
 
 function showSingleData(data) {
@@ -197,10 +268,82 @@ function showSingleData(data) {
         showRPGSystem(data);
     }
 }
-function esc (text) {
-    return text.replace(/[\"&<>]/g, function (a) {
+function esc (text) { // escape, replace templates and then parse [[[links]]]
+    text = text.replace(/[\"&<>]/g, function (a) {
         return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
     });
+    text = replaceTemplate(text);
+    text = bracketTemplate(text);
+    return text;
+}
+
+function bracketTemplate(text) {
+    return text;
+}
+
+function onlineLink(parturl) {
+    var url = 'https://alexandria.dk/en/' + parturl;
+    $('#onlinelink').html('<a href="' + url + '">Online version of current page</a>');
+}
+
+function makeLink(anchor, datatype, elementid, linktext, optional = '') {
+    var html = '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a> ' + esc(optional) + '</li>';
+    return html;
+}
+
+function makeFileSection(files, id, category) {
+    var html = '<h3>Download (from online archive)</h3>';
+    html += '<ul>';
+    for (file of files) {
+        html += makeFileLink(id, category, file.filename, file.description, file.language)
+    }
+    html += '</ul>';
+    return html;
+}
+
+function makeTriviaSection(trivia) {
+    var html = '<h3>Trivia</h3>';
+    html += '<ul>';
+    for (fact of trivia) {
+        html += '<li>' + esc(fact.fact) + '</li>';
+    }
+    html += '</ul>';
+    return html;
+}
+
+function makeLinkSection(links) {
+    var html = '<h3>Links</h3>';
+    html += '<ul>';
+    for (link of links) {
+        html += '<li><a href="' + link.url + '">' + esc(link.description) + '</a></li>';
+    }
+    html += '</ul>';
+    return html;
+}
+
+function makeFileLink(data_id, category, filename, description, language) {
+    var map = {
+        'sce': 'scenario',
+        'convent': 'convention',
+        'conset': 'conset'
+    };
+    var url = 'https://alexandria.dk/download/' + map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
+    var html = '<li><a href="' + url + '">' + esc(description) + '</a> ' + (language ? '(' + esc(language) + ')' : '') + '</li>';
+    return html;
+}
+
+function replaceTemplate(string) {
+    return string.replace(/\{\$_(.*?)\}/g, function (capture, label) {
+        return replaceTemplateDirect(label);
+    });
+}
+
+function replaceTemplateDirect(label) {
+    translation = a.sitetexts.filter(text => text.language == 'en' && text.label == label )
+    if (translation.length) {
+        return translation[0].text;
+    }
+    return label;
 }
 
 function search() {

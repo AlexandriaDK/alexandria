@@ -1,5 +1,6 @@
-h1, h2, p, div, li {
+h1, h2, h3, h4, p, div, li {
     font-family: sans-serif;
+    margin-bottom: 0;
 }
 
 #status {
@@ -13,7 +14,6 @@ h1, h2, p, div, li {
 #menu {
     list-style-type: none;
     background-color: #ebd7a2;
-    display: none;
 }
 
 #menu li {
@@ -21,11 +21,26 @@ h1, h2, p, div, li {
     padding: 10px 5px 10px 0px;
 }
 
-#signout {
-    margin-top: 3em;
+ul {
+    margin: 0;
+}
+
+#signout, #onlinelink {
+    margin-top: 2em;
     font-size: 0.7em;
 }
 
 .datalist {
     columns: 2;
+}
+
+.indata {
+    font-size: 0.8em;
+    margin-left: 10px;
+    margin-top: 3px;
+    margin-bottom: 12px;
+}
+
+#cancelled {
+    text-decoration: line-through;
 }
