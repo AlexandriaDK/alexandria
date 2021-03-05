@@ -37,7 +37,7 @@
 	</div>
 
 {if $slist}
-	<h3 class="parttitle">{$_scenarios|ucfirst}</h3>
+	<h3 class="parttitle">{$_games|ucfirst}</h3>
 
 	<table class="scenariolist indata">
 	{foreach from=$slist item=$game}
