@@ -63,7 +63,7 @@ if ( $dataset ) {
 	case 'award_nominee_entities':
 	case 'award_nominees':
 	case 'person_game_title_connections':
-	case 'game_convention_title_connections':
+	case 'game_convention_presentation_connections':
 	case 'person_convention_connections':
 		$output = getall( $exportqueries[ $dataset ], FALSE );
 		break;
@@ -123,7 +123,7 @@ if ( $dataset ) {
 			'award_nominee_entities' => 'Persons connected to an award nomination',
 			'award_nominees' => 'Nominated persons or otherwise for an award',
 			'person_game_title_connections' => 'Relations between persons, games, and titles',
-			'game_convention_title_connections' => 'Relations between games, conventions, and presentations',
+			'game_convention_presentation_connections' => 'Relations between games, conventions, and presentations',
 			'genre_game_connections' => 'Relations between games and genres',
 			'person_convention_connections' => 'Relations between persons and conventions as organizers',
 		],
