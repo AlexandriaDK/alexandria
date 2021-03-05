@@ -44,3 +44,47 @@ ul {
 #cancelled {
     text-decoration: line-through;
 }
+
+a.game:link {
+	color: #c60;
+}
+
+a.game:visited {
+	color: #930;
+}
+
+a.person:link {
+	color: #b01;
+}
+
+a.person:visited {
+	color: #800;
+}
+
+a.convention:link, a.conventionset:link {
+	color: #090;
+}
+
+a.convention:visited, a.conventionset:visited {
+	color: #060;
+}
+
+a.system:link {
+	color: #30c;
+}
+
+a.system:visited {
+	color: #009;
+}
+
+tr {
+    vertical-align: top;
+}
+
+table.personorganizerroles tr td:first-child {
+    text-align: right;
+}
+
+td {
+    font-size: 0.9em;
+}
