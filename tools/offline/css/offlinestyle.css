@@ -41,7 +41,12 @@ ul {
     margin-bottom: 12px;
 }
 
-#cancelled {
+h3.cancelnotice {
+	font-style: italic;
+	color: #e22;
+}
+
+.cancelled {
     text-decoration: line-through;
 }
 
@@ -87,4 +92,16 @@ table.personorganizerroles tr td:first-child {
 
 td {
     font-size: 0.9em;
+}
+
+a.tag {
+	background-color: #ddd;
+	border-radius: 4px;
+	padding: 3px;
+	font-size: 0.8em;
+	color: black;
+
+}
+a.tag::before {
+	content: "🏷️ ";
 }

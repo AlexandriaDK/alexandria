@@ -34,7 +34,6 @@ function loadData() {
     categories_without_ids.forEach(function(category) {
         a[category] = data.result[category];
     });
-    console.log(a.files);
     $("#startup").hide();
     $("#menu").show();
     $("#currentdatainfo").text("This data set is from the following date: " + niceDate(data.request.received))
@@ -47,7 +46,7 @@ function showContent(html) {
     $('a[data-category="convention"]').click(showConvention);
     $('a[data-category="game"]').click(showGame);
     $('a[data-category="person"]').click(showPerson);
-    $('a[data-category="person"]').click(showRPGSystem);
+    $('a[data-category="system"]').click(showRPGSystem);
 }
 
 function showPersons() {
@@ -82,12 +81,12 @@ function showGames(data) {
     category = 'games'
     datatype = 'game';
     anchor = 'game';
-    var list = [];
-    for (var element in a[category]) { list.push(a[category][element]); }
-    list = list.filter(game => game.boardgame == (boardgames ? 1 : 0) )
-    list.sort(function(a,b) { return a.title > b.title; });
+    var allgames = [];
+    for (var element in a[category]) { allgames.push(a[category][element]); }
+    allgames = allgames.filter(game => game.boardgame == (boardgames ? 1 : 0) )
+    allgames.sort(function(a,b) { return a.title > b.title; });
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
-    for (element of list) {
+    for (element of allgames) {
         html += makeLink(anchor, datatype, element.id, element.title );
     }
     html += '</ul>';
@@ -118,11 +117,11 @@ function showConventionSets() {
 }
 
 function showConventions(data) {
-    id = data.target.dataset.id;
-    category = 'conventions';
-    datatype = 'convention';
-    anchor = 'convention';
-    title = 'Conventions for ' + esc(a.conventionsets[id].name);
+    var id = data.target.dataset.id;
+    var conset = a.conventionsets[id]
+    var category = 'conventions';
+    var title = 'Conventions for ' + esc(conset.name);
+    var files = a.files.filter(rel => rel.data_id == id && rel.category == 'conset');
 
     var list = [];
     for (var element in a[category]) {
@@ -134,19 +133,81 @@ function showConventions(data) {
         return a.year > b.year;
     });
 
-    html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
-    for (con of list) {
-        html += '<li>' + conLink(con.id) + '</li>';
+    html = '<h2>' + esc(title) + '</h2>';
+    if (conset.description) {
+        html += '<h3>About the convention:</h3><p>' + esc(conset.description).replace(/\n/g, '</br>'); + '</p>';
     }
-    html += '</ul>';
+    html += makeFileSection(files, id, 'conset');
+
+    html += '<h3>Conventions</h3>';
+    html += '<table>';
+    for (con of list) {
+        var country = a.conventions[con.id].country || conset.country;
+        html += '<tr>';
+        html += '<td>' + conLink(con.id) + '</td>';
+        html += '<td>' + a.conventions[con.id].place + (country ? (a.conventions[con.id].place ? ', ' : '') + country.toUpperCase() : '') + '</td>';
+        html += '</tr>';
+    }
+    html += '</table>';
     showContent(html);
     onlineLink('data?conset=' + id);
-
 }
 
 function showRPGSystems() {
     showCategoryList('RPG Systems', 'systems', 'rpgsystem', 'system', 'name');
     onlineLink('systemer');
+}
+
+function showRPGSystem(data) {
+    var id = data.target.dataset.id;
+    var system = a.systems[id];
+    var links = a.links.filter(rel => rel.data_id == id && rel.category == 'system');
+    var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'system');
+    var sysgames = [];
+    for (var game in a.games) { sysgames.push(a.games[game]); }
+    sysgames = sysgames.filter(game => game.system_id == id )
+    var html = '';
+    var html = '<h2>' + esc(system.name) + '</h2>';
+    if (system.description) {
+        html += '<p>' + esc(system.description).replace(/\n/g, '</br>'); + '</p>';
+    }
+    if (sysgames.length > 0) {
+        sysgames.sort(function(x,y) {
+            return (x.title) > (y.title);
+        });
+        html += '<h3>Scenarios</h3>';
+        html += '<table>';
+        for (game of sysgames) {
+            var gid = game.id;
+            var isDownloadable = a.files.find(file => file.category == 'sce' && file.data_id == gid);
+            var persons = a.person_game_title_connections.filter(rel => rel.game_id == gid && ( rel.title_id == 1 || rel.title_id == 5 ) );
+            var cons = a.game_convention_presentation_connections.filter(rel => rel.game_id == gid);
+            html += '<tr>';
+            html += '<td>' + (isDownloadable ? typeLink(gid, 'game', '💾') : '') + '</td>';
+            html += '<td>' + gameLink(gid) + '</td>';
+            html += '<td>';
+            for (person of persons) {
+                pid = person.person_id;
+                html += personLink(person.person_id);
+                html += '<br>';
+            }
+            html += '</td>';
+            html += '<td>';
+            for (con of cons) {
+                cid = con.convention_id;
+                html += conLink(cid) + '<br>';
+            }
+            html += '</td>';
+            html += '</tr>';
+        }
+        html += '</table>';
+    }
+
+    html += makeTriviaSection(trivia);
+    html += makeLinkSection(links);
+
+    showContent(html);
+    onlineLink('data?system=' + id);
 }
 
 function showCategoryList(title, category, anchor, datatype, label) {
@@ -165,28 +226,79 @@ function showCategoryList(title, category, anchor, datatype, label) {
     showContent(html);
 }
 
-function showRPGSystem(data) {
-    id = data.target.dataset.id;
-    s = a.systems[id];
-}
-
 function showConvention(data) {
-    id = data.target.dataset.id;
+    var id = data.target.dataset.id;
+    var con = a.conventions[id];
+    var nom = con.name + ' (' + con.year + ')';
+    var datetext = niceDateSet(con.begin, con.end)
+    var country = (con.country || a.conventionsets[con.conset_id].country)
+    var files = a.files.filter(rel => rel.data_id == id && rel.category == 'convent');
+    var organizers = a.person_convention_connections.filter(rel => rel.convention_id == id);
+    var links = a.links.filter(rel => rel.data_id == id && rel.category == 'convent');
+    var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'convent');
+    var games = a.game_convention_presentation_connections.filter(rel => rel.convention_id == id);
+    var scenarios = games.filter(rel => a.games[rel.game_id].boardgame == 0);
+    var boardgames = games.filter(rel => a.games[rel.game_id].boardgame == 1);
+    var cancelled = parseInt(a.conventions[id].cancelled);
+    var html = '<h2>' + esc(nom) + '</h2>';
+    var location = ''
+    if (con.place) {
+        location = con.place;
+        if (country) {
+            location += ', ';
+        }
+    }
+    if (country) {
+        location += country.toUpperCase()
+    }
+    if (location) {
+        html += '<p>Location: ' + esc(location) + '</p>';
+    }
+    if (datetext) {
+        html += '<p>Date: ' + datetext + '</p>';
+    }
+    html += '<h3>Part of: ' + consetLink(con.conset_id) + '</h3>';
+    if (cancelled) {
+        html += '<h3 class="cancelnotice">This convention was cancelled.</h3>';
+    }
+    if (con.description) {
+        html += '<h3>About the convention:</h3><p>' + esc(con.description).replace(/\n/g, '</br>'); + '</p>';
+    }
+    html += makeFileSection(files, id, 'sce');
+    html += makeConGameList('Scenarios', scenarios);
+    html += makeConGameList('Board games', boardgames);
+
+    if (organizers.length > 0) {
+        html += '<h3>Organizers</h3>';
+        html += '<table>';
+        for (organizer of organizers) {
+            html += '<tr>';
+            html += '<td>' + esc(organizer.role) + '</td>';
+            html += '<td>' + (organizer.person_id ? personLink(organizer.person_id) : organizer.person_extra) + '</td>';
+            html += '</tr>';
+        }
+        html += '</table>';
+    }
+    html += makeTriviaSection(trivia);
+    html += makeLinkSection(links);
+
+    showContent(html);
+    onlineLink('data?con=' + id);
 
 }
 
 function showPerson(data) {
-    id = data.target.dataset.id;
-    person = a.persons[id];
-    nom = person.firstname + ' ' + person.surname;
-    birth = person.birth; // not yet exposed
-    death = person.death; // not yet exposed
-    games = a.person_game_title_connections.filter(rel => rel.person_id == id);
+    var id = data.target.dataset.id;
+    var person = a.persons[id];
+    var nom = person.firstname + ' ' + person.surname;
+    var birth = person.birth; // not yet exposed
+    var death = person.death; // not yet exposed
+    var games = a.person_game_title_connections.filter(rel => rel.person_id == id);
     // awards :TODO:
-    organizers = a.person_convention_connections.filter(rel => rel.person_id == id);
-    links = a.links.filter(rel => rel.data_id == id && rel.category == 'aut');
-    trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'aut');
-    html = '<h2>' + esc(nom) + '</h2>';
+    var organizers = a.person_convention_connections.filter(rel => rel.person_id == id);
+    var links = a.links.filter(rel => rel.data_id == id && rel.category == 'aut');
+    var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'aut');
+    var html = '<h2>' + esc(nom) + '</h2>';
     if (games.length > 0) {
         html += '<h3>Games</h3>';
         html += '<table>';
@@ -228,20 +340,23 @@ function showPerson(data) {
 }
 
 function showGame(data) {
-    id = data.target.dataset.id;
-    game = a.games[id];
-    title = game.title;
-    persons = a.person_game_title_connections.filter(rel => rel.game_id == id);
-    descriptions = a.gamedescriptions.filter(rel => rel.game_id == id);
-    cons = a.game_convention_presentation_connections.filter(rel => rel.game_id == id);
+    var id = data.target.dataset.id;
+    var game = a.games[id];
+    var title = game.title;
+    var persons = a.person_game_title_connections.filter(rel => rel.game_id == id);
+    var descriptions = a.gamedescriptions.filter(rel => rel.game_id == id);
+    var cons = a.game_convention_presentation_connections.filter(rel => rel.game_id == id);
     // awards :TODO:
     // runs :TODO:
     // tags :TODO:
-    files = a.files.filter(rel => rel.data_id == id && rel.category == 'sce');
-    links = a.links.filter(rel => rel.data_id == id && rel.category == 'sce');
-    trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'sce');
+    var files = a.files.filter(rel => rel.data_id == id && rel.category == 'sce');
+    var links = a.links.filter(rel => rel.data_id == id && rel.category == 'sce');
+    var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'sce');
 
-    html = '<h2>' + esc(title) + '</h2>';
+    var html = '<h2>' + esc(title) + '</h2>';
+    if (game.system_id || game.system_extra) {
+        html += '<p class="indata">RPG System: ' + (game.system_id ? RPGSystemLink(game.system_id) : '' ) + ' ' + game.system_extra + '</p>';
+    }
     if (game.gms_min || game.players_min) {
         html += '<p class="indata">';
         if (game.gms_min) {
@@ -264,9 +379,7 @@ function showGame(data) {
         }
         html += '</ul>';
     }
-    if (files.length > 0) {
-        html += makeFileSection(files, id, 'sce');
-    }
+    html += makeFileSection(files, id, 'sce');
     if (descriptions.length > 0) {
         html += '<h3>Description</h3>';
         for (description of descriptions) {
@@ -316,7 +429,8 @@ function esc (text) { // escape, replace templates and then parse [[[links]]]
 }
 
 function bracketTemplate(text) {
-    var text = text.replace(/\[\[\[(c|s|p|cs)(\d+)\|([^\]]+)\]\]\]/g, bracketSections);
+    var text = text.replace(/\[\[\[(c|s|p|cs|sys)(\d+)\|([^\]]+)\]\]\]/g, bracketSections);
+    var text = text.replace(/\[\[\[tag\|([^\]]+)\]\]\]/g, bracketTagSections);
     return text;
 }
 
@@ -329,8 +443,14 @@ function bracketSections(match, category, data_id, label) {
         return conLink(data_id, label);
     } else if (category == 'cs') {
         return consetLink(data_id, label);
+    } else if (category == 'sys') {
+        return RPGSystemLink(data_id, label);
     }
     return match;
+}
+
+function bracketTagSections(match, tag) {
+    return tagLink(tag);
 }
 
 function onlineLink(parturl) {
@@ -344,6 +464,9 @@ function makeLink(anchor, datatype, elementid, linktext, optional = '') {
 }
 
 function makeFileSection(files, id, category) {
+    if (files.length == 0) {
+        return '';
+    }
     var html = '<h3>Download (from online archive)</h3>';
     html += '<ul>';
     for (file of files) {
@@ -390,36 +513,78 @@ function makeFileLink(data_id, category, filename, description, language) {
     return html;
 }
 
-function typeLink(data_id, category, linktext, title = '') {
-    var html = '<a href="#" class="' + category + '" title="' + esc(title) + '" data-category="' + category + '" data-id="' + data_id + '">' + esc(linktext) + '</a>';
+function makeConGameList(title, games) {
+    if (games.length == 0) {
+        return '';
+    }
+    games.sort(function(x,y) {
+        return (a.games[x.game_id].title) > (a.games[y.game_id].title);
+    });
+    var html = '';
+    html += '<h3>' + title + '</h3>';
+    html += '<table>';
+    for (game of games) {
+        var gid = game.game_id;
+        var isDownloadable = a.files.find(file => file.category == 'sce' && file.data_id == gid);
+        var persons = a.person_game_title_connections.filter(rel => rel.game_id == gid && ( rel.title_id == 1 || rel.title_id == 5 ) );
+        html += '<tr>';
+        html += '<td>' + (isDownloadable ? typeLink(gid, 'game', '💾') : '') + '</td>';
+        html += '<td>' + gameLink(gid) + '</td>';
+        html += '<td>';
+        for (person of persons) {
+            pid = person.person_id;
+            html += personLink(person.person_id);
+            html += '<br>';
+        }
+        html += '</td>';
+        html += '<td>' + (a.games[gid].system_id ? RPGSystemLink(a.games[gid].system_id) : '' ) + ' ' + a.games[gid].system_extra + '</td>';
+        html += '</tr>';
+    }
+    html += '</table>';
+
+    return html;
+
+}
+
+function typeLink(data_id, category, linktext, title = '', extraClass = '') {
+    var html = '<a href="#" class="' + category + (extraClass ? ' ' + extraClass : '') + '" title="' + esc(title) + '" data-category="' + category + '" data-id="' + data_id + '">' + esc(linktext) + '</a>';
     return html;
 }
 
-function conLink(cid, label = '') {
-    var text = a.conventions[cid].name + ' (' + a.conventions[cid].year + ')';
-    var begin = niceDate(a.conventions[cid].begin);
-    var end = niceDate(a.conventions[cid].end);
+function conLink(id, label = '') {
+    var text = a.conventions[id].name + ' (' + a.conventions[id].year + ')';
+    var begin = niceDate(a.conventions[id].begin);
+    var end = niceDate(a.conventions[id].end);
+    var cancelled = parseInt(a.conventions[id].cancelled);
     title = '';
     if (begin && end && (begin != end) ) {
         title = begin + ' - ' + end;
     } else if (begin) {
         title = begin;
     }
-    return typeLink(cid, 'convention', (label ? label : text), title)
+    
+    return typeLink(id, 'convention', (label ? label : text), title, (cancelled ? 'cancelled' : '') )
 }
 
-function consetLink(csid, label = '') {
-    return typeLink(csid, 'conventionset', (label ? label : a.conventionset[csid].name) );
+function consetLink(id, label = '') {
+    return typeLink(id, 'conventionset', (label ? label : a.conventionsets[id].name) );
 }
 
-function gameLink(gid, label = '') {
-    return typeLink(gid, 'game', (label ? label : a.games[gid].title) );
+function gameLink(id, label = '') {
+    return typeLink(id, 'game', (label ? label : a.games[id].title) );
 }
 
-function personLink(pid, label = '') {
-    return typeLink(pid, 'person', (label ? label : (a.person[pid].firstname + ' ' + a.person[pid].surname) ) );
+function personLink(id, label = '') {
+    return typeLink(id, 'person', (label ? label : (a.persons[id].firstname + ' ' + a.persons[id].surname) ) );
 }
 
+function RPGSystemLink(id, label = '') {
+    return typeLink(id, 'system', (label ? label : a.systems[id].name ) );
+}
+
+function tagLink(tag) {
+    return typeLink(tag, 'tag', tag);
+}
 
 function downloadable(game_id) {
     files = a.files.filter(rel => rel.data_id == game_id && rel.category == 'sce');
@@ -433,9 +598,9 @@ function replaceTemplate(string) {
 }
 
 function replaceTemplateDirect(label) {
-    translation = a.sitetexts.filter(text => text.language == 'en' && text.label == label )
-    if (translation.length) {
-        return translation[0].text;
+    translation = a.sitetexts.find(text => text.language == 'en' && text.label == label )
+    if (translation) {
+        return translation.text;
     }
     return label;
 }
@@ -443,6 +608,7 @@ function replaceTemplateDirect(label) {
 function search() {
     html = 'Search does not work yet.';
     showContent(html);
+    onlineLink('find?')
     return false;
 }
 
@@ -453,4 +619,16 @@ function niceDate(isodate) {
         return '';
     }
     return new Intl.DateTimeFormat('en-GB', options).format(date)
+}
+
+function niceDateSet(begin, end) {
+    var begin = niceDate(begin);
+    var end = niceDate(end);
+    var datetext = '';
+    if (begin && end && (begin != end) ) {
+        datetext = begin + ' - ' + end;
+    } else if (begin) {
+        datetext = begin;
+    }
+    return datetext;
 }
