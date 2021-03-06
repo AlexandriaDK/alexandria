@@ -34,7 +34,7 @@ if (! function_exists('mb_basename') ) {
 }
 
 // Remove file from database
-if ($action == "changefile" && $do == "Delete") {
+if ($action == "changefile" && $do == "Remove") {
 	
 	$q = "DELETE FROM filedata WHERE files_id = '$id'";
 	$r = doquery($q);
@@ -293,7 +293,7 @@ if ($data_id && $category) {
 		      '<td ><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="40"></td>'.
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
 		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
-		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Delete"></td>'.
+		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Remove"></td>'.
 		      '<td ><a href="http://download.alexandria.dk/files/'.getcategorydir($category).'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
