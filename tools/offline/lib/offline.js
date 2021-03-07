@@ -57,18 +57,7 @@ function showPersons() {
     datatype = 'person';
     anchor = 'person';
 
-    if (sortcache.persons) {
-        var list = sortcache.persons;
-    } else {
-        var list = [];
-        for (var element in a[category]) {
-            list.push(a[category][element]);
-        }
-        list.sort(function(a,b) {
-            return (a.firstname + a.surname > b.firstname + b.surname ? 1 : -1);
-        });
-        sortcache.persons = list;
-    }
+    list = getPersons();
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     for (element of list) {
         html += makeLink(anchor, datatype, element.id, (element.firstname + ' ' + element.surname) );
@@ -82,23 +71,14 @@ function showGames(data) {
     boardgames = (data.target.hash == '#boardgames');
     if (boardgames) {
         var title = 'Board games';
-        var cachename = 'boardgames';
     } else {
         var title = 'Scenarios';
-        var cachename = 'scenarios';
     }
     var category = 'games'
     var datatype = 'game';
     var anchor = 'game';
-    if (sortcache[cachename]) {
-        var allgames = sortcache[cachename]
-    } else {
-        var allgames = [];
-        for (var element in a[category]) { allgames.push(a[category][element]); }
-        allgames = allgames.filter(game => game.boardgame == (boardgames ? 1 : 0) )
-        allgames.sort(function(a,b) { return (a.title > b.title ? 1 : -1); });
-        sortcache[cachename] = allgames;
-    }
+
+    var allgames = getGames(boardgames);
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     for (element of allgames) {
         html += makeLink(anchor, datatype, element.id, element.title );
@@ -580,7 +560,7 @@ function conLink(id, label = '') {
     var begin = niceDate(a.conventions[id].begin);
     var end = niceDate(a.conventions[id].end);
     var cancelled = parseInt(a.conventions[id].cancelled);
-    title = '';
+    var title = '';
     if (begin && end && (begin != end) ) {
         title = begin + ' - ' + end;
     } else if (begin) {
@@ -611,7 +591,7 @@ function tagLink(tag) {
 }
 
 function downloadable(game_id) {
-    files = a.files.filter(rel => rel.data_id == game_id && rel.category == 'sce');
+    var files = a.files.filter(rel => rel.data_id == game_id && rel.category == 'sce');
     return (files.length > 0);
 }
 
@@ -622,17 +602,123 @@ function replaceTemplate(string) {
 }
 
 function replaceTemplateDirect(label) {
-    translation = a.sitetexts.find(text => text.language == 'en' && text.label == label )
+    var translation = a.sitetexts.find(text => text.language == 'en' && text.label == label )
     if (translation) {
         return translation.text;
     }
     return label;
 }
 
+function getCache(category, sortfunction) {
+    if (sortcache[category]) {
+        var list = sortcache[category];
+    } else {
+        var list = [];
+        for (var element in a[category]) {
+            list.push(a[category][element]);
+        }
+        list.sort(sortfunction);
+        sortcache[category] = list;
+    }
+    return list;
+}
+
+function getPersons() {
+    return getCache('persons', function(a,b) {
+        return (a.firstname + a.surname > b.firstname + b.surname ? 1 : -1);
+    });
+}
+
+function getGames(boardgames) {
+    var cachename = (boardgames ? 'boardgames' : 'scenarios')
+    var category = 'games';
+    if (sortcache[cachename]) {
+        var allgames = sortcache[cachename]
+    } else {
+        var allgames = [];
+        for (var element in a[category]) { allgames.push(a[category][element]); }
+        allgames = allgames.filter(game => game.boardgame == (boardgames ? 1 : 0) )
+        allgames.sort(function(a,b) { return (a.title > b.title ? 1 : -1); });
+        sortcache[cachename] = allgames;
+    }
+    return allgames;
+}
+
+function getScenarios() {
+    return getGames(false);
+}
+
+function getBoardgames() {
+    return getGames(true);
+}
+
+function getConventions() {
+    return getCache('conventions', function(a,b) {
+        if (a.conset_id == b.conset_id) { return a.year - b.year} else { return (a.name > b.name ? 1 : -1) }
+    });
+}
+
+function getSystems() {
+    return getCache('systems', function(a,b) {
+        return (a.name > b.name ? 1 : -1);
+    });
+}
+
 function search() {
-    html = 'Search does not work yet.';
+    var search = $('#searchtext').val()
+    if (search === '') {
+        return false;
+    }
+    var searchUpper = search.toUpperCase();
+    var result = [];
+    result.persons = getPersons().filter(p => (p.firstname + ' ' + p.surname).toUpperCase().includes(searchUpper) );
+    result.scenarios = getScenarios().filter(p => (p.title).toUpperCase().includes(searchUpper) );
+    result.boardgames = getBoardgames().filter(p => (p.title).toUpperCase().includes(searchUpper) );
+    result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) );
+    result.systems = getSystems().filter(p => (p.name).toUpperCase().includes(searchUpper) );
+
+    var html = '<h2>Search result</h2>';
+    if (result.persons.length > 0) {
+        html += '<h3>People</h3><ul>';
+        for (element of result.persons) {
+            html += makeLink('person', 'person', element.id, (element.firstname + ' ' + element.surname) );
+        }    
+        html += '</ul>';
+    }
+    if (result.scenarios.length > 0) {
+        html += '<h3>Scenarios</h3><ul>';
+        for (element of result.scenarios) {
+            html += makeLink('game', 'game', element.id, element.title );
+        }    
+        html += '</ul>';
+    }
+    if (result.boardgames.length > 0) {
+        html += '<h3>Board games</h3><ul>';
+        for (element of result.boardgames) {
+            html += makeLink('game', 'game', element.id, element.title );
+        }    
+        html += '</ul>';
+    }
+    if (result.conventions.length > 0) {
+        html += '<h3>Conventions</h3><ul>';
+        for (element of result.conventions) {
+            html += makeLink('convention', 'convention', element.id, element.name + ' (' + element.year + ')' );
+        }    
+        html += '</ul>';
+    }
+    if (result.systems.length > 0) {
+        html += '<h3>RPG Systems</h3><ul>';
+        for (element of result.systems) {
+            html += makeLink('system', 'system', element.id, element.name);
+        }    
+        html += '</ul>';
+    }
+    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length == 0 ) {
+        html += 'Nothing found.'
+    }
+
     showContent(html);
-    onlineLink('find?')
+    onlineLink('find?find=' + search )
     return false;
 }
 
