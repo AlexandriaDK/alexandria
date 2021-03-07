@@ -674,7 +674,7 @@ function search() {
     result.persons = getPersons().filter(p => (p.firstname + ' ' + p.surname).toUpperCase().includes(searchUpper) );
     result.scenarios = getScenarios().filter(p => (p.title).toUpperCase().includes(searchUpper) );
     result.boardgames = getBoardgames().filter(p => (p.title).toUpperCase().includes(searchUpper) );
-    result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) );
+    result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) || (a.conventionsets[p.conset_id].name + ' ' + p.year).toUpperCase().includes(searchUpper)  );
     result.systems = getSystems().filter(p => (p.name).toUpperCase().includes(searchUpper) );
 
     var html = '<h2>Search result</h2>';
