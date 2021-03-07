@@ -18,7 +18,7 @@ if (strlen($term) >= 2) {
 		UNION ALL
 			SELECT sce.id, title AS label, 'sce' AS type, 'scenarie' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(aut.firstname,' ',aut.surname) ORDER BY aut.popularity DESC, aut.id SEPARATOR '$separator'), '') AS note FROM sce LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id IN (1,5) LEFT JOIN aut ON asrel.aut_id = aut.id  WHERE title LIKE '$escapequery%' GROUP BY sce.id
 		UNION ALL
-			SELECT sys.id, name AS label, 'sys' AS type, 'system' AS linkpart, 'system' AS filepart, MIN(sce.title) AS note FROM sys LEFT JOIN sce ON sys.id = sce.sys_id WHERE name LIKE '$escapequery%' GROUP BY sys.id
+			SELECT sys.id, name AS label, 'sys' AS type, 'system' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM sys LEFT JOIN sce ON sys.id = sce.sys_id WHERE name LIKE '$escapequery%' GROUP BY sys.id
 		UNION ALL
 			SELECT convent.id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convent WHERE name LIKE '$escapequery%' OR CONCAT(name,' (',year,')') LIKE '$escapequery%' OR CONCAT(name,' ',year) LIKE '$escapequery%'
 		UNION ALL
@@ -36,7 +36,7 @@ if (strlen($term) >= 2) {
 		if (file_exists($picfile) ) {
 			$data['thumbnail'] = $picfile;
 		}
-		if ( in_array( $data['type'], ['aut', 'sce'] ) ) { // max 3 ($separator_limit) items
+		if ( in_array( $data['type'], ['aut', 'sce', 'sys'] ) ) { // max 3 ($separator_limit) items
 			$anote = explode( $separator, $data['note'] );
 			$note = implode( ", ", array_slice( $anote, 0, $separator_limit ) );
 			if ( count( $anote ) > $separator_limit ) {
