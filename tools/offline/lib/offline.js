@@ -1,5 +1,7 @@
 document.getElementById('startup').style.display = 'block';
 
+var sortcache = [];
+
 $(function() {
     initialize();
 });
@@ -55,13 +57,18 @@ function showPersons() {
     datatype = 'person';
     anchor = 'person';
 
-    var list = [];
-    for (var element in a[category]) {
-        list.push(a[category][element]);
+    if (sortcache.persons) {
+        var list = sortcache.persons;
+    } else {
+        var list = [];
+        for (var element in a[category]) {
+            list.push(a[category][element]);
+        }
+        list.sort(function(a,b) {
+            return (a.firstname + a.surname > b.firstname + b.surname ? 1 : -1);
+        });
+        sortcache.persons = list;
     }
-    list.sort(function(a,b) {
-        return (a.firstname + a.surname) > (b.firstname + b.surname);
-    });
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     for (element of list) {
         html += makeLink(anchor, datatype, element.id, (element.firstname + ' ' + element.surname) );
@@ -74,17 +81,24 @@ function showPersons() {
 function showGames(data) {
     boardgames = (data.target.hash == '#boardgames');
     if (boardgames) {
-        title = 'Board games';
+        var title = 'Board games';
+        var cachename = 'boardgames';
     } else {
-        title = 'Scenarios';
+        var title = 'Scenarios';
+        var cachename = 'scenarios';
     }
-    category = 'games'
-    datatype = 'game';
-    anchor = 'game';
-    var allgames = [];
-    for (var element in a[category]) { allgames.push(a[category][element]); }
-    allgames = allgames.filter(game => game.boardgame == (boardgames ? 1 : 0) )
-    allgames.sort(function(a,b) { return a.title > b.title; });
+    var category = 'games'
+    var datatype = 'game';
+    var anchor = 'game';
+    if (sortcache[cachename]) {
+        var allgames = sortcache[cachename]
+    } else {
+        var allgames = [];
+        for (var element in a[category]) { allgames.push(a[category][element]); }
+        allgames = allgames.filter(game => game.boardgame == (boardgames ? 1 : 0) )
+        allgames.sort(function(a,b) { return (a.title > b.title ? 1 : -1); });
+        sortcache[cachename] = allgames;
+    }
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     for (element of allgames) {
         html += makeLink(anchor, datatype, element.id, element.title );
@@ -99,14 +113,19 @@ function showConventionSets() {
     category = 'conventionsets';
     anchor = 'conventionset';
     datatype = 'conventionset';
-    var list = [];
 
-    for (var element in a[category]) {
-        list.push(a[category][element]);
+    if (sortcache.conventionsets) {
+        var list = sortcache.conventionsets
+    } else {
+        var list = [];
+        for (var element in a[category]) {
+            list.push(a[category][element]);
+        }
+        list.sort(function(a,b) {
+            return (a.name > b.name ? 1 : -1);
+        });
+        sortcache.conventionsets = list;
     }
-    list.sort(function(a,b) {
-        return a.name > b.name;
-    });
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     for (element of list) {
         html += makeLink(anchor, datatype, element.id, element.name );
@@ -130,7 +149,7 @@ function showConventions(data) {
     list = list.filter(convent => convent.conset_id == id)
 
     list.sort(function(a,b) {
-        return a.year > b.year;
+        return a.year - b.year;
     });
 
     html = '<h2>' + esc(title) + '</h2>';
@@ -173,7 +192,7 @@ function showRPGSystem(data) {
     }
     if (sysgames.length > 0) {
         sysgames.sort(function(x,y) {
-            return (x.title) > (y.title);
+            return (x.title > y.title ? 1 : -1);
         });
         html += '<h3>Scenarios</h3>';
         html += '<table>';
@@ -211,14 +230,19 @@ function showRPGSystem(data) {
 }
 
 function showCategoryList(title, category, anchor, datatype, label) {
-    html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
-    var list = [];
-    for (var element in a[category]) {
-        list.push(a[category][element]);
+    if (sortcache[category]) {
+        var list = sortcache[category];
+    } else {
+        var list = [];
+        for (var element in a[category]) {
+            list.push(a[category][element]);
+        }
+        list.sort(function(a,b) { 
+            return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
+        });
+        sortcache[category] = list;
     }
-    list.sort(function(a,b) { 
-        return a[label].toUpperCase() > b[label].toUpperCase();
-    });
+    html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     for (element of list) {
         html += '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
     }
@@ -518,7 +542,7 @@ function makeConGameList(title, games) {
         return '';
     }
     games.sort(function(x,y) {
-        return (a.games[x.game_id].title) > (a.games[y.game_id].title);
+        return (a.games[x.game_id].title > a.games[y.game_id].title ? 1 : -1);
     });
     var html = '';
     html += '<h3>' + title + '</h3>';
