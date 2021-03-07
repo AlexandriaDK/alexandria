@@ -268,7 +268,7 @@ function showConvention(data) {
     if (con.description) {
         html += '<h3>About the convention:</h3><p>' + esc(con.description).replace(/\n/g, '</br>'); + '</p>';
     }
-    html += makeFileSection(files, id, 'sce');
+    html += makeFileSection(files, id, 'convent');
     html += makeConGameList('Scenarios', scenarios);
     html += makeConGameList('Board games', boardgames);
 
@@ -509,7 +509,7 @@ function makeLinkSection(links) {
 function makeFileLink(data_id, category, filename, description, language) {
     var map = {
         'sce': 'scenario',
-        'convent': 'convention',
+        'convent': 'convent',
         'conset': 'conset'
     };
     var url = 'https://alexandria.dk/download/' + map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
