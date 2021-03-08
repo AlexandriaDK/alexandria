@@ -217,7 +217,7 @@ function showCategoryList(title, category, anchor, datatype, label) {
         for (var element in a[category]) {
             list.push(a[category][element]);
         }
-        list.sort(function(a,b) { 
+        list.sort(function(a,b) {
             return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
         });
         sortcache[category] = list;
@@ -566,7 +566,6 @@ function conLink(id, label = '') {
     } else if (begin) {
         title = begin;
     }
-    
     return typeLink(id, 'convention', (label ? label : text), title, (cancelled ? 'cancelled' : '') )
 }
 
@@ -682,35 +681,35 @@ function search() {
         html += '<h3>People</h3><ul>';
         for (element of result.persons) {
             html += makeLink('person', 'person', element.id, (element.firstname + ' ' + element.surname) );
-        }    
+        }
         html += '</ul>';
     }
     if (result.scenarios.length > 0) {
         html += '<h3>Scenarios</h3><ul>';
         for (element of result.scenarios) {
             html += makeLink('game', 'game', element.id, element.title );
-        }    
+        }
         html += '</ul>';
     }
     if (result.boardgames.length > 0) {
         html += '<h3>Board games</h3><ul>';
         for (element of result.boardgames) {
             html += makeLink('game', 'game', element.id, element.title );
-        }    
+        }
         html += '</ul>';
     }
     if (result.conventions.length > 0) {
         html += '<h3>Conventions</h3><ul>';
         for (element of result.conventions) {
             html += makeLink('convention', 'convention', element.id, element.name + ' (' + element.year + ')' );
-        }    
+        }
         html += '</ul>';
     }
     if (result.systems.length > 0) {
         html += '<h3>RPG Systems</h3><ul>';
         for (element of result.systems) {
             html += makeLink('system', 'system', element.id, element.name);
-        }    
+        }
         html += '</ul>';
     }
     if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length == 0 ) {

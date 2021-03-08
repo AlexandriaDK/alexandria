@@ -110,22 +110,13 @@ print "<tr valign=top><td>Description</td><td><textarea name=description cols=60
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($system ? "Update" : "Create").' system">' . ($system ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete system?\n\nAs a safety precaution all relations will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($system) {
-// Mulighed for at rette links
 	print changelinks($system,$this_type);
-
-// Mulighed for at rette trivia
 	print changetrivia($system,$this_type);
-
-// Mulighed for at rette alias
 	print changealias($system,$this_type);
-
-// Vis evt. billede
+	print changefiles($system,$this_type);
 	print showpicture($system,$this_type);
-
-// Vis tickets
 	print showtickets($system,$this_type);
 
-// Scenarier under dette system
 	$q = getall("SELECT id, title FROM sce WHERE sys_id = '$system' ORDER BY title, id");
 	print "<tr valign=top><td align=right>Contains the following<br>scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {

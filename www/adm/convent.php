@@ -261,37 +261,17 @@ print "</tr>\n\n";
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($con ? "Edit" : "Create").' con">' . ($con ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete con?\n\nAs a precaution every relation will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
-## Links og scenarier i con ##
-
 if ($con) {
-// Mulighed for at rette links
 	print changelinks($con,$this_type);
-
-// Mulighed for at rette trivia
 	print changetrivia($con,$this_type);
-
-// Mulighed for at rette alias
 	print changealias($con,$this_type);
-
-// Mulighed for at rette alias
 	print changeorganizers($con,$this_type);
-
-// Mulighed for at rette filer
 	print changefiles($con,$this_type);
-
-// Mulighed for at rette priser for kongressen
 	print changeawards($con);
-
-// Hvor mange personer har markeret kongressen i deres log?
 	print changeuserlog($con,$this_type);
-
-// Vis evt. billede
 	print showpicture($con,$this_type);
-
-// Vis tickets
 	print showtickets($con,$this_type);
 
-// Scenarier under con'en	
 	$q = getall("SELECT sce.id, title, pre.id AS preid, event FROM sce, csrel, pre WHERE csrel.convent_id = '$con' AND csrel.sce_id = sce.id AND csrel.pre_id = pre.id ORDER BY title");
 	print dberror();
 	print "<tr valign=top><td>Scenarios connected</td><td>\n";
@@ -304,7 +284,6 @@ if ($con) {
 		if ($preid > 1) print " ($event)";
 		print "<br>";
 	}
-	
 	print "</td></tr>\n";
 }
 

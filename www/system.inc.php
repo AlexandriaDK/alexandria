@@ -58,6 +58,9 @@ if (count($q) > 0) {
 	}
 }
 
+// List of files
+$filelist = getfilelist($system,$this_type);
+
 // List of aliases
 $aliaslist = getaliaslist($system,$this_type);
 
@@ -81,6 +84,8 @@ $t->assign('description',$r['description']);
 $t->assign('gamelist',$gamelist);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
+$t->assign('filelist',$filelist);
+$t->assign('filedir', getcategorydir($this_type) );
 
 $t->display('data.tpl');
 ?>

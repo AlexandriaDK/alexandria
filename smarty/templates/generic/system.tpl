@@ -23,6 +23,8 @@
 	</p>
 {/if}
 
+{include file="filelist.tpl"}
+
 	{* clear for picture *}
 	<div style="clear: both;">
 	</div>

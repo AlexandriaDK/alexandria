@@ -47,10 +47,8 @@ if ($action == "ret" && $person) {
 
 	}
 }
-//
-// Slet person
-//
 
+// Delete person
 if ($action == "Delete" && $person) { // burde tjekke om person findes
 	$error = [];
 	if (getCount('asrel', $person, FALSE, 'aut') ) $error[] = "scenario";
@@ -134,23 +132,12 @@ tr("Date of death","death", $death, "", "YYYY-MM-DD", (invaliddate($death) ? "te
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($person ? "Update" : "Create").' person">' . ($person ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete person?\n\nAs a safety mecanism it will be checked if all references are removed.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($person) {
-// Mulighed for at rette links
 	print changelinks($person,$this_type);
-
-// Mulighed for at rette trivia
 	print changetrivia($person,$this_type);
-
-// Mulighed for at rette alias
 	print changealias($person,$this_type);
-
-// Vis evt. billede
 	print showpicture($person,$this_type);
-
-// Vis tickets
 	print showtickets($person,$this_type);
 
-
-// Scenarier, personen har medvirket til
 	$q = getall("SELECT sce.id, sce.title AS title, title.title AS auttitle FROM sce, asrel, title WHERE sce.id = asrel.sce_id AND asrel.tit_id = title.id AND asrel.aut_id = '$person' ORDER BY title.id, sce.title");
 	print "<tr valign=top><td>Scenarios</td><td>\n";
         foreach($q AS list($id, $title, $auttitle) ) {
@@ -164,12 +151,9 @@ if ($person) {
 	}
 	print "</td></tr>\n";
 }
-
 ?>
-
 </table>
-
-</FORM>
+</form>
 
 </body>
 </html>

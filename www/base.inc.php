@@ -508,12 +508,12 @@ function compare_token_error( $usertoken, $sessiontoken ) {
 }
 
 // generic functions
-
 function getcategorydir($category) {
 	$paths = [
 		"sce" => "scenario",
 		"convent" => "convent",
 		"conset" => "conset",
+		"sys" => "system",
 		"tag" => "tag"
 	];
 	return $paths[$category];
