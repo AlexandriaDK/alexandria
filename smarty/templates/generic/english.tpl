@@ -50,7 +50,7 @@
 		</ul>	
 
 		<p>
-			You can contact <a href="mailto:peter@ter.dk">Peter Brodersen</a> who is responsible for the site.
+			You can contact <a href="mailto:peter@alexandria.dk">Peter Brodersen</a> who is responsible for the site.
 		</p>
 
 		<hr />
