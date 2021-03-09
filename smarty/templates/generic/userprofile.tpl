@@ -39,7 +39,7 @@
 		</h3>
 
 		<p>
-			{$_user_connected_accounts_information|sprintf:'mailto:peter@ter.dk':'peter@ter.dk'|nl2br}
+			{$_user_connected_accounts_information|sprintf:'mailto:peter@alexandria.dk':'peter@alexandria.dk'|nl2br}
 		</p>
 
 		<div class="accounts">

@@ -2,6 +2,8 @@
 require("./connect.php");
 require("base.inc.php");
 
+$recipient = 'peter@alexandria.dk';
+
 function mailsanitize($string) {
 	return str_replace(array("\r","\n"),"",$string);
 }
@@ -45,7 +47,6 @@ if (strtolower(trim($_REQUEST['human'])) != "a") {
 	die("Wrong anti-spam code. Type <b>A</b> in the field at the bottom.");
 }
 
-
 $query = "
 	INSERT INTO updates (id, data_id, category, title, description, submittime, user_name, user_email, user_id)
 	VALUES (NULL, '$data_id', '$cat', '".dbesc($data_label)."', '".dbesc($output)."', NOW(), '".dbesc($user_name)."', '".dbesc($user_email)."', '$user_id' )";
@@ -54,7 +55,7 @@ $last_id = doquery($query);
 award_achievement(20);
 
 // send en mail med rettelserne
-$email = (strstr($user_email,'@') ? $user_email : 'peter@ter.dk');
+$email = (strstr($user_email,'@') ? $user_email : $recipient );
 $from = "\"$user_name\" <$email>"; // :TODO: should probably be sanitized
 $link = "https://alexandria.dk/adm/ticket.php?id=$last_id";
 if ($data_id && $cat) {
@@ -63,7 +64,7 @@ if ($data_id && $cat) {
 	$label = $data_label;
 }
 
-$to = "peter@ter.dk";
+$to = $recipient;
 $subject = "[Alexandria] Rettelser (#$last_id)";
 $headers = "From: $from\r\nContent-Type: text/plain; charset=\"utf-8\"";
 $body = "Alexandria-rettelse:\r\n\r\n$label\r\n".wordwrap(stripslashes($mailoutput))."\r\n\r\n$link";

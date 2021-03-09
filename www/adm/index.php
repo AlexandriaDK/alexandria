@@ -512,7 +512,7 @@ Gott in Himmel, we should have some better SVG illustrations here
 		<li>
 			Are you missing a feature that could make your life as an editor easier? 
 			Drop a note in the <a href="https://www.facebook.com/groups/1602088646679278/">Facebook editor group</a> or
-			mail administrator Peter Brodersen at <a href="mailto:peter@ter.dk">peter@ter.dk</a>
+			mail administrator Peter Brodersen at <a href="mailto:peter@alexandria.dk">peter@alexandria.dk</a>
 		</li>
 		<li>
 			Hotkey to go up a page: <a href="../" accesskey="q">Hotkey + Q</a>.
