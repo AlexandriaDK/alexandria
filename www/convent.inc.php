@@ -88,7 +88,7 @@ if ($convent['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.event_label, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, COUNT(files.id) AS files, aut.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, sce.title) AS title_translation
+	SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.event_label, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, COUNT(files.id) AS files, aut.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, sce.title) AS title_translation, COALESCE(a2.label, sys.name) AS system_translation
 	FROM csrel
 	INNER JOIN sce ON sce.id = csrel.sce_id
 	LEFT JOIN pre ON csrel.pre_id = pre.id 
@@ -97,6 +97,7 @@ $q = getall("
 	LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id IN(1,4,5)
 	LEFT JOIN aut ON aut.id = asrel.aut_id
 	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias a2 ON sys.id = a2.data_id AND a2.category = 'sys' AND a2.language = '" . LANG . "' AND a2.visible = 1
 	WHERE csrel.convent_id = $con
 	GROUP BY sce.id, pre.id, aut.id
 	ORDER BY boardgame, title_translation, aut.surname, aut.firstname
@@ -105,7 +106,7 @@ $q = getall("
 foreach ($q AS $r) {
 	$sid = $r['id'];
 	if ( ! isset($gamelist[$sid])) {
-		$gamelist[$sid] = ['game' => ['title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['aut_extra'], 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['sys_id'], 'system_name' => $r['sys_name'], 'system_ext' => $r['sys_ext'], 'pre_id' => $r['pre_id'], 'pre_event' => $r['pre_event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'] ], 'person' => [] ];
+		$gamelist[$sid] = ['game' => ['title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['aut_extra'], 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['sys_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['sys_ext'], 'pre_id' => $r['pre_id'], 'pre_event' => $r['pre_event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'] ], 'person' => [] ];
 	}
 	if ($r['person_id']) {
 		$gamelist[$sid]['person'][$r['person_id']] = $r['person_name'];
@@ -128,25 +129,6 @@ foreach($gamelist AS $game_id => $game) {
 		}
 	}
 
-	/*
-	if ($rs['boardgame'] == 0) {
-		if ($rs['preid'] == 1) {
-			$sce_new++;
-		} elseif ($rs['preid'] == 2 || $rs['preid'] == 3) {
-			$sce_rerun++;
-		} elseif ($rs['preid'] == 99) {
-			$sce_cancelled++;
-		}
-	} else {
-		if ($rs['preid'] == 1) {
-			$board_new++;
-		} elseif ($rs['preid'] == 2 || $rs['preid'] == 3) {
-			$board_rerun++;
-		} elseif ($rs['preid'] == 99) {
-			$board_cancelled++;
-		}
-	}
-	*/
 	$personlist = [];
 	$personlistextra = [];
 	$person_count = 0;
@@ -185,6 +167,7 @@ foreach($gamelist AS $game_id => $game) {
 		'systemhtml' => $sysstring ?? FALSE,
 		'system_id' => $game['game']['system_id'],
 		'system_name' => $game['game']['system_name'],
+		'system_translation' => $game['game']['system_translation'],
 		'system_extra' => $game['game']['system_ext'],
 		'boardgame' => $game['game']['boardgame'],
 	];
@@ -195,7 +178,7 @@ foreach($gamelist AS $game_id => $game) {
 		$scenlistdata[] = $datalistdata;
 	}
 
-// Tilføj antal scenarier, nye som reruns:
+// Count scenarios based on presentation (premiere, re-run, ...)
 	/*
 	$total = $sce_new + $sce_rerun + $sce_cancelled;
 	$board_total = $board_new + $board_rerun + $board_cancelled;

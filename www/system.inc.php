@@ -11,6 +11,7 @@ if ($system == 23) award_achievement(54); // MERP
 if ($system == 3)  award_achievement(68); // Paranoia
 
 $r = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
+$showname = $sysname = $r['name'];
 
 if ($r['id'] == 0) {
 	$t->assign('content', $t->getTemplateVars('_nomatch') );
@@ -58,11 +59,22 @@ if (count($q) > 0) {
 	}
 }
 
+// List of aliases, alternative title?
+$alttitle = getcol("SELECT label FROM alias WHERE data_id = $system AND category = '$this_type' AND language = '$lang' AND visible = 1");
+if ( count( $alttitle ) == 1 ) {
+	$showname = $alttitle[0];
+	$aliaslist = getaliaslist($system, $this_type, $showname);
+	if ( $aliaslist ) {
+		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>, " . $aliaslist;
+	} else {
+		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>";
+	}
+} else {
+	$aliaslist = getaliaslist($system, $this_type);
+}
+
 // List of files
 $filelist = getfilelist($system,$this_type);
-
-// List of aliases
-$aliaslist = getaliaslist($system,$this_type);
 
 // Links and trivia
 $linklist = getlinklist($system,$this_type);
@@ -72,11 +84,11 @@ $trivialist = gettrivialist($system,$this_type);
 $available_pic = hasthumbnailpic($system, $this_type);
 
 // Smarty
-$t->assign('pagetitle',$r['name']);
+$t->assign('pagetitle', $showname);
 $t->assign('type',$this_type);
 
 $t->assign('id',$system);
-$t->assign('name',$r['name']);
+$t->assign('name',$showname);
 $t->assign('pic',$available_pic);
 $t->assign('ogimage', getimageifexists($system, 'system') );
 $t->assign('alias',$aliaslist);

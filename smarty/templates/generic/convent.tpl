@@ -79,10 +79,26 @@
 	<div style="clear: both;">
 	</div>
 
+<!--
+<script>
+$(document).ready(function(){
+  $("#filterSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".conlist tr:not(.listhead)").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+<p style="text-align: right; margin: 0px; padding: 0px;"><input id="filterSearch" type="text" placeholder="🝖 Filter list"></p>
+-->
+
 {if $scenlistdata || $boardlistdata }
-	<table class="indata">
+	<table class="indata conlist">
 	{if $scenlistdata}
-		<tr><td colspan="8">
+	
+		<tr class="listhead"><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="roleplay">
 			{$_scenarios|ucfirst}:
 		</h3>
@@ -98,11 +114,11 @@
 		<td>{$scenarios.runsymbol}</td>
 		<td><a href="data?scenarie={$scenarios.id}" class="scenarie">{$scenarios.title|escape}</a></td>
 		<td style="padding-left: 10px">{$scenarios.authtml}{if $scenarios.autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.autextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_name|escape}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
+		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_translation}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
 	{/foreach}
 	{/if}
 	{if $boardlistdata}
-		<tr><td colspan="8">
+		<tr class="listhead"><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="boardgames">
 			{$_boardgames|ucfirst}:
 		</h3>

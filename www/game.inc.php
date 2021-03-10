@@ -5,9 +5,12 @@ if ($game) {
 }
 
 $r = getrow("
-	SELECT sce.id, title, sce.intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname FROM sce
-	LEFT JOIN sys ON sys.id = sys_id
+	SELECT sce.id, title, sce.intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname, COALESCE(alias.label, sys.name) AS system_translation
+	FROM sce
+	LEFT JOIN sys ON sce.sys_id = sys.id
+	LEFT JOIN alias ON sce.sys_id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE sce.id = $scenarie
+	GROUP BY sce.id
 ");
 $showtitle = $gametitle = $r['title'];
 
@@ -122,8 +125,8 @@ if ($forflist) {
 
 
 // System
-if ($r['sysname']) {
-	$syspart = "<a href=\"data?system={$r['sys_id']}\" class=\"system\">".htmlspecialchars($r['sysname'])."</a>";
+if ($r['system_translation']) {
+	$syspart = '<a href="data?system=' . $r['sys_id'] . '" class="system">' . htmlspecialchars( $r['system_translation'] ) . '</a>';
 	if ($r['sys_ext']) $syspart .= " ".htmlspecialchars($r['sys_ext']);
 	$sysstring = $syspart;
 } elseif ($r['sys_ext']) {
