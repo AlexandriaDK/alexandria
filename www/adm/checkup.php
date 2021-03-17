@@ -127,27 +127,28 @@ if ($result) {
 	$htmlorpscesys .= "<br><b>All good!</b>";
 }
 
-
-/*
-// TJEK AF NAVNE
-
-$htmlfornavn = "<b>Mest brugte fornavn:</b><br>\n";
-
-$query = "SELECT COUNT(*) AS antal, SUBSTRING_INDEX(firstname,' ',1) AS fornavn FROM aut GROUP BY fornavn ORDER BY antal DESC, fornavn LIMIT 10";
-$result = mysql_query($query) OR die(dberror());
-while ($row = mysql_fetch_array($result)) {
-	$htmlfornavn .= "<a href=\"find.php?find={$row['fornavn']}+\">{$row['fornavn']}</a> ({$row['antal']})<br>\n";
+$htmlcodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
+$languages = getall("SELECT data_id, category, language FROM files WHERE language = 'se' OR language REGEXP '^..[a-z]'");
+foreach ( $languages AS $language ) {
+	$htmlcodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">'.$language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
 }
-
-$htmlefternavn = "<b>Mest brugte efternavn:</b><br>\n";
-
-$query = "SELECT COUNT(*) AS antal, surname FROM aut GROUP BY surname ORDER BY antal DESC, surname LIMIT 10";
-$result = mysql_query($query) OR die(dberror());
-while ($row = mysql_fetch_array($result)) {
-	$htmlefternavn .= "<a href=\"find.php?find=+{$row['surname']}\">{$row['surname']}</a> ({$row['antal']})<br>\n";
-#	$htmlefternavn .= $row['efternavn']." ($row[antal])<br>\n";
+$countries = getall("
+	SELECT * FROM (
+		SELECT id, country, 'convent' AS category FROM convent
+		UNION ALL
+		SELECT id, country, 'conset' AS category FROM conset
+		UNION ALL
+		SELECT sce_id AS id, country, 'scerun' FROM scerun
+	) a
+	WHERE country = 'sv' OR country REGEXP '^..[a-z]'
+");
+foreach ( $countries AS $country ) {
+	$htmlcodes .= '<a href="' . ($country['category'] == 'scerun' ? 'run.php?id=' : ( $country['category'] == 'convent' ? 'convent.php?con=' : 'conset.php?conset=') ) . $country['id'] . '">';
+	$htmlcodes .= 'Dataset ' .$country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
-*/
+if (count($languages) === 0 && count($countries) === 0) {
+	$htmlcodes .= "<b>All good!</b>";
+}
 
 $htmlorganizer = "<b>Organizers without ID:</b><br>\n";
 
@@ -270,7 +271,7 @@ print "<table cellspacing=3 cellpadding=4>".
       "</tr><tr valign=\"top\">".
       "<td>$htmlloneper</td>".
       "<td>$htmlorganizer</td>".
-      "<td>$htmlorganizermatch</td>".
+      "<td>$htmlorganizermatch<br><br>$htmlcodes</td>".
       "</tr><tr valign=\"top\">".
       "<td>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>".
       "<td>$htmlcondate</td>".
