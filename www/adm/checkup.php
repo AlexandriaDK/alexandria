@@ -152,10 +152,36 @@ if (count($languages) === 0 && count($countries) === 0) {
 
 $htmlorganizer = "<b>Organizers without ID:</b><br>\n";
 
-// html inside SQL - yuck!
-$query = "SELECT COUNT(*) AS antal, aut_extra AS navn, GROUP_CONCAT(CONCAT('<a href=\"organizers.php?category=convent&data_id=', convent.id, '\">', convent.name, ' (', convent.year, ')', '</a>' ) ORDER BY convent.year DESC, convent.begin DESC, convent.name ASC SEPARATOR '\n') AS convents FROM acrel INNER JOIN convent ON acrel.convent_id = convent.id WHERE aut_extra != '' GROUP BY aut_extra HAVING antal >= 2 ORDER BY antal DESC, navn";
+$query = "
+	SELECT aut_extra, convent.id, convent.name, convent.year
+	FROM acrel
+	INNER JOIN convent ON acrel.convent_id = convent.id
+	WHERE aut_extra != ''
+	ORDER BY convent.year DESC, convent.begin DESC, convent.name ASC
+";
 $result = getall($query);
 $nameid = 0;
+$persons = [];
+foreach($result AS $row) { // create tree
+	$persons[$row['aut_extra']][] = $row;
+}
+array_multisort(array_map('count', $persons), SORT_DESC, $persons);
+foreach($persons AS $name => $data) {
+	if (count($data) < 2) {
+		continue;
+	}
+	$nameid++;
+	$htmlorganizer .= "<div>";
+	$htmlorganizer .= htmlspecialchars($name) . " (" . count($data) . ")";
+	$htmlorganizer .= " <span onclick=\"document.getElementById('$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show cons\">[+]</span>";
+	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nameid\">";
+	foreach ($data AS $row) {
+		$htmlorganizer .= '<a href="organizers.php?category=convent&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
+	}
+	$htmlorganizer .= "</div>" . PHP_EOL;
+}
+
+/*
 foreach($result AS $row) {
 	$nameid++;
 	$htmlorganizer .= "<div>";
@@ -164,6 +190,7 @@ foreach($result AS $row) {
 	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nameid\">" . nl2br($row['convents'], FALSE) . "</div>" . PHP_EOL;
 	$htmlorganizer .= "</div>" . PHP_EOL;
 }
+*/
 
 $htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
 
