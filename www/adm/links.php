@@ -175,6 +175,7 @@ if ($data_id && $category) {
 		'{$_links_website_scenario}' => 'Scenario website',
 		'{$_links_website_con}' => 'Con website',
 		'{$_links_programme}' => 'Programme',
+		'{$_links_facebook_group}' => 'Facebook group',
 		'{$_links_facebook_page}' => 'Facebook page',
 		'{$_links_facebook_event}' => 'Facebook event',
 		'{$_links_facebook_event_scenario}' => 'Facebook event for scenario',
