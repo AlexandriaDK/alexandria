@@ -139,7 +139,7 @@ if ($person) {
 	print showtickets($person,$this_type);
 
 	$q = getall("SELECT sce.id, sce.title AS title, title.title AS auttitle FROM sce, asrel, title WHERE sce.id = asrel.sce_id AND asrel.tit_id = title.id AND asrel.aut_id = '$person' ORDER BY title.id, sce.title");
-	print "<tr valign=top><td>Scenarios</td><td>\n";
+	print "<tr valign=top><td>Games</td><td>\n";
         foreach($q AS list($id, $title, $auttitle) ) {
 		print "<a href=\"game.php?game=$id\">$title</a> ($auttitle)<br>";
 	}
