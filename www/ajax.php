@@ -20,7 +20,13 @@ if (strlen($term) >= 2) {
 		UNION ALL
 			SELECT sys.id, name AS label, 'sys' AS type, 'system' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM sys LEFT JOIN sce ON sys.id = sce.sys_id WHERE name LIKE '$escapequery%' GROUP BY sys.id
 		UNION ALL
-			SELECT convent.id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convent WHERE name LIKE '$escapequery%' OR CONCAT(name,' (',year,')') LIKE '$escapequery%' OR CONCAT(name,' ',year) LIKE '$escapequery%'
+			SELECT convent.id, CONCAT(convent.name,' (',convent.year,')') AS label, 'convent' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convent
+			INNER JOIN conset ON convent.conset_id = conset.id
+			WHERE convent.name LIKE '$escapequery%'
+			OR CONCAT(convent.name,' (',year,')') LIKE '$escapequery%'
+			OR CONCAT(convent.name,' ',year) LIKE '$escapequery%'
+			OR CONCAT(conset.name, ' ', convent.year) LIKE '$escapequery%'
+			OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
 		UNION ALL
 			SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tags WHERE tag LIKE '$escapequery%' GROUP BY tag
 		UNION
