@@ -19,6 +19,9 @@ setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
 $limit = intval($_SERVER['argv']['1'] ?? 1); // How many files should this script check in one run
 
 define('ALEXFILEPATH','../loot.alexandria.dk/files/');
+if (! is_dir(ALEXFILEPATH) ) {
+	die("Directory does not exist: " . ALEXFILEPATH);
+}
 
 $paths = [
 	"sce" => "scenario",
