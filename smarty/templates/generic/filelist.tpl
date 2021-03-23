@@ -5,7 +5,7 @@
 	<tr>
 	<td>
 		{if $file.extension == "pdf"}<img src="/gfx/icon_pdf.svg" alt="PDF" title="{$_file_pdf}" width="20" height="20" />{/if}
-		{if $file.extension == "doc"}<img src="/gfx/ikon_doc.gif" alt="Word" title="{$_file_doc}" width="20" height="20" />{/if}
+		{if $file.extension == "doc" || $file.extension == "docx"}<img src="/gfx/ikon_doc.gif" alt="Word" title="{$_file_word}" width="20" height="20" />{/if}
 		{if $file.extension == "zip"}<img src="/gfx/icon_archive.svg" alt="Zip" title="{$_file_zip}" width="21" height="18" />{/if}
 		{if $file.extension == "txt"}<img src="/gfx/ikon_txt.gif" alt="Text" title="{$_file_text}" width="16" height="16" />{/if}
 		{if $file.extension == "mp3"}<img src="/gfx/icon_music.svg" alt="MP3" title="{$_file_sound}" width="20" height="20" />{/if}
