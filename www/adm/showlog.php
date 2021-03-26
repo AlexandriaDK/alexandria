@@ -115,9 +115,9 @@ if ($result) {
 	print "<table align=\"center\" border=0>".
 	      "<tr><th colspan=5>Log for: <a href=\"$mainlink\" accesskey=\"q\">" . ( $title != "" ? htmlspecialchars($title) : '(unknown)' ) . "</a></th></tr>\n".
 	      "<tr>\n".
-	      "<th style=\"width: 180px\">Edited by</th>".
-	      "<th style=\"width: 180px\">Time</th>".
-	      "<th style=\"width: 160px\">Description</th>".
+	      "<th>Edited by</th>".
+	      "<th>Time</th>".
+	      "<th>Description</th>".
 	      "</tr>\n";
 
         foreach($result AS $row) {
@@ -130,12 +130,12 @@ if ($result) {
 	print "</table>\n";
 } else {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>$listlimit recent edits" . ($user_name ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n".
+	      "<tr><th colspan=5>$listlimit most recent edits" . ($user_name ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n".
 	      "<tr>\n".
 	      "<th>Entity</th>".
-	      "<th style=\"width: 180px\">Edited by</th>".
-	      "<th style=\"width: 180px\">Time</th>".
-	      "<th style=\"width: 160px\">Description</th>".
+	      "<th>Edited by</th>".
+	      "<th>Time</th>".
+	      "<th>Description</th>".
 	      "</tr>\n";
         foreach($listresult AS $row) {
 			if ($data[$row['category']][$row['data_id']]) {
@@ -152,7 +152,7 @@ if ($result) {
 		      ($link ? "<td><a href=\"$link\">$subject</a></td>\n" : "<td>".$subject."</td>\n" ).
 		      "<td>".$row['user']."</td>\n".
 		      "<td style=\"text-align: right;\">".pubdateprint($row['time'])."</td>\n".
-		      "<td style=\"text-align: right;\">{$row['note']}</td>\n".
+		      "<td style=\"text-align: left;\">{$row['note']}</td>\n".
 		      "</tr>\n";
 	}
 
