@@ -124,7 +124,7 @@ if ( $dataset ) {
 			'award_nominees' => 'Nominated persons or otherwise for an award',
 			'person_game_title_connections' => 'Relations between persons, games, and titles',
 			'game_convention_presentation_connections' => 'Relations between games, conventions, and presentations',
-			'genre_game_connections' => 'Relations between games and genres',
+			'genre_game_relations' => 'Relations between games and genres',
 			'person_convention_connections' => 'Relations between persons and conventions as organizers',
 		],
 		'examples' => [
