@@ -19,7 +19,7 @@ if ($action == "changegenre") {
 		doquery("INSERT INTO gsrel (gen_id, sce_id) VALUES ('$gid','$id')");
 	}
 	$_SESSION['admin']['info'] = "Genres for game updated! " . dberror();
-	chlog($id,'sce',"Genrer rettet");
+	chlog($id,'sce',"Genres updated");
 	rexit( $this_type, [ 'id' => $id ] );
 }
 

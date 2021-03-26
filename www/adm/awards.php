@@ -50,7 +50,7 @@ if ($action == "changecategory" && $do != "Delete") {
 	     "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Pris rettet: $id, $name");
+		chlog($data_id,$category,"Award updated: $id, $name");
 	}
 	$_SESSION['admin']['info'] = "Award updated! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -83,7 +83,7 @@ if ($action == "addcategory") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($data_id,$category,"Pris oprettet: $name");
+		chlog($data_id,$category,"Award created: $name");
 	}
 	$_SESSION['admin']['info'] = "Award created! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -106,7 +106,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	}
 	$r = doquery($q);
 	if ($r) {
-		chlog($convent_id,'convent',"Nomineret rettet: $name ($data_id), $award_name");
+		chlog($convent_id,'convent',"Nominee updated: $name ($data_id), $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee updated! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -122,7 +122,7 @@ if ($action == "addnominee") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($convent_id,'convent',"Nomineret oprettet: $name, $award_name");
+		chlog($convent_id,'convent',"Nominee added: $name, $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee added! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -140,7 +140,7 @@ if ($action == "changenominee" && $do == "Delete") {
 	$q = "DELETE FROM award_nominees WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($convent_id,'convent',"Nomineret fjernet: $id");
+		chlog($convent_id,'convent',"Nominee removed: $id");
 	}
 	$_SESSION['admin']['info'] = "Nominee removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -149,7 +149,7 @@ if ($action == "changenominee" && $do == "Delete") {
 if ($action == 'deletenomineeentity') {
 	if (getone("SELECT id FROM award_nominee_entities WHERE id = $id") ) {
 		doquery("DELETE FROM award_nominee_entities WHERE id = $id");
-		chlog($convent_id,'convent',"Nominerings-tilknytning slettet: $id");
+		chlog($convent_id,'convent',"Nominee connection deleted: $id");
 		$_SESSION['admin']['info'] = "Connection removed! " . dberror();
 	} else {
 		$_SESSION['admin']['info'] = "Could not find connection! " . dberror();

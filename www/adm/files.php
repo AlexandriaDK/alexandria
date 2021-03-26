@@ -42,7 +42,7 @@ if ($action == "changefile" && $do == "Remove") {
 	$r = doquery($q);
 	$_SESSION['admin']['info'] = "File data deleted! " . dberror();
 	if ($r) {
-		chlog($data_id,$category,"Fil slettet");
+		chlog($data_id,$category,"File removed");
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == "changefile") { // Ret fil
@@ -51,7 +51,7 @@ if ($action == "changefile" && $do == "Remove") {
 	$r = doquery($q);
 	$_SESSION['admin']['info'] = "File data updated! " . dberror();
 	if ($r) {
-		chlog($data_id,$category,"Fil opdateret");
+		chlog($data_id,$category,"File updated");
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 }
@@ -74,7 +74,7 @@ if ( $action == 'uploadfile' &&
 		$_SESSION['admin']['info'] = "Error during upload. Error code: " . $_FILES['file']['error'];
 	} elseif (move_uploaded_file($_FILES['file']['tmp_name'], $upload_path) ) {
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
-		chlog($data_id,$category,"Fil uploadet: " . $basename);
+		chlog($data_id,$category,"File uploaded: " . $basename);
 	} else {
 		$_SESSION['admin']['info'] = "Error: Can't save uploaded file. Make sure the web server can write to file path: $upload_path";
 	}
@@ -106,7 +106,7 @@ if ( $action == 'uploadfile' &&
 		$_SESSION['admin']['info'] = "Unknown error when uploading.";
 	} else {
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
-		chlog($data_id,$category,"Fil remote-uploadet: " . $remoteurl);
+		chlog($data_id,$category,"File remote uploaded: " . $remoteurl);
 		$remoteurl = "";
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id, 'remoteurl' => $remoteurl] );
@@ -168,7 +168,7 @@ if ($action == "addfile") {
 					$image->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // flatten transparency to background, which is white per default
 					if ($image->writeImage($target) ) {
 						$_SESSION['admin']['info'] = "Thumbnail created";
-						chlog($data_id,$category,"Thumbnail oprettet: " . $basename);
+						chlog($data_id,$category,"Thumbnail created: " . $basename);
 						if (file_exists( $target_mini ) ) {
 							unlink( $target_mini );
 						}
@@ -179,8 +179,8 @@ if ($action == "addfile") {
 			} else {
 				$command = "convert 2>&1 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
 				$content = `$command`;
-				chlog($data_id,$category,"Thumbnail oprettet: " . $basename);
-				$info = "Thumbnail created.";
+				chlog($data_id,$category,"Thumbnail created: " . $basename);
+				$info = "Thumbnail created";
 				if ($content) {
 					$info .= "\nOutput:\n" . $content;
 				}
@@ -208,7 +208,7 @@ if ($action == "addfile") {
 	}
 	if ($deleted) {
 		$_SESSION['admin']['info'] = "Thumbnail deleted! ";
-		chlog($data_id,$category,"Thumbnail slettet");
+		chlog($data_id,$category,"Thumbnail deleted");
 	} else {
 		$_SESSION['admin']['info'] = "Error: Thumbnail could not be deleted!\nPath large: $path_large\nPath small: $path_small ";
 	}

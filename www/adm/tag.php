@@ -29,7 +29,7 @@ if ($action == "Remove" && $tag_id) {
 	$r = doquery($q);
 
 	if ($r) {
-		chlog($tag_id,$this_type,"Tag-beskrivelse slettet: $tag");
+		chlog($tag_id,$this_type,"Tag description removed: $tag");
 	}
 	$_SESSION['admin']['info'] = "Tag description removed! " . dberror();
 	rexit($this_type);
@@ -43,7 +43,7 @@ if ($action == "update" && $tag_id) {
 	     "WHERE id = '$tag_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($tag_id,$this_type,"Tag-beskrivelse rettet");
+		chlog($tag_id,$this_type,"Tag description updated");
 	}
 	$_SESSION['admin']['info'] = "Tag description updated! " . dberror();
 	rexit( $this_type, [ 'tag_id' => $tag_id ] );
@@ -64,7 +64,7 @@ if ($action == "create") {
 		$r = doquery($q);
 		if ($r) {
 			$tag_id = dbid();
-			chlog($tag_id,$this_type,"Tag-beskrivelse oprettet");
+			chlog($tag_id,$this_type,"Tag description created");
 		}
 		$_SESSION['admin']['info'] = "Tag description created! " . dberror();
 		rexit( $this_type, [ 'tag_id' => $tag_id ] );

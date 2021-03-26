@@ -58,7 +58,7 @@ if ( $type == 'addperson' && $label != "" ) {
 	$q = "INSERT INTO aut (firstname, surname) VALUES ('" . dbesc( $firstname ) . "', '" . dbesc( $surname ) . "')";
 	if ($r = doquery( $q ) ) {
 		$pid = dbid();
-		chlog($pid,'aut',"Person oprettet");
+		chlog($pid,'aut',"Person created");
 		resultexit( [ "new" => true, "error" => false, "id" => $pid, "msg" => "Person created" ] );
 	} else {
 		resultexit( [ "new" => false, "error" => true, "msg" => "Database error" ] );

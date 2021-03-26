@@ -24,7 +24,7 @@ if ($action == "changetag" && $do != "Remove") {
 	     "WHERE id = $id";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Tag rettet til $tag");
+		chlog($data_id,$category,"Tag changed to $tag");
 	}
 	$_SESSION['admin']['info'] = "Tag updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -36,7 +36,7 @@ if ($action == "changetag" && $do == "Remove") {
 	$q = "DELETE FROM tags WHERE id = $id";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Tag slettet: $tag");
+		chlog($data_id,$category,"Tag removed: $tag");
 	}
 	$_SESSION['admin']['info'] = "Tag removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -50,7 +50,7 @@ if ($action == "addtag" && $tag != "") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($data_id,$category,"Tag oprettet: $tag");
+		chlog($data_id,$category,"Tag added: $tag");
 	}
 	$_SESSION['admin']['info'] = "Tag added! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );

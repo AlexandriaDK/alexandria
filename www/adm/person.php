@@ -40,7 +40,7 @@ if ($action == "ret" && $person) {
 		     "WHERE id = '$person'";
 		$r = doquery($q);
 		if ($r) {
-			chlog($person,$this_type,"Person rettet");
+			chlog($person,$this_type,"Person updated");
 		}
 		$_SESSION['admin']['info'] = "Person updated! " . dberror();
 		rexit($this_type, [ 'person' => $person ] );
@@ -67,7 +67,7 @@ if ($action == "Delete" && $person) { // burde tjekke om person findes
 		$r = doquery($q);
 
 		if ($r) {
-			chlog($person,$this_type,"Person slettet: $name");
+			chlog($person,$this_type,"Person deleted: $name");
 		}
 		$_SESSION['admin']['info'] = "Person deleted! " . dberror();
 		rexit($this_type, ['person' => $person] );
@@ -93,7 +93,7 @@ if ($action == "create") {
 		$r = doquery($q);
 		if ($r) {
 			$person = dbid();
-			chlog($person,$this_type,"Person oprettet");
+			chlog($person,$this_type,"Person created");
 		}
 		$_SESSION['admin']['info'] = "Person created! " . dberror();
 		rexit($this_type, [ 'person' => $person ] );

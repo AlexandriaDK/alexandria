@@ -25,9 +25,9 @@ if ($action == "changetrivia" && $do != "Delete") {
 	     "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Trivia rettet");
+		chlog($data_id,$category,"Trivia updated");
 	}
-	$_SESSION['admin']['info'] = "Trivia edited! " . dberror();
+	$_SESSION['admin']['info'] = "Trivia updated! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
@@ -36,7 +36,7 @@ if ($action == "changetrivia" && $do == "Delete") {
 	$q = "DELETE FROM trivia WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Trivia slettet");
+		chlog($data_id,$category,"Trivia deleted");
 	}
 	$_SESSION['admin']['info'] = "Trivia deleted! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -52,7 +52,7 @@ if ($action == "addtrivia") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($data_id,$category,"Trivia oprettet");
+		chlog($data_id,$category,"Trivia created");
 	}
 	$_SESSION['admin']['info'] = "Trivia created! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );

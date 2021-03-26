@@ -15,7 +15,7 @@ if ($game_id && $alias_id && $language) {
 	"WHERE id = '$alias_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($game_id,'sce',"Alias rettet");
+		chlog($game_id,'sce',"Alias updated");
 	}
 	header('Location: aliasfix.php?game_id=' . $game_id . '#s_' . $game_id);
 	exit;

@@ -85,7 +85,7 @@ if ($action == "edit" && $con) {
 		$r = doquery($q);
 		print dberror();
 		if ($r) {
-			chlog($con,$this_type,"Con rettet");
+			chlog($con,$this_type,"Con edited");
 		}
 		$_SESSION['admin']['info'] = "Con edited! " . dberror();
 		rexit($this_type, ['con' => $con] );
@@ -115,7 +115,7 @@ if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 		$r = doquery($q);
 
 		if ($r) {
-			chlog($con,$this_type,"Con slettet: $name");
+			chlog($con,$this_type,"Con deleted: $name");
 		}
 		$_SESSION['admin']['info'] = "Con deleted! " . dberror();
 		rexit($this_type, ['con' => $con] );
@@ -146,7 +146,7 @@ if ($action == "create") {
 		$r = doquery($q);
 		if ($r) {
 			$con = dbid();
-			chlog($con,$this_type,"Con oprettet");
+			chlog($con,$this_type,"Con created");
 		}
 		$_SESSION['admin']['info'] = "Con created " . dberror();
 		rexit($this_type, [ 'con' => $con ] );

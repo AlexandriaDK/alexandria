@@ -44,7 +44,7 @@ if ($action == 'add') {
 	if ($scetag_id = dbid($dblink) ) {
 		$_SESSION['can_edit_tag'][$scetag_id] = TRUE;
 		// award_achievement(91);
-		chlog($scenario,'sce','Tag tilføjet: ' . $tag);
+		chlog($scenario,'sce','Tag added: ' . $tag);
 		award_achievement(100);
 	}
 } elseif ($action == 'delete') {

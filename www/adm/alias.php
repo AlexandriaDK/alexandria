@@ -27,7 +27,7 @@ if ($action == "changealias" && $do != "Delete") {
 	     "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Alias rettet");
+		chlog($data_id,$category,"Alias updated");
 	}
 	$_SESSION['admin']['info'] = "Alias updated! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -38,7 +38,7 @@ if ($action == "changealias" && $do == "Delete") {
 	$q = "DELETE FROM alias WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Alias slettet");
+		chlog($data_id,$category,"Alias deleted");
 	}
 	$_SESSION['admin']['info'] = "Alias deleted! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -54,7 +54,7 @@ if ($action == "addalias") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($data_id,$category,"Alias oprettet");
+		chlog($data_id,$category,"Alias created");
 	}
 	$_SESSION['admin']['info'] = "Alias created! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );

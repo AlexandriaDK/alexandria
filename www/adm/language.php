@@ -67,7 +67,7 @@ if ($action == "update") {
 			$log[] = '-' . $language;
 		}
 	}
-	$logtext = "Tekst rettet: " . $label;
+	$logtext = "Translation updated: " . $label;
 	if ( $label != $newlabel ) {
 		$logtext .= " → $newlabel";
 	}
@@ -78,7 +78,6 @@ if ($action == "update") {
 	$_SESSION['admin']['info'] = "Texts updated! " . dberror();
 	rexit($this_type, ['label' => $newlabel] );
 }
-
 
 $overview = [];
 $languages = [];

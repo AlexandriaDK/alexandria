@@ -42,9 +42,9 @@ if ($action == "changeorganizer" && $do != "Delete") {
 	$r = doquery($q);
 	if ($r) {
 		if ((int) $aut_id) {
-			chlog($data_id,$category,"Arrangør rettet: $aut_id");
+			chlog($data_id,$category,"Organizer updated: $aut_id");
 		} else {
-			chlog($data_id,$category,"Arrangør rettet: $aut_extra");
+			chlog($data_id,$category,"Organizer updated: $aut_extra");
 		}
 	}
 	$_SESSION['admin']['info'] = "Organizer updated! " . dberror();
@@ -56,7 +56,7 @@ if ($action == "changeorganizer" && $do == "Delete") {
 	$q = "DELETE FROM acrel WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Arrangør fjernet");
+		chlog($data_id,$category,"Organizer removed");
 	}
 	$_SESSION['admin']['info'] = "Organizer removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -71,9 +71,9 @@ if ($action == "addorganizer") {
 	if ($r) {
 		$id = dbid();
 		if ((int) $aut_id) {
-			chlog($data_id,$category,"Arrangør oprettet: $aut_id");
+			chlog($data_id,$category,"Organizer added: $aut_id");
 		} else {
-			chlog($data_id,$category,"Arrangør oprettet: $aut_extra");
+			chlog($data_id,$category,"Organizer added: $aut_extra");
 		}
 	}
 	$_SESSION['admin']['info'] = "Organizer added! " . dberror();

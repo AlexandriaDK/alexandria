@@ -31,7 +31,7 @@ if ($action == "edit" && $system) {
 		     "WHERE id = '$system'";
 		$r = doquery($q);
 		if ($r) {
-			chlog($system,$this_type,"System rettet");
+			chlog($system,$this_type,"System edited");
 		}
 		$_SESSION['admin']['info'] = "System edited! " . dberror();
 		rexit( $this_type, [ 'system' => $system ] );
@@ -55,7 +55,7 @@ if ($action == "create") {
 		$r = doquery($q);
 		if ($r) {
 			$system = dbid();
-			chlog($system,$this_type,"System oprettet");
+			chlog($system,$this_type,"System created");
 		}
 		$_SESSION['admin']['info'] = "System created! " . dberror();
 		rexit( $this_type, [ 'system' => $system ] );
@@ -75,7 +75,7 @@ if ($action == "Delete" && $system) {
 		$r = doquery($q);
 
 		if ($r) {
-			chlog($person,$this_type,"System slettet: $name");
+			chlog($person,$this_type,"System deleted: $name");
 		}
 		$_SESSION['admin']['info'] = "System deleted! " . dberror();
 		rexit($this_type, ['system' => $system] );

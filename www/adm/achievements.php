@@ -29,9 +29,6 @@ if ($action == "update") {
 	     "points = $points " .
 	     "WHERE id = $id";
 	$r = doquery($q);
-	if ($r) {
-//		chlog($id,$this_type,"Link rettet");
-	}
 	$_SESSION['admin']['info'] = "Achievement rettet! " . dberror();
 	rexit($this_type);
 }

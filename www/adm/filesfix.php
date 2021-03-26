@@ -15,7 +15,7 @@ if ($game_id && $file_id && $language) {
 	"WHERE id = '$file_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($game_id,'sce',"Fil rettet");
+		chlog($game_id,'sce',"File updated");
 	}
 	header('Location: filesfix.php?game_id=' . $game_id . '#s_' . $game_id);
 	exit;

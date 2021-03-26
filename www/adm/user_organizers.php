@@ -48,12 +48,12 @@ if ($action == 'add' && ($aut_id || $aut_extra) ) {
 	if ($acrel_id = dbid($dblink) ) {
 		$_SESSION['can_edit_organizers'][$acrel_id] = TRUE;
 		award_achievement(91);
-		chlog($convent,'convent','Arrangør oprettet: ' . ( $aut_id ? $aut_id : $aut_extra ));
+		chlog($convent,'convent','Organizer added: ' . ( $aut_id ? $aut_id : $aut_extra ));
 	}
 } elseif ($action == 'delete') {
 	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$acrel_id] ) {
 		doquery("DELETE FROM acrel WHERE id = $acrel_id");
-		chlog($convent,'convent','Arrangør fjernet');
+		chlog($convent,'convent','Organizer removed');
 	}
 }
 

@@ -42,9 +42,9 @@ if ($action == "edit" && $conset) {
 		     "WHERE id = '$conset'";
 		$r = doquery($q);
 		if ($r) {
-			chlog($conset,$this_type,"Conset rettet");
+			chlog($conset,$this_type,"Con series updated");
 		}
-		$_SESSION['admin']['info'] = "Con series edited! " . dberror();
+		$_SESSION['admin']['info'] = "Con series updated! " . dberror();
 		rexit($this_type, [ 'conset' => $conset ] );
 	}
 }
@@ -58,7 +58,7 @@ if ($action == "create") {
 		$r = doquery($q);
 		if ($r) {
 			$conset = dbid();
-			chlog($conset,$this_type,"Conset oprettet");
+			chlog($conset,$this_type,"Con series created");
 		}
 		$_SESSION['admin']['info'] = "Con series created! " . dberror();
 		rexit($this_type, [ 'conset' => $conset ] );

@@ -84,7 +84,7 @@ foreach( glob( $glob ) AS $file) {
 			$intern = "Autoimport from ARCON data by PB" . PHP_EOL;
 			$sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
 			$aut_id = doquery($sql);
-			chlog($aut_id, 'aut', 'Person oprettet');
+			chlog($aut_id, 'aut', 'Person created');
 		}
 	}
 
@@ -103,7 +103,7 @@ foreach( glob( $glob ) AS $file) {
 	print $scenario_id_sql . PHP_EOL . PHP_EOL;
 
 	$sce_id = doquery($scenario_id_sql);
-	chlog($sce_id, 'sce', 'Scenarie oprettet');
+	chlog($sce_id, 'sce', 'Game created');
 
 	$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($sce_id, '" . dbesc($data['description']) . "', 'nb')";
 	doquery($desc_sql);

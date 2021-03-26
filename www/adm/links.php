@@ -46,7 +46,7 @@ if ($action == "changelink" && $do != "Remove") {
 	     "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Link rettet");
+		chlog($data_id,$category,"Link updated");
 	}
 	$_SESSION['admin']['info'] = "Link updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -57,7 +57,7 @@ if ($action == "changelink" && $do == "Remove") {
 	$q = "DELETE FROM links WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Link slettet");
+		chlog($data_id,$category,"Link removed");
 	}
 	$_SESSION['admin']['info'] = "Link removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );
@@ -77,7 +77,7 @@ if ($action == "addlink") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($data_id,$category,"Link oprettet");
+		chlog($data_id,$category,"Link added");
 	}
 	$_SESSION['admin']['info'] = "Link added! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id] );

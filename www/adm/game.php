@@ -116,7 +116,7 @@ if ($action == "update" && $game) {
 		}
 		print dberror();
 		if ($r) {
-			chlog($game,$this_type,"Scenarie rettet");
+			chlog($game,$this_type,"Game updated");
 		}
 
 // Only change relations if javascript is enabled
@@ -170,7 +170,7 @@ if ($action == "Delete" && $game) { // should check if game exists
 		$r = doquery($q);
 
 		if ($r) {
-			chlog($game,$this_type,"Scenarie slettet: $title");
+			chlog($game,$this_type,"Game deleted: $title");
 		}
 		$_SESSION['admin']['info'] = "Game deleted! " . dberror();
 		rexit($this_type, ['game' => $game] );
@@ -196,7 +196,7 @@ if ($action == "create") {
 			}
 			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
 			$r = doquery($sql);
-			chlog($game,$this_type,"Scenarie oprettet");
+			chlog($game,$this_type,"Game created");
 		}
 		$_SESSION['admin']['info'] = "Game created! " . dberror();
 

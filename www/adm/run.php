@@ -35,7 +35,7 @@ if ($action == "changerun" && $do != "Delete") {
 	     "WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Afvikling rettet");
+		chlog($id,'sce',"Run updated");
 	}
 	$_SESSION['admin']['info'] = "Run updated! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -46,7 +46,7 @@ if ($action == "changerun" && $do == "Delete") {
 	$q = "DELETE FROM scerun WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Afvikling slettet");
+		chlog($id,'sce',"Run deleted");
 	}
 	$_SESSION['admin']['info'] = "Run deleted! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -62,7 +62,7 @@ if ($action == "addrun") {
 	     "('$id', '$begin', '$end', '" . dbesc($location). "', '" . dbesc($country). "', '" . dbesc($description) . "', $cancelled)";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Afvikling oprettet");
+		chlog($id,'sce',"Run created");
 	}
 	$_SESSION['admin']['info'] ="Run created! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
