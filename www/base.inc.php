@@ -1149,11 +1149,14 @@ function getLanguageName($isocode) {
 }
 
 function getCountryName($countrycode) {
+	if (in_array(LANG, ['da','sv','nb']) && $countrycode == 'by') { // Belarus, not variations of White Russia
+		return 'Belarus';
+	}
 	return Locale::getDisplayRegion("-" . $countrycode, LANG);
 }
 
 function getCountryNameFallback($countrycode) {
-	$name = Locale::getDisplayRegion("-" . $countrycode, LANG);
+	$name = getCountryName($countrycode);
 	if ( $name == "" ) {
 		return $countrycode;
 	}
