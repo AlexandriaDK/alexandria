@@ -7,12 +7,14 @@ $url = 'https://lajvhistoria.se/export.php';
 $localfile = __DIR__ . '/lajvhistoria_export.json';
 $alexandria_lavjhistoria_user_id = 21;
 
-$organizations = [
+$known_organizations = [
     'ALF',
     'Alternaliv',
     'Arrangörsföreningen Mollberg',
     'Arrangörsgruppen Fenix',
     'Avesta Bjurfors RollspelsFörening',
+    'Berättelsefrämjandet',
+    'Drakontia Lajvsällskap',
     'Enhörningen',
     'Ett Glas',
     'FF International inc.',
@@ -28,16 +30,19 @@ $organizations = [
     'LRS/ORoK/Unga Örnar',
     'LRS/ORoK/Vi Unga',
     'Lajvsällskapet Romantiska Sagor',
-    'Lajvsällskapet Romantiska Sagor',
     'MASK',
     'Militärhistoriska Sällskapet',
     'Oroboros',
+    'Roverscoutlaget Orion',
     'RSK Härskarringen',
     'Riksteatern',
+    'Stormens Öga',
     'Särimners Vänner',
     'Teater K',
+    'Täby Spelsällskap',
     'The Story Lab',
     'Ulricehamns Liveförening',
+    'via SLI.',
     'Wyrd',
 ];
 
@@ -47,6 +52,8 @@ $orgmap = [
     'Draco Argenteus (Nina & Anders Svensson)' => ['person' => ['Nina Svensson', 'Anders Svensson'], 'organization' => 'Draco Argenteus'],
     'FNYFF (Kerstin Bohman, Victoria Wiik, Cilla de Mander)' => ['person' => ['Kerstin Bohman', 'Victoria Wiik', 'Cilla de Mander'], 'organization' => 'FNYFF'],
     'Unionen (Dennis Rundqvist)' => [ 'person' => ['Dennis Rundqvist'], 'organization' => 'Unionen'],
+    'Adéle Lindkvist via SLI' => [ 'person' => ['Adéle Lindkvist'], 'organization' => 'SLI'],
+
 ];
 
 $file = $localfile;
@@ -62,18 +69,45 @@ foreach ($games AS $game) {
         // :TODO: Insert link into new data table
         continue;
     }
-    $organization = [];
-    $authors = (string) $game->org;
-    if (isset($orgmap[$authors])) {
-        if (isset($orgmap[$authors]['organization']) ) {
-            $organization[] = $orgmap[$authors]['organization'];
+    $names = [];
+    $organizations = [];
+    $persons = [];
+    $org = (string) $game->org;
+    $org = trim($org);
+    if (isset($orgmap[$org])) {
+        if (isset($orgmap[$org]['organization']) ) {
+            $organizations[] = $orgmap[$org]['organization'];
         }
-        $authors = $orgmap[$authors];
-    } elseif (preg_match('/[\(\)]/', $authors)) {
-        $authors = explode(", ", $game->org);
+        $names = $orgmap[$org]['person'];
+    } elseif (preg_match('/[\(\)]/', $org)) {
+        $organizations[] = $org;
+    } else {
+        $names = explode(", ", $org);
+    }
+    if (strpos($org, 'Adéle Lindkvist via SLI') === FALSE) {
+        continue;
+    }
 
-    #print $game->name . PHP_EOL;
-    print str_replace(', ', PHP_EOL, $game->org) . PHP_EOL;
-// handle "mfl"
+    print "====" . PHP_EOL;
+    print $game->name . PHP_EOL;
+    print $org . PHP_EOL;
+    foreach ($names AS $name) {
+        $name = trim($name);
+        $name = str_replace(' mfl.','',$name);
+        print "Name: $name" . PHP_EOL;
+        if (in_array($name, $known_organizations) || (strpos($name, " ", 0) === FALSE) ) { 
+            $organizations[] = $name;
+        } else {
+            if (isset($orgmap[$name])) {
+                if (isset($orgmap[$name]['organization']) ) {
+                    $organizations[] = $orgmap[$name]['organization'];
+                }
+                $persons = array_merge($persons, $orgmap[$name]['person'] );
+            } else {
+                $persons[] = $name;
+            }
+        }
+    }
+    var_dump($persons, $organizations);
 }
 ?>
