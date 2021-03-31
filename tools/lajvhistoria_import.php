@@ -38,6 +38,7 @@ function cleanname ($name) {
 function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $existing_game_id = FALSE) {
     $genre_lajv_alexandria_map = [
         1 => 3,
+        4 => 8,
         9 => 4,
         19 => 5
     ];
@@ -85,7 +86,7 @@ function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $e
 
     if ($description) {
         $language = 'sv';
-        if ($multiple_runs) {
+        if ($multiple_runs || $existing_game_id) {
             $language .= " ($year)";
         }
         $desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
@@ -99,7 +100,7 @@ function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $e
     }
 
     foreach($person_ids AS $pid) {
-        if ( $multiple_runs ) {
+        if ( $multiple_runs || $existing_game_id ) {
             $assql = "INSERT INTO asrel (aut_id, sce_id, tit_id, note) VALUES ($pid, $game_id, 4, '$year run')";
         } else {
             $assql = "INSERT INTO asrel (aut_id, sce_id, tit_id) VALUES ($pid, $game_id, 4)";
@@ -247,7 +248,7 @@ function get_orgmap() {
    ];
    return $orgmap;
 }
-$file = $localfile;
+$file = $url;
 
 $games = json_decode( file_get_contents( $file ) );
 if ( ! $games ) {
