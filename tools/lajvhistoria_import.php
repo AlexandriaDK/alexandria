@@ -252,8 +252,6 @@ function get_known_organizations() {
 function get_orgmap() {
     $orgmap = [
         'Daniel Westberg (Chilla)' => ['person' => ['Daniel Westberg']],
-        'Adéle Lindkvist via SLI' => [ 'person' => ['Adéle Lindkvist'], 'organization' => 'SLI'],
-        'Mikael Enmalm. Oskar Åslund' => [ 'person' => ['Mikael Enmalm', 'Oskar Åslund'] ],
    ];
    return $orgmap;
 }
