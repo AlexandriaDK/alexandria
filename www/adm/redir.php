@@ -48,5 +48,5 @@ switch ($cat) {
 	$returl = 'person.php?person=';
 }
 
-header("Location: ".$returl.$id);
+header("Location: " . $returl . rawurlencode($id) );
 ?>

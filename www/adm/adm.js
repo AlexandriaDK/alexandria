@@ -4,7 +4,7 @@ $(function() {
 		minLength: 2,
 		delay: 100,
 		select: function( event, ui ) {
-			window.location = 'redir.php?cat=' + ui.item.linkpart + '&data_id=' + ui.item.id;
+			window.location = 'redir.php?cat=' + ui.item.linkpart + '&data_id=' + encodeURIComponent(ui.item.id);
 		}
 	})
 	.autocomplete( "instance" )._renderItem = function( ul, item ) {
