@@ -242,7 +242,7 @@ function get_known_organizations() {
         'Täby Spelsällskap',
         'The Story Lab',
         'Ulricehamns Liveförening',
-        'V.Ä.S'
+        'V.Ä.S',
         'Wyrd',
         'Zedalia',
     ];
