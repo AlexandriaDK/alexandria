@@ -209,7 +209,6 @@ function get_known_organizations() {
         'Drakontia Lajvsällskap',
         'Eldar',
         'Enhörningen',
-        'Esine Aurdinir',
         'Ett Glas',
         'FF International',
         'Fabel',
@@ -224,6 +223,7 @@ function get_known_organizations() {
         'Interaktiva Uppsättningar',
         'Illmyhr',
         'Ithil Calen',
+        'Kindred Society',
         'Krok',
         'Lajvsällskapet Romantiska Sagor',
         'MASK',
@@ -237,6 +237,7 @@ function get_known_organizations() {
         'RSK Härskarringen',
         'Riksteatern',
         'Scoutkår i Falun',
+        'Skellefteå Lajvförening',
         'Skellefteås Lajvförening',
         'Sollentunagruppen',
         'Stormens Öga',
@@ -255,6 +256,7 @@ function get_known_organizations() {
 function get_orgmap() {
     $orgmap = [
         'Daniel Westberg (Chilla)' => ['person' => ['Daniel Westberg']],
+        'Sollentunagruppen, Daniel Westberg (Chilla), Filip Hofman (Eriksson), Gustaf af Geijerstam' => ['person' => ['Daniel Westberg', 'Filip Hofman (Eriksson)', 'Gustaf af Geijerstam'], 'organization' => 'Sollentunagruppen'],
    ];
    return $orgmap;
 }
