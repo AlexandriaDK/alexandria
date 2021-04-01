@@ -204,7 +204,9 @@ function get_known_organizations() {
         'Bardo',
         'Berättelsefrämjandet',
         'Drakontia Lajvsällskap',
+        'Eldar',
         'Enhörningen',
+        'Esine Aurdinir',
         'Ett Glas',
         'FF International',
         'Fabel',
@@ -215,27 +217,34 @@ function get_known_organizations() {
         'Gyllene Hjorten',
         'Guranga',
         'Halvhörningen',
+        'HSRF',
         'Interaktiva Uppsättningar',
+        'Illmyhr',
+        'Ithil Calen',
         'Krok',
         'Lajvsällskapet Romantiska Sagor',
         'MASK',
         'Militärhistoriska Sällskapet',
         'Morgonstjärna',
+        'Nebulosus',
         'Nocke Ting',
         'Oroboros',
         'ORoK',
         'Roverscoutlaget Orion',
         'RSK Härskarringen',
         'Riksteatern',
+        'Scoutkår i Falun',
         'Skellefteås Lajvförening',
+        'Sollentunagruppen',
         'Stormens Öga',
         'Särimners Vänner',
         'Teater K',
         'Täby Spelsällskap',
         'The Story Lab',
         'Ulricehamns Liveförening',
-        'via SLI.',
+        'V.Ä.S'
         'Wyrd',
+        'Zedalia',
     ];
     return $known_organizations;
 }
@@ -243,7 +252,6 @@ function get_known_organizations() {
 function get_orgmap() {
     $orgmap = [
         'Daniel Westberg (Chilla)' => ['person' => ['Daniel Westberg']],
-        'Unionen (Dennis Rundqvist)' => [ 'person' => ['Dennis Rundqvist'], 'organization' => 'Unionen'],
         'Adéle Lindkvist via SLI' => [ 'person' => ['Adéle Lindkvist'], 'organization' => 'SLI'],
         'Mikael Enmalm. Oskar Åslund' => [ 'person' => ['Mikael Enmalm', 'Oskar Åslund'] ],
    ];
