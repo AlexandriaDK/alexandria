@@ -198,8 +198,11 @@ function get_known_organizations() {
     $known_organizations = [
         'ALF',
         'Alternaliv',
+        'Ariadnes Röda Tråd',
         'Arrangörsföreningen Mollberg',
         'Arrangörsgruppen Fenix',
+        'Atropos',
+        'Avalon',
         'Avesta Bjurfors RollspelsFörening',
         'Bardo',
         'Berättelsefrämjandet',
