@@ -7,7 +7,7 @@
 
 {if $user_editor}
 {if ! $id && $type == 'tag'}
-- <a href="adm/tag.php?tag={$tag|escape}" accesskey="r" title="Hotkey: R"><span class="updatelinktext">{$_update_edit}</span></a>
+- <a href="adm/tag.php?tag={$tag|rawurlencode}" accesskey="r" title="Hotkey: R"><span class="updatelinktext">{$_update_edit}</span></a>
 {else}
 - <a href="adm/redir.php?cat={$type}&amp;data_id={$id}" accesskey="r" title="Hotkey: R"><span class="updatelinktext">{$_update_edit}</span></a>
 {/if}
