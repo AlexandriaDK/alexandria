@@ -8,9 +8,10 @@ $this_type = 'alias';
 
 $action = (string) $_REQUEST['action'];
 $do = (string) $_REQUEST['do'];
-$label = (string) $_REQUEST['label'];
-$language = (string) $_REQUEST['language'];
+$label = trim((string) $_REQUEST['label']);
+$language = trim((string) $_REQUEST['language']);
 $visible = (string) $_REQUEST['visible'];
+$visible = ($visible == "on" ? 1 : 0);
 $id = (int) $_REQUEST['id'];
 $data_id = (int) $_REQUEST['data_id'];
 $category = (string) $_REQUEST['category'];
@@ -18,8 +19,6 @@ if ($category == 'game') $category = 'sce';
 
 // Edit alias
 if ($action == "changealias" && $do != "Delete") {
-	$label = trim($label);
-	$visible = ($visible == "on" ? 1 : 0);
 	$q = "UPDATE alias SET " .
 	     "label = '" . dbesc($label) . "', " .
 	     "language = '" . dbesc($language) . "', " .
@@ -46,8 +45,6 @@ if ($action == "changealias" && $do == "Delete") {
 
 // Tilføj alias
 if ($action == "addalias") {
-	$url = trim($url);
-	$visible = ($visible == "on" ? 1 : 0);
 	$q = "INSERT INTO alias " .
 	     "(data_id, category, label, language, visible) VALUES ".
 	     "('$data_id', '$category', '" . dbesc($label) ."', '" . dbesc( $language ) . "', '$visible')";
@@ -59,7 +56,6 @@ if ($action == "addalias") {
 	$_SESSION['admin']['info'] = "Alias created! " . dberror();
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
-
 
 if ($data_id && $category) {
 	$data_id = intval($data_id);
