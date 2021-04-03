@@ -1406,7 +1406,7 @@ function image_rescale_save($source, $destination, $max_width, $max_height) {
 	$dst_image = imagecreatetruecolor($dst_width,$dst_height);
 	imagecopyresampled($dst_image,$src_image,0,0,0,0,$dst_width,$dst_height,$src_width,$src_height);
 	@imagejpeg($dst_image,$destination);
-	return $true;
+	return true;
 }
 
 /*
