@@ -26,6 +26,10 @@ if (strlen($term) >= 2) {
 			OR CONCAT(convent.name,' (',year,')') LIKE '$escapequery%'
 			OR CONCAT(convent.name,' ',year) LIKE '$escapequery%'
 			OR CONCAT(conset.name, ' ', convent.year) LIKE '$escapequery%'
+			OR (
+				'$escapequery' REGEXP ' [0-9][0-9]$' AND
+				CONCAT(conset.name, ' ', convent.year) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' 19', RIGHT('$escapequery', 2))
+			)
 			OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
 		UNION ALL
 			SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tags WHERE tag LIKE '$escapequery%' GROUP BY tag
