@@ -152,7 +152,7 @@ if ($result) {
 		      ($link ? "<td><a href=\"$link\">$subject</a></td>\n" : "<td>".$subject."</td>\n" ).
 		      "<td>".$row['user']."</td>\n".
 		      "<td style=\"text-align: right;\">".pubdateprint($row['time'])."</td>\n".
-		      "<td style=\"text-align: left;\">{$row['note']}</td>\n".
+		      "<td style=\"width: 600px;\">" . htmlspecialchars($row['note']) . "</td>\n".
 		      "</tr>\n";
 	}
 
