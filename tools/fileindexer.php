@@ -27,7 +27,8 @@ function getdirfromcategory($category) {
 	$paths = [
 		"sce" => "scenario",
 		"convent" => "convent",
-		"conset" => "conset"
+		"conset" => "conset",
+		"tag" => "tag",
 	];
 	return $paths[$category];
 }

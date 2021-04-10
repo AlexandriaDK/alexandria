@@ -879,6 +879,10 @@ function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 		case 'convent':
 			$css = "con";
 			break;
+
+		case 'tag':
+			$css = "tag";
+			break;
 	
 		default:
 			$css = "person";
