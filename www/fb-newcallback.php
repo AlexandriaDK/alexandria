@@ -89,15 +89,11 @@ try {
 }
 
 $user = $response->getGraphUser();
-
 $user_id = do_fb_login($user['id'], $user['name'] );
-
 $redirect_url = get_redirect_url($_SERVER['HTTP_REFERER']);
-
+$_SESSION['do_redirect'] = TRUE;
 check_login_achievements();
 
 header("Location: $redirect_url");
-
 exit;
-
 ?>
