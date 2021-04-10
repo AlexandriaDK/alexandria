@@ -50,13 +50,13 @@ foreach ($files AS $file) {
 doquery("UPDATE files SET indexed = 2 WHERE id IN(" . implode( ",", $ids ) . ")");
 
 function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
+	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
 	if ($tmpfile) {
+		$filepathoriginal = $filepath;
 		$filepath = $tmpfile;
-	} else {
-		$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
 	}
 	$extension = strtolower( substr( strrchr( ($archivefile ? $archivefile : $filepath), "." ), 1 ) );
-	print "Checking " . ($archivefile ? $archivefile . ' -> ' : '') . $filepath . PHP_EOL;
+	print "Checking " . ($archivefile ? $filepathoriginal . ' -> ' . $archivefile : $filepath ) . PHP_EOL;
 	if ( ! file_exists($filepath) ) {
 		print "File did not exist, skipping." . PHP_EOL;
 		return 5;
