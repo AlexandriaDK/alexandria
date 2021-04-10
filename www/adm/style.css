@@ -170,3 +170,7 @@ div.descriptionexamples span {
 	color: #321;
 	cursor: copy;
 }
+
+tr.zerousermap, tr.zerousermap a, tr.zerousermap input:not([type="submit"]) {
+	color: #999;
+}

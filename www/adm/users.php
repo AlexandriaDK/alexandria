@@ -25,7 +25,7 @@ if ( $action ) {
 	validatetoken( $token );
 }
 
-// Tilføj Asked- eller Beer-achievement
+// Add manual achievements (asked, beer, ...)
 if ($user_id && $asked) {
 	award_user_achievement($user_id, 72);
 	header("Location: users.php");
@@ -120,32 +120,31 @@ print "<table align=\"center\" border=0>".
       "<th>Brother</th>".
       "</tr>\n";
 
-if ($result) {
-	foreach($result AS $row) {
-		print '<form action="users.php?order=' . $order . '" method="post">'.
-		      '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
-		      '<input type="hidden" name="action" value="update">'.
-		      '<input type="hidden" name="id" value="'.$row['id'].'">';
-		print "<tr valign='top'>\n".
-		      '<td style="text-align:right;"><a href="fbgraph.php?user_id=' . $row['id'] . '">'.$row['id'].'</a></td>'.
-		      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=50 maxlength=100></td>'.
-		      '<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size="6"></td>'.
-		      '<td align="center"><input type="checkbox" name="editor" value="yes" ' . ($row['editor'] ? 'checked' : '' ) . '></td>'.
-		      '<td align="right">' . (int) $userlogins[$row['id']] . '</td>'.
-		      '<td align="right" title="' . $row['login_days_in_row'] . '">' . $row['login_count'] . '</td>'.
-		      '<td align="right">'.($row['last_login'] ? pubdateprint($row['last_login']) : '-') . '</td>'.
-		      '<td align="right">'.($row['last_active'] ? pubdateprint($row['last_active']) : '-') . '</td>'.
-		      '<td align="right"><a href="achievements.php?user_id=' . $row['id'] . '">'. $row['achievements'] . '</a></td>'.
-		      '<td align="center">'.($row['asking'] ? 'Yes' : '<b><a href="users.php?asked=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
-		      '<td align="center">'.($row['beer'] ? 'Yes' : '<b><a href="users.php?beer=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
-		      '<td align="center">'.($row['elite'] ? 'Yes' : '<b><a href="users.php?elite=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
-		      '<td align="center">'.($row['brother'] ? 'Yes' : '<b><a href="users.php?brother=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
-		      '<td><input type="submit" name="do" value="Ret"></td>'.
-		      "</tr>\n";
-		print "</form>\n\n";
-	}
-
+foreach($result AS $row) {
+	$trclass = ((int) $userlogins[$row['id']] === 0 ? 'zerousermap' : '');
+	print '<form action="users.php?order=' . $order . '" method="post">'.
+			'<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
+			'<input type="hidden" name="action" value="update">'.
+			'<input type="hidden" name="id" value="'.$row['id'].'">' . PHP_EOL;
+	print "<tr class=\"$trclass\">\n".
+			'<td style="text-align:right;"><a href="fbgraph.php?user_id=' . $row['id'] . '">'.$row['id'].'</a></td>'.
+			'<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=50 maxlength=100></td>'.
+			'<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size="6"></td>'.
+			'<td align="center"><input type="checkbox" name="editor" value="yes" ' . ($row['editor'] ? 'checked' : '' ) . '></td>'.
+			'<td align="right">' . (int) $userlogins[$row['id']] . '</td>'.
+			'<td align="right" title="' . $row['login_days_in_row'] . '">' . $row['login_count'] . '</td>'.
+			'<td align="right">'.($row['last_login'] ? pubdateprint($row['last_login']) : '-') . '</td>'.
+			'<td align="right">'.($row['last_active'] ? pubdateprint($row['last_active']) : '-') . '</td>'.
+			'<td align="right"><a href="achievements.php?user_id=' . $row['id'] . '">'. $row['achievements'] . '</a></td>'.
+			'<td align="center">'.($row['asking'] ? 'Yes' : '<b><a href="users.php?asked=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
+			'<td align="center">'.($row['beer'] ? 'Yes' : '<b><a href="users.php?beer=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
+			'<td align="center">'.($row['elite'] ? 'Yes' : '<b><a href="users.php?elite=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
+			'<td align="center">'.($row['brother'] ? 'Yes' : '<b><a href="users.php?brother=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
+			'<td><input type="submit" name="do" value="Ret"></td>'.
+			"\n</tr>\n";
+	print "</form>\n\n";
 }
+
 
 print "</table>\n";
 print "</body>\n</html>\n";
