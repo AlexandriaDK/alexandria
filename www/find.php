@@ -39,13 +39,13 @@ function search_files ($find, $category = '') {
 	$output = "";
 
 	$sql = "
-		SELECT a.id, a.category, a.data_id, a.description, a.language, b.label, GROUP_CONCAT(b.label SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
+		SELECT a.id, a.category, a.data_id, a.description, a.language, b.label, b.archivefile, GROUP_CONCAT(b.label ORDER BY b.id SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
 		FROM files a
 		INNER JOIN filedata b ON a.id = b.files_id
 		WHERE MATCH(content) AGAINST ('\"".dbesc($find)."\"' IN BOOLEAN MODE)
 		$where_category
-		GROUP BY a.id
-		ORDER BY a.category, a.data_id, b.label
+		GROUP BY a.id, b.archivefile
+		ORDER BY a.category, a.data_id, a.id, b.archivefile
 	";
 	$result = getall($sql);
 	if (!$result) return false;
@@ -71,9 +71,15 @@ function search_files ($find, $category = '') {
 			}
 			$languagetext .= " [" . implode( ", ", $fulllanguages) . "]";
 		}
+		$archivefiletext = "";
+		if ($row['archivefile']) {
+			// $archivefiletext = htmlspecialchars(" (" . str_replace('/',' / ', $row['archivefile']) . ")" );
+			$archivefiletext = htmlspecialchars(" (" . basename($row['archivefile']) . ")" ); // might skip first char if special char and setlocale() is not active
+		}
 		$output .= "<li>".
 				   htmlspecialchars(parseTemplate($row['description'])) .
 				   $languagetext .
+				   $archivefiletext .
 		           " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($page) . ")";
 		if ((stripos($row['content'],$find)) !== FALSE) {
 			$output .= "<br />".

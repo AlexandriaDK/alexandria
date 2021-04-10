@@ -23,11 +23,21 @@ if (! is_dir(ALEXFILEPATH) ) {
 	die("Directory does not exist: " . ALEXFILEPATH);
 }
 
-$paths = [
-	"sce" => "scenario",
-	"convent" => "convent",
-	"conset" => "conset"
-];
+function getdirfromcategory($category) {
+	$paths = [
+		"sce" => "scenario",
+		"convent" => "convent",
+		"conset" => "conset"
+	];
+	return $paths[$category];
+}
+
+function checkArchiveFile($path) {
+	if (substr($path, -1) == '/') return false; // directory
+	if (substr($path, 0, 9) == '__MACOSX/') return false; // Mac resource forks
+	if (substr($path, -9) == '.DS_Store') return false; // Mac custom attributes
+	return true;
+}
 
 $files = getall("SELECT id, data_id, category, filename FROM files WHERE indexed = 0 AND downloadable = 1 LIMIT $limit");
 if ( ! $files) {
@@ -39,15 +49,17 @@ foreach ($files AS $file) {
 }
 doquery("UPDATE files SET indexed = 2 WHERE id IN(" . implode( ",", $ids ) . ")");
 
-// File by file
-foreach ($files AS $file) {
-	$filepath = ALEXFILEPATH . $paths[$file['category']] . '/' . $file['data_id'] . '/' . $file['filename'];
-	$extension = strtolower( substr( strrchr( $filepath, "." ), 1 ) );
-	print "Checking " . $filepath . PHP_EOL;
+function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
+	if ($tmpfile) {
+		$filepath = $tmpfile;
+	} else {
+		$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+	}
+	$extension = strtolower( substr( strrchr( ($archivefile ? $archivefile : $filepath), "." ), 1 ) );
+	print "Checking " . ($archivefile ? $archivefile . ' -> ' : '') . $filepath . PHP_EOL;
 	if ( ! file_exists($filepath) ) {
 		print "File did not exist, skipping." . PHP_EOL;
-		doquery("UPDATE files SET indexed = 5 WHERE id = " .$file['id']);
-		continue;
+		return 5;
 	}
 	if ($extension == "pdf") {
 		$command = "pdftotext ".escapeshellarg($filepath)." -";
@@ -57,28 +69,57 @@ foreach ($files AS $file) {
 		$content = `$command`;
 	} elseif ($extension == "txt") {
 		$content = file_get_contents($filepath);
+	} elseif ($extension == "zip" && $archivefile == NULL) { // Only descent one level into zip files
+		$zip = new ZipArchive;
+		$list = $zip->open($filepath);
+		if ($list !== TRUE) {
+			print "Can't read zip file (error: " . $list . "). Skipping." . PHP_EOL;
+			return 3;
+		}
+		for($i = 0; $i < $zip->numFiles; $i++) {
+			$archivefile = $zip->getNameIndex($i);
+			if (!checkArchiveFile($archivefile)) {
+				continue;
+			}
+			echo 'Filename: ' . $archivefile . PHP_EOL;
+			$tmpfile = tempnam( sys_get_temp_dir(), 'alexandria_fileindex_');
+			copy("zip://".$filepath."#".$archivefile, $tmpfile);
+			indexFile($file, $archivefile, $tmpfile);
+			unlink($tmpfile);
+		}
+		return 1;
+
 	} else {
-		print "File is not PDF, DOC, TXT. Skipping." . PHP_EOL;
-		doquery("UPDATE files SET indexed = 3 WHERE id = " .$file['id']);
-		continue;
+		print "File is not PDF, DOC, TXT, ZIP. Skipping." . PHP_EOL;
+		return 3;
+	}
+	// make sure content is UTF-8
+	$encoding = mb_detect_encoding($content, 'UTF-8,ISO-8859-1');
+	if ($encoding != 'UTF-8') {
+		$content = utf8_encode($content);
 	}
 	$pages = explode("\x0c",$content); // Split by Form feed control character
-
 	$numpages = 0;
 	foreach($pages AS $page => $text) {
 		if ($text) {
 			$numpages++;
-			$sql = "INSERT INTO filedata (files_id, label, content) VALUES (" . $file['id'] . ", '" . ( $page + 1 ) . "', '".dbesc($text)."')";
+			$archivefilevalue = ($archivefile ? "'" . dbesc($archivefile) . "'" : 'NULL' );
+			$label = ($page + 1);
+			$sql = "INSERT INTO filedata (files_id, label, content, archivefile) VALUES (" . $file['id'] . ", '" . $label . "', '".dbesc($text)."', $archivefilevalue)";
 			doquery($sql);
 			$error = dberror();
 			if ( $error ) {
 				print "Page error: " . $page . ", " . $error . PHP_EOL;
-
 			}
 		}
 	}
-	doquery("UPDATE files SET indexed = 1 WHERE id = " .$file['id']);
 	print "File indexed! ($numpages pages) " . dberror() . PHP_EOL;
-	
+	return 1;
+}
+
+// File by file
+foreach ($files AS $file) {
+	$indexed = indexFile($file);
+	doquery("UPDATE files SET indexed = $indexed WHERE id = " .$file['id']);
 }
 ?>
