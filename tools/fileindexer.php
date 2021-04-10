@@ -81,7 +81,6 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 			if (!checkArchiveFile($archivefile)) {
 				continue;
 			}
-			echo 'Filename: ' . $archivefile . PHP_EOL;
 			$tmpfile = tempnam( sys_get_temp_dir(), 'alexandria_fileindex_');
 			copy("zip://".$filepath."#".$archivefile, $tmpfile);
 			indexFile($file, $archivefile, $tmpfile);
