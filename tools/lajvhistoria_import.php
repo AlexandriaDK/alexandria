@@ -1,5 +1,5 @@
 <?php
-// Import LARP data from lavjhistoria.se
+// Import LARP data from lajvhistoria.se
 require __DIR__ . "/../www/rpgconnect.inc.php";
 require __DIR__ . "/../www/base.inc.php";
 
@@ -21,7 +21,7 @@ function get_create_person($name, $lajv_id) {
     preg_match('_(.*) (.*)_', $name, $names);
     $person_id = getone("SELECT id FROM aut WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($name) . "'");
     if (!$person_id) {
-        $intern = "Autoimport from lavjhistoria by PB" . PHP_EOL . "lajvhistoria_id: $lajv_id" . PHP_EOL;
+        $intern = "Autoimport from lajvhistoria by PB" . PHP_EOL . "lajvhistoria_id: $lajv_id" . PHP_EOL;
         $sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
         $person_id = doquery($sql);
         chlog($person_id, 'aut', 'Person created');
@@ -56,11 +56,9 @@ function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $e
         $person_ids[] = get_create_person($person, $lajv_id);
     }
     $intern  = "";
-    $intern .= "Autoimport from lavjhistoria by PB" . PHP_EOL;
-    $intern .= "lavjhistoria_id: " . $lajv_id . PHP_EOL;
+    $intern .= "Autoimport from lajvhistoria by PB" . PHP_EOL;
+    $intern .= "lajvhistoria_id: " . $lajv_id . PHP_EOL;
     $intern .= json_encode($game) . PHP_EOL . PHP_EOL;
-
-    print "Creating $title" . PHP_EOL;
 
     foreach ((array) $game->genres AS $genre) {
         $gid = $genre_lajv_alexandria_map[$genre->id] ?? NULL;
@@ -128,7 +126,7 @@ function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $e
 }
 
 function import_games($games) {
-    $alexandria_lavjhistoria_user_id = 21;
+    $alexandria_lajvhistoria_user_id = 21;
     $known_organizations = get_known_organizations();
     $orgmap = get_orgmap();
 
@@ -143,7 +141,7 @@ function import_games($games) {
         }
     }
     foreach ($games AS $game) {
-        if ( $game->added_by == $alexandria_lavjhistoria_user_id ) { // skip if source is Alexandria
+        if ( $game->added_by == $alexandria_lajvhistoria_user_id ) { // skip if source is Alexandria
             continue;
         }
         $title = trim($game->name);
@@ -154,10 +152,15 @@ function import_games($games) {
             // :TODO: Insert link into new data table
             // For now, update the internal note
             $intern = (string) getone("SELECT intern FROM sce WHERE id = $aid");
-            if (strpos($intern, 'lavjhistoria_id: ' . $lajv_id . PHP_EOL) !== FALSE ) {  // skip if we already "know" the scenario
+            $pattern = '/^lajvhistoria_id: ' . $lajv_id . '(?!\d)/m';
+            if (preg_match($pattern, $intern) ) {  // skip if we already "know" the scenario
                 print "Skipping $title ($aid)" . PHP_EOL;
                 continue;
+            } else {
+                print "Updating $title ($aid)" . PHP_EOL;
             }
+        } else {
+            print "Creating $title" . PHP_EOL;
         }
         $names = [];
         $organizations = [];
