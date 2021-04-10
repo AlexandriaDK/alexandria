@@ -201,13 +201,11 @@ if ($con) {
 tr("Name","name",$name);
 tr("Year","year",$year, "", "","number");
 if ($begin && $begin != "0000-00-00") {
-	list($y,$m,$d) = explode("-",$begin);
-	$opta = "($d/$m $y = ". $ugedag[date("w",mktime(0,0,0,$m,$d,$y))] . ")";
+	$opta = "(" . fulldate($begin) . " = " . customdateformat(LANG, 'cccc', $begin) . ")";
 }
 
 if ($end && $end != "0000-00-00") {
-	list($y,$m,$d) = explode("-",$end);
-	$optb = "($d/$m $y = ". $ugedag[date("w",mktime(0,0,0,$m,$d,$y))] . ")";
+	$optb = "(" . fulldate($end) . " = " . customdateformat(LANG, 'cccc', $end) . ")";
 }
 
 $countryname = getCountryName( ($country ? $country : $cscountry) );

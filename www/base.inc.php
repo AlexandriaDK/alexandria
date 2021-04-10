@@ -1165,32 +1165,32 @@ function getCountryNameFallback($countrycode) {
 
 function getLocaleFromLang( $lang ) {
 	$langlocales = [
-		'da' => 'da_DK.utf-8',
-		'en' => 'eb_GB.utf-8',
-		'sv' => 'sv_SE.utf-8',
-		'nb' => 'nb_NO.utf-8',
-		'de' => 'de_DE.utf-8',
-		'fr' => 'fr_FR.utf-8',
-		'es' => 'es_ES.utf-8',
-		'ru' => 'ru_RU.utf-8',
-		'be' => 'be_BY.utf-8',
-		'fi' => 'fi_FI.utf-8',
-		'pl' => 'pl_PL.utf-8',
-		'it' => 'it_IT.utf-8',
-		'ar' => 'ar_PL.utf-8',
-		'zh' => 'zh_CN.utf-8',
-		'ja' => 'ja_JP.utf-8',
-		'he' => 'he_IL.utf-8',
-		'fo' => 'fo_FO.utf-8',
-		'kl' => 'kl_GL.utf-8',
-		'hi' => 'hi_IN.utf-8',
-		'tl' => 'tl_PH.utf-8',
-		'sa' => 'sa_IN.utf-8',
-		'ta' => 'ta_IN.utf-8',
-		'bn' => 'bn_IN.utf-8',
-		'nv' => 'nv_US.utf-8'
+		'da' => 'da_DK.UTF-8',
+		'en' => 'eb_GB.UTF-8',
+		'sv' => 'sv_SE.UTF-8',
+		'nb' => 'nb_NO.UTF-8',
+		'de' => 'de_DE.UTF-8',
+		'fr' => 'fr_FR.UTF-8',
+		'es' => 'es_ES.UTF-8',
+		'ru' => 'ru_RU.UTF-8',
+		'be' => 'be_BY.UTF-8',
+		'fi' => 'fi_FI.UTF-8',
+		'pl' => 'pl_PL.UTF-8',
+		'it' => 'it_IT.UTF-8',
+		'ar' => 'ar_PL.UTF-8',
+		'zh' => 'zh_CN.UTF-8',
+		'ja' => 'ja_JP.UTF-8',
+		'he' => 'he_IL.UTF-8',
+		'fo' => 'fo_FO.UTF-8',
+		'kl' => 'kl_GL.UTF-8',
+		'hi' => 'hi_IN.UTF-8',
+		'tl' => 'tl_PH.UTF-8',
+		'sa' => 'sa_IN.UTF-8',
+		'ta' => 'ta_IN.UTF-8',
+		'bn' => 'bn_IN.UTF-8',
+		'nv' => 'nv_US.UTF-8'
 	];
-	$locale = ('eb_GB.utf-8');
+	$locale = ('eb_GB.UTF-8');
 	if ( isset( $langlocales[$lang] ) ) {
 		$locale = $langlocales[$lang];
 	}

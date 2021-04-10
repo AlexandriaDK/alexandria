@@ -5,7 +5,6 @@ error_reporting(E_ALL & ~E_NOTICE);
 mb_internal_encoding("UTF-8");
 
 define("DOWNLOAD_PATH", "/home/penguin/web/loot.alexandria.dk/files/");
-$ugedag = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 	switch ($cat) {
