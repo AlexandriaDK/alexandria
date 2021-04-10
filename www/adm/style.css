@@ -171,6 +171,11 @@ div.descriptionexamples span {
 	cursor: copy;
 }
 
-tr.zerousermap, tr.zerousermap a, tr.zerousermap input:not([type="submit"]) {
-	color: #999;
+tr.zerousermap {
+	background-color: #feb;
+}
+
+tr.zerousermap td.accounts {
+	font-weight: bold;
+	color: red;
 }

@@ -121,17 +121,17 @@ print "<table align=\"center\" border=0>".
       "</tr>\n";
 
 foreach($result AS $row) {
-	$trclass = ((int) $userlogins[$row['id']] === 0 ? 'zerousermap' : '');
+	$accounts = (int) $userlogins[$row['id']];
 	print '<form action="users.php?order=' . $order . '" method="post">'.
 			'<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' .
 			'<input type="hidden" name="action" value="update">'.
 			'<input type="hidden" name="id" value="'.$row['id'].'">' . PHP_EOL;
-	print "<tr class=\"$trclass\">\n".
+	print "<tr" . ($accounts === 0 ? ' class="zerousermap" title="No login accounts are associated with this user"' : '') . ">\n".
 			'<td style="text-align:right;"><a href="fbgraph.php?user_id=' . $row['id'] . '">'.$row['id'].'</a></td>'.
 			'<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=50 maxlength=100></td>'.
 			'<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size="6"></td>'.
 			'<td align="center"><input type="checkbox" name="editor" value="yes" ' . ($row['editor'] ? 'checked' : '' ) . '></td>'.
-			'<td align="right">' . (int) $userlogins[$row['id']] . '</td>'.
+			'<td align="right" class="accounts">' . $accounts . '</td>'.
 			'<td align="right" title="' . $row['login_days_in_row'] . '">' . $row['login_count'] . '</td>'.
 			'<td align="right">'.($row['last_login'] ? pubdateprint($row['last_login']) : '-') . '</td>'.
 			'<td align="right">'.($row['last_active'] ? pubdateprint($row['last_active']) : '-') . '</td>'.
