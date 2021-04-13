@@ -159,8 +159,9 @@ if ($action == "addfile") {
 			$_SESSION['admin']['info'] = "Error: Can't recognize file type as image.";
 		} else {
 			if (class_exists("imagick") ) { // use imagemagick module if present
-				$image = new imagick($file);
-				if (!$image) {
+				$image = new imagick();
+				$image->setResolution(150,150); // bump resolution up - probably
+				if ( ! $image->readImage($file) ) {
 					$_SESSION['admin']['info'] = "Error: Can't recognize file as image.";
 				} else {
 					$image->setImageFormat('jpg');
@@ -177,7 +178,7 @@ if ($action == "addfile") {
 					}
 				}
 			} else {
-				$command = "convert 2>&1 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
+				$command = "convert 2>&1 -density 150 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
 				$content = `$command`;
 				chlog($data_id,$category,"Thumbnail created: " . $basename);
 				$info = "Thumbnail created";
