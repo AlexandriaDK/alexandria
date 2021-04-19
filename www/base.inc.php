@@ -1,13 +1,12 @@
 <?php
 mb_internal_encoding("UTF-8");
-// enable session for all pages
-// set cache_limiter to 'private' for sake of Firefox
-// update: set cache_limiter to 'none' for sake of Firefox *and* IE
-#session_cache_limiter('none');
-session_start();
-
+header("Permissions-Policy: interest-cohort=()");
 header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiinterfaceusingvisualbasic");
 header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næsby");
+
+// enable session for all pages.
+// :TODO: Only enable session when user logs in and if $_SESSION is set; otherwise try to be completely cookie free.
+session_start();
 
 // detect language
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
