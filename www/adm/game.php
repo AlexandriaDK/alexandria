@@ -355,7 +355,8 @@ $(document).on("keydown", "#theForm textarea", function(event) {
 $(function() {
 	$( ".personlookup" ).autocomplete({
 		source: availableNames,
-		delay: 30
+		delay: 30,
+		minLength: 3
 	});
 	$(".addnext").click( function() {
 		var acount = $( "#persontable tr" ).length;
@@ -366,7 +367,8 @@ $(function() {
 		var bar = $( "#persontable" ).find('tr:last input:first')
 			.autocomplete({
 				source: availableNames,
-				delay: 30
+				delay: 30,
+				minLength: 3
 			})
 			.change( checkperson )
 		;
