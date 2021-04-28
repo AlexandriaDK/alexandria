@@ -387,4 +387,87 @@ function validatetoken( $token1 ) {
 	}
 }
 
+// Add data
+function get_create_person($name, $intern = "Autoimport") {
+    preg_match('_(.*) (.*)_', $name, $names);
+    $person_id = getone("SELECT id FROM aut WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($name) . "'");
+    if (!$person_id) {
+        $sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
+        $person_id = doquery($sql);
+        chlog($person_id, 'aut', 'Person created');
+    }
+    return $person_id;
+}
+
+function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $existing_game_id = FALSE) {
+    $title = $game['title'];
+	$sys_id = $game['sys_id'] ?? NULL;
+    $urls = $game['urls'] ?? [];
+    $genres = $game['genres'] ?? [];
+    $tags = $game['tags'] ?? [];
+    $persons = $game['persons'] ?? [];
+	$organizer = $game['organizer'] ?? '';
+    $person_ids = [];
+    foreach($persons AS $person) {
+        $person_ids[] = [
+			'pid' => get_create_person($person['name'], $intern),
+			'role_id' => $person['role_id']
+		];
+    }
+
+	// insert game
+	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, rlyeh_id, boardgame) " .
+	"VALUES ('" . dbesc($title) . "', '" . dbesc($intern) ."', $sys_id, '" . dbesc($organizer) . "', 0, 0)";
+	$game_id = doquery($game_id_sql);
+	chlog($game_id, 'sce', 'Game created');
+
+	/*
+    if ($description) {
+        $language = 'sv';
+        if ($multiple_runs || $existing_game_id) {
+            $language .= " ($year)";
+        }
+        $desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
+        doquery($desc_sql);
+    }
+
+    if ($year) {
+        $begin = $end = $year . '-00-00';
+        $run_sql = "INSERT INTO scerun (sce_id, begin, end, location, country) VALUES ($game_id, '$begin', '$end', '" . dbesc($location) . "', 'se')";
+        doquery($run_sql);        
+    }
+	*/
+
+    foreach($person_ids AS $person) {
+		$pid = $person['pid'];
+		$role_id = $person['role_id'];
+        if ( $multiple_runs || $existing_game_id ) {
+            $assql = "INSERT INTO asrel (aut_id, sce_id, tit_id, note) VALUES ($pid, $game_id, $role_id, '$year run')";
+        } else {
+            $assql = "INSERT INTO asrel (aut_id, sce_id, tit_id) VALUES ($pid, $game_id, $role_id)";
+        }
+        doquery($assql);
+    }
+    foreach ($genres AS $gid) {
+        if ( ! getone("SELECT 1 FROM gsrel WHERE gen_id = $gid AND sce_id = $game_id")) {
+            $gsql = "INSERT INTO gsrel (gen_id, sce_id) VALUES ($gid, $game_id)";
+            doquery($gsql);
+        }
+    }
+    foreach ($tags AS $tag) {
+        if ( ! getone("SELECT 1 FROM tags WHERE sce_id = $game_id AND tag = '". dbesc($tag) . "'")) {
+            $gsql = "INSERT INTO tags (sce_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
+            doquery($gsql);
+        }
+    }
+
+	foreach($urls AS $url) {
+		if ( ! getone("SELECT 1 FROM links WHERE category = 'sce' AND data_id = $game_id AND url = '" . dbesc($url) . "'")) {
+			$lsql = "INSERT INTO links (category, data_id, url, description) VALUES ('sce', $game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
+			doquery($lsql);
+		}
+	}
+	return $game_id;
+}
+
 ?>
