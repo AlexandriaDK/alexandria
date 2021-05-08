@@ -12,6 +12,7 @@ if ($category == 'game') $category = 'sce';
 $id = (int) $_REQUEST['id'];
 $data_id = (int) $_REQUEST['data_id'];
 $action = (string) $_REQUEST['action'];
+$section = (string) ($_REQUEST['section'] ?? '');
 $do = (string) $_REQUEST['do'];
 $description = trim((string) $_REQUEST['description']);
 $downloadable = (string) $_REQUEST['downloadable'];
@@ -26,6 +27,7 @@ setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to ImageMagick escapeshellarg() if im
 // Or, more precise, basename() only works if
 //   1. the locale for setlocale does exist (e.g. running "locale-gen da_DK.UTF-8")
 //   2. setlocale() is run for LC_ALL (none of the other LC_* works) for that locale
+//   3. locale is a language. Setting the language to 'C' will not work.
 // E.g.: setlocale(LC_ALL, 'da_DK.UTF-8')
 if (! function_exists('mb_basename') ) { 
 	function mb_basename ( $path ) {
@@ -166,6 +168,11 @@ if ($action == "addfile") {
 				} else {
 					$image->setImageFormat('jpg');
 					$image->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+					if ($section == 'left') {
+						$image->cropImage(ceil($image->getImageWidth()/2), $image->getImageHeight(), 0, 0);
+					} elseif ($section == 'right') {
+						$image->cropImage(ceil($image->getImageWidth()/2), $image->getImageHeight(), floor($image->getImageWidth()/2), 0);
+					}
 					$image->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // flatten transparency to background, which is white per default
 					if ($image->writeImage($target) ) {
 						$_SESSION['admin']['info'] = "Thumbnail created";
@@ -178,7 +185,13 @@ if ($action == "addfile") {
 					}
 				}
 			} else {
-				$command = "convert 2>&1 -density 150 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
+				if ($section == 'left') {
+					$command = "convert 2>&1 -density 150 " . escapeshellarg($file) . " -gravity west -crop 50%x100%+0+0 -flatten " . escapeshellarg($target); 
+				} elseif ($section == 'right') {
+					$command = "convert 2>&1 -density 150 " . escapeshellarg($file) . " -gravity east -crop 50%x100%+0+0 -flatten " . escapeshellarg($target); 
+				} else {
+					$command = "convert 2>&1 -density 150 " . escapeshellarg($file) . " -flatten " . escapeshellarg($target); 
+				}
 				$content = `$command`;
 				chlog($data_id,$category,"Thumbnail created: " . $basename);
 				$info = "Thumbnail created";
@@ -319,8 +332,12 @@ if ($data_id && $category) {
 
 	foreach(glob( DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") AS $file) {
 		$basename = mb_basename( $file );
+		$createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&amp;data_id=' . $data_id . '&amp;action=thumbnail&amp;filename=' . rawurlencode( $basename );
 		print '<a href="http://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
-		print "<a href=\"files.php?category=" . htmlspecialchars($category) . "&amp;data_id=" . $data_id . "&amp;action=thumbnail&amp;filename=" . rawurlencode( $basename ) . "\" title=\"Create thumbnail\" onclick=\"return confirm('Create thumbnail?');\" >📷</a>&nbsp;";
+		print '<div class="tooltip">';
+		print '<a href="' . $createthumbnailurl. '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
+		print '<span class="tooltiptext"><a href="' . $createthumbnailurl . '" onclick="return confirm(\'Create thumbnail?\');" title="Create thumbnail">Full</a> • <a href="' . $createthumbnailurl . '&amp;section=left" onclick="return confirm(\'Create thumbnail, left half?\');" title="Create thumbnail, use left half of first page">Left</a> • <a href="' . $createthumbnailurl . '&amp;section=right" onclick="return confirm(\'Create thumbnail, right half?\');" title="Create thumbnail, use right half of first page">Right</a></span>';
+		print '</div>&nbsp;';
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
 		print htmlspecialchars( $basename );
 		print "</a>";
@@ -379,6 +396,7 @@ if ($data_id && $category) {
 } else {
 	print "Error: No data id supplied.";
 }
+
 print "</body>\n</html>\n";
 
 ?>

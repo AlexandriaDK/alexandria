@@ -126,9 +126,6 @@ textarea.langfocusde {
 	background: linear-gradient(to bottom, #bbb 0%, #bbb 33.33%, #fbb 0, #fbb 66.66%, #fdb 0);
 }
 
-.glow:hover {
-}
-
 input.personexists:enabled {
 	background-color: #6c6;
 }
@@ -179,3 +176,45 @@ tr.zerousermap td.accounts {
 	font-weight: bold;
 	color: red;
 }
+
+/* Tooltip container */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+  
+/* Tooltip text */
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -60px;
+	background-color: rgb(255, 232, 232);
+	color: rgb(0, 0, 0);
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	border: 1px solid black;
+   
+	/* Position the tooltip text - see examples below! */
+	position: absolute;
+	z-index: 1;
+}
+
+  /* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+	content: " ";
+	position: absolute;
+	top: 100%; /* At the bottom of the tooltip */
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: rgb(255, 232, 232) transparent transparent transparent;
+  }
