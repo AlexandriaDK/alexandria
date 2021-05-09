@@ -1,5 +1,9 @@
 <?php
-# Find zip files containing docx files
+# Find zip files containing .docx files, clear their index data from filedata and stage them for re-indexing
+
+# Alexandria didn't support .docx files at first. While it's easy to stage .docx files for indexing again existing .zip
+# files could contain .docx files and still be marked as indexed. To avoid re-indexing every .zip file this script
+# only finds relevant .zip files and updates the database
 
 chdir( __DIR__ . "/../www/");
 require "rpgconnect.inc.php";
