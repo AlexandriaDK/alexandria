@@ -1,7 +1,6 @@
 <?php
 # Cron job: Index uploaded files (PDF, Word, ...) to table filecontent
-
-# Assuming (!) access to commands  antiword  and  pdftotext
+# Assuming (!) access to commands: antiword, pdftotext, docx2txt
 
 /* Indexed
  * 0: Ready to be indexed
@@ -67,6 +66,9 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 		$content = `$command`;
 	} elseif ($extension == "doc") {
 		$command = "antiword ".escapeshellarg($filepath);
+		$content = `$command`;
+	} elseif ($extension == "docx") {
+		$command = "docx2txt ".escapeshellarg($filepath) . " -";
 		$content = `$command`;
 	} elseif ($extension == "txt") {
 		$content = file_get_contents($filepath);
