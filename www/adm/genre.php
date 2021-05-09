@@ -25,14 +25,19 @@ if ($action == "changegenre") {
 
 htmladmstart("Genre");
 
-$result = getall("SELECT gen.id, gen.name, gsrel.sce_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.gen_id AND sce_id = '$id' ORDER BY name");
+$result = getall("SELECT gen.id, gen.name, gen.genre, gsrel.sce_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.gen_id AND sce_id = '$id' ORDER BY gen.genre DESC, gen.name");
 
 if ($id) {
+	$genre = TRUE;
 	print "<form action=\"genre.php\" method=\"post\">\n";
-	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=3>Set genres for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n";
+	print "<table align=\"center\">".
+	      "<tr><th colspan=2>Set genres for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n";
 
 	foreach($result AS $row) {
+		if ($genre == TRUE && $row['genre'] == 0) {
+			$genre = FALSE;
+			print '<tr><td colspan="2">&nbsp;</td></tr>';
+		}
 		print "<tr>";
 		print "<td><label for=\"gen_{$row['id']}\">".$row['name']."</label></td>";
 		print "<td><input id=\"gen_{$row['id']}\" type=\"checkbox\" name=\"genid[".$row['id']."]\" ".($row['sce_id']?'checked="checked"':'')." /></td>";
