@@ -36,7 +36,7 @@ if ($magazineid) {
 		ORDER BY airel.id
 	");
 	$articles = getall("
-		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, airel.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
 		FROM airel
 		LEFT JOIN aut ON airel.aut_id = aut.id
 		LEFT JOIN sce ON airel.sce_id = sce.id
