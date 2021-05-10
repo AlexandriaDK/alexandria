@@ -105,7 +105,7 @@ if ( $action == 'uploadfile' &&
 	} elseif (file_exists($upload_path) ) {
 		$_SESSION['admin']['info'] = "Error: A file with this file name already exists";
 	} elseif (!copy($remoteurl, $upload_path) ) {
-		$_SESSION['admin']['info'] = "Unknown error when uploading.";
+		$_SESSION['admin']['info'] = "Unknown error when uploading: " . error_get_last()['message'];
 	} else {
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"File remote uploaded: " . $remoteurl);
