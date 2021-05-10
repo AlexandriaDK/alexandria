@@ -27,15 +27,16 @@ if ($magazineid) {
 	");
 	// two lookups with and without page being NULL could be combined to one
 	$colophone = getall("
-		SELECT aut_id, aut_extra, role, page, title, description, articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name
+		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
 		FROM airel
 		LEFT JOIN aut ON airel.aut_id = aut.id
+		LEFT JOIN sce ON airel.sce_id = sce.id
 		WHERE issue_id = $issueid
 		AND page IS NULL
 		ORDER BY airel.id
 	");
 	$articles = getall("
-		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, airel.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
 		FROM airel
 		LEFT JOIN aut ON airel.aut_id = aut.id
 		LEFT JOIN sce ON airel.sce_id = sce.id
@@ -45,10 +46,9 @@ if ($magazineid) {
 	");
 } else {
 	$magazines = getall("
-		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
-		FROM airel
-		LEFT JOIN aut ON airel.aut_id = aut.id
-		LEFT JOIN sce ON airel.sce_id = sce.id
+		SELECT magazine.id, magazine.name, COUNT(issue.id) AS issuecount
+		FROM magazine
+		LEFT JOIN issue ON issue.magazine_id = magazine.id
 		GROUP BY magazine.id, magazine.name
 		ORDER BY magazine.name
 	");
