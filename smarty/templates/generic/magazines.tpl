@@ -2,6 +2,13 @@
 {include file="head.tpl"}
 
 <div id="content">
+{if $pic}
+	<div style="float: right;">
+		<a href="/gfx/{$picpath}/l_{$picid}.jpg">
+			<img src="/gfx/{$picpath}/s_{$picid}.jpg" style="border: 1px solid black; margin: 2px;" />
+		</a>
+	</div>
+{/if}
 
 	<div>
 {if $issueid}

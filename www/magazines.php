@@ -2,6 +2,8 @@
 require("./connect.php");
 require("base.inc.php");
 
+$this_type = 'issue';
+
 $magazineid = (int) ($_GET['id'] ?? 0);
 $issueid = (int) ($_GET['issue'] ?? 0);
 $error = FALSE;
@@ -10,6 +12,7 @@ $issue = [];
 $issues = [];
 $articles = [];
 $colophone = [];
+$available_pic = $picpath = $picid = FALSE;
 
 if ($magazineid) {
 	$magazinename = getone("SELECT name FROM magazine WHERE id = $magazineid");
@@ -19,6 +22,10 @@ if ($magazineid) {
 		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, title, id");
 	}
 } elseif ($issueid) {
+	if ($available_pic = hasthumbnailpic($issueid, $this_type)) {
+		$picpath = getcategorythumbdir('issue');
+		$picid = $issueid;
+	}
 	$issue = getrow("
 		SELECT issue.title, issue.releasetext, magazine.id AS magazineid, magazine.name AS magazinename
 		FROM issue
@@ -64,5 +71,9 @@ $t->assign('issue',$issue);
 $t->assign('colophone',$colophone);
 $t->assign('articles',$articles);
 $t->assign('error', $error);
+$t->assign('pic',$available_pic);
+$t->assign('picpath',$picpath);
+$t->assign('picid',$picid);
+// $t->assign('ogimage', getimageifexists($con, 'convent') );
 $t->display('magazines.tpl');
 ?>

@@ -262,6 +262,11 @@ if ($data_id && $category) {
 		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
 		$mainlink = "tag.php?tag_id=$data_id";
 		break;
+	case 'issue':
+		$cat = 'issue';
+		$q = "SELECT title FROM issue WHERE id = '$data_id'";
+		$mainlink = "issue.php?id=$data_id";
+		break;
 	default:
 		$cat = 'aut';
 		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
