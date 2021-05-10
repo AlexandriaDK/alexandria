@@ -36,7 +36,7 @@
 	{foreach $articles as $row}
 	<tr>
 	<td style="padding-right: 10px; text-align: right;">{$_file_page} {$row.page|escape}</td>
-	<td style="padding-right: 10px;">{$row.title|escape}</td>
+	<td style="padding-right: 10px;">{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}</td>
 	<td style="padding-right: 10px;">
 		{if $row.aut_id}
 		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
