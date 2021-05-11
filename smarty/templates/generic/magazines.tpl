@@ -86,6 +86,11 @@
 {/if}
 	</div>
 
+{if $issueid}
+{assign "id" $issueid}
+{assign "type" "issue"}
+{include file="updatelink.tpl"}
+{/if}
 </div>
 
 {include file="end.tpl"}

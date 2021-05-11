@@ -1217,7 +1217,12 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 		$value = "title";
 		$fullcat = "Scenarie";
 		break;
-	
+
+		case 'convent':
+		$value = "name";
+		$fullcat = "Con";
+		break;
+
 		case 'conset':
 		$value = "name";
 		$fullcat = "Con-serie";
@@ -1233,17 +1238,18 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 		$fullcat = "Tag";
 		break;
 	
-		case 'convent':
-		$value = "name";
-		$fullcat = "Con";
+		case 'issue':
+		$value = "title";
+		$fullcat = "Issue";
 		break;
-	
+
+			
 		default:
 	}
 
 	if ($value) {
 		$label = getone("
-			SELECT COALESCE(alias.label, $value) AS label_translation
+			SELECT COALESCE(alias.label, tbl.$value) AS label_translation
 			FROM $cat AS tbl
 			LEFT JOIN alias ON tbl.id = alias.data_id AND alias.category = '$cat' AND alias.language = '" . LANG . "' AND alias.visible = 1
 			WHERE tbl.id = $data_id

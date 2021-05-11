@@ -89,6 +89,9 @@
 				<a href="calendar">{$_top_calendar}</a><br>
 				<a href="feeds">{$_top_blogfeeds}</a><br>
 				<a href="awards">{$_top_awards}</a><br>
+{if $user_editor}
+				<a href="magazines">{$_top_magazines}</a> [editor]<br>
+{/if}
 				<a href="jostspil">{$_top_jostgame}</a><br>
 				<br>
 				<a href="kontakt">{$_top_contact}</a><br>

@@ -34,7 +34,11 @@ switch ($cat) {
 	case 'review':
 		$returl = 'review.php?review_id=';
 		break;
-		
+
+	case 'issue':
+		$returl = 'magazine.php?issue_id=';
+		break;
+	
 	case 'tag':
 	if ( ctype_digit( $id ) ) {
 		$returl = 'tag.php?tag_id=';
