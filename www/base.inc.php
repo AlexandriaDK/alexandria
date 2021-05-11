@@ -1040,6 +1040,22 @@ function getalltags ($count = FALSE) {
 	return $tags;
 }
 
+function getarticles ($data_id, $category) {
+	$data_id = (int) $data_id;
+	if ($category == 'aut') {
+		$articles = getall("
+			SELECT airel.issue_id, airel.role, airel.title, airel.page, issue.magazine_id, issue.title AS issuetitle, magazine.name AS magazinename
+			FROM airel
+			INNER JOIN issue ON airel.issue_id = issue.id
+			INNER JOIN magazine ON issue.magazine_id = magazine.id
+			WHERE airel.aut_id = $data_id
+			ORDER BY issue.releasedate
+		");
+	} else {
+		$articles = [];
+	}
+	return $articles;
+}
 
 function getorganizerlist ($data_id, $category, $order = FALSE) {
 	if (!$order) {

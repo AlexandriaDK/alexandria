@@ -760,3 +760,7 @@ div.selectlanguage img:first-child {
 	width: 30px;
 	opacity: 0.3;
 }
+
+table#personarticles td {
+	padding-right: 10px;
+}

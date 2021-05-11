@@ -68,7 +68,7 @@
 {/if}
 
 {if $organizerlist}
-<h3 class="parttitle" id="organizer">{$_p_organizerroles}:</h3>
+<h3 class="parttitle" id="organizer">{$_p_organizerroles}</h3>
 	<table class="organizerlist indata">
 	{foreach from=$organizerlist item=$con}
 	<tr>
@@ -84,6 +84,23 @@
 	</tr>
 	{/foreach}
 	</table>
+{/if}
+
+{if $user_editor}
+{if $articles}
+<h3 class="parttitle">{$_p_articles}</h3>
+	<table id="personarticles">
+	{foreach $articles as $article}
+	<tr>
+	<td>{$article.title|escape}</td>
+	<td>{$article.role|escape}</td>
+	<td>{$_file_page} {$article.page|escape}</td>
+	<td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a></td>
+	<td><a href="magazines?id={$article.magazine_id}">{$article.magazinename|escape}</a></td>
+	</tr>
+	{/foreach}
+	</table>
+{/if}
 {/if}
 
 {include file="trivialink.tpl"}
