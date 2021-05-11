@@ -269,9 +269,10 @@ if ($magazine_id && $issue_id) {
 	$magazine_name = getone("SELECT name FROM magazine WHERE id = $magazine_id");
 	
 	$query = "
-		SELECT i.id, i.title, i.releasedate, i.releasetext, COUNT(a.id) AS entries
+		SELECT i.id, i.title, i.releasedate, i.releasetext, COUNT(a.id) AS entries, COUNT(f.id) AS files
 		FROM issue i
 		LEFT JOIN airel a ON i.id = a.issue_id
+		LEFT JOIN files f ON i.id = f.data_id AND f.category = 'issue'
 		WHERE i.magazine_id = $magazine_id
 		GROUP BY i.id, i.title, i.releasedate, i.releasetext
 	";
@@ -288,13 +289,15 @@ if ($magazine_id && $issue_id) {
 
 	foreach($issues AS $issue) {
 		$new = ! isset($issue['id']);
+		$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . $issue['id'] . "/*"));
 		print '<form action="magazine.php" method="post">'.
 				'<input type="hidden" name="action" value="' . ($new ? 'addissue' : 'changeissue') . '">'.
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
 				'<input type="hidden" name="issue_id" value="' . $issue['id'] . '">';
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right;">' . ($issue['id'] ?? 'New') . '</td>'.
-				'<td><input type="text" name="title" value="'.htmlspecialchars($issue['title']).'" size=40 maxlength=150><br><a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' . ($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries'). '</a></td>' .
+				'<td><input type="text" name="title" value="'.htmlspecialchars($issue['title']).'" size=40 maxlength=150>'.
+				($new ? '' : '<br><a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' . ($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries'). '</a>' . ' - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a>') . '</td>' .
 				'<td><input type="date" name="releasedate" value="'.htmlspecialchars($issue['releasedate']).'"></td>' .
 				'<td><input type="text" name="releasetext" value="'.htmlspecialchars($issue['releasetext']).'" size=40 maxlength=150></td>' .
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.

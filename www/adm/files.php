@@ -265,7 +265,7 @@ if ($data_id && $category) {
 	case 'issue':
 		$cat = 'issue';
 		$q = "SELECT title FROM issue WHERE id = '$data_id'";
-		$mainlink = "issue.php?id=$data_id";
+		$mainlink = "magazine.php?issue_id=$data_id";
 		break;
 	default:
 		$cat = 'aut';
