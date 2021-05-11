@@ -41,7 +41,7 @@ foreach($result AS $row) {
 	$scenarios[] = $row['id'] . " - " . $row['title'];
 }
 
-// Ret kategori
+// Edit kategori
 if ($action == "changecategory" && $do != "Delete") {
 
 	$q = "UPDATE award_categories SET " .
@@ -56,9 +56,9 @@ if ($action == "changecategory" && $do != "Delete") {
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
-// Slet kategori
+// Delete category
 if ($action == "changecategory" && $do == "Delete") {
-	// Tjek at der ikke er nogen nominerede, før der kan slettes
+	// Only delete category if no nominees
 	$q = "SELECT COUNT(*) FROM award_nominees where award_category_id = $id";
 	$r = getone($q);
 	if($r != 0) {
@@ -69,13 +69,13 @@ if ($action == "changecategory" && $do == "Delete") {
 	$q = "DELETE FROM award_categories WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id,$category,"Kategori fjernet: $id");
+		chlog($data_id,$category,"Category removed: $id");
 	}
 	$_SESSION['admin']['info'] = "Category removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
-// Tilføj kategori
+// Add category
 if ($action == "addcategory") {
 	$q = "INSERT INTO award_categories " .
 	     "(name, description, convent_id) VALUES ".
@@ -89,7 +89,7 @@ if ($action == "addcategory") {
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
-// Ret nomineret
+// Edit nominee
 if ($action == "changenominee" && $do != "Delete") {
 	$award_name = getone("SELECT name FROM award_categories WHERE id = $data_id");
 	$q = "UPDATE award_nominees SET " .
@@ -112,7 +112,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
-// Tilføj nomineret
+// Add nominee
 if ($action == "addnominee") {
 	var_dump($convent_id);
 	$award_name = getone("SELECT name FROM award_categories WHERE id = $data_id");
@@ -128,9 +128,9 @@ if ($action == "addnominee") {
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
 }
 
-// Slet nomineret
+// Remove nominee
 if ($action == "changenominee" && $do == "Delete") {
-	// Tjek at der ikke er nogen nominerede, før der kan slettes
+	// Only delete if there are no nominees
 	$num_childs = getone("SELECT COUNT(*) FROM award_nominee_entities where award_nominee_id = $id");
 	if($num_childs != 0) {
 		$_SESSION['admin']['info'] = "The nominee must have all entities removed, before it can be deleted! " . dberror();
@@ -219,7 +219,7 @@ if ($category == 'convent') {
 			      '<input type="hidden" name="id" value="'.$row['id'].'">';
 			print "<tr valign=\"top\">\n".
 			      '<td style="text-align:right;">'.$row['id'].'</td>'.
-			      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=40 maxlength=150><br><a href="awards.php?category=awardcategory&amp;data_id=' . $row['id'] . '">' . ($row['winners'] == 1 ? "1 vinder" : (int) $row['winners'] . " vindere") . " / " . ($row['nominees'] == 1 ? "1 nomineret" : $row['nominees'] . " nominerede") . '</a></td>'.
+			      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=40 maxlength=150><br><a href="awards.php?category=awardcategory&amp;data_id=' . $row['id'] . '">' . ($row['winners'] == 1 ? "1 winner" : (int) $row['winners'] . " winners") . " / " . ($row['nominees'] == 1 ? "1 nominee" : $row['nominees'] . " nominees") . '</a></td>'.
 			      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($row['description']).'</textarea></td>'.
 			      '<td><input type="submit" name="do" value="Update"> '.
 			      ($row['nominees'] == 0 ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove award?\');">' : '') . '</td>'.
@@ -239,6 +239,7 @@ if ($category == 'convent') {
 	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";
+	print "</table>" . PHP_EOL;
 
 
 } elseif ($category == "awardcategory" && $data_id) {

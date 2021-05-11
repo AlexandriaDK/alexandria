@@ -17,6 +17,7 @@
 	</h2>
 	<h3>{$issue.title|escape}{if $issue.releasetext} - {$issue.releasetext|escape}{/if}</h3>
 
+	{if $colophone}
 	<h4>{$_magazines_colophone}</h4>
 	<table>
 	<tbody>
@@ -36,7 +37,9 @@
 	{/foreach}
 	</tbody>
 	</table>
+	{/if}
 
+	{if $articles}
 	<h4>{$_magazines_content}</h4>
 	<table>
 	<tbody>
@@ -56,6 +59,7 @@
 	{/foreach}
 	</tbody>
 	</table>
+	{/if}
 
 {elseif $magazineid}
 	<h2 class="pagetitle">

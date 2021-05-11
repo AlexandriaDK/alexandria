@@ -24,6 +24,8 @@ function admLink ($category, $data_id) {
 	if ($category == 'sys') return 'system.php?system=' . $data_id;
 	if ($category == 'tag') return 'tag.php?tag_id=' . $data_id;
 	if ($category == 'review') return 'review.php?review_id=' . $data_id;
+	if ($category == 'issue') return 'magazine.php?issue_id=' . $data_id;
+	if ($category == 'magazine') return 'magazine.php?magazine_id=' . $data_id;
 
 	return $link;
 }
@@ -76,6 +78,16 @@ if ($data_id && $category) {
 		$q = "SELECT title FROM reviews WHERE id = $data_id";
 		$mainlink = "review.php?review_id=$data_id";
 		break;
+	case 'issue':
+		$cat = 'issue';
+		$q = "SELECT title FROM issue WHERE id = $data_id";
+		$mainlink = "magazine.php?issue_id=$data_id";
+		break;
+	case 'magazine':
+		$cat = 'magazine';
+		$q = "SELECT name FROM magazine WHERE id = $data_id";
+		$mainlink = "magazine.php?magazine_id=$data_id";
+		break;
 	default:
 		$cat = 'aut';
 		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
@@ -94,7 +106,10 @@ if ($data_id && $category) {
 		'conset' => getassoc("name","conset"),
 		'sys' => getassoc("name","sys"),
 		'tag' => getassoc("tag","tag"),
-		'review' => getassoc("title","reviews")
+		'review' => getassoc("title","reviews"),
+		'issue' => getassoc("title","issue"),
+		'magazine' => getassoc("name","magazine"),
+		
 	];
 	if ($user_id) {
 		$query = "SELECT id, data_id, category, time, user, user_id, note FROM log WHERE user_id = $user_id ORDER BY id DESC LIMIT $listlimit";
@@ -106,10 +121,6 @@ if ($data_id && $category) {
 
 }
 htmladmstart("Log");
-
-if ($info) {
-	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";
-}
 
 if ($result) {
 	print "<table align=\"center\" border=0>".

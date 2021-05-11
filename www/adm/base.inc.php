@@ -264,6 +264,7 @@ function rexit($this_type, $dataset = [] ) {
 		case 'awards':
 		case 'language':
 		case 'users':
+		case 'magazine':
 		case 'review':
 				$location = $this_type . '.php';
 			break;
@@ -310,7 +311,7 @@ function printinfo() {
 }
 
 function sqlifnull($string) {
-	if ($string == "") {
+	if ($string == "") { // also matches int value of 0
 		return "NULL";
 	}
 	return "'" . dbesc($string) . "'";
