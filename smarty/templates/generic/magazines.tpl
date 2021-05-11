@@ -43,10 +43,15 @@
 	<h4>{$_magazines_content}</h4>
 	<table>
 	<tbody>
-	{foreach $articles as $row}
+	{assign "lasttitle" ""}
+	{foreach $articles as $row}	
 	<tr>
+	{if $row.title != $lasttitle}
 	<td style="padding-right: 10px; text-align: right;">{$_file_page} {$row.page|escape}</td>
 	<td style="padding-right: 10px;">{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}</td>
+	{else}
+	<td colspan="2"></td>
+	{/if}
 	<td style="padding-right: 10px;">
 		{if $row.aut_id}
 		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
@@ -56,6 +61,7 @@
 	</td>
 	<td>{$row.role|escape}</td>
 	</tr>
+	{assign "lasttitle" $row.title}
 	{/foreach}
 	</tbody>
 	</table>
