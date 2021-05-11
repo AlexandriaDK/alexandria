@@ -43,10 +43,9 @@
 	<h4>{$_magazines_content}</h4>
 	<table>
 	<tbody>
-	{assign "lasttitle" ""}
 	{foreach $articles as $row}	
 	<tr>
-	{if $row.title != $lasttitle}
+	{if not isset($lasttitle) || $row.title != $lasttitle}
 	<td style="padding-right: 10px; text-align: right;">{$_file_page} {$row.page|escape}</td>
 	<td style="padding-right: 10px;">{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}</td>
 	{else}
