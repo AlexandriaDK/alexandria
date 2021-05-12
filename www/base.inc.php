@@ -939,7 +939,16 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 		$tag = getone("SELECT tag FROM tag WHERE id = $data_id");
 		$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "data?tag=" . rawurlencode($tag) );
 		break;
+
+		case 'issue':
+		$value = ($admin ? "/adm/magazine.php?issue_id=$data_id" : "magazines?issue=$data_id");
+		break;
 	
+		case 'magazine':
+		$value = ($admin ? "/adm/magazine.php?magazine_id=$data_id" : "magazines?id=$data_id");
+		break;
+	
+
 		default:
 		case 'aut':
 		$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
@@ -1259,6 +1268,10 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 		$fullcat = "Issue";
 		break;
 
+		case 'magazine':
+		$value = "name";
+		$fullcat = "Magazine";
+		break;
 			
 		default:
 	}
