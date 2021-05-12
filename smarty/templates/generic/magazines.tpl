@@ -84,9 +84,14 @@
 	<h2 class="pagetitle">
 		{$_magazines_list}
 	</h2>
+	<div style="column-count: 2">
 	{foreach $magazines as $magazine}
 		<h3><a href="magazines?id={$magazine.id}">{$magazine.name|escape}</a></h3>
+		<blockquote>
+			{$magazine.description|escape|textlinks|nl2br}
+		</blockquote>
 	{/foreach}
+	</div>
 
 {/if}
 	</div>

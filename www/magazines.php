@@ -50,7 +50,7 @@ if ($magazineid) {
 	");
 } else {
 	$magazines = getall("
-		SELECT magazine.id, magazine.name, COUNT(issue.id) AS issuecount
+		SELECT magazine.id, magazine.name, magazine.description, COUNT(issue.id) AS issuecount
 		FROM magazine
 		LEFT JOIN issue ON issue.magazine_id = magazine.id
 		GROUP BY magazine.id, magazine.name
