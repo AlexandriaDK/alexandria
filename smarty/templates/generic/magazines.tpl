@@ -115,6 +115,6 @@
 {assign "type" "issue"}
 {include file="updatelink.tpl"}
 {/if}
+{include file="internal.tpl"}
 </div>
-
 {include file="end.tpl"}

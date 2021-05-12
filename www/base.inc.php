@@ -461,7 +461,7 @@ function getdynamicscehtml($sce_id,$type,$active) {
 	$html = 
 		'<span id="' . $span_id . '">' .
 		'<a href="' . $jsurl . '">' .
-		'<img src="/gfx/' . $type . '_' . $ap . '.jpg" alt=' . htmlspecialchars($scenariotext[$type]) . ' ' . $ap . '" title="' . htmlspecialchars($scenariotext[$type]) . '">' .
+		'<img src="/gfx/' . $type . '_' . $ap . '.jpg" alt="' . htmlspecialchars($scenariotext[$type]) . ' ' . $ap . '" title="' . htmlspecialchars($scenariotext[$type]) . '">' .
 		'</a>' .
 		'</span>'
 	;

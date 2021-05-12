@@ -10,6 +10,7 @@ $this_type = 'magazine';
 $action = (string) $_REQUEST['action'];
 $do = (string) $_REQUEST['do'];
 $description = (string) $_REQUEST['description'];
+$internal = (string) $_REQUEST['internal'];
 $name = (string) $_REQUEST['name'];
 $title = (string) $_REQUEST['title'];
 $releasedate = (string) $_REQUEST['releasedate'];
@@ -46,7 +47,8 @@ foreach($result AS $row) {
 if ($action == "changemagazine" && $do != "Delete") {
 	$q = "UPDATE magazine SET " .
 	     "name = '" . dbesc($name) . "', " .
-	     "description = '" . dbesc($description) . "' " .
+	     "description = '" . dbesc($description) . "', " .
+	     "internal = '" . dbesc($internal) . "' " .
 	     "WHERE id = $magazine_id";
 	$r = doquery($q);
 	if ($r) {
@@ -76,8 +78,8 @@ if ($action == "changemagazine" && $do == "Delete") {
 
 if ($action == "addmagazine") {
 	$q = "INSERT INTO magazine " .
-	     "(name, description) VALUES ".
-	     "('" . dbesc($name) . "', '" . dbesc($description) . "')";
+	     "(name, description, internal) VALUES ".
+	     "('" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($internal) . "')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -92,7 +94,8 @@ if ($action == "changeissue" && $do != "Delete") {
 	$q = "UPDATE issue SET " .
 	     "title = '" . dbesc($title) . "', " .
 	     "releasedate = " . sqlifnull($releasedate) . ", " .
-	     "releasetext = '" . dbesc($releasetext) . "' " .
+	     "releasetext = '" . dbesc($releasetext) . "', " .
+	     "internal = '" . dbesc($internal) . "' " .
 	     "WHERE id = $issue_id";
 	$r = doquery($q);
 	if ($r) {
@@ -122,8 +125,8 @@ if ($action == "changeissue" && $do == "Delete") {
 
 if ($action == "addissue") {
 	$q = "INSERT INTO issue " .
-	     "(title, releasedate, releasetext, magazine_id) VALUES ".
-	     "('" . dbesc($title) . "', ". sqlifnull($releasedate) . ", '" . dbesc($releasetext) . "', $magazine_id)";
+	     "(title, releasedate, releasetext, magazine_id, internal) VALUES ".
+	     "('" . dbesc($title) . "', ". sqlifnull($releasedate) . ", '" . dbesc($releasetext) . "', $magazine_id, '" . dbesc($internal) . "')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -269,7 +272,7 @@ if ($magazine_id && $issue_id) {
 	$magazine_name = getone("SELECT name FROM magazine WHERE id = $magazine_id");
 	
 	$query = "
-		SELECT i.id, i.title, i.releasedate, i.releasetext, COUNT(a.id) AS entries, COUNT(f.id) AS files
+		SELECT i.id, i.title, i.releasedate, i.releasetext, i.internal, COUNT(a.id) AS entries, COUNT(f.id) AS files
 		FROM issue i
 		LEFT JOIN airel a ON i.id = a.issue_id
 		LEFT JOIN files f ON i.id = f.data_id AND f.category = 'issue'
@@ -286,6 +289,7 @@ if ($magazine_id && $issue_id) {
 	      "<th>Title</th>".
 	      "<th>Release date (approx)</th>".
 	      "<th>Issue name</th>".
+	      "<th>Internal note</th>".
 	      "</tr>\n</thead><tbody>\n";
 
 	foreach($issues AS $issue) {
@@ -301,6 +305,7 @@ if ($magazine_id && $issue_id) {
 				($new ? '' : '<br><a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' . ($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries'). '</a>' . ' - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a>') . '</td>' .
 				'<td><input type="date" name="releasedate" value="'.htmlspecialchars($issue['releasedate']).'"></td>' .
 				'<td><input type="text" name="releasetext" value="'.htmlspecialchars($issue['releasetext']).'" size=40 maxlength=150></td>' .
+				'<td><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($issue['internal']).'</textarea></td>'.
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				($issue['entries'] == 0 && ! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove issue?\');">' : '') . '</td>'.
 				"</tr>\n";
@@ -308,13 +313,14 @@ if ($magazine_id && $issue_id) {
 	}
 	print "</tbody></table>";
 } else {
-	$magazines = getall("SELECT m.id, m.name, m.description, COUNT(i.id) AS issues FROM magazine m LEFT JOIN issue i ON m.id = i.magazine_id GROUP BY m.id, m.name, m.description ORDER BY m.name");
+	$magazines = getall("SELECT m.id, m.name, m.description, m.internal, COUNT(i.id) AS issues FROM magazine m LEFT JOIN issue i ON m.id = i.magazine_id GROUP BY m.id, m.name, m.description ORDER BY m.name");
 	print "<table align=\"center\" border=0><thead>".
 	      "<tr><th colspan=3>Edit magazines</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Magazine</th>".
 	      "<th>Description</th>".
+	      "<th>Internal note</th>".
 	      "</tr></thead>\n<tbody>\n";
 
 	foreach($magazines AS $magazine) {
@@ -325,6 +331,7 @@ if ($magazine_id && $issue_id) {
 				'<td style="text-align:right;">'.$magazine['id'].'</td>'.
 				'<td><input type="text" name="name" value="'.htmlspecialchars($magazine['name']).'" size=40 maxlength=150><br><a href="magazine.php?magazine_id=' . $magazine['id'] . '">' . ($magazine['issues'] == 1 ? "1 issue" : $magazine['issues'] . " issues") . '</a></td>'.
 				'<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($magazine['description']).'</textarea></td>'.
+				'<td><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($magazine['internal']).'</textarea></td>'.
 				'<td><input type="submit" name="do" value="Update"> '.
 				($magazine['issues'] == 0 ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove magazine?\');">' : '') . '</td>'.
 				"</tr>\n";
@@ -337,6 +344,7 @@ if ($magazine_id && $issue_id) {
 	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="name" value="" size=40 maxlength=150 autofocus></td>'.
 	      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
+		  '<td><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
 	      "</tr>\n";
 	print "</form>\n\n";

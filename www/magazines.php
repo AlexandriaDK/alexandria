@@ -10,9 +10,11 @@ $error = FALSE;
 $magazinename = $magazinedescription = '';
 $issue = $issues = $articles = $colophone = $arrows = [];
 $available_pic = $picpath = $picid = FALSE;
+$internal = '';
 
 if ($magazineid) {
-	list($magazinename, $magazinedescription) = getrow("SELECT name, description FROM magazine WHERE id = $magazineid");
+	list($magazinename, $magazinedescription, $internal) = getrow("SELECT name, description, internal FROM magazine WHERE id = $magazineid");
+	$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $internal : ''); // only set internal if editor
 	if (! $magazinename) {
 		$error = TRUE;
 	} else {
@@ -24,11 +26,12 @@ if ($magazineid) {
 		$picid = $issueid;
 	}
 	$issue = getrow("
-		SELECT issue.title, issue.releasetext, magazine.id AS magazineid, magazine.name AS magazinename
+		SELECT issue.title, issue.releasetext, issue.internal, magazine.id AS magazineid, magazine.name AS magazinename
 		FROM issue
 		INNER JOIN magazine ON issue.magazine_id = magazine.id
 		WHERE issue.id = $issueid
 	");
+	$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $issue['internal'] : ''); // only set internal if editor
 	// two lookups with and without page being NULL could be combined to one
 	$colophone = getall("
 		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
@@ -85,14 +88,13 @@ if ($magazineid) {
 	");
 }
 
-
-
 // Smarty
 $t->assign('magazineid',$magazineid);
 $t->assign('issueid',$issueid);
 $t->assign('magazines',$magazines);
 $t->assign('magazinename',$magazinename);
 $t->assign('magazinedescription',$magazinedescription);
+$t->assign('intern',$internal);
 $t->assign('issues',$issues);
 $t->assign('issue',$issue);
 $t->assign('colophone',$colophone);

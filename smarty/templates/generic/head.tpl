@@ -252,7 +252,7 @@
 
 {if isset($URLLANG) }
 			<div class="leftmenucontent selectlanguage">
-			<img src="/gfx/icon_translator.svg">
+			<img src="/gfx/icon_translator.svg" alt="Language icon">
 			{$_chooselanguage}
 			<br><br>
 			{foreach $ALEXLANGUAGES as $altlanguage}<a href="/{$altlanguage}/{$BASEURI}">{$altlanguage}</a>{if not $altlanguage@last} • {/if}{/foreach}
