@@ -92,7 +92,7 @@
 	<table id="personarticles">
 	{foreach $articles as $article}
 	<tr>
-	<td>{$article.title|escape}</td>
+	<td>{if $article.sce_id}<a href="data?scenarie={$article.sce_id}">{$article.title|escape}</a>{else}{$article.title|escape}{/if}</td>
 	<td>{$article.role|escape}</td>
 	<td>{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
 	<td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a>{if $article.releasetext} ({$article.releasetext|escape}){/if}</td>

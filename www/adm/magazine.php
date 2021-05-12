@@ -248,7 +248,7 @@ if ($magazine_id && $issue_id) {
 		$game = ($article['sce_id'] ? $article['sce_id'] . " - " . $article['scetitle'] : '' );
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right;">' . ($article['id'] ?? 'New') . '</td>'.
-				'<td><input type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150></td>' .
+				'<td><input type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
 				'<td><input type="text" name="person" value="'.htmlspecialchars($person).'" class="peopletags" size=40 maxlength=150></td>' .
 				'<td><input type="text" name="role" value="'.htmlspecialchars($article['role']).'" size=25 maxlength=150></td>' .
 				'<td><input type="number" name="page" value="'.htmlspecialchars($article['page']).'" size=3></td>' .
