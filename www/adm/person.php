@@ -151,7 +151,7 @@ if ($person) {
 		print "<a href=\"convent.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
 	}
 	print "</td></tr>\n";
-	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM article INNER JOIN issue ON article.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE article.aut_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
+	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM contributor INNER JOIN article ON contributor.article_id = article.id INNER JOIN issue ON article.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE contributor.aut_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
 	print "<tr valign=top><td>Contributor<br>(magazine)</td><td>\n";
         foreach($q AS list($count, $issue_id, $title, $name) ) {
 		print "<a href=\"magazine.php?issue_id=$issue_id\">" . htmlspecialchars("$name, $title") . "</a> ($count)<br>";
