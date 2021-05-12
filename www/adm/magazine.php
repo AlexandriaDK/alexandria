@@ -302,7 +302,7 @@ if ($magazine_id && $issue_id) {
 		}
 		print '</td>' .
 				'<td><input placeholder="Page" type="number" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>' .
-				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.rows=10;" onblur="this.rows=1;" >'.htmlspecialchars($article['description']).'</textarea></td>'.
+				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.style.height=\'10em\'" onblur="this.style.height=\'1em\'" style="height: 1em;">'.htmlspecialchars($article['description']).'</textarea></td>'.
 				'<td><input placeholder="Article type" type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
 				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="scenariotags" size=30 maxlength=150 placeholder="Existing game"></td>' .
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
