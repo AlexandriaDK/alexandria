@@ -16,6 +16,18 @@
 		<a href="magazines?id={$issue.magazineid}">{$issue.magazinename|escape}</a>
 	</h2>
 	<h3>{$issue.title|escape}{if $issue.releasetext} - {$issue.releasetext|escape}{/if}</h3>
+	<div class="arrows">
+{if $arrowset.prev.active}
+	<a href="magazines?issue={$arrowset.prev.id}" title="{$arrowset.prev.title|escape}{if $arrowset.prev.releasetext} - {$arrowset.prev.releasetext|escape}{/if}" rel="prev">←</a>
+{else}
+	<span class="inactive">←</span>
+{/if}
+{if $arrowset.next.active}
+	<a href="magazines?issue={$arrowset.next.id}" title="{$arrowset.next.title|escape}{if $arrowset.next.releasetext} - {$arrowset.next.releasetext|escape}{/if}"" rel="next">→</a>
+{else}
+	<span class="inactive">→</span>
+{/if}
+	</div>
 
 	{if $colophone}
 	<h4>{$_magazines_colophone}</h4>
@@ -71,9 +83,9 @@
 		{$magazinename}
 	</h2>
 	{if $magazinedescription}
-	<div>
+	<p>
 	{$magazinedescription|escape|textlinks|nl2br}
-	</div>
+	</p>
 	{/if}
 	<ul>
 	{foreach $issues as $issue}
