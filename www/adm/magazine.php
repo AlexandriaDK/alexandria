@@ -207,22 +207,41 @@ if ($action == "addarticle") {
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="adm.js"></script>
 <script type="text/javascript">
-	$(function() {
-		var availablePeople = <?php print json_encode($people); ?>;
-		$( ".peopletags" ).autocomplete({
-			source: availablePeople,
-			autoFocus: true,
-			delay: 30,
-			minLength: 3
-		});
-		var availableScenarios= <?php print json_encode($scenarios); ?>;
-		$( ".scenariotags" ).autocomplete({
-			source: availableScenarios,
-			autoFocus: true,
-			delay: 30,
-			minLength: 3
-		});
+$(function() {
+	var availablePeople = <?php print json_encode($people); ?>;
+	$( ".peopletags" ).autocomplete({
+		source: availablePeople,
+		autoFocus: true,
+		delay: 30,
+		minLength: 3
 	});
+	var availableScenarios= <?php print json_encode($scenarios); ?>;
+	$( ".scenariotags" ).autocomplete({
+		source: availableScenarios,
+		autoFocus: true,
+		delay: 30,
+		minLength: 3
+	});
+	$(".addnext").click( function() {
+		var td = $(this).parent();
+		console.log(this);
+		console.log(td);
+		var count = td.data('count') + 1;
+		var html = '';
+		html += '<input type="text" name="contributors[' + count + '][person]" class="peopletags" size=30 maxlength=150>';
+		html += '<input type="text" name="contributors[' + count + '][role]" size=30 maxlength=150><br>';
+		td.append(html);
+		td.data('count', count);
+		var bar = $( td ).find('input.peopletags')
+			.autocomplete({
+				source: availablePeople,
+				delay: 30,
+				minLength: 3
+			})
+		;
+	});
+
+});
 </script>
 </head>
 
@@ -263,7 +282,10 @@ if ($magazine_id && $issue_id) {
 			// Non-optimal contributor lookup
 			$contributors = getall("SELECT c.aut_id, c.aut_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN aut a ON c.aut_id = a.id WHERE article_id = $article_id ORDER BY c.id");
 		}
-		$contributors[] = [];
+		if (! $contributors) {
+			$contributors[] = [];
+		}
+		print '<tr><td colspan="7">';
 		print '<form action="magazine.php" method="post">'.
 				'<input type="hidden" name="action" value="' . ($new ? 'addarticle' : 'changearticle') . '">'.
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
@@ -271,16 +293,20 @@ if ($magazine_id && $issue_id) {
 				'<input type="hidden" name="article_id" value="' . $article_id . '">';
 		$person = ($article['aut_id'] ? $article['aut_id'] . " - " . $article['personname'] : $article['aut_extra'] );
 		$game = ($article['sce_id'] ? $article['sce_id'] . " - " . $article['scetitle'] : '' );
+		print "<table>";
 		print "<tr valign=\"top\">\n".
-				'<td style="text-align:right;">' . ($article['id'] ?? 'New') . '</td>'.
+				'<td style="text-align:right; width: 3em;">' . ($article['id'] ?? 'New') . '</td>'.
 				'<td><input type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>';
-		print '<td>';
+		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
 			$pcount++;
 			$person = ($contributor['aut_id'] ? $contributor['aut_id'] . ' - ' . $contributor['name'] : $contributor['aut_extra'] );
 			print '<input type="text" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
 			print '<input type="text" name="contributors[' . $pcount . '][role]" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
+			if ($pcount == 1) {
+				print '<span accesskey="+" title="Hotkey: +" class="addnext atoggle">➕</span>';
+			}
 			print '<br>';
 		}
 		print '</td>' .
@@ -291,9 +317,12 @@ if ($magazine_id && $issue_id) {
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				(! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove article?\');">' : '') . '</td>'.
 				"</tr>\n";
+		print "</table>";
 		print "</form>\n\n";
+		print "</td></tr>";
 		
 	}
+	print '</table></td></tr>';
 	print '</tbody></table>';
 	print '<p style="text-align: center;">Leave title and page blank for colophone</p>';
 
