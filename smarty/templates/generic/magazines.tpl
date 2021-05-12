@@ -70,6 +70,11 @@
 	<h2 class="pagetitle">
 		{$magazinename}
 	</h2>
+	{if $magazinedescription}
+	<div>
+	{$magazinedescription|escape|textlinks|nl2br}
+	</div>
+	{/if}
 	<ul>
 	{foreach $issues as $issue}
 	<li><a href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext} - {$issue.releasetext|escape}{/if}</a></li>

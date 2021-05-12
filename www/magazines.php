@@ -7,15 +7,12 @@ $this_type = 'issue';
 $magazineid = (int) ($_GET['id'] ?? 0);
 $issueid = (int) ($_GET['issue'] ?? 0);
 $error = FALSE;
-$magazinename = '';
-$issue = [];
-$issues = [];
-$articles = [];
-$colophone = [];
+$magazinename = $magazinedescription = '';
+$issue = $issues = $articles = $colophone = [];
 $available_pic = $picpath = $picid = FALSE;
 
 if ($magazineid) {
-	$magazinename = getone("SELECT name FROM magazine WHERE id = $magazineid");
+	list($magazinename, $magazinedescription) = getrow("SELECT name, description FROM magazine WHERE id = $magazineid");
 	if (! $magazinename) {
 		$error = TRUE;
 	} else {
@@ -66,6 +63,7 @@ $t->assign('magazineid',$magazineid);
 $t->assign('issueid',$issueid);
 $t->assign('magazines',$magazines);
 $t->assign('magazinename',$magazinename);
+$t->assign('magazinedescription',$magazinedescription);
 $t->assign('issues',$issues);
 $t->assign('issue',$issue);
 $t->assign('colophone',$colophone);
