@@ -36,7 +36,7 @@ if ($magazineid) {
 		LEFT JOIN aut ON airel.aut_id = aut.id
 		LEFT JOIN sce ON airel.sce_id = sce.id
 		WHERE issue_id = $issueid
-		AND page IS NULL
+		AND page IS NULL AND airel.title = ''
 		ORDER BY airel.id
 	");
 	$articles = getall("
@@ -45,7 +45,7 @@ if ($magazineid) {
 		LEFT JOIN aut ON airel.aut_id = aut.id
 		LEFT JOIN sce ON airel.sce_id = sce.id
 		WHERE issue_id = $issueid
-		AND page IS NOT NULL
+		AND (page IS NOT NULL OR airel.title != '')
 		ORDER BY page, airel.id
 	");
 } else {
