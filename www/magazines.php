@@ -8,7 +8,7 @@ $magazineid = (int) ($_GET['id'] ?? 0);
 $issueid = (int) ($_GET['issue'] ?? 0);
 $error = FALSE;
 $magazinename = $magazinedescription = '';
-$issue = $issues = $articles = $colophone = $arrows = [];
+$issue = $issues = $articles = $colophon = $arrows = [];
 $available_pic = $picpath = $picid = FALSE;
 $internal = '';
 
@@ -34,7 +34,7 @@ if ($magazineid) {
 	$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $issue['internal'] : ''); // only set internal if editor
 	// two lookups with and without page being NULL could be combined to one
 	// No need to create article tree with authors as subset. Template already handles that.
-	$colophone = getall("
+	$colophon = getall("
 		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
@@ -100,7 +100,7 @@ $t->assign('magazinedescription',$magazinedescription);
 $t->assign('intern',$internal);
 $t->assign('issues',$issues);
 $t->assign('issue',$issue);
-$t->assign('colophone',$colophone);
+$t->assign('colophon',$colophon);
 $t->assign('articles',$articles);
 $t->assign('error', $error);
 $t->assign('pic',$available_pic);

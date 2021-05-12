@@ -29,11 +29,11 @@
 {/if}
 	</div>
 
-	{if $colophone}
-	<h4>{$_magazines_colophone}</h4>
+	{if $colophon}
+	<h4>{$_magazines_colophon}</h4>
 	<table>
 	<tbody>
-	{foreach $colophone as $row}
+	{foreach $colophon as $row}
 	<tr>
 	<td style="padding-right: 10px; text-align: right;">
 		{$row.role|escape}
