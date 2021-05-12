@@ -142,13 +142,19 @@ if ($person) {
 	$q = getall("SELECT sce.id, sce.title AS title, title.title AS auttitle FROM sce, asrel, title WHERE sce.id = asrel.sce_id AND asrel.tit_id = title.id AND asrel.aut_id = '$person' ORDER BY title.id, sce.title");
 	print "<tr valign=top><td>Games</td><td>\n";
         foreach($q AS list($id, $title, $auttitle) ) {
-		print "<a href=\"game.php?game=$id\">$title</a> ($auttitle)<br>";
+		print "<a href=\"game.php?game=$id\">" . htmlspecialchars($title) . "</a> ($auttitle)<br>";
 	}
 	print "</td></tr>\n";
 	$q = getall("SELECT convent.id, convent.name, convent.year, acrel.role FROM acrel INNER JOIN convent ON acrel.convent_id = convent.id WHERE acrel.aut_id = '$person' ORDER BY convent.year, convent.begin, convent.end, convent.id");
 	print "<tr valign=top><td>Organizer</td><td>\n";
         foreach($q AS list($id, $name, $year, $role) ) {
-		print "<a href=\"convent.php?con=$id\">$name ($year)</a> ($role)<br>";
+		print "<a href=\"convent.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
+	}
+	print "</td></tr>\n";
+	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM airel INNER JOIN issue ON airel.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE airel.aut_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
+	print "<tr valign=top><td>Contributor<br>(magazine)</td><td>\n";
+        foreach($q AS list($count, $issue_id, $title, $name) ) {
+		print "<a href=\"magazine.php?issue_id=$issue_id\">" . htmlspecialchars("$name, $title") . "</a> ($count)<br>";
 	}
 	print "</td></tr>\n";
 }

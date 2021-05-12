@@ -50,7 +50,7 @@ if ($action == "changemagazine" && $do != "Delete") {
 	     "WHERE id = $magazine_id";
 	$r = doquery($q);
 	if ($r) {
-		chlog($magazine_id,$this_type,"Magazine updated: $id, $name");
+		chlog($magazine_id,$this_type,"Magazine updated: $name");
 	}
 	$_SESSION['admin']['info'] = "Magazine updated! " . dberror();
 	rexit($this_type);
