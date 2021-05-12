@@ -263,17 +263,8 @@ if ($magazine_id && $issue_id) {
 		ORDER BY article.page, article.id
 	");
 	$articles[] = [];
-	print "<table align=\"center\" border=0><thead>".
-	      "<tr><th colspan=8>Edit articles for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($issue_title) . "</a></th></tr>\n".
-	      "<tr>\n".
-	      "<th>ID</th>".
-	      "<th>Title</th>".
-	      "<th>Person, Role</th>".
-	      "<th>Page</th>".
-	      "<th>Description</th>".
-	      "<th>Article type</th>".
-	      "<th>Game</th>".
-	      "</tr>\n</thead><tbody>";
+	print "<table align=\"center\" border=0><tr><th>Edit articles for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($issue_title) . "</a></th></tr>";
+
 	foreach ($articles AS $article) {
 		$article_id = $article['id'];
 		$new = ! isset($article_id);
@@ -285,7 +276,7 @@ if ($magazine_id && $issue_id) {
 		if (! $contributors) {
 			$contributors[] = [];
 		}
-		print '<tr><td colspan="7">';
+		print '<tr><td>';
 		print '<form action="magazine.php" method="post">'.
 				'<input type="hidden" name="action" value="' . ($new ? 'addarticle' : 'changearticle') . '">'.
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
@@ -296,23 +287,23 @@ if ($magazine_id && $issue_id) {
 		print "<table>";
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right; width: 3em;">' . ($article['id'] ?? 'New') . '</td>'.
-				'<td><input type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>';
+				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>';
 		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
 			$pcount++;
 			$person = ($contributor['aut_id'] ? $contributor['aut_id'] . ' - ' . $contributor['name'] : $contributor['aut_extra'] );
-			print '<input type="text" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
-			print '<input type="text" name="contributors[' . $pcount . '][role]" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
+			print '<input type="text" placeholder="Person" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
+			print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
 			if ($pcount == 1) {
-				print '<span accesskey="+" title="Hotkey: +" class="addnext atoggle">➕</span>';
+				print '<span class="addnext atoggle">➕</span>';
 			}
 			print '<br>';
 		}
 		print '</td>' .
-				'<td><input type="number" name="page" value="'.htmlspecialchars($article['page']).'" size=3></td>' .
-				'<td><textarea name="description" cols="30" rows="1" onfocus="this.rows=10;" onblur="this.rows=1;" >'.htmlspecialchars($article['description']).'</textarea></td>'.
-				'<td><input type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
+				'<td><input placeholder="Page" type="number" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>' .
+				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.rows=10;" onblur="this.rows=1;" >'.htmlspecialchars($article['description']).'</textarea></td>'.
+				'<td><input placeholder="Article type" type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
 				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="scenariotags" size=30 maxlength=150 placeholder="Existing game"></td>' .
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				(! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove article?\');">' : '') . '</td>'.
