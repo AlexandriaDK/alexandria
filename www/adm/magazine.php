@@ -275,6 +275,7 @@ if ($magazine_id && $issue_id) {
 		LEFT JOIN files f ON i.id = f.data_id AND f.category = 'issue'
 		WHERE i.magazine_id = $magazine_id
 		GROUP BY i.id, i.title, i.releasedate, i.releasetext
+		ORDER BY i.releasedate, i.id
 	";
 	$issues = getall($query);
 	$issues[] = [];
