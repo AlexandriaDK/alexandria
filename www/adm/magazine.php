@@ -283,7 +283,7 @@ if ($magazine_id && $issue_id) {
 	$issues = getall($query);
 	$issues[] = [];
 	print "<table align=\"center\" border=0><thead>".
-	      "<tr><th colspan=4>Edit issues for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($magazine_name) . "</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit issues for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($magazine_name) . "</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Title</th>".
@@ -315,7 +315,7 @@ if ($magazine_id && $issue_id) {
 } else {
 	$magazines = getall("SELECT m.id, m.name, m.description, m.internal, COUNT(i.id) AS issues FROM magazine m LEFT JOIN issue i ON m.id = i.magazine_id GROUP BY m.id, m.name, m.description ORDER BY m.name");
 	print "<table align=\"center\" border=0><thead>".
-	      "<tr><th colspan=3>Edit magazines</th></tr>\n".
+	      "<tr><th colspan=4>Edit magazines</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Magazine</th>".
