@@ -49,7 +49,7 @@ if ($action == "ret" && $person) {
 }
 
 // Delete person
-if ($action == "Delete" && $person) { // burde tjekke om person findes
+if ($action == "Delete" && $person) { // Should check if $person id exists
 	$error = [];
 	if (getCount('asrel', $person, FALSE, 'aut') ) $error[] = "scenario";
 	if (getCount('acrel', $person, FALSE, 'aut') ) $error[] = "con (organizer roles)";
@@ -57,7 +57,7 @@ if ($action == "Delete" && $person) { // burde tjekke om person findes
 	if (getCount('links', $person, TRUE, 'aut') ) $error[] = "link";
 	if (getCount('alias', $person, TRUE, 'aut') ) $error[] = "alias";
 	if (getCount('users', $person, FALSE, 'aut') ) $error[] = "user";
-	if (getCount('airel', $person, FALSE, 'aut') ) $error[] = "issue (magazine)";
+	if (getCount('contributor', $person, FALSE, 'aut') ) $error[] = "article (magazine)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['person' => $person] );
@@ -151,7 +151,7 @@ if ($person) {
 		print "<a href=\"convent.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
 	}
 	print "</td></tr>\n";
-	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM airel INNER JOIN issue ON airel.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE airel.aut_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
+	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM article INNER JOIN issue ON article.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE article.aut_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
 	print "<tr valign=top><td>Contributor<br>(magazine)</td><td>\n";
         foreach($q AS list($count, $issue_id, $title, $name) ) {
 		print "<a href=\"magazine.php?issue_id=$issue_id\">" . htmlspecialchars("$name, $title") . "</a> ($count)<br>";

@@ -57,7 +57,7 @@
 	<tbody>
 	{foreach $articles as $row}	
 	<tr>
-	{if not isset($lasttitle) || $row.title != $lasttitle}
+	{if not isset($lastid) || $row.id != $lastid}
 	<td style="padding-right: 10px; text-align: right;">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
 	<td style="padding-right: 10px;">{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}</td>
 	{else}
@@ -72,7 +72,7 @@
 	</td>
 	<td>{$row.role|escape}</td>
 	</tr>
-	{assign "lasttitle" $row.title}
+	{assign "lastid" $row.id}
 	{/foreach}
 	</tbody>
 	</table>

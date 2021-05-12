@@ -197,11 +197,12 @@ foreach($result AS $row) {
 $htmlmagazine = "<b>Magazine content providers without ID:</b><br>\n";
 
 $query = "
-	SELECT aut_extra, issue.title, magazine.name, issue.magazine_id, airel.issue_id
-	FROM airel
-	INNER JOIN issue ON airel.issue_id = issue.id
+	SELECT contributor.aut_extra, issue.title, magazine.name, issue.magazine_id, article.issue_id
+	FROM contributor
+	INNER JOIN article ON contributor.article_id = article.id
+	INNER JOIN issue ON article.issue_id = issue.id
 	INNER JOIN magazine ON issue.magazine_id = magazine.id
-	WHERE aut_extra != ''
+	WHERE contributor.aut_extra != ''
 	ORDER BY issue.releasedate DESC, issue.id DESC
 ";
 $result = getall($query);
@@ -229,11 +230,12 @@ foreach($persons AS $name => $data) {
 $htmlmagazinematch = "<b>Magazine content providers without ID, perhaps existing?</b><br>\n";
 
 $query = "
-	SELECT COUNT(*) AS count, GROUP_CONCAT(DISTINCT issue_id ORDER BY issue_id) AS issue_ids, aut_extra AS name, aut.id AS aut_id
-	FROM airel
-	INNER JOIN aut ON airel.aut_extra = CONCAT(aut.firstname, ' ', aut.surname)
-	WHERE aut_extra != ''
-	GROUP BY aut_extra
+	SELECT COUNT(*) AS count, GROUP_CONCAT(DISTINCT issue_id ORDER BY issue_id) AS issue_ids, contributor.aut_extra AS name, aut.id AS aut_id
+	FROM contributor
+	INNER JOIN aut ON contributor.aut_extra = CONCAT(aut.firstname, ' ', aut.surname)
+	INNER JOIN article ON contributor.article_id = article.id
+	WHERE contributor.aut_extra != ''
+	GROUP BY contributor.aut_extra, aut.id
 	ORDER BY count DESC, name
 ";
 $result = getall($query);
@@ -270,7 +272,7 @@ $query = "
 	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN award_nominee_entities ON aut.id = award_nominee_entities.data_id AND award_nominee_entities.category = 'aut' WHERE award_nominee_entities.id IS NULL) c
 	ON a.id = c.id
 	INNER JOIN 
-	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN airel ON aut.id = airel.aut_id WHERE airel.id IS NULL) d
+	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN article ON aut.id = article.aut_id WHERE article.id IS NULL) d
 	ON a.id = d.id
 ";
 $result = getall($query);

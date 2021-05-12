@@ -17,14 +17,29 @@ $releasedate = (string) $_REQUEST['releasedate'];
 $releasetext = (string) $_REQUEST['releasetext'];
 $magazine_id = (int) $_REQUEST['magazine_id'];
 $issue_id = (int) $_REQUEST['issue_id'];
-$airel_id = (int) $_REQUEST['airel_id'];
-$person = (string) $_REQUEST['person'];
+$article_id = (int) $_REQUEST['article_id'];
 $role = (string) $_REQUEST['role'];
 $page = (int) $_REQUEST['page'];
 $articletype = (string) $_REQUEST['articletype'];
+$person = (string) $_REQUEST['person'];
 $sce_id = (int) $_REQUEST['sce_id'];
 $aut_id = (int) $person;
 $aut_extra = ($aut_id ? '' : $person);
+$contributors = (array) $_REQUEST['contributors'];
+
+function insertContributors($contributors, $article_id) {
+	doquery("DELETE FROM contributor WHERE article_id = $article_id");
+	foreach ($contributors AS $contributor) {
+		if ($contributor['person'] == '' && $contributor['role'] == '') {
+			continue;
+		}
+		$person = autidextra($contributor['person']);
+		doquery("
+			INSERT INTO contributor (aut_id, aut_extra, role, article_id)
+			VALUES (" . sqlifnull($person['id']) . ", '" . dbesc($person['extra']) . "', '" . dbesc($contributor['role']) . "', $article_id)
+		");
+	}
+}
 
 if ($issue_id && ! $magazine_id) {
 	$magazine_id = getone("SELECT magazine_id FROM issue WHERE id = $issue_id");
@@ -107,7 +122,7 @@ if ($action == "changeissue" && $do != "Delete") {
 
 if ($action == "changeissue" && $do == "Delete") {
 	// Only delete if no articles
-	$q = "SELECT COUNT(*) FROM airel where issue_id = $issue_id";
+	$q = "SELECT COUNT(*) FROM article where issue_id = $issue_id";
 	$r = getone($q);
 	if($r != 0) {
 		$_SESSION['admin']['info'] = "The issue needs to have no articles before it can be removed! " . dberror();
@@ -138,18 +153,17 @@ if ($action == "addissue") {
 
 // Articles
 if ($action == "changearticle" && $do != "Delete") {
-	$q = "UPDATE airel SET " .
-	     "aut_id = " . sqlifnull($aut_id) . ", " .
-	     "aut_extra = '" . dbesc($aut_extra) . "', " .
-	     "role = '" . dbesc($role) . "', " .
+	$q = "UPDATE article SET " .
 	     "page = " . sqlifnull($page) . ", " .
 	     "title = '" . dbesc($title) . "', " .
 	     "description = '" . dbesc($description) . "', " .
 	     "articletype = '" . dbesc($articletype) . "', " .
 	     "sce_id = " . sqlifnull($sce_id) . " " .
-	     "WHERE id = $airel_id";
+	     "WHERE id = $article_id";
 	$r = doquery($q);
 	if ($r) {
+		// Contributors
+		insertContributors($contributors, $article_id);
 		chlog($issue_id,'issue',"Article updated: $title");
 	}
 	$_SESSION['admin']['info'] = "Article updated! " . dberror();
@@ -157,22 +171,23 @@ if ($action == "changearticle" && $do != "Delete") {
 }
 
 if ($action == "changearticle" && $do == "Delete") {
-	$q = "DELETE FROM airel WHERE id = $airel_id";
+	$q = "DELETE FROM article WHERE id = $article_id";
 	$r = doquery($q);
 	if ($r) {
-		chlog($issue_id,'issue',"Article removed: $airel_id");
+		chlog($issue_id,'issue',"Article removed: $article_id");
 	}
 	$_SESSION['admin']['info'] = "Article removed! " . dberror();
 	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
 }
 
 if ($action == "addarticle") {
-	$q = "INSERT INTO airel " .
-	     "(aut_id, issue_id, aut_extra, role, page, title, description, articletype, sce_id) VALUES ".
-	     "(" . sqlifnull($aut_id) . ", $issue_id, '" . dbesc($aut_extra) . "', '" . dbesc($role) .  "', ".  sqlifnull($page) . ", '" . dbesc($title) . "', '" . dbesc($description) . "', '" . dbesc($articletype) . "', " . sqlifnull($sce_id) . ")";
+	$q = "INSERT INTO article " .
+	     "(issue_id, page, title, description, articletype, sce_id) VALUES ".
+	     "($issue_id, ".  sqlifnull($page) . ", '" . dbesc($title) . "', '" . dbesc($description) . "', '" . dbesc($articletype) . "', " . sqlifnull($sce_id) . ")";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
+		insertContributors($contributors, $id);
 		chlog($issue_id,'issue',"Article created: $id - $title");
 	}
 	$_SESSION['admin']['info'] = "Article created! " . dberror();
@@ -220,12 +235,12 @@ if ($magazine_id && $issue_id) {
 	$issue_title = getone("SELECT title FROM issue WHERE id = $issue_id");
 
 	$articles = getall("
-		SELECT airel.id, airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, airel.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS personname, sce.title AS scetitle
-		FROM airel
-		LEFT JOIN aut ON airel.aut_id = aut.id
-		LEFT JOIN sce ON airel.sce_id = sce.id
+		SELECT article.id, article.aut_id, article.aut_extra, article.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS personname, sce.title AS scetitle
+		FROM article
+		LEFT JOIN aut ON article.aut_id = aut.id
+		LEFT JOIN sce ON article.sce_id = sce.id
 		WHERE issue_id = $issue_id
-		ORDER BY airel.page, airel.id
+		ORDER BY article.page, article.id
 	");
 	$articles[] = [];
 	print "<table align=\"center\" border=0><thead>".
@@ -233,27 +248,41 @@ if ($magazine_id && $issue_id) {
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Title</th>".
-	      "<th>Person</th>".
-	      "<th>Role</th>".
+	      "<th>Person, Role</th>".
 	      "<th>Page</th>".
 	      "<th>Description</th>".
 	      "<th>Article type</th>".
 	      "<th>Game</th>".
 	      "</tr>\n</thead><tbody>";
 	foreach ($articles AS $article) {
-		$new = ! isset($article['id']);
+		$article_id = $article['id'];
+		$new = ! isset($article_id);
+		$contributors = [];
+		if ( ! $new) {
+			// Non-optimal contributor lookup
+			$contributors = getall("SELECT c.aut_id, c.aut_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN aut a ON c.aut_id = a.id WHERE article_id = $article_id ORDER BY c.id");
+		}
+		$contributors[] = [];
 		print '<form action="magazine.php" method="post">'.
 				'<input type="hidden" name="action" value="' . ($new ? 'addarticle' : 'changearticle') . '">'.
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
 				'<input type="hidden" name="issue_id" value="' . $issue_id . '">'.
-				'<input type="hidden" name="airel_id" value="' . $article['id'] . '">';
+				'<input type="hidden" name="article_id" value="' . $article_id . '">';
 		$person = ($article['aut_id'] ? $article['aut_id'] . " - " . $article['personname'] : $article['aut_extra'] );
 		$game = ($article['sce_id'] ? $article['sce_id'] . " - " . $article['scetitle'] : '' );
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right;">' . ($article['id'] ?? 'New') . '</td>'.
-				'<td><input type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
-				'<td><input type="text" name="person" value="'.htmlspecialchars($person).'" class="peopletags" size=40 maxlength=150></td>' .
-				'<td><input type="text" name="role" value="'.htmlspecialchars($article['role']).'" size=25 maxlength=150></td>' .
+				'<td><input type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>';
+		print '<td>';
+		$pcount = 0;
+		foreach ($contributors AS $contributor) {
+			$pcount++;
+			$person = ($contributor['aut_id'] ? $contributor['aut_id'] . ' - ' . $contributor['name'] : $contributor['aut_extra'] );
+			print '<input type="text" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
+			print '<input type="text" name="contributors[' . $pcount . '][role]" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
+			print '<br>';
+		}
+		print '</td>' .
 				'<td><input type="number" name="page" value="'.htmlspecialchars($article['page']).'" size=3></td>' .
 				'<td><textarea name="description" cols="30" rows="1" onfocus="this.rows=10;" onblur="this.rows=1;" >'.htmlspecialchars($article['description']).'</textarea></td>'.
 				'<td><input type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
@@ -274,7 +303,7 @@ if ($magazine_id && $issue_id) {
 	$query = "
 		SELECT i.id, i.title, i.releasedate, i.releasetext, i.internal, COUNT(a.id) AS entries, COUNT(f.id) AS files
 		FROM issue i
-		LEFT JOIN airel a ON i.id = a.issue_id
+		LEFT JOIN article a ON i.id = a.issue_id
 		LEFT JOIN files f ON i.id = f.data_id AND f.category = 'issue'
 		WHERE i.magazine_id = $magazine_id
 		GROUP BY i.id, i.title, i.releasedate, i.releasetext

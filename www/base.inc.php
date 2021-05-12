@@ -1053,12 +1053,13 @@ function getarticles ($data_id, $category) {
 	$data_id = (int) $data_id;
 	if ($category == 'aut') {
 		$articles = getall("
-			SELECT airel.issue_id, airel.role, airel.title, airel.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
-			FROM airel
-			INNER JOIN issue ON airel.issue_id = issue.id
+			SELECT article.issue_id, contributor.role, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			FROM contributor
+			INNER JOIN article ON contributor.article_id = article.id
+			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
-			WHERE airel.aut_id = $data_id
-			ORDER BY issue.releasedate, airel.page
+			WHERE contributor.aut_id = $data_id
+			ORDER BY issue.releasedate, article.page
 		");
 	} else {
 		$articles = [];

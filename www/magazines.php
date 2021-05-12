@@ -33,35 +33,38 @@ if ($magazineid) {
 	");
 	$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $issue['internal'] : ''); // only set internal if editor
 	// two lookups with and without page being NULL could be combined to one
+	// No need to create article tree with authors as subset. Template already handles that.
 	$colophone = getall("
-		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
-		FROM airel
-		LEFT JOIN aut ON airel.aut_id = aut.id
-		LEFT JOIN sce ON airel.sce_id = sce.id
+		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		FROM article
+		LEFT JOIN contributor ON article.id = contributor.article_id
+		LEFT JOIN aut ON contributor.aut_id = aut.id
+		LEFT JOIN sce ON article.sce_id = sce.id
 		WHERE issue_id = $issueid
-		AND page IS NULL AND airel.title = ''
-		ORDER BY airel.id
-		");
-		$articles = getall("
-		SELECT airel.aut_id, airel.aut_extra, airel.role, airel.page, airel.title, airel.description, airel.articletype, airel.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
-		FROM airel
-		LEFT JOIN aut ON airel.aut_id = aut.id
-		LEFT JOIN sce ON airel.sce_id = sce.id
+		AND page IS NULL AND article.title = ''
+		ORDER BY article.id
+	");
+	$articles = getall("
+		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		FROM article
+		LEFT JOIN contributor ON article.id = contributor.article_id
+		LEFT JOIN aut ON contributor.aut_id = aut.id
+		LEFT JOIN sce ON article.sce_id = sce.id
 		WHERE issue_id = $issueid
-		AND (page IS NOT NULL OR airel.title != '')
-		ORDER BY page, airel.id
-		");
+		AND (page IS NOT NULL OR article.title != '')
+		ORDER BY page, article.id
+	");
 
-		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = " . $issue['magazineid'] . " ORDER BY releasedate, id");
-		$seriecount = 0;
-		$seriedata = [];
-		$seriethis = FALSE;
-		foreach($issues AS $row) {
-			$seriecount++;
-			$seriedata[$seriecount]['id'] = $row['id'];
-			$seriedata[$seriecount]['title'] = $row['title'];
-			$seriedata[$seriecount]['releasetext'] = $row['releasetext'];
-			if ($row['id'] == $issueid) $seriethis = $seriecount;
+	$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = " . $issue['magazineid'] . " ORDER BY releasedate, id");
+	$seriecount = 0;
+	$seriedata = [];
+	$seriethis = FALSE;
+	foreach($issues AS $row) {
+		$seriecount++;
+		$seriedata[$seriecount]['id'] = $row['id'];
+		$seriedata[$seriecount]['title'] = $row['title'];
+		$seriedata[$seriecount]['releasetext'] = $row['releasetext'];
+		if ($row['id'] == $issueid) $seriethis = $seriecount;
 	
 		if ($seriethis) {
 			if (isset($seriedata[($seriethis-1)])) {
