@@ -764,3 +764,11 @@ div.selectlanguage img:first-child {
 table#personarticles td {
 	padding-right: 10px;
 }
+
+div#magazinelist {
+	column-count: 2;
+}
+
+div#magazinelist div {
+	break-inside: avoid;
+}
