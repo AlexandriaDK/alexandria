@@ -181,23 +181,12 @@ foreach($persons AS $name => $data) {
 	$htmlorganizer .= "</div>" . PHP_EOL;
 }
 
-/*
-foreach($result AS $row) {
-	$nameid++;
-	$htmlorganizer .= "<div>";
-	$htmlorganizer .= "{$row['navn']} ({$row['antal']})\n";
-	$htmlorganizer .= " <span onclick=\"document.getElementById('$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Vis kongresser\">[+]</span>";
-	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nameid\">" . nl2br($row['convents'], FALSE) . "</div>" . PHP_EOL;
-	$htmlorganizer .= "</div>" . PHP_EOL;
-}
-*/
-
 $htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
 
-$query = "SELECT COUNT(*) AS antal, GROUP_CONCAT(convent_id ORDER BY convent_id) AS convent_ids, aut_extra AS navn, aut.id AS aut_id FROM acrel INNER JOIN aut ON acrel.aut_extra = CONCAT(aut.firstname, ' ', aut.surname) WHERE aut_extra != '' GROUP BY aut_extra ORDER BY antal DESC, navn";
+$query = "SELECT COUNT(*) AS antal, GROUP_CONCAT(convent_id ORDER BY convent_id) AS convent_ids, aut_extra AS name, aut.id AS aut_id FROM acrel INNER JOIN aut ON acrel.aut_extra = CONCAT(aut.firstname, ' ', aut.surname) WHERE aut_extra != '' GROUP BY aut_extra ORDER BY antal DESC, name";
 $result = getall($query);
 foreach($result AS $row) {
-	$htmlorganizermatch .= "<a href=\"person.php?person={$row['aut_id']}\">{$row['navn']}</a> ({$row['antal']})";
+	$htmlorganizermatch .= "<a href=\"person.php?person={$row['aut_id']}\">{$row['name']}</a> ({$row['antal']})";
 	foreach(explode(",",$row['convent_ids']) AS $convent_id) {
 		$htmlorganizermatch .= " <a href=\"organizers.php?category=convent&data_id=$convent_id\">#$convent_id</a>";
 	}
@@ -257,7 +246,6 @@ foreach($result AS $row) {
 	$htmlmagazinematch .= "<br>\n";
 }
 
-
 // RPG SYSTEMS CHECK
 $htmlgamenotregistered = "<b>Most used non-registered systems:</b><br>\n";
 
@@ -268,11 +256,10 @@ foreach($result AS $row) {
 	$htmlgamenotregistered .= $row['sys_ext']." ($row[antal])<br>\n";
 }
 
-
 // PERSONS WITHOUT ANY RELATIONS
-$htmlloneper = "<b>Persons without relation to game, organizer or award:</b><br>\n";
+$htmlloneper = "<b>Persons without relation to game, organizer, award or magazine:</b><br>\n";
 
-// Tjekker både scenarier og arrangør-poster
+// Checking game, organizer, awards, magazines
 $query = "
 	SELECT a.id, a.name FROM
 	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.id IS NULL) a
@@ -282,24 +269,16 @@ $query = "
 	INNER JOIN 
 	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN award_nominee_entities ON aut.id = award_nominee_entities.data_id AND award_nominee_entities.category = 'aut' WHERE award_nominee_entities.id IS NULL) c
 	ON a.id = c.id
+	INNER JOIN 
+	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN airel ON aut.id = airel.aut_id WHERE airel.id IS NULL) d
+	ON a.id = d.id
 ";
 $result = getall($query);
 foreach($result AS $row) {
 	$htmlloneper .= "<a href=\"person.php?person={$row['id']}\">{$row['name']}</a><br>\n";
 }
 
-
-// TJEK AF SCENARIER UDEN CON ELLER PERSON
-
-#$query = "SELECT sce.id, sce.title FROM sce LEFT JOIN asrel ON sce_id = sce.id WHERE sce_id IS NULL AND (aut_extra IS NULL OR aut_extra = '') ORDER BY title";
-#$result = getall($query);
-#
-#$htmllone = "<b>Scenarier uden personer:</b> (".count($result).")<br>\n";
-#foreach($result AS $row) {
-#	$htmllone .= "<a href=\"game.php?game={$row['id']}\">{$row['title']}</a><br>\n";
-#}
-
-// TJEK AF KONGRESSER UDEN STARTDATO
+// CHECK CONS WITHOUT START DATE
 $htmlcondate = "<b>Conventions missing exact start date:</b><br>\n";
 
 $query = "SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE begin IS NULL OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
@@ -309,7 +288,7 @@ foreach($result AS $row) {
 	$htmlcondate .= "<a href=\"convent.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
 }
 
-// Forfattere med flest scenarier, man ikke kan downlaode
+// Authors with most non-downloadable scenarios
 $htmlnodownloadaut = "<b>Authors with most non-downloadable scenarios:</b><br>\n";
 $query = "
 	SELECT aut.id, firstname, surname, COUNT(*) as missing
