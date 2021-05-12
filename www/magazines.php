@@ -16,7 +16,7 @@ if ($magazineid) {
 	if (! $magazinename) {
 		$error = TRUE;
 	} else {
-		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, title, id");
+		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, id");
 	}
 } elseif ($issueid) {
 	if ($available_pic = hasthumbnailpic($issueid, $this_type)) {
