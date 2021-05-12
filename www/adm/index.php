@@ -58,7 +58,7 @@ printinfo();
 </h3>
 <table>
 <thead>
-<tr style="font-size: 0.8em;"><th>Name</th><th>New edits</th><th>Edits</th><th>Most recent edit</th></tr>
+<tr style="font-size: 0.8em;"><th>Name</th><th>Edits (new)</th><th>Edits (total)</th><th>Most recent edit</th></tr>
 </thead>
 <tbody id="stats">
 

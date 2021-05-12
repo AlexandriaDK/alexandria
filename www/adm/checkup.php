@@ -127,10 +127,10 @@ if ($result) {
 	$htmlorpscesys .= "<br><b>All good!</b>";
 }
 
-$htmlcodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
+$htmlisocodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
 $languages = getall("SELECT data_id, category, language FROM files WHERE language = 'se' OR language REGEXP '^..[a-z]'");
 foreach ( $languages AS $language ) {
-	$htmlcodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">'.$language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
+	$htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">'.$language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
 }
 $countries = getall("
 	SELECT * FROM (
@@ -143,11 +143,11 @@ $countries = getall("
 	WHERE country = 'sv' OR country REGEXP '^..[a-z]'
 ");
 foreach ( $countries AS $country ) {
-	$htmlcodes .= '<a href="' . ($country['category'] == 'scerun' ? 'run.php?id=' : ( $country['category'] == 'convent' ? 'convent.php?con=' : 'conset.php?conset=') ) . $country['id'] . '">';
-	$htmlcodes .= 'Dataset ' .$country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
+	$htmlisocodes .= '<a href="' . ($country['category'] == 'scerun' ? 'run.php?id=' : ( $country['category'] == 'convent' ? 'convent.php?con=' : 'conset.php?conset=') ) . $country['id'] . '">';
+	$htmlisocodes .= 'Dataset ' .$country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
 if (count($languages) === 0 && count($countries) === 0) {
-	$htmlcodes .= "<b>All good!</b>";
+	$htmlisocodes .= "<b>All good!</b>";
 }
 
 $htmlorganizer = "<b>Organizers without ID:</b><br>\n";
@@ -173,8 +173,8 @@ foreach($persons AS $name => $data) {
 	$nameid++;
 	$htmlorganizer .= "<div>";
 	$htmlorganizer .= htmlspecialchars($name) . " (" . count($data) . ")";
-	$htmlorganizer .= " <span onclick=\"document.getElementById('$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show cons\">[+]</span>";
-	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nameid\">";
+	$htmlorganizer .= " <span onclick=\"document.getElementById('organizer_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show cons\">[+]</span>";
+	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"organizer_$nameid\">";
 	foreach ($data AS $row) {
 		$htmlorganizer .= '<a href="organizers.php?category=convent&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
 	}
@@ -204,6 +204,59 @@ foreach($result AS $row) {
 
 	$htmlorganizermatch .= "<br>\n";
 }
+
+$htmlmagazine = "<b>Magazine content providers without ID:</b><br>\n";
+
+$query = "
+	SELECT aut_extra, issue.title, magazine.name, issue.magazine_id, airel.issue_id
+	FROM airel
+	INNER JOIN issue ON airel.issue_id = issue.id
+	INNER JOIN magazine ON issue.magazine_id = magazine.id
+	WHERE aut_extra != ''
+	ORDER BY issue.releasedate DESC, issue.id DESC
+";
+$result = getall($query);
+$nameid = 0;
+$persons = [];
+foreach($result AS $row) { // create tree
+	$persons[$row['aut_extra']][] = $row;
+}
+array_multisort(array_map('count', $persons), SORT_DESC, $persons);
+foreach($persons AS $name => $data) {
+	if (count($data) < 2) {
+		continue;
+	}
+	$nameid++;
+	$htmlmagazine .= "<div>";
+	$htmlmagazine .= htmlspecialchars($name) . " (" . count($data) . ")";
+	$htmlmagazine .= " <span onclick=\"document.getElementById('magazine_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show magazines\">[+]</span>";
+	$htmlmagazine .= "<div class=\"nomtext\" style=\"display: none;\" id=\"magazine_$nameid\">";
+	foreach ($data AS $row) {
+		$htmlmagazine .= '<a href="magazine.php?magazine_id=' . $row['magazine_id'] . '&amp;issue_id=' . $row['issue_id'] . '">' . $row['name'] . ', ' . $row['title'] . '</a><br>';
+	}
+	$htmlmagazine .= "</div>" . PHP_EOL;
+}
+
+$htmlmagazinematch = "<b>Magazine content providers without ID, perhaps existing?</b><br>\n";
+
+$query = "
+	SELECT COUNT(*) AS count, GROUP_CONCAT(DISTINCT issue_id ORDER BY issue_id) AS issue_ids, aut_extra AS name, aut.id AS aut_id
+	FROM airel
+	INNER JOIN aut ON airel.aut_extra = CONCAT(aut.firstname, ' ', aut.surname)
+	WHERE aut_extra != ''
+	GROUP BY aut_extra
+	ORDER BY count DESC, name
+";
+$result = getall($query);
+foreach($result AS $row) {
+	$htmlmagazinematch .= "<a href=\"person.php?person={$row['aut_id']}\">{$row['name']}</a> ({$row['count']})";
+	foreach(explode(",",$row['issue_ids']) AS $issue_id) {
+		$htmlmagazinematch .= " <a href=\"magazine.php?issue_id=$issue_id\">#$issue_id</a>";
+	}
+
+	$htmlmagazinematch .= "<br>\n";
+}
+
 
 // RPG SYSTEMS CHECK
 $htmlgamenotregistered = "<b>Most used non-registered systems:</b><br>\n";
@@ -297,8 +350,8 @@ print "<table cellspacing=3 cellpadding=4>".
       "<td>$htmlorpscesys</td>".
       "</tr><tr valign=\"top\">".
       "<td>$htmlloneper</td>".
-      "<td>$htmlorganizer</td>".
-      "<td>$htmlorganizermatch<br><br>$htmlcodes</td>".
+      "<td>$htmlorganizer<br><br>$htmlorganizermatch<br><br>$htmlisocodes</td>".
+      "<td>$htmlmagazine<br><br>$htmlmagazinematch</td>".
       "</tr><tr valign=\"top\">".
       "<td>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>".
       "<td>$htmlcondate</td>".
