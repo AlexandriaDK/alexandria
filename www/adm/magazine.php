@@ -228,8 +228,8 @@ $(function() {
 		console.log(td);
 		var count = td.data('count') + 1;
 		var html = '';
-		html += '<input type="text" name="contributors[' + count + '][person]" class="peopletags" size=30 maxlength=150>';
-		html += '<input type="text" name="contributors[' + count + '][role]" size=30 maxlength=150><br>';
+		html += '<input type="text" placeholder="Person" name="contributors[' + count + '][person]" class="peopletags" size=30 maxlength=150>';
+		html += '<input type="text" placeholder="Role" name="contributors[' + count + '][role]" size=30 maxlength=150><br>';
 		td.append(html);
 		td.data('count', count);
 		var bar = $( td ).find('input.peopletags')
