@@ -158,6 +158,23 @@ $( function() {
 {/foreach}
 {/if}
 
+{if $user_editor}
+{if $articles}
+<h3 class="parttitle">{$_p_articles}</h3>
+	<table id="gamearticles">
+	{foreach $articles as $article}
+	<tr>
+	<td>{$article.title|escape}</td>
+	<td>{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
+	<td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a>{if $article.releasetext} ({$article.releasetext|escape}){/if}</td>
+	<td><a href="magazines?id={$article.magazine_id}">{$article.magazinename|escape}</a></td>
+	</tr>
+	{/foreach}
+	</table>
+{/if}
+{/if}
+
+
 {include file="trivialink.tpl"}
 {include file="internal.tpl"}
 {include file="updatelink.tpl"}

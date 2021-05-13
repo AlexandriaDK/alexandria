@@ -131,7 +131,7 @@ if ($data_id) {
 
 </HEAD>
 
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
+<body>
 <?php
 include("links.inc.php");
 

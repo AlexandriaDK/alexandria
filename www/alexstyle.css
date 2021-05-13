@@ -761,7 +761,7 @@ div.selectlanguage img:first-child {
 	opacity: 0.3;
 }
 
-table#personarticles td {
+table#personarticles td, table#gamearticles td {
 	padding-right: 10px;
 }
 

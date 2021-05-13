@@ -255,9 +255,8 @@ if ($magazine_id && $issue_id) {
 	$issue_title = getone("SELECT title FROM issue WHERE id = $issue_id");
 
 	$articles = getall("
-		SELECT article.id, article.aut_id, article.aut_extra, article.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS personname, sce.title AS scetitle
+		SELECT article.id, article.page, article.title, article.description, article.articletype, article.sce_id, sce.title AS scetitle
 		FROM article
-		LEFT JOIN aut ON article.aut_id = aut.id
 		LEFT JOIN sce ON article.sce_id = sce.id
 		WHERE issue_id = $issue_id
 		ORDER BY article.page, article.id

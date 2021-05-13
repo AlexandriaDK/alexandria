@@ -11,15 +11,15 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
 
 	print '
 <!DOCTYPE html>
-<HTML><HEAD><TITLE>Alexandria...</TITLE></HEAD>
+<HTML><HEAD><TITLE>Alexandria - login</TITLE></HEAD>
 
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
+<body>
 
 <p align="center"><font style="font-size: 30pt" face="Garamond, georgia, times New Roman, times" size="7" color="#990000">
 <i><a href="./" style="text-decoration: none">Alexandria editors</a></i></font>
 </p>
 
-';
+	';
 
 	if ($must_be_admin) {
 
@@ -35,6 +35,8 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
 		Log in with <a href="../fblogin">Facebook</a> - <a href="../../login/google/">Google</a> - <a href="../../login/twitter/">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../../login/twitch/">Twitch</a> - <a href="../../login/discord/">Discord</a>
 	</p>
 	';
+	print '</body></html>';
+
 	exit;
 } else {
 // The user is an admin and is allowed to access this section. Check for token!

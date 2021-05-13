@@ -232,6 +232,9 @@ if ($_SESSION['can_edit_participant'][$scenarie] ?? FALSE) {
 $alltags = getalltags();
 $json_alltags = json_encode($alltags);
 
+// Articles
+$articles = getarticles($scenarie, $this_type);
+
 // Thumbnail
 $available_pic = hasthumbnailpic($scenarie, $this_type);
 
@@ -269,6 +272,7 @@ $t->assign('conlist',$conlist);
 $t->assign('runlist',$runlist);
 $t->assign('awards',$awards);
 $t->assign('genre',$genre);
+$t->assign('articles',$articles);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
 $t->assign('tags',$taglist);

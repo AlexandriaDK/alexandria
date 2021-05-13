@@ -158,6 +158,7 @@ if ($action == "Delete" && $game) { // should check if game exists
 	if (getCount('alias', $game, TRUE, 'sce') ) $error[] = "alias";
 	if (getCount('files', $game, TRUE, 'sce') ) $error[] = "file";
 	if (getCount('tags', $game, FALSE, 'sce') ) $error[] = "tags";
+	if (getCount('article', $game, FALSE, 'sce') ) $error[] = "article";
 	if (getCount('userlog', $game, TRUE, 'sce') ) $error[] = "user log (requires admin)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);
@@ -484,7 +485,7 @@ function changeLanguage( elem ) {
 </script>
 </head>
 
-<body bgcolor="#FFCC99" link="#CC0033" vlink="#990000" text="#000000">
+<body>
 
 <?php
 include("links.inc.php");
@@ -694,8 +695,25 @@ if ($game) {
 	print changeuserlog($game,$this_type);
 	print showpicture($game,$this_type);
 	print showtickets($game,$this_type);
+	$articles = getall("
+		SELECT i.id AS iid, m.id AS mid, i.title, m.name
+		FROM article a
+		INNER JOIN issue i ON a.issue_id = i.id
+		INNER JOIN magazine m ON i.magazine_id = m.id
+		WHERE a.sce_id = $game
+		ORDER BY i.releasedate, a.id
+		
+	");
+	print "<tr><td>Articles:</td><td>";
+	if ( $articles ) {
+		foreach ($articles AS $article) {
+			print '<a href="magazine.php?magazine_id=' . $article['mid'] . '&issue_id='. $article['iid'] . '">' . htmlspecialchars($article['title'] . ' - ' . $article['name']) . '</a><br>';
+		}
+	} else {
+		print 'None';
+	}
+	print "</td></tr>";
 
-	$reviews = getcolid( "SELECT id, title FROM reviews WHERE category = 'game' AND data_id = $game" );
 	print "<tr><td>Reviews:</td><td>";
 	if ( $reviews ) {
 		foreach ($reviews AS $rid => $title ) {

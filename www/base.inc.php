@@ -1061,6 +1061,15 @@ function getarticles ($data_id, $category) {
 			WHERE contributor.aut_id = $data_id
 			ORDER BY issue.releasedate, article.page
 		");
+	} elseif ($category == 'sce' || $category == 'game') {
+		$articles = getall("
+			SELECT article.issue_id, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			FROM article
+			INNER JOIN issue ON article.issue_id = issue.id
+			INNER JOIN magazine ON issue.magazine_id = magazine.id
+			WHERE article.sce_id = $data_id
+			ORDER BY issue.releasedate, article.page
+		");
 	} else {
 		$articles = [];
 	}
