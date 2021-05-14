@@ -26,6 +26,7 @@ $sce_id = (int) $_REQUEST['sce_id'];
 $aut_id = (int) $person;
 $aut_extra = ($aut_id ? '' : $person);
 $contributors = (array) $_REQUEST['contributors'];
+$original_article_id = (int) $_REQUEST['original_article_id'];
 
 function insertContributors($contributors, $article_id) {
 	doquery("DELETE FROM contributor WHERE article_id = $article_id");
@@ -195,6 +196,18 @@ if ($action == "addarticle") {
 	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
 }
 
+if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
+	$r = doquery("INSERT INTO article (issue_id, page, title, description, articletype, sce_id) SELECT $issue_id, page, title, description, articletype, sce_id FROM article WHERE id = $original_article_id");
+	if ($r) {
+		$new_article_id = dbid();
+		doquery("INSERT INTO contributor (article_id, aut_id, aut_extra, role) SELECT $new_article_id, aut_id, aut_extra, role FROM contributor WHERE article_id = $original_article_id");
+		chlog($issue_id,'issue',"Article duplicated: $original_article_id => $new_article_id");
+	}
+	$_SESSION['admin']['info'] = "Article duplicated! " . dberror();
+	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
+
+}
+
 ?>
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - Magazines</TITLE>
@@ -315,6 +328,9 @@ if ($magazine_id && $issue_id) {
 	print '</table></td></tr>';
 	print '</tbody></table>';
 	print '<p style="text-align: center;">Leave title and page blank for colophone</p>';
+	print '<form action="magazine.php" method="post"><input type="hidden" name="action" value="duplicatearticle"><input type="hidden" name="magazine_id" value="' . $magazine_id . '"><input type="hidden" name="issue_id" value="' . $issue_id . '">';
+	print '<p>Create duplicate of existing article/colophon into this issue: <input type="number" name="original_article_id" placeholder="ID of article" style="width: 7em;"> <input type="submit" value="Duplicate"></p>';
+	print '</form>';
 
 } elseif ($magazine_id) {
 	$mainlink = "magazine.php";
