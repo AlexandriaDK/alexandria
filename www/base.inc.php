@@ -900,7 +900,7 @@ function getrecentlog($limit = 10) {
 	$query = "SELECT data_id, category, time, user, note FROM log ORDER BY log.id DESC LIMIT $limit";
 	$log = getall($query);
 	foreach($log AS &$row) {
-		$row['name'] = getentry($row['category'], $row['data_id']);	
+		$row['name'] = getentry($row['category'], $row['data_id']);
 		$row['link'] = getdatalink($row['category'], $row['data_id']);
 		$row['linkhtml'] = getdatahtml($row['category'], $row['data_id'], $row['name']);
 		$row['pubtime'] = pubdateprint($row['time']);
@@ -1288,7 +1288,7 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 
 	if ($value) {
 		$label = getone("
-			SELECT COALESCE(alias.label, tbl.$value) AS label_translation
+			SELECT COALESCE(alias.label, $value) AS label_translation
 			FROM $cat AS tbl
 			LEFT JOIN alias ON tbl.id = alias.data_id AND alias.category = '$cat' AND alias.language = '" . LANG . "' AND alias.visible = 1
 			WHERE tbl.id = $data_id
