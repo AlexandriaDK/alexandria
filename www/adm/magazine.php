@@ -329,7 +329,7 @@ if ($magazine_id && $issue_id) {
 	print '</tbody></table>';
 	print '<p style="text-align: center;">Leave title and page blank for colophone</p>';
 	print '<form action="magazine.php" method="post"><input type="hidden" name="action" value="duplicatearticle"><input type="hidden" name="magazine_id" value="' . $magazine_id . '"><input type="hidden" name="issue_id" value="' . $issue_id . '">';
-	print '<p>Create duplicate of existing article/colophon into this issue: <input type="number" name="original_article_id" placeholder="ID of article" style="width: 7em;"> <input type="submit" value="Duplicate"></p>';
+	print '<p style="text-align: center;">Create duplicate of existing article/colophon into this issue. ID is shown left of articles. <input type="number" name="original_article_id" placeholder="ID of article" style="width: 7em;"> <input type="submit" value="Duplicate"></p>';
 	print '</form>';
 
 } elseif ($magazine_id) {
