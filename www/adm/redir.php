@@ -6,7 +6,6 @@ $cat = $_REQUEST['cat'];
 $id = $_REQUEST['data_id'];
 
 switch ($cat) {
-
 	case 'awards':
 		$returl = 'awards.php?category=convent&data_id=';
 		break;
@@ -37,6 +36,10 @@ switch ($cat) {
 
 	case 'issue':
 		$returl = 'magazine.php?issue_id=';
+		break;
+
+	case 'magazine':
+		$returl = 'magazine.php?magazine_id=';
 		break;
 	
 	case 'tag':
