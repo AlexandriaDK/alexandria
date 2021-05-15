@@ -110,11 +110,17 @@
 {/if}
 	</div>
 
+{include file="internal.tpl"}
+
 {if $issueid}
 {assign "id" $issueid}
 {assign "type" "issue"}
-{include file="updatelink.tpl"}
+{elseif $magazineid}
+{assign "id" $magazineid}
+{assign "type" "magazine"}
+{else}
+{assign "type" "magazine"}
 {/if}
-{include file="internal.tpl"}
+{include file="updatelink.tpl"}
 </div>
 {include file="end.tpl"}

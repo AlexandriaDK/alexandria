@@ -32,7 +32,19 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		$url = 'data?con=';
 		$returl = 'convent.php?con=';
 		break;
+
+		case 'issue':
+		$value = "title";
+		$url = 'magazines?issue=';
+		$returl = 'magazine.php?issue_id=';
+		break;
 	
+		case 'magazine':
+		$value = "name";
+		$url = 'magazines?id=';
+		$returl = 'magazine.php?magazine_id=';
+		break;
+
 		case 'aut':
 		default:
 		$value = "CONCAT(firstname,' ',surname)";
