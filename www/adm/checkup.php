@@ -272,9 +272,20 @@ $query = "
 	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN award_nominee_entities ON aut.id = award_nominee_entities.data_id AND award_nominee_entities.category = 'aut' WHERE award_nominee_entities.id IS NULL) c
 	ON a.id = c.id
 	INNER JOIN 
-	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN article ON aut.id = article.aut_id WHERE article.id IS NULL) d
+	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN contributor ON aut.id = contributor.aut_id WHERE contributor.id IS NULL) d
 	ON a.id = d.id
 ";
+
+$query = "
+	SELECT id, CONCAT(firstname,' ',surname) AS name
+	FROM aut
+	WHERE NOT EXISTS (SELECT 1 FROM asrel WHERE aut.id = asrel.aut_id)
+	AND NOT EXISTS (SELECT 1 FROM acrel WHERE aut.id = acrel.aut_id)
+	AND NOT EXISTS (SELECT 1 FROM contributor WHERE aut.id = contributor.aut_id)
+	AND NOT EXISTS (SELECT 1 FROM award_nominee_entities WHERE aut.id = award_nominee_entities.data_id AND category = 'aut')
+";
+
+
 $result = getall($query);
 foreach($result AS $row) {
 	$htmlloneper .= "<a href=\"person.php?person={$row['id']}\">{$row['name']}</a><br>\n";
