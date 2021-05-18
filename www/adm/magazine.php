@@ -235,7 +235,7 @@ $(function() {
 		delay: 30,
 		minLength: 3
 	});
-	var peopleRoles = ['Skribent', 'Illustrator', 'Fotograf', 'Redaktør', 'Chefredaktør', 'Layout', 'Forfatter', 'Tegner', 'Anmelder', 'Brevkasseredaktør', 'Ansvarshavende redaktør', 'Lokalredaktion - Århus']
+	var peopleRoles = ['Skribent', 'Illustrator', 'Fotograf', 'Redaktør', 'Chefredaktør', 'Redaktion', 'Layout', 'Forfatter', 'Tegner', 'Anmelder', 'Brevkasseredaktør', 'Ansvarshavende redaktør', 'Lokalredaktion - Århus']
 	$( ".peopleroles" ).autocomplete({
 		source: peopleRoles,
 		autoFocus: true,
