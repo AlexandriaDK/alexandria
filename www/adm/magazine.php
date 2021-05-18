@@ -235,23 +235,39 @@ $(function() {
 		delay: 30,
 		minLength: 3
 	});
+	var peopleRoles = ['Skribent', 'Illustrator', 'Fotograf', 'Chefredaktør' ,'Redaktør', 'Layout', 'Tegner', 'Anmelder', 'Brevkasseredaktør', 'Ansvarshavende redaktør', 'Lokalredaktion - Århus']
+	$( ".peopleroles" ).autocomplete({
+		source: peopleRoles,
+		autoFocus: true,
+		delay: 10,
+		minLength: 0
+	});
+	
 	$(".addnext").click( function() {
 		var td = $(this).parent();
-		console.log(this);
-		console.log(td);
 		var count = td.data('count') + 1;
 		var html = '';
 		html += '<input type="text" placeholder="Person" name="contributors[' + count + '][person]" class="peopletags" size=30 maxlength=150>';
-		html += '<input type="text" placeholder="Role" name="contributors[' + count + '][role]" size=30 maxlength=150><br>';
+		html += '<input type="text" placeholder="Role" name="contributors[' + count + '][role]" class="peopleroles" size=30 maxlength=150><br>';
 		td.append(html);
 		td.data('count', count);
-		var bar = $( td ).find('input.peopletags')
+		$( td ).find('input.peopletags')
 			.autocomplete({
 				source: availablePeople,
+				autoFocus: true,
 				delay: 30,
 				minLength: 3
 			})
 		;
+		$( td ).find('input.peopleroles')
+			.autocomplete({
+				source: peopleRoles,
+				autoFocus: true,
+				delay: 10,
+				minLength: 0
+			})
+		;
+
 	});
 
 });
@@ -306,7 +322,7 @@ if ($magazine_id && $issue_id) {
 			$pcount++;
 			$person = ($contributor['aut_id'] ? $contributor['aut_id'] . ' - ' . $contributor['name'] : $contributor['aut_extra'] );
 			print '<input type="text" placeholder="Person" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
-			print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
+			print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" class="peopleroles" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
 			if ($pcount == 1) {
 				print '<span class="addnext atoggle">➕</span>';
 			}
