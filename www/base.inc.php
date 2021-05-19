@@ -884,7 +884,15 @@ function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 		case 'tag':
 			$css = "tag";
 			break;
-	
+
+		case 'magazine':
+			$css = "magazine";
+			break;
+
+		case 'issue':
+			$css = "issue";
+			break;
+			
 		default:
 			$css = "person";
 			break;
@@ -1238,7 +1246,7 @@ function getLocaleFromLang( $lang ) {
 }
 
 // MySQL lookup:
-function getentry ($cat, $data_id, $with_category = FALSE) {
+function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE) {
 	$value = $label = FALSE;
 	$data_id = (int) $data_id;
 
@@ -1302,6 +1310,11 @@ function getentry ($cat, $data_id, $with_category = FALSE) {
 			$label .= " (?)";
 		}
 
+	}
+
+	if ($label && $with_magazine) {
+		$magazinename = getone("SELECT name FROM magazine INNER JOIN issue ON magazine.id = issue.magazine_id WHERE issue.id = $data_id");
+		$label = $magazinename . ' - ' . $label;
 	}
 
 	if ($label && $with_category) {

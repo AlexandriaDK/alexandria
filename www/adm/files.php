@@ -308,6 +308,7 @@ if ($data_id && $category) {
 		      '<td>' .
 		      htmlspecialchars( $row['filename'] ) .
 		      ( file_exists( $path ) ? '' : ' <span style="color: #c00" title="File does not exist">⚠</span>' ) .
+		      ( strpos($path, '#') === FALSE ? '' : ' <span style="color: #c00" title="File contains # character - please rename">⚠</span>' ) .
 		      '</td>' .
 		      '<td ><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="40"></td>'.
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.

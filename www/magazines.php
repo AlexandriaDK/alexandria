@@ -11,8 +11,10 @@ $magazinename = $magazinedescription = '';
 $issue = $issues = $articles = $colophon = $arrows = [];
 $available_pic = $picpath = $picid = FALSE;
 $internal = '';
+$filelist = [];
 
 if ($magazineid) {
+	$id = $magazineid;
 	list($magazinename, $magazinedescription, $internal) = getrow("SELECT name, description, internal FROM magazine WHERE id = $magazineid");
 	$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $internal : ''); // only set internal if editor
 	if (! $magazinename) {
@@ -21,6 +23,7 @@ if ($magazineid) {
 		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, id");
 	}
 } elseif ($issueid) {
+	$id = $issueid;
 	if ($available_pic = hasthumbnailpic($issueid, $this_type)) {
 		$picpath = getcategorythumbdir('issue');
 		$picid = $issueid;
@@ -81,6 +84,9 @@ if ($magazineid) {
 			}
 		}
 	}
+	// List of files
+	$filelist = getfilelist($issueid,$this_type);
+
 } else {
 	$magazines = getall("
 		SELECT magazine.id, magazine.name, magazine.description, COUNT(issue.id) AS issuecount
@@ -94,6 +100,7 @@ if ($magazineid) {
 // Smarty
 $t->assign('magazineid',$magazineid);
 $t->assign('issueid',$issueid);
+$t->assign('id',$id);
 $t->assign('magazines',$magazines);
 $t->assign('magazinename',$magazinename);
 $t->assign('magazinedescription',$magazinedescription);
@@ -108,5 +115,9 @@ $t->assign('picpath',$picpath);
 $t->assign('picid',$picid);
 $t->assign('arrowset',$arrows);
 // $t->assign('ogimage', getimageifexists($con, 'convent') );
+$t->assign('filelist',$filelist);
+$t->assign('filedir', getcategorydir($this_type) );
+
 $t->display('magazines.tpl');
+
 ?>

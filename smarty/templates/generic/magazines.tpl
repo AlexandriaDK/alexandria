@@ -29,6 +29,8 @@
 {/if}
 	</div>
 
+{include file="filelist.tpl"}
+
 	{if $colophon}
 	<h4>{$_magazines_colophon}</h4>
 	<table>

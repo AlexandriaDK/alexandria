@@ -58,7 +58,7 @@ function search_files ($find, $category = '') {
 				$output .= "</ul></li>";
 			}
 			$output .= "<li>".
-			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).
+			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id'], FALSE, ($row['category'] == 'issue') ) ).
 			           "<ul>";
 			$last_id = $row['data_id'];
 		}

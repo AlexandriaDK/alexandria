@@ -28,6 +28,7 @@ function getdirfromcategory($category) {
 		"convent" => "convent",
 		"conset" => "conset",
 		"tag" => "tag",
+		"issue" => "issue",
 	];
 	return $paths[$category];
 }
@@ -92,7 +93,7 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 		return 1;
 
 	} else {
-		print "File is not PDF, DOC, TXT, ZIP. Skipping." . PHP_EOL;
+		print "File is not PDF, DOC, DOCX, TXT, ZIP. Skipping." . PHP_EOL;
 		return 3;
 	}
 	// make sure content is UTF-8

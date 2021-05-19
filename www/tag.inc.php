@@ -94,6 +94,7 @@ $t->assign('type',$this_type);
 $t->assign('id',$tag_id);
 $t->assign('tag',$tag);
 $t->assign('pic',$available_pic);
+$t->assign('ogimage', getimageifexists($tag_id, 'tag') );
 $t->assign('description',$description);
 $t->assign('slist',$slist);
 $t->assign('trivia',$trivialist);
