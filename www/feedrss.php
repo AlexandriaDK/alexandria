@@ -15,7 +15,7 @@ print "<?xml-stylesheet title=\"XSL_formatting\" type=\"text/xsl\" href=\"rss.xs
 */
 print '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns="http://purl.org/rss/1.0/" xmlns:admin="http://webns.net/mvcb/" xmlns:l="http://purl.org/rss/1.0/modules/link/" xmlns:content="http://purl.org/rss/1.0/modules/content/">';
 print "\n";
-print '<channel rdf:about="http://alexandria.dk/">';
+print '<channel rdf:about="https://alexandria.dk/">';
 print '<title>Alexandrias blog-feeds</title>';
 print '<link>https://alexandria.dk/feeds</link>';
 print '<description>Rollespilsfortegnelsen Alexandrias meta-feed over danske rollespilsblogs</description>';

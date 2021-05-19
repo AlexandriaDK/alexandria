@@ -313,7 +313,7 @@ if ($data_id && $category) {
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
 		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
 		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Remove"></td>'.
-		      '<td ><a href="http://download.alexandria.dk/files/'.getcategorydir($category).'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
+		      '<td ><a href="https://download.alexandria.dk/files/'.getcategorydir($category).'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
 		      "</tr>\n";
 		print "</form>\n\n";
 	}
@@ -338,7 +338,7 @@ if ($data_id && $category) {
 	foreach(glob( DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") AS $file) {
 		$basename = mb_basename( $file );
 		$createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&amp;data_id=' . $data_id . '&amp;action=thumbnail&amp;filename=' . rawurlencode( $basename );
-		print '<a href="http://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
+		print '<a href="https://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
 		print '<div class="tooltip">';
 		print '<a href="' . $createthumbnailurl. '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
 		print '<span class="tooltiptext"><a href="' . $createthumbnailurl . '" onclick="return confirm(\'Create thumbnail?\');" title="Create thumbnail">Full</a> • <a href="' . $createthumbnailurl . '&amp;section=left" onclick="return confirm(\'Create thumbnail, left half?\');" title="Create thumbnail, use left half of first page">Left</a> • <a href="' . $createthumbnailurl . '&amp;section=right" onclick="return confirm(\'Create thumbnail, right half?\');" title="Create thumbnail, use right half of first page">Right</a></span>';
@@ -378,7 +378,7 @@ if ($data_id && $category) {
 	      '<input type="hidden" name="action" value="uploadremotefile">' . 
 	      '<input type="hidden" name="category" value="' . htmlspecialchars( $category ) . '">'.
 	      '<input type="hidden" name="data_id" value="' . $data_id . '">' . 
-	      '<p>Remote upload from URL: <input type="text" name="remoteurl" size="60" placeholder="http://www.example.com/blog/scenario.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
+	      '<p>Remote upload from URL: <input type="text" name="remoteurl" size="60" placeholder="https://www.example.com/blog/scenario.pdf" value="' . htmlspecialchars($remoteurl) . '" />' .
 	      '<input type="submit" value="Upload" />' .
 	      '</p>' .
 	      '</form>' . PHP_EOL . PHP_EOL
