@@ -98,6 +98,9 @@
 	<h2 class="pagetitle">
 		{$_magazines_list}
 	</h2>
+	<p>
+		{$_magazines_description}
+	</p>
 	<div id="magazinelist">
 	{foreach $magazines as $magazine}
 		<div>
