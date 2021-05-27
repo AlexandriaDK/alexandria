@@ -82,18 +82,31 @@
 
 {elseif $magazineid}
 	<h2 class="pagetitle">
-		{$magazinename}
+		{$magazinename|escape}
 	</h2>
 	{if $magazinedescription}
 	<p>
 	{$magazinedescription|escape|textlinks|nl2br}
 	</p>
 	{/if}
-	<ul>
+	<div class="issuegrid">
 	{foreach $issues as $issue}
-	<li><a href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext} - {$issue.releasetext|escape}{/if}</a></li>
+	<div>
+	<div>
+	<a href="magazines?issue={$issue.id}">
+	{if $issue.thumbnail}
+		<img src="/gfx/issue/s_{$issue.id}.jpg" alt="{$magazinename|escape}, {$issue.title}">
+	{else}
+		{if isset($magazinename)}<h3>{$magazinename|escape}</h3>{/if}
+		{if isset($issue.title)}<h4>{$issue.title|escape}</h4>{/if}
+		{if $issue.releasetext}<h4>{$issue.releasetext|escape}</h4>{/if}
+	{/if}
+	</a>
+	</div>
+	<a href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext} - {$issue.releasetext|escape}{/if}</a>
+	</div>
 	{/foreach}
-	</ul>
+	</div>
 {else}
 	<h2 class="pagetitle">
 		{$_magazines_list}

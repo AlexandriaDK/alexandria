@@ -4,6 +4,7 @@ require("base.inc.php");
 
 $this_type = 'issue';
 
+$id = NULL;
 $magazineid = (int) ($_GET['id'] ?? 0);
 $issueid = (int) ($_GET['issue'] ?? 0);
 $error = FALSE;
@@ -21,6 +22,11 @@ if ($magazineid) {
 		$error = TRUE;
 	} else {
 		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, id");
+		foreach ($issues AS $key => $issue) {
+			$issues[$key]['thumbnail'] = hasthumbnailpic($issue['id'], 'issue');
+		}
+		#var_dump($issues);
+		#exit;
 	}
 } elseif ($issueid) {
 	$id = $issueid;
