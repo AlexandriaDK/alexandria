@@ -103,7 +103,7 @@
 	{/if}
 	</a>
 	</div>
-	<a href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext} - {$issue.releasetext|escape}{/if}</a>
+	<a href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext}<br>{$issue.releasetext|escape}{/if}</a>
 	</div>
 	{/foreach}
 	</div>
