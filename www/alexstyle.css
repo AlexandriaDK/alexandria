@@ -774,12 +774,13 @@ div#magazinelist div {
 }
 
 div.issuegrid {
-	display: flex; flex-flow: row wrap;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 1em;
 }
 
 div.issuegrid > div {
-	width: 160px;
-	height: 240px;
+	width: 145px;
 }
 
 div.issuegrid > div > div {
