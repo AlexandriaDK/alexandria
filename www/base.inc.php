@@ -573,7 +573,7 @@ function pubdateprint($datetime) {
 
 function _textlink ($string, $absolute_url = 0) {
 	$urlpart = "/find";
-	if (preg_match("/^(c|cx|s|p|cs|sys|t|tag)(\d*)\|(.*)$/i",$string,$regs)) {
+	if (preg_match("/^(c|cx|s|p|cs|sys|t|tag|i|m)(\d*)\|(.*)$/i",$string,$regs)) {
 		$pref = $regs[1];
 		$data_id = $regs[2];
 		$text = $regs[3];
@@ -586,6 +586,8 @@ function _textlink ($string, $absolute_url = 0) {
 			case "sys": $cat = "sys"; $class = "system"; $search = "sys"; break;
 			case "t": 
 			case "tag": $cat = "tag"; $class = "tag"; $search = "tag"; break;
+			case "i": $cat = "issue"; $class = "issue"; $search = "magazine"; break;
+			case "m": $cat = "magazine"; $class = "magazine"; $search = "issue"; break;
 		}
 		if ($data_id) {
 			$link = getdatalink($cat,$data_id);
