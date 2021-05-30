@@ -281,7 +281,8 @@ printinfo();
 
 if ($magazine_id && $issue_id) {
 	$mainlink = "magazine.php?magazine_id=" . $magazine_id;
-	$issue_title = getone("SELECT title FROM issue WHERE id = $issue_id");
+	$publiclink = "../magazines.php?issue=" . $issue_id;
+	list($magazine_name, $issue_title) = getrow("SELECT m.name, i.title FROM issue i INNER JOIN magazine m ON i.magazine_id = m.id WHERE i.id = $issue_id");
 
 	$articles = getall("
 		SELECT article.id, article.page, article.title, article.description, article.articletype, article.sce_id, sce.title AS scetitle
@@ -291,7 +292,7 @@ if ($magazine_id && $issue_id) {
 		ORDER BY article.page, article.id
 	");
 	$articles[] = [];
-	print "<table align=\"center\" border=0><tr><th>Edit articles for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($issue_title) . "</a></th></tr>";
+	print '<table><tr><th>Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>';
 
 	foreach ($articles AS $article) {
 		$article_id = $article['id'];
@@ -313,8 +314,8 @@ if ($magazine_id && $issue_id) {
 		$person = ($article['aut_id'] ? $article['aut_id'] . " - " . $article['personname'] : $article['aut_extra'] );
 		$game = ($article['sce_id'] ? $article['sce_id'] . " - " . $article['scetitle'] : '' );
 		print "<table>";
-		print "<tr valign=\"top\">\n".
-				'<td style="text-align:right; width: 3em;">' . ($article['id'] ?? 'New') . '</td>'.
+		print '<tr valign="top" style="white-space: nowrap">' .
+				'<td style="text-align:right; min-width: 2em;">' . ($article['id'] ?? 'New') . '</td>'.
 				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>';
 		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
@@ -350,6 +351,7 @@ if ($magazine_id && $issue_id) {
 
 } elseif ($magazine_id) {
 	$mainlink = "magazine.php";
+	$publiclink = '../magazines.php?id=' . $magazine_id;
 	$magazine_name = getone("SELECT name FROM magazine WHERE id = $magazine_id");
 	
 	$query = "
@@ -364,8 +366,8 @@ if ($magazine_id && $issue_id) {
 	$issues = getall($query);
 	$issues[] = [];
 	print "<table align=\"center\" border=0><thead>".
-	      "<tr><th colspan=5>Edit issues for: <a href=\"$mainlink\" accesskey=\"q\">" . htmlspecialchars($magazine_name) . "</a></th></tr>\n".
-	      "<tr>\n".
+	      '<tr><th colspan=5><a href="' . $mainlink . '">Magazines</a> - edit issues for: ' . htmlspecialchars($magazine_name) . ' <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>'. PHP_EOL .
+		  "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Title</th>".
 	      "<th>Release date (approx)</th>".
@@ -394,9 +396,10 @@ if ($magazine_id && $issue_id) {
 	}
 	print "</tbody></table>";
 } else {
+	$publiclink = '../magazines';
 	$magazines = getall("SELECT m.id, m.name, m.description, m.internal, COUNT(i.id) AS issues FROM magazine m LEFT JOIN issue i ON m.id = i.magazine_id GROUP BY m.id, m.name, m.description ORDER BY m.name");
 	print "<table align=\"center\" border=0><thead>".
-	      "<tr><th colspan=4>Edit magazines</th></tr>\n".
+	      '<tr><th colspan=4>Edit magazines <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>'.
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Magazine</th>".
