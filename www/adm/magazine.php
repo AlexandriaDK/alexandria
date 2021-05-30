@@ -280,6 +280,7 @@ if ($magazine_id && $issue_id) {
 	$mainlink = "magazine.php?magazine_id=" . $magazine_id;
 	$publiclink = "../magazines.php?issue=" . $issue_id;
 	list($magazine_name, $issue_title) = getrow("SELECT m.name, i.title FROM issue i INNER JOIN magazine m ON i.magazine_id = m.id WHERE i.id = $issue_id");
+	$files = getone("SELECT COUNT(*) FROM files WHERE category = 'issue' AND data_id = $issue_id");
 
 	$articles = getall("
 		SELECT article.id, article.page, article.title, article.description, article.articletype, article.sce_id, sce.title AS scetitle
@@ -289,7 +290,8 @@ if ($magazine_id && $issue_id) {
 		ORDER BY article.page, article.id
 	");
 	$articles[] = [];
-	print '<p style="font-weight: bold;">Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup> - <a href="showlog.php?category=issue&data_id=' . $issue_id . '">Show log</a></p>';
+	$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . $issue_id . "/*"));
+	print '<p style="font-weight: bold;">Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup> - <a href="files.php?category=issue&data_id=' . $issue_id . '">' . $files . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a> - <a href="showlog.php?category=issue&data_id=' . $issue_id . '">Show log</a></p>';
 	// print '<table><tr><th>Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>';
 	print '<table>';
 
