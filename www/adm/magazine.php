@@ -316,7 +316,8 @@ if ($magazine_id && $issue_id) {
 		print "<table>";
 		print '<tr valign="top" style="white-space: nowrap">' .
 				'<td style="text-align:right; min-width: 2em;">' . ($article['id'] ?? 'New') . '</td>'.
-				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>';
+				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
+				'<td><input placeholder="Page" type="number" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>';
 		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
@@ -330,7 +331,6 @@ if ($magazine_id && $issue_id) {
 			print '<br>';
 		}
 		print '</td>' .
-				'<td><input placeholder="Page" type="number" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>' .
 				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.style.height=\'10em\'" onblur="this.style.height=\'1em\'" style="height: 1em;">'.htmlspecialchars($article['description']).'</textarea></td>'.
 				'<td><input placeholder="Article type" type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
 				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="scenariotags" size=30 maxlength=150 placeholder="Existing game"></td>' .
