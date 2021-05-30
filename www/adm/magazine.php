@@ -65,7 +65,7 @@ if ($action == "changemagazine" && $do != "Delete") {
 	     "WHERE id = $magazine_id";
 	$r = doquery($q);
 	if ($r) {
-		chlog($magazine_id,$this_type,"Magazine updated: $name");
+		chlog($magazine_id,$this_type,"Magazine updated: $magazine_id - $name");
 	}
 	$_SESSION['admin']['info'] = "Magazine updated! " . dberror();
 	rexit($this_type);
@@ -162,7 +162,7 @@ if ($action == "changearticle" && $do != "Delete") {
 	if ($r) {
 		// Contributors
 		insertContributors($contributors, $article_id);
-		chlog($issue_id,'issue',"Article updated: $title");
+		chlog($issue_id,'issue',"Article updated: $article_id - $title");
 	}
 	$_SESSION['admin']['info'] = "Article updated! " . dberror();
 	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
