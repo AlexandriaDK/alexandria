@@ -9,35 +9,32 @@ $this_type = 'magazine';
 
 $action = (string) $_REQUEST['action'];
 $do = (string) $_REQUEST['do'];
-$description = (string) $_REQUEST['description'];
+$description = trim((string) $_REQUEST['description']);
 $internal = (string) $_REQUEST['internal'];
-$name = (string) $_REQUEST['name'];
-$title = (string) $_REQUEST['title'];
+$name = trim((string) $_REQUEST['name']);
+$title = trim((string) $_REQUEST['title']);
 $releasedate = (string) $_REQUEST['releasedate'];
 $releasetext = (string) $_REQUEST['releasetext'];
 $magazine_id = (int) $_REQUEST['magazine_id'];
 $issue_id = (int) $_REQUEST['issue_id'];
 $article_id = (int) $_REQUEST['article_id'];
-$role = (string) $_REQUEST['role'];
 $page = (int) $_REQUEST['page'];
-$articletype = (string) $_REQUEST['articletype'];
-$person = (string) $_REQUEST['person'];
+$articletype = trim((string) $_REQUEST['articletype']);
 $sce_id = (int) $_REQUEST['sce_id'];
-$aut_id = (int) $person;
-$aut_extra = ($aut_id ? '' : $person);
 $contributors = (array) $_REQUEST['contributors'];
 $original_article_id = (int) $_REQUEST['original_article_id'];
 
 function insertContributors($contributors, $article_id) {
 	doquery("DELETE FROM contributor WHERE article_id = $article_id");
 	foreach ($contributors AS $contributor) {
-		if ($contributor['person'] == '' && $contributor['role'] == '') {
+		$role = trim($contributor['role']);
+		if ($contributor['person'] == '' && $role == '') {
 			continue;
 		}
 		$person = autidextra($contributor['person']);
 		doquery("
 			INSERT INTO contributor (aut_id, aut_extra, role, article_id)
-			VALUES (" . sqlifnull($person['id']) . ", '" . dbesc($person['extra']) . "', '" . dbesc($contributor['role']) . "', $article_id)
+			VALUES (" . sqlifnull($person['id']) . ", '" . dbesc($person['extra']) . "', '" . dbesc($role) . "', $article_id)
 		");
 	}
 }

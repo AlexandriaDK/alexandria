@@ -259,7 +259,7 @@ function getCount ($table, $data_id, $requiresData = FALSE, $category = "") {
 
 function autidextra ($person) { 
 	$aut_id = (int) $person;
-	$aut_extra = ($aut_id ? '' : $person);
+	$aut_extra = ($aut_id ? '' : trim($person) );
 	return ['id' => $aut_id, 'extra' => $aut_extra];
 }
 
