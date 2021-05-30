@@ -55,24 +55,24 @@
 
 	{if $articles}
 	<h4>{$_magazines_content}</h4>
-	<table>
+	<table class="magazinecontent">
 	<tbody>
 	{foreach $articles as $row}	
 	<tr>
 	{if not isset($lastid) || $row.id != $lastid}
-	<td style="padding-right: 10px; text-align: right;">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
-	<td style="padding-right: 10px;">{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}</td>
+	<td class="page">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
+	<td {if $row.contributorcount > 1} rowspan="{$row.contributorcount}"{/if}>{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}{if $row.description}<br><span class="description">{$row.description|escape|textlinks|nl2br}</span>{/if}</td>
 	{else}
-	<td colspan="2"></td>
+	<td></td>
 	{/if}
-	<td style="padding-right: 10px;">
+	<td class="contributor">
 		{if $row.aut_id}
 		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
 		{else}
 		{$row.aut_extra|escape}
 		{/if}
 	</td>
-	<td>{$row.role|escape}</td>
+	<td class="role">{$row.role|escape}</td>
 	</tr>
 	{assign "lastid" $row.id}
 	{/foreach}

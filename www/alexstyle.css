@@ -802,3 +802,20 @@ div.issuegrid > div > div img {
 div.issuegrid > div > div > a {
 	display: block; width: 100%; height: 100%;
 }
+
+table.magazinecontent td {
+	padding-right: 10px;
+}
+
+table.magazinecontent td.page {
+	text-align: right;
+}
+
+table.magazinecontent td.page, table.magazinecontent td.contributor, table.magazinecontent td.role {
+	white-space: nowrap;
+}
+
+table.magazinecontent span.description {
+	font-size: 0.8em;
+	font-style: italic;
+}

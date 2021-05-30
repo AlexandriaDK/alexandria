@@ -63,6 +63,18 @@ if ($magazineid) {
 		AND (page IS NOT NULL OR article.title != '')
 		ORDER BY page, article.id
 	");
+	$lastarticleid = $lastid = FALSE;
+	// Adding contributor count to create rowspan for title and description
+	foreach ($articles AS $articleid => $article) {
+		if ($lastarticleid !== $article['id']) {
+			$articles[$articleid]['contributorcount'] = 0;
+			$lastid = $articleid;
+		} else {
+			$articles[$articleid]['contributorcount'] = 0;
+		}
+		$articles[$lastid]['contributorcount']++;
+		$lastarticleid = $article['id'];
+	}
 
 	$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = " . $issue['magazineid'] . " ORDER BY releasedate, id");
 	$seriecount = 0;
