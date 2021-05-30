@@ -289,7 +289,9 @@ if ($magazine_id && $issue_id) {
 		ORDER BY article.page, article.id
 	");
 	$articles[] = [];
-	print '<table><tr><th>Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>';
+	print '<p style="font-weight: bold;">Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup> - <a href="showlog.php?category=issue&data_id=' . $issue_id . '">Show log</a></p>';
+	// print '<table><tr><th>Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>';
+	print '<table>';
 
 	foreach ($articles AS $article) {
 		$article_id = $article['id'];
@@ -341,9 +343,9 @@ if ($magazine_id && $issue_id) {
 	}
 	print '</table></td></tr>';
 	print '</tbody></table>';
-	print '<p style="text-align: center;">Leave title and page blank for colophone</p>';
+	print '<p>Leave title and page blank for colophone</p>';
 	print '<form action="magazine.php" method="post"><input type="hidden" name="action" value="duplicatearticle"><input type="hidden" name="magazine_id" value="' . $magazine_id . '"><input type="hidden" name="issue_id" value="' . $issue_id . '">';
-	print '<p style="text-align: center;">Create duplicate of existing article/colophon into this issue. ID is shown left of articles. <input type="number" name="original_article_id" placeholder="ID of article" style="width: 7em;"> <input type="submit" value="Duplicate"></p>';
+	print '<p>Create duplicate of existing article/colophon into this issue. ID is shown left of articles. <input type="number" name="original_article_id" placeholder="ID of article" style="width: 7em;"> <input type="submit" value="Duplicate"></p>';
 	print '</form>';
 
 } elseif ($magazine_id) {
@@ -363,7 +365,7 @@ if ($magazine_id && $issue_id) {
 	$issues = getall($query);
 	$issues[] = [];
 	print "<table align=\"center\" border=0><thead>".
-	      '<tr><th colspan=5><a href="' . $mainlink . '">Magazines</a> - edit issues for: ' . htmlspecialchars($magazine_name) . ' <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>'. PHP_EOL .
+	      '<tr><th colspan=5><a href="' . $mainlink . '">Magazines</a> - edit issues for: ' . htmlspecialchars($magazine_name) . ' <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup> - <a href="showlog.php?category=magazine&data_id=' . $magazine_id . '">Show log</a></th></tr>'. PHP_EOL .
 		  "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Title</th>".
@@ -433,7 +435,7 @@ if ($magazine_id && $issue_id) {
 
 }
 
-print '<p style="text-align: center;"><a href="https://loot.alexandria.dk/files/magazines/">Magazine file storage</p>';
+print '<p><a href="https://loot.alexandria.dk/files/magazines/">Magazine file storage</p>';
 
 print "</body>\n</html>\n";
 
