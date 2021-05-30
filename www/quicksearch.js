@@ -35,7 +35,11 @@ $(function() {
 		minLength: 2,
 		delay: 100,
 		select: function( event, ui ) {
-			window.location = 'data?' + ui.item.linkpart + '=' + encodeURIComponent(ui.item.id);
+			if (ui.item.linkpart == 'magazine') {
+				window.location = 'magazines?id=' + encodeURIComponent(ui.item.id);
+			} else {
+				window.location = 'data?' + ui.item.linkpart + '=' + encodeURIComponent(ui.item.id);
+			}
 		}
 	})
 	.autocomplete( "instance" )._renderItem = function( ul, item ) {

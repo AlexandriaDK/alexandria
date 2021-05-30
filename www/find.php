@@ -32,6 +32,30 @@ function check_search_achievements ($find) {
 	if ((strpos(strtolower($find), 'drop table')) !== FALSE) award_achievement(44); // sql injection
 }
 
+function search_issues($find) {
+	global $t;
+	$sql = "
+		SELECT i.id AS issueid, m.name AS magazinename, i.title AS issuetitle, a.title, a.description, a.page
+		FROM article a
+		INNER JOIN issue i ON a.issue_id = i.id
+		INNER JOIN magazine m ON i.magazine_id = m.id 
+		WHERE a.title LIKE '%".dbesc($find)."%'
+		OR a.description LIKE '%".dbesc($find)."%'
+		ORDER BY m.name, i.title, a.title, i.id
+	";
+	$articles = getall($sql);
+	if (!$articles) return false;
+	$output = "<ul>";
+	foreach ($articles AS $article) {
+		$output .= "<li>" .
+		getdatahtml('issue',$article['issueid'],getentry('issue',$article['issueid'], FALSE, TRUE ) ) .
+		"<ul><li>" . textlinks(htmlspecialchars($article['title'] . ($article['description'] ? ' - ' . $article['description'] : '') ) ) . " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($article['page']) . ')</li></ul>';
+		"</li>";
+	}
+	$output .= "</ul>";
+	return $output;
+}
+
 function search_files ($find, $category = '') {
 	global $t;
 	$where_category = ($category ? "AND a.category = '$category'" : "");
@@ -85,34 +109,7 @@ function search_files ($find, $category = '') {
 			$output .= "<br />".
 			           "&nbsp;&nbsp;.. ".preg_replace('/^.*?\s(.{0,40})('.preg_quote($find,'/').')(.{0,40})\s.*$/si','$1<span class="highlightsearch">$2</span>$3',htmlspecialchars($row['content']))." ..";
 		}
-		$output .= "</li>";
-
-/*
-	foreach($result AS $row) {
-		if ($lastid != $row['data_id']) {
-			$output .=
-		}
-			$output .= "<li>".
-			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
-		if ((stripos($row['content'],$find)) !== FALSE) {
-			$output .= "<li>".
-			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
-			           " (".htmlspecialchars($row['page']).")<br />".
-	#		           "&nbsp;&nbsp;.. ".preg_replace('/('.preg_quote($find,'/').')/i','<b>$1</b>',htmlspecialchars($row['preview']))." ..<br />".
-	#		           "&nbsp;&nbsp;.. ".preg_replace('/^.*?\s(.{,30})('.preg_quote($find,'/').')(.{,30})\s.*$/si','$1<b>$2</b>$3',htmlspecialchars($row['content']))." ..<br />".
-			           "&nbsp;&nbsp;.. ".preg_replace('/^.*?\s(.{0,40})('.preg_quote($find,'/').')(.{0,40})\s.*$/si','$1<span class="highlightsearch">$2</span>$3',htmlspecialchars($row['content']))." ..<br />".
-			           "</li>\n";
-		} else {
-			$output .= "<li>".
-			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".htmlspecialchars($row['description']).
-			           " (".htmlspecialchars($row['page']).")<br />".
-#			           getdatahtml($row['category'],$row['data_id'],getentry($row['category'],$row['data_id']) ).", ".
-#			           htmlspecialchars($row['label']).
-			           "</li>\n";
-		}
-	}
-*/
-		
+		$output .= "</li>";	
 	}
 	$output .= "</ul></li>";
 	$output .= "</ul>";
@@ -277,7 +274,9 @@ if ($find) {
 	$tagsearch = search_tags($find);
 	$filesearch = search_files($find);
 	$blogsearch = search_blogposts($find);
-
+	if ($_SESSION['user_editor']) {
+		$issuesearch = search_issues($find);
+	}
 	log_search($find);
 	
 } elseif ($_REQUEST['search_type'] == 'findspec') {
@@ -414,6 +413,7 @@ $t->assign('find_convent', display_result($match['convent'], "con", "con", "conv
 $t->assign('find_sys', display_result($match['sys'], "system", "system", "sys") );
 $t->assign('find_tags', $tagsearch ?? "" );
 $t->assign('find_files', $filesearch ?? "" );
+$t->assign('find_issues', $issuesearch ?? "" );
 $t->assign('find_blogposts', $blogsearch ?? "" );
 $t->assign('search_boardgames', $search_boardgames );
 $t->display('find.tpl');

@@ -53,6 +53,13 @@
 	{$find_files}
 {/if}
 
+{if $find_issues}
+	<h3 class="findhead">
+		{$_top_magazines|ucfirst}
+	</h3>
+	{$find_issues}
+{/if}
+
 {if $find_blogposts}
 	<h3 class="findhead">
 		{$_find_blogposts}
@@ -60,7 +67,7 @@
 	{$find_blogposts}
 {/if}
 
-{if ! $find_aut && ! $find_sce && ! $find_convent && ! $find_sys && ! $find_files && ! $find_blogposts && ! $find_tags}
+{if ! $find_aut && ! $find_sce && ! $find_convent && ! $find_sys && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_issues}
 	<p class="nomatch">
 		{$_find_nomatch}
 	</p>

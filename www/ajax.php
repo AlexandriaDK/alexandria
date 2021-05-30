@@ -11,6 +11,14 @@ $separator = "__SEPARATOR__";
 $separator_limit = 3;
 
 if (strlen($term) >= 2) {
+	$magazine_union_sql = "";
+	if ($_SESSION['user_editor'] == 1) {
+		$magazine_union_sql = "
+		UNION ALL
+		SELECT magazine.id, name COLLATE utf8mb4_danish_ci, 'magazine' AS type, 'magazine' AS linkpart, 'magazine' AS filepart, '📚 (magazine)' AS note FROM magazine WHERE name LIKE '$escapequery%' 
+		";
+	}
+
 	$query = "
 			SELECT aut.id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart, 'person' AS filepart, COALESCE(GROUP_CONCAT(sce.title ORDER BY sce.popularity DESC SEPARATOR '$separator'), '') AS note FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id IN (1,5) LEFT JOIN sce ON asrel.sce_id = sce.id WHERE CONCAT(firstname,' ',surname) LIKE '$escapequery%' GROUP BY aut.id
 		UNION
@@ -31,14 +39,16 @@ if (strlen($term) >= 2) {
 				CONCAT(conset.name, ' ', convent.year) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' 19', RIGHT('$escapequery', 2))
 			)
 			OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
+		$magazine_union_sql
 		UNION ALL
 			SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tags WHERE tag LIKE '$escapequery%' GROUP BY tag
 		UNION
 			SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tag WHERE tag LIKE '$escapequery%' GROUP BY tag
 		ORDER BY label
 	";
-
+	
 	$all = getall($query, FALSE);
+	print dberror();
 
 	foreach($all AS &$data) {
 		$suggestions[] = $data['label'];
