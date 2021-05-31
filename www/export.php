@@ -88,7 +88,7 @@ if ( $dataset ) {
 		$output = $data;
 	}
 } elseif ( $setup === 'sqlstructure' ) {
-	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor' ];
+	$tables = [ 'aut', 'sys', 'sce', 'conset', 'convent', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -109,10 +109,10 @@ if ( $dataset ) {
 		'datasets' => [
 			'all' => 'All datasets combined (about 15 MB!)',
 			'persons' => 'Persons in the Alexandria database',
-			'systems' => 'Role-playing systems',
-			'conventionsets' => 'Sets of gaming conventions',
-			'conventions' => 'Gaming conventions',
 			'games' => 'Games, including role-playing scenarios, designed board games, and LARPs',
+			'conventions' => 'Gaming conventions',
+			'conventionsets' => 'Sets of gaming conventions',
+			'systems' => 'Role-playing systems',
 			'genres' => 'Genres for games',
 			'tags' => 'Tag descriptions',
 			'gametags' => 'Relations between tags and games',
