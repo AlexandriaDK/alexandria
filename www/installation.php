@@ -107,7 +107,11 @@ if ( $action == 'importstructure' ) {
 		case 'award_categories':
 		case 'award_nominee_entities':
 		case 'award_nominees':
-			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description' ];
+		case 'magazines':
+		case 'issues':
+		case 'articles':
+		case 'contributors':
+			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor' ];
 			if ( isset( $tablemap[ $dataset ] ) ) {
 				$table = $tablemap[ $dataset ];
 			} else {

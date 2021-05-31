@@ -35,6 +35,10 @@ $exportqueries = [
 	'person_game_title_connections' => "SELECT id, aut_id AS person_id, sce_id AS game_id, tit_id AS title_id, note FROM asrel ORDER BY aut_id, sce_id, id",
 	'game_convention_presentation_connections' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
 	'person_convention_connections' => "SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id",
+	'contributors' => "SELECT id, aut_id AS person_id, aut_extra AS person_extra, role, article_id FROM contributor ORDER BY id",
+	'articles' => "SELECT id, issue_id, page, title, description, articletype, sce_id AS game_id FROM article ORDER BY issue_id, id",
+	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
+	'magazines' => "SELECT id, name, description FROM magazine ORDER BY id",
 ];
 
 if ( $dataset ) {
@@ -65,6 +69,10 @@ if ( $dataset ) {
 	case 'person_game_title_connections':
 	case 'game_convention_presentation_connections':
 	case 'person_convention_connections':
+	case 'contributors':
+	case 'articles':
+	case 'issues':
+	case 'magazines':
 		$output = getall( $exportqueries[ $dataset ], FALSE );
 		break;
 	case 'all':
@@ -80,7 +88,7 @@ if ( $dataset ) {
 		$output = $data;
 	}
 } elseif ( $setup === 'sqlstructure' ) {
-	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation' ];
+	$tables = [ 'aut', 'sce', 'convent', 'conset', 'sys', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'userlog', 'news', 'files', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -126,6 +134,10 @@ if ( $dataset ) {
 			'game_convention_presentation_connections' => 'Relations between games, conventions, and presentations',
 			'genre_game_relations' => 'Relations between games and genres',
 			'person_convention_connections' => 'Relations between persons and conventions as organizers',
+			'magazines' => 'Magazines and club folders',
+			'issues' => 'Issues for magazines',
+			'articles' => 'Articles in issues',
+			'contributors' => 'Contributors for magazines',
 		],
 		'examples' => [
 			'export' => 'This overview',
