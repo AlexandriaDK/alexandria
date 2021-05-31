@@ -109,10 +109,10 @@ if ( $dataset ) {
 		'datasets' => [
 			'all' => 'All datasets combined (about 15 MB!)',
 			'persons' => 'Persons in the Alexandria database',
-			'games' => 'Games, including role-playing scenarios, designed board games, and LARPs',
-			'conventions' => 'Gaming conventions',
-			'conventionsets' => 'Sets of gaming conventions',
 			'systems' => 'Role-playing systems',
+			'conventionsets' => 'Sets of gaming conventions',
+			'conventions' => 'Gaming conventions',
+			'games' => 'Games, including role-playing scenarios, designed board games, and LARPs',
 			'genres' => 'Genres for games',
 			'tags' => 'Tag descriptions',
 			'gametags' => 'Relations between tags and games',
