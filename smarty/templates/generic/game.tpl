@@ -158,7 +158,6 @@ $( function() {
 {/foreach}
 {/if}
 
-{if $user_editor}
 {if $articles}
 <h3 class="parttitle">{$_p_articles}</h3>
 	<table id="gamearticles">
@@ -172,8 +171,6 @@ $( function() {
 	{/foreach}
 	</table>
 {/if}
-{/if}
-
 
 {include file="trivialink.tpl"}
 {include file="internal.tpl"}

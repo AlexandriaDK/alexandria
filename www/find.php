@@ -274,9 +274,7 @@ if ($find) {
 	$tagsearch = search_tags($find);
 	$filesearch = search_files($find);
 	$blogsearch = search_blogposts($find);
-	if ($_SESSION['user_editor']) {
-		$issuesearch = search_issues($find);
-	}
+	$issuesearch = search_issues($find);
 	log_search($find);
 	
 } elseif ($_REQUEST['search_type'] == 'findspec') {

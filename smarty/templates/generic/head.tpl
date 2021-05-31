@@ -89,9 +89,6 @@
 				<a href="calendar">{$_top_calendar}</a><br>
 				<a href="feeds">{$_top_blogfeeds}</a><br>
 				<a href="awards">{$_top_awards}</a><br>
-{if $user_editor}
-				<a href="magazines">{$_top_magazines}</a> [editor only]<br>
-{/if}
 				<a href="jostspil">{$_top_jostgame}</a><br>
 				<br>
 				<a href="kontakt">{$_top_contact}</a><br>
@@ -283,6 +280,9 @@
 				</div>
 				<div class="topmenublock">
 					<a href="systemer" class="system">{$_rpgsystems|ucfirst}</a>
+				</div>
+				<div class="topmenublock">
+					<a href="magazines" class="magazines">{$_top_magazines|ucfirst}</a>
 				</div>
 				<div class="topmenublockfind">
 					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="text" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input"></label>
