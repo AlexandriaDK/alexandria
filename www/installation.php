@@ -1,6 +1,7 @@
 <?php
 // from this point on we know that the setup is incomplete
 define( 'IMPORT_ENDPOINT', 'https://alexandria.dk/en/export' );
+define( 'INSTALLATION_DEBUG', FALSE);
 $action = $_POST[ 'action' ] ?? '';
 if ( $action && ( $_SESSION['token'] !== $_POST['token'] ) ) {
 	$t->assign( 'stage', 'tokenerror' );
@@ -11,9 +12,25 @@ if ( $action && ( $_SESSION['token'] !== $_POST['token'] ) ) {
 }
 
 function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
+	$replacements = [
+		'game_id' => 'sce_id',
+		'person_id' => 'aut_id',
+		'person_extra' => 'aut_extra',
+		'title_id' => 'tit_id',
+		'convention_id' => 'convent_id',
+		'system_id' => 'sys_id',
+		'system_extra' => 'sys_ext',
+		'genre_id' => 'gen_id',
+		'presentation_id' => 'pre_id',
+	];
 	if ( $fields == NULL ) {
 		$fields = [];
 		foreach ( $allvalues[0] AS $key => $list ) {
+			if ( $table != 'game_description' ) { // Cheating, converting game_id to sce_id and person_id to aut_id
+				if (isset($replacements[$key])) {
+					$key = $replacements[$key];
+				}
+			}
 			$fields[] = $key;
 		}
 	}
@@ -34,10 +51,21 @@ function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
 	}
 	
 	if ( $datasets ) {
+		if (INSTALLATION_DEBUG === TRUE) {
+			print "<pre>";
+			print "TABLE $table \n";
+		}
 		doquery( "TRUNCATE TABLE `$table` ");
 		foreach ( $datasets AS $dataset ) {
 			$multisql = "INSERT INTO `$table` (" . implode( ", ", $fields ) . ") VALUES " . implode( ", ", $dataset );
 			doquery( $multisql );
+			if (INSTALLATION_DEBUG === TRUE) {
+				print htmlspecialchars($multisql) . "\n";
+				$error = dberror();
+				if ($error) {
+					print "\nMySQL error: " . $error . "\n";
+				}
+			}
 		}
 		return true;
 	} else {
@@ -89,11 +117,13 @@ if ( $action == 'importstructure' ) {
 
 		switch ( $dataset ) {
 		case 'persons':
+		case 'games':
 		case 'conventions':
 		case 'conventionsets':
 		case 'systems':
 		case 'genres':
 		case 'tags':
+		case 'gametags':
 		case 'gameruns':
 		case 'gamedescriptions':
 		case 'titles':
@@ -110,7 +140,13 @@ if ( $action == 'importstructure' ) {
 		case 'award_nominees':
 		case 'magazines':
 		case 'issues':
-			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue' ];
+		case 'articles':
+		case 'contributors':
+		case 'person_game_title_relations':
+		case 'game_convention_presentation_relations':
+		case 'person_convention_relations':
+		case 'genre_game_relations':
+			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor', 'person_game_title_relations' => 'asrel', 'game_convention_presentation_relations' => 'csrel', 'person_convention_relations' => 'acrel', 'genre_game_relations' => 'gsrel', 'games' => 'sce', 'gametags' => 'tags' ];
 			if ( isset( $tablemap[ $dataset ] ) ) {
 				$table = $tablemap[ $dataset ];
 			} else {
@@ -118,32 +154,6 @@ if ( $action == 'importstructure' ) {
 			}
 			dbmultiinsert( $table, $data->result );
 			break;
-		// Specific cases due to usage of person_id and game_id instead of aut_id and sce_id
-		case 'gametags':
-			dbmultiinsert( 'tags', $data->result, [ 'id', 'sce_id', 'tag' ] );
-			break;
-		case 'games':
-			dbmultiinsert( 'sce', $data->result, [ 'id', 'title', 'boardgame', 'sys_id', 'sys_ext', 'aut_extra', 'gms_min', 'gms_max', 'players_min', 'players_max', 'participants_extra' ] );
-			break;
-		case 'genre_game_relations':
-			dbmultiinsert( 'gsrel', $data->result, [ 'id', 'gen_id', 'sce_id' ] );
-		case 'person_game_title_relations':
-			dbmultiinsert( 'asrel', $data->result, [ 'id', 'aut_id', 'sce_id', 'tit_id', 'note' ] );
-			break;
-		case 'game_convention_presentation_relations':
-			dbmultiinsert( 'csrel', $data->result, [ 'id', 'sce_id', 'convent_id', 'pre_id' ] );
-			break;
-		case 'person_convention_relations':
-			dbmultiinsert( 'acrel', $data->result, [ 'id', 'aut_id', 'convent_id', 'aut_extra', 'role' ] );
-			break;
-		case 'articles':
-			dbmultiinsert( 'article', $data->result, [ 'id', 'issue_id', 'page', 'title', 'description', 'articletype', 'sce_id' ] );
-			break;
-		case 'contributors':
-			dbmultiinsert( 'contributor', $data->result, [ 'id', 'aut_id', 'aut_extra', 'role', 'article_id' ] );
-			break;
-		
-
 		default:
 			print "Unknown table from Alexandria server: $dataset";
 			exit;
