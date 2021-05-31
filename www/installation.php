@@ -110,9 +110,7 @@ if ( $action == 'importstructure' ) {
 		case 'award_nominees':
 		case 'magazines':
 		case 'issues':
-		case 'articles':
-		case 'contributors':
-			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor' ];
+			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue' ];
 			if ( isset( $tablemap[ $dataset ] ) ) {
 				$table = $tablemap[ $dataset ];
 			} else {
@@ -120,6 +118,7 @@ if ( $action == 'importstructure' ) {
 			}
 			dbmultiinsert( $table, $data->result );
 			break;
+		// Specific cases due to usage of person_id and game_id instead of aut_id and sce_id
 		case 'gametags':
 			dbmultiinsert( 'tags', $data->result, [ 'id', 'sce_id', 'tag' ] );
 			break;
@@ -137,6 +136,14 @@ if ( $action == 'importstructure' ) {
 		case 'person_convention_relations':
 			dbmultiinsert( 'acrel', $data->result, [ 'id', 'aut_id', 'convent_id', 'aut_extra', 'role' ] );
 			break;
+		case 'articles':
+			dbmultiinsert( 'article', $data->result, [ 'id', 'issue_id', 'page', 'title', 'description', 'articletype', 'sce_id' ] );
+			break;
+		case 'contributors':
+			dbmultiinsert( 'contributor', $data->result, [ 'id', 'aut_id', 'aut_extra', 'role', 'article_id' ] );
+			break;
+		
+
 		default:
 			print "Unknown table from Alexandria server: $dataset";
 			exit;

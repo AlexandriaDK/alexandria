@@ -44,10 +44,10 @@ $exportqueries = [
 if ( $dataset ) {
 	switch ( $dataset ) {
 	case 'persons':
-	case 'games':
-	case 'conventions':
-	case 'conventionsets':
 	case 'systems':
+	case 'games':
+	case 'conventionsets':
+	case 'conventions':
 	case 'genres':
 	case 'genre_game_relations':
 	case 'tags':
@@ -69,10 +69,10 @@ if ( $dataset ) {
 	case 'person_game_title_relations':
 	case 'game_convention_presentation_relations':
 	case 'person_convention_relations':
-	case 'contributors':
-	case 'articles':
-	case 'issues':
 	case 'magazines':
+	case 'issues':
+	case 'articles':
+	case 'contributors':
 		$output = getall( $exportqueries[ $dataset ], FALSE );
 		break;
 	case 'all':
@@ -87,7 +87,7 @@ if ( $dataset ) {
 		];
 		$output = $data;
 	}
-} elseif ( $setup === 'sqlstructure' ) {
+} elseif ( $setup === 'sqlstructure' ) { // Order is important due to foreign keys
 	$tables = [ 'aut', 'sys', 'sce', 'conset', 'convent', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'loginmap', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'rpgforum_posts' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
@@ -106,13 +106,13 @@ if ( $dataset ) {
 		'setup' => [
 			'sqlstructure' => 'MySQL structure for all necessary tables'
 		],
-		'datasets' => [
+		'datasets' => [ // Order is important due to foreign keys
 			'all' => 'All datasets combined (about 15 MB!)',
 			'persons' => 'Persons in the Alexandria database',
-			'games' => 'Games, including role-playing scenarios, designed board games, and LARPs',
-			'conventions' => 'Gaming conventions',
-			'conventionsets' => 'Sets of gaming conventions',
 			'systems' => 'Role-playing systems',
+			'games' => 'Games, including role-playing scenarios, designed board games, and LARPs',
+			'conventionsets' => 'Sets of gaming conventions',
+			'conventions' => 'Gaming conventions',
 			'genres' => 'Genres for games',
 			'tags' => 'Tag descriptions',
 			'gametags' => 'Relations between tags and games',
@@ -142,7 +142,7 @@ if ( $dataset ) {
 		'examples' => [
 			'export' => 'This overview',
 			'export?setup=sqlstructure' => 'Get SQL structure for tables',
-			'export?dataset=persons' => 'Get all persons'
+			'export?dataset=persons' => 'Get all persons',
 //			'export?dataset=persons&data_id=1' => 'Get person with data id 1',
 //			'export?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
 		]
