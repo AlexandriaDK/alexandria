@@ -103,6 +103,7 @@ if ( $action == 'importstructure' ) {
 		case 'links':
 		case 'aliases':
 		case 'sitetexts':
+		case 'files':
 		case 'awards':
 		case 'award_categories':
 		case 'award_nominee_entities':
@@ -125,15 +126,15 @@ if ( $action == 'importstructure' ) {
 		case 'games':
 			dbmultiinsert( 'sce', $data->result, [ 'id', 'title', 'boardgame', 'sys_id', 'sys_ext', 'aut_extra', 'gms_min', 'gms_max', 'players_min', 'players_max', 'participants_extra' ] );
 			break;
-		case 'genre_game_connections':
+		case 'genre_game_relations':
 			dbmultiinsert( 'gsrel', $data->result, [ 'id', 'gen_id', 'sce_id' ] );
-		case 'person_game_title_connections':
+		case 'person_game_title_relations':
 			dbmultiinsert( 'asrel', $data->result, [ 'id', 'aut_id', 'sce_id', 'tit_id', 'note' ] );
 			break;
-		case 'game_convention_title_connections':
+		case 'game_convention_presentation_relations':
 			dbmultiinsert( 'csrel', $data->result, [ 'id', 'sce_id', 'convent_id', 'pre_id' ] );
 			break;
-		case 'person_convention_connections':
+		case 'person_convention_relations':
 			dbmultiinsert( 'acrel', $data->result, [ 'id', 'aut_id', 'convent_id', 'aut_extra', 'role' ] );
 			break;
 		default:

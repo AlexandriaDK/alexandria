@@ -32,9 +32,9 @@ $exportqueries = [
 	'award_categories' => "SELECT id, name, convent_id, description, award_id FROM award_categories ORDER BY id",
 	'award_nominee_entities' => "SELECT id, award_nominee_id, data_id, category, label FROM award_nominee_entities ORDER BY award_nominee_id, id",
 	'award_nominees' => "SELECT id, award_category_id, sce_id, name, nominationtext, winner, ranking FROM award_nominees ORDER BY id",
-	'person_game_title_connections' => "SELECT id, aut_id AS person_id, sce_id AS game_id, tit_id AS title_id, note FROM asrel ORDER BY aut_id, sce_id, id",
-	'game_convention_presentation_connections' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
-	'person_convention_connections' => "SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id",
+	'person_game_title_relations' => "SELECT id, aut_id AS person_id, sce_id AS game_id, tit_id AS title_id, note FROM asrel ORDER BY aut_id, sce_id, id",
+	'game_convention_presentation_relations' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
+	'person_convention_relations' => "SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id",
 	'contributors' => "SELECT id, aut_id AS person_id, aut_extra AS person_extra, role, article_id FROM contributor ORDER BY id",
 	'articles' => "SELECT id, issue_id, page, title, description, articletype, sce_id AS game_id FROM article ORDER BY issue_id, id",
 	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
@@ -66,9 +66,9 @@ if ( $dataset ) {
 	case 'award_categories':
 	case 'award_nominee_entities':
 	case 'award_nominees':
-	case 'person_game_title_connections':
-	case 'game_convention_presentation_connections':
-	case 'person_convention_connections':
+	case 'person_game_title_relations':
+	case 'game_convention_presentation_relations':
+	case 'person_convention_relations':
 	case 'contributors':
 	case 'articles':
 	case 'issues':
@@ -130,10 +130,10 @@ if ( $dataset ) {
 			'award_categories' => 'Individual awards',
 			'award_nominee_entities' => 'Persons connected to an award nomination',
 			'award_nominees' => 'Nominated persons or otherwise for an award',
-			'person_game_title_connections' => 'Relations between persons, games, and titles',
-			'game_convention_presentation_connections' => 'Relations between games, conventions, and presentations',
+			'person_game_title_relations' => 'Relations between persons, games, and titles',
+			'game_convention_presentation_relations' => 'Relations between games, conventions, and presentations',
 			'genre_game_relations' => 'Relations between games and genres',
-			'person_convention_connections' => 'Relations between persons and conventions as organizers',
+			'person_convention_relations' => 'Relations between persons and conventions as organizers',
 			'magazines' => 'Magazines and club folders',
 			'issues' => 'Issues for magazines',
 			'articles' => 'Articles in issues',
