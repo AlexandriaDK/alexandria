@@ -183,7 +183,6 @@ function display_result ($match,$linkpart,$class,$short) {
 		$html .= "</ul>\n";
 	}
 	return $html;
-
 }
 
 

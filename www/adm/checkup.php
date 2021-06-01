@@ -128,9 +128,13 @@ if ($result) {
 }
 
 $htmlisocodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
-$languages = getall("SELECT data_id, category, language FROM files WHERE language = 'se' OR language REGEXP '^..[a-z]'");
+$languages = getall("SELECT data_id, category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
 foreach ( $languages AS $language ) {
 	$htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">'.$language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
+}
+$gamedescriptions = getall("SELECT g.game_id, g.language, sce.title FROM game_description g INNER JOIN sce ON g.game_id = sce.id WHERE g.language REGEXP('^(dk|se|no)') OR g.language REGEXP '^..[a-z]'");
+foreach ( $gamedescriptions AS $gamedescription ) {
+	$htmlisocodes .= 'Game description for <a href="game.php?game=' . $gamedescription['game_id'] . '">' . htmlspecialchars($gamedescription['title']) . "</a> (" . htmlspecialchars($gamedescription['language']) . ")<br>";
 }
 $countries = getall("
 	SELECT * FROM (
@@ -140,13 +144,13 @@ $countries = getall("
 		UNION ALL
 		SELECT sce_id AS id, country, 'scerun' FROM scerun
 	) a
-	WHERE country = 'sv' OR country REGEXP '^..[a-z]'
+	WHERE country IN('da','sv','nb','uk') OR country REGEXP '^..[a-z]'
 ");
 foreach ( $countries AS $country ) {
 	$htmlisocodes .= '<a href="' . ($country['category'] == 'scerun' ? 'run.php?id=' : ( $country['category'] == 'convent' ? 'convent.php?con=' : 'conset.php?conset=') ) . $country['id'] . '">';
 	$htmlisocodes .= 'Dataset ' .$country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
-if (count($languages) === 0 && count($countries) === 0) {
+if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
 	$htmlisocodes .= "<b>All good!</b>";
 }
 
