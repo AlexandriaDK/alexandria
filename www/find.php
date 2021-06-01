@@ -177,8 +177,8 @@ function display_result ($match,$linkpart,$class,$short) {
 		}
 		asort($list);
 		foreach($list AS $key => $value) {
-			$linkpart = ($linkpart != 'magazine' ? "data?$linkpart=$key" : "magazines?id=$key");
-			$html .= "<li><a href=\"$linkpart\" class=\"$class\">".htmlspecialchars($value)."</a></li>\n";
+			$link = ($linkpart != 'magazine' ? "data?$linkpart=$key" : "magazines?id=$key");
+			$html .= "<li><a href=\"$link\" class=\"$class\">".htmlspecialchars($value)."</a></li>\n";
 		}
 		$html .= "</ul>\n";
 	}
