@@ -32,7 +32,7 @@ function check_search_achievements ($find) {
 	if ((strpos(strtolower($find), 'drop table')) !== FALSE) award_achievement(44); // sql injection
 }
 
-function search_issues($find) {
+function search_articles($find) {
 	global $t;
 	$sql = "
 		SELECT i.id AS issueid, m.name AS magazinename, i.title AS issuetitle, a.title, a.description, a.page
@@ -177,7 +177,8 @@ function display_result ($match,$linkpart,$class,$short) {
 		}
 		asort($list);
 		foreach($list AS $key => $value) {
-			$html .= "<li><a href=\"data?$linkpart=$key\" class=\"$class\">".htmlspecialchars($value)."</a></li>\n";
+			$linkpart = ($linkpart != 'magazine' ? "data?$linkpart=$key" : "magazines?id=$key");
+			$html .= "<li><a href=\"$linkpart\" class=\"$class\">".htmlspecialchars($value)."</a></li>\n";
 		}
 		$html .= "</ul>\n";
 	}
@@ -253,6 +254,11 @@ if ($find) {
 		category_search($find, "name", "sys");
 	}
 
+	if (!$cat || $cat == "magazine" ) {
+		category_search($find, "name", "magazine");
+	}
+
+
 // If only one perfect match, redirect user at once
 	if ($redirect == TRUE) {
 		if (count($link_a) == 1) {
@@ -274,7 +280,7 @@ if ($find) {
 	$tagsearch = search_tags($find);
 	$filesearch = search_files($find);
 	$blogsearch = search_blogposts($find);
-	$issuesearch = search_issues($find);
+	$articlesearch = search_articles($find);
 	log_search($find);
 	
 } elseif ($_REQUEST['search_type'] == 'findspec') {
@@ -409,9 +415,10 @@ $t->assign('find_aut', display_result($match['aut'], "person", "person", "aut") 
 $t->assign('find_sce', display_result($match['sce'], "scenarie", "scenarie", "sce") );
 $t->assign('find_convent', display_result($match['convent'], "con", "con", "convent") );
 $t->assign('find_sys', display_result($match['sys'], "system", "system", "sys") );
+$t->assign('find_magazines', display_result($match['magazine'], "magazine", "magazine", "magazine") );
 $t->assign('find_tags', $tagsearch ?? "" );
 $t->assign('find_files', $filesearch ?? "" );
-$t->assign('find_issues', $issuesearch ?? "" );
+$t->assign('find_articles', $articlesearch ?? "" );
 $t->assign('find_blogposts', $blogsearch ?? "" );
 $t->assign('search_boardgames', $search_boardgames );
 $t->display('find.tpl');

@@ -24,16 +24,25 @@ if (!$action && $tag_id) {
 }
 
 if ($action == "Remove" && $tag_id) {
-	$tag = getone("SELECT tag FROM tag WHERE id = $tag_id");
-	$q = "DELETE FROM tag WHERE id = $tag_id";
-	$r = doquery($q);
+	$error = [];
+	if (getCount('trivia', $tag_id, TRUE, 'tag') ) $error[] = "trivia";
+	if (getCount('links', $tag_id, TRUE, 'tag') ) $error[] = "link";
+	if (getCount('files', $tag_id, TRUE, 'tag') ) $error[] = "files";
+	if ($error) {
+		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
+		rexit( $this_type, [ 'tag_id' => $tag_id ] );
+	} else {
 
-	if ($r) {
-		chlog($tag_id,$this_type,"Tag description removed: $tag");
+		$tag = getone("SELECT tag FROM tag WHERE id = $tag_id");
+		$q = "DELETE FROM tag WHERE id = $tag_id";
+		$r = doquery($q);
+
+		if ($r) {
+			chlog($tag_id,$this_type,"Tag description removed: $tag");
+		}
+		$_SESSION['admin']['info'] = "Tag description removed! " . dberror();
+		rexit($this_type);
 	}
-	$_SESSION['admin']['info'] = "Tag description removed! " . dberror();
-	rexit($this_type);
-
 }
 
 if ($action == "update" && $tag_id) {

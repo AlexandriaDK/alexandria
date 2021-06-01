@@ -46,6 +46,14 @@
 	{$find_tags}
 {/if}
 
+{if $find_magazines}
+	<h3 class="findhead">
+		{$_top_magazines|ucfirst}
+	</h3>
+	{$find_magazines}
+{/if}
+
+
 {if $find_files}
 	<h3 class="findhead">
 		{$_files|ucfirst}
@@ -53,11 +61,11 @@
 	{$find_files}
 {/if}
 
-{if $find_issues}
+{if $find_articles}
 	<h3 class="findhead">
-		{$_top_magazines|ucfirst}
+		{$_p_articles|ucfirst}
 	</h3>
-	{$find_issues}
+	{$find_articles}
 {/if}
 
 {if $find_blogposts}

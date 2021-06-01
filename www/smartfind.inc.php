@@ -3,6 +3,7 @@ define("URLAUT","data?person=");
 define("URLSCE","data?scenarie=");
 define("URLSYS","data?system=");
 define("URLCON","data?con=");
+define("URLMAGAZINE","magazines?id=");
 
 function log_search($find, $found="") {
 	$referer = dbesc($_SERVER['HTTP_REFERER'] ?? '');
@@ -35,6 +36,11 @@ function category_search ($find, $searchfield, $category) {
 		$getfunction = "getconidbyname";
 		break;
 
+		case 'magazine':
+		$linkurl = URLMAGAZINE;
+		$getfunction = "getmagazineidbyname";
+		break;
+	
 		default:
 		$linkurl = URLAUT;
 		$getfunction = "getautidbyname";
@@ -50,6 +56,8 @@ function category_search ($find, $searchfield, $category) {
 	foreach($a AS $id) { $link_a[] = $linkurl.$id; $id_a[] = $id; }
 	foreach($b AS $id) { $link_b[] = $linkurl.$id; $id_b[] = $id; }
 	$match[$category] = array_merge($match[$category],$d);
+
+	return TRUE; // Uses global variables for search - yuck
 }
 
 // find every key in array with specific value
@@ -177,24 +185,28 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 	];
 }
 
-function getsceidbytitle ($find) {
+function getsceidbytitle($find) {
 	return getalphaidbybeta ($find, "sce", "title");
 }
 
-function getautidbyname ($find) {
+function getautidbyname($find) {
 	return getalphaidbybeta ($find, "aut", "CONCAT(firstname,' ',surname)");
 }
 
-function getsysidbyname ($find) {
+function getsysidbyname($find) {
 	return getalphaidbybeta ($find, "sys", "name");
 }
 
-function getconidbyname ($find) {
+function getconidbyname($find) {
 	return getalphaidbybeta ($find, "convent", "name");
 }
 
-function getconsetidbyname ($find) {
+function getconsetidbyname($find) {
 	return getalphaidbybeta ($find, "conset", "name");
+}
+
+function getmagazineidbyname($find) {
+	return getalphaidbybeta ($find, "magazine", "name");
 }
 
 // And aliases...
