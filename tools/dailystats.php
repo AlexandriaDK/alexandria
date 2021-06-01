@@ -14,9 +14,10 @@ $boardgames = getone("SELECT COUNT(*) FROM sce WHERE boardgame = 1");
 $conseries = getone("SELECT COUNT(*) FROM conset");
 $users = getone("SELECT COUNT(*) FROM users");
 $editors = getone("SELECT COUNT(*) FROM users WHERE editor = 1");
+$magazines = getone("SELECT COUNT(*) FROM magazine");
+$issues = getone("SELECT COUNT(*) FROM issue");
+$articles = getone("SELECT COUNT(*) FROM article");
 
-print implode(",", [ $date, $scenarios, $persons, $conventions, $rpgsystems, $downloads, $boardgames, $conseries, $users, $editors ] ) . PHP_EOL;
-
-
+print implode(",", [ $date, $scenarios, $persons, $conventions, $rpgsystems, $downloads, $boardgames, $conseries, $users, $editors, $magazines, $issues, $articles ] ) . PHP_EOL;
 
 ?>
