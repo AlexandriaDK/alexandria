@@ -7,6 +7,8 @@ require "base.inc.php";
 $this_type = 'files';
 unset($result);
 
+ini_set("user_agent", "Alexandria.dk Dungeon Looter Agent");
+
 $category = (string) $_REQUEST['category'];
 if ($category == 'game') $category = 'sce';
 $id = (int) $_REQUEST['id'];
@@ -82,7 +84,7 @@ if ( $action == 'uploadfile' &&
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ( $action == 'uploadremotefile' &&
-    	$data_id &&
+	$data_id &&
 	$category &&
 	$remoteurl &&
 	getcategorydir($category)
@@ -105,7 +107,7 @@ if ( $action == 'uploadfile' &&
 	} elseif (file_exists($upload_path) ) {
 		$_SESSION['admin']['info'] = "Error: A file with this file name already exists";
 	} elseif (!copy($remoteurl, $upload_path) ) {
-		$_SESSION['admin']['info'] = "Unknown error when uploading: " . error_get_last()['message'];
+		$_SESSION['admin']['info'] = "Unknown error when transferring file: " . error_get_last()['message'];
 	} else {
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"File remote uploaded: " . $remoteurl);
