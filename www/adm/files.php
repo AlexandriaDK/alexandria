@@ -338,12 +338,15 @@ if ($data_id && $category) {
 
 	print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
+	$thumbshortcut = TRUE;
 	foreach(glob( DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") AS $file) {
+		$accesskey = ($thumbshortcut ? 'accesskey="t"' : '');
+		$thumbshortcut = FALSE;
 		$basename = mb_basename( $file );
 		$createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&amp;data_id=' . $data_id . '&amp;action=thumbnail&amp;filename=' . rawurlencode( $basename );
 		print '<a href="https://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
 		print '<div class="tooltip">';
-		print '<a href="' . $createthumbnailurl. '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
+		print '<a ' . $accesskey . ' href="' . $createthumbnailurl. '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
 		print '<span class="tooltiptext"><a href="' . $createthumbnailurl . '" onclick="return confirm(\'Create thumbnail?\');" title="Create thumbnail">Full</a> • <a href="' . $createthumbnailurl . '&amp;section=left" onclick="return confirm(\'Create thumbnail, left half?\');" title="Create thumbnail, use left half of first page">Left</a> • <a href="' . $createthumbnailurl . '&amp;section=right" onclick="return confirm(\'Create thumbnail, right half?\');" title="Create thumbnail, use right half of first page">Right</a></span>';
 		print '</div>&nbsp;';
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
