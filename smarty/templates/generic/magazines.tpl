@@ -117,7 +117,7 @@
 	<div id="magazinelist">
 	{foreach $magazines as $magazine}
 		<div>
-		<h3><a href="magazines?id={$magazine.id}">{$magazine.name|escape}</a></h3>
+		<h3><a href="magazines?id={$magazine.id}">{$magazine.name|escape}</a> ({$magazine.issuecount})</h3>
 		<blockquote>
 			{$magazine.description|escape|textlinks|nl2br}
 		</blockquote>
