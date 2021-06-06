@@ -1,4 +1,4 @@
-{assign var="pagetitle" value="{if $issueid}{$issue.magazinename|escape} - {$issue.title|escape} - {if $issue.releasetext}{$issue.releasetext|escape}{/if}{elseif $magazinename}{$magazinename|escape}{else}{$_magazines_title|escape}{/if}"}
+{assign var="pagetitle" value="{if $issueid}{$issue.magazinename} - {$issue.title} - {if $issue.releasetext}{$issue.releasetext}{/if}{elseif $magazinename}{$magazinename}{else}{$_magazines_title}{/if}"}
 {include file="head.tpl"}
 
 <div id="content">
