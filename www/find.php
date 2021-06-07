@@ -192,7 +192,7 @@ check_search_achievements($find);
 // Some quick find code:
 
 if ($find) {
-	if (preg_match("/^([cspfgr]|cs)(\d+)$/i",$find,$regs)) {
+	if (preg_match("/^([cspfgrmi]|cs)(\d+)$/i",$find,$regs)) {
 		$pref = strtolower($regs[1]);
 		$id = $regs[2];
 	
@@ -224,7 +224,17 @@ if ($find) {
 				exit;
 				break;
 	
-		}
+			case "m":
+				header("Location: magazines?id=$id");
+				exit;
+				break;
+
+			case "i":
+				header("Location: magazines?issue=$id");
+				exit;
+				break;
+
+			}
 	}
 
 // Begin wild search
