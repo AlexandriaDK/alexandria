@@ -15,6 +15,7 @@ $name = trim((string) $_REQUEST['name']);
 $title = trim((string) $_REQUEST['title']);
 $releasedate = (string) $_REQUEST['releasedate'];
 $releasetext = (string) $_REQUEST['releasetext'];
+$status = (int) $_REQUEST['status'];
 $magazine_id = (int) $_REQUEST['magazine_id'];
 $issue_id = (int) $_REQUEST['issue_id'];
 $article_id = (int) $_REQUEST['article_id'];
@@ -23,6 +24,15 @@ $articletype = trim((string) $_REQUEST['articletype']);
 $sce_id = (int) $_REQUEST['sce_id'];
 $contributors = (array) $_REQUEST['contributors'];
 $original_article_id = (int) $_REQUEST['original_article_id'];
+
+$statuslist = [
+	  0 => [ 'label' => 'notstarted', 'text' => 'Not started', 'short' => 'No'],
+	//  20 => [ 'label' => 'issueuploaded', 'text' => 'Issue uploaded'],
+	 40 => [ 'label' => 'wip', 'text' => 'Work in progress', 'short' => 'WIP'],
+	 60 => [ 'label' => 'almostfinished', 'text' => 'Finished (missing small parts)', 'short' => '~Finished'],
+	 80 => [ 'label' => 'finished', 'text' => 'Finished', 'short' => 'Finished'],
+	100 => [ 'label' => 'finishedpublished', 'text' => 'Finished and published', 'short' => 'Published'],
+];
 
 function insertContributors($contributors, $article_id) {
 	doquery("DELETE FROM contributor WHERE article_id = $article_id");
@@ -108,6 +118,7 @@ if ($action == "changeissue" && $do != "Delete") {
 	     "title = '" . dbesc($title) . "', " .
 	     "releasedate = " . sqlifnull($releasedate) . ", " .
 	     "releasetext = '" . dbesc($releasetext) . "', " .
+	     "status = '" . $status . "', " .
 	     "internal = '" . dbesc($internal) . "' " .
 	     "WHERE id = $issue_id";
 	$r = doquery($q);
@@ -138,8 +149,8 @@ if ($action == "changeissue" && $do == "Delete") {
 
 if ($action == "addissue") {
 	$q = "INSERT INTO issue " .
-	     "(title, releasedate, releasetext, magazine_id, internal) VALUES ".
-	     "('" . dbesc($title) . "', ". sqlifnull($releasedate) . ", '" . dbesc($releasetext) . "', $magazine_id, '" . dbesc($internal) . "')";
+	     "(title, releasedate, releasetext, magazine_id, internal, status) VALUES ".
+	     "('" . dbesc($title) . "', ". sqlifnull($releasedate) . ", '" . dbesc($releasetext) . "', $magazine_id, '" . dbesc($internal) . "', $status)";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -356,7 +367,7 @@ if ($magazine_id && $issue_id) {
 	$magazine_name = getone("SELECT name FROM magazine WHERE id = $magazine_id");
 	
 	$query = "
-		SELECT i.id, i.title, i.releasedate, i.releasetext, i.internal, COUNT(a.id) AS entries, COUNT(f.id) AS files
+		SELECT i.id, i.title, i.releasedate, i.releasetext, i.internal, i.status, COUNT(a.id) AS entries, COUNT(f.id) AS files
 		FROM issue i
 		LEFT JOIN article a ON i.id = a.issue_id
 		LEFT JOIN files f ON i.id = f.data_id AND f.category = 'issue'
@@ -372,11 +383,18 @@ if ($magazine_id && $issue_id) {
 	      "<th>ID</th>".
 	      "<th>Title</th>".
 	      "<th>Release date (approx)</th>".
-	      "<th>Issue name</th>".
+	      "<th>Release date text (e.g.: March 2012)</th>".
 	      "<th>Internal note</th>".
 	      "</tr>\n</thead><tbody>\n";
 
 	foreach($issues AS $issue) {
+		$statushtml = '<div class="issuestatus">';
+		foreach($statuslist AS $statusid => $status) {
+			$radioid = 'radio' . $status['label'] . '_' . (int) $issue['id'];
+			$statushtml .= '<input type="radio" name="status" value="' . $statusid . '" id="' . $radioid . '" ' . ($statusid == $issue['status'] ? 'checked' : '') . '>';
+			$statushtml .= '<label for="' . $radioid . '" title="' . htmlspecialchars($status['text']) . '" class="' . htmlspecialchars($status['label']) . '" >' . htmlspecialchars($status['short']) . '</label>' . PHP_EOL;
+		}
+		$statushtml .= '</div>';
 		$new = ! isset($issue['id']);
 		$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . $issue['id'] . "/*"));
 		print '<form action="magazine.php" method="post">'.
@@ -386,7 +404,7 @@ if ($magazine_id && $issue_id) {
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right;">' . ($issue['id'] ?? 'New') . '</td>'.
 				'<td><input type="text" name="title" value="'.htmlspecialchars($issue['title']).'" size=40 maxlength=150>'.
-				($new ? '' : '<br><a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' . ($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries'). '</a>' . ' - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a>') . '</td>' .
+				($new ? '' : '<br>' . $statushtml . '<a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' . ($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries'). '</a>' . ' - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a>') . '</td>' .
 				'<td><input type="date" name="releasedate" value="'.htmlspecialchars($issue['releasedate']).'"></td>' .
 				'<td><input type="text" name="releasetext" value="'.htmlspecialchars($issue['releasetext']).'" size=40 maxlength=150></td>' .
 				'<td><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($issue['internal']).'</textarea></td>'.
