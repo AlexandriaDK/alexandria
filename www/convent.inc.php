@@ -283,9 +283,10 @@ if ( count( $alttitle ) == 1 ) {
 	$aliaslist = getaliaslist($con, $this_type);
 }
 
-// Trivia and links
+// Trivia, links and articles
 $trivialist = gettrivialist($con,$this_type);
 $linklist = getlinklist($con,$this_type);
+$articles = getarticles($con, $this_type);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($con, $this_type);
@@ -330,6 +331,7 @@ $t->assign('organizerlist',$organizerlist);
 $t->assign('award',$awardlist);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
+$t->assign('articles',$articles);
 $t->assign('alias',$aliaslist);
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );

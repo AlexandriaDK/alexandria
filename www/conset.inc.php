@@ -53,8 +53,11 @@ if ( count( $alttitle ) == 1 ) {
 	$aliaslist = getaliaslist($conset, $this_type);
 }
 
+// Trivia, links and articles
 $trivialist = gettrivialist($conset,$this_type);
 $linklist = getlinklist($conset,$this_type);
+$articles = getarticles($conset,$this_type);
+
 $filelist = getfilelist($conset,$this_type);
 
 // Thumbnail
@@ -72,6 +75,7 @@ $t->assign('intern',$intern);
 $t->assign('condata',$condata);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
+$t->assign('articles',$articles);
 $t->assign('alias',$aliaslist);
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );

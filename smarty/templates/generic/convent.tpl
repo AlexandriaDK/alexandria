@@ -149,12 +149,11 @@ $(document).ready(function(){
 
 {if $organizerlist || $editorganizers}
 <h3 class="parttitle" id="organizers">{$_organizers|ucfirst}</h3>
-{if $editorganizers && !$editmode}
-<p class="addorganizersyourself">
-	<a href="/fblogin">{$_con_login}</a> {$_con_addorganizer}
-</p>
-{/if}
-
+	{if $editorganizers && !$editmode}
+	<p class="addorganizersyourself">
+		<a href="/fblogin">{$_con_login}</a> {$_con_addorganizer}
+	</p>
+	{/if}
 	<table class="indata">
 	{foreach from=$organizerlist item=$ol}
 	<tr>
@@ -200,14 +199,14 @@ $(document).ready(function(){
 	</form>
 	{/if}
 	</table>
-{if $user_id && !$editmode}
+	{if $user_id && !$editmode}
 	<p class="addorganizersyourself">
 		<a href="data?con={$id}&amp;edit=organizers#organizers">{$_con_addorganizers}</a>
 		</p>
+	{/if}
 {/if}
 
-{/if}
-
+{include file="articlereference.tpl"}
 {include file="trivialink.tpl"}
 {include file="internal.tpl"}
 {include file="updatelink.tpl"}

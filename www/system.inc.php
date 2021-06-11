@@ -76,9 +76,10 @@ if ( count( $alttitle ) == 1 ) {
 // List of files
 $filelist = getfilelist($system,$this_type);
 
-// Links and trivia
-$linklist = getlinklist($system,$this_type);
+// Trivia, links and articles
 $trivialist = gettrivialist($system,$this_type);
+$linklist = getlinklist($system,$this_type);
+$articles = getarticles($system,$this_type);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($system, $this_type);
@@ -96,6 +97,7 @@ $t->assign('description',$r['description']);
 $t->assign('gamelist',$gamelist);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);
+$t->assign('articles',$articles);
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );
 
