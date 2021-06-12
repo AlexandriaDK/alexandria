@@ -63,6 +63,10 @@ if ($type == 'articlereference' && $term !== "") {
 		SELECT CONCAT('m', magazine.id, ' - ', name) AS label FROM magazine WHERE name LIKE '$escapequery%'
 		UNION ALL
 		SELECT CONCAT('g', sce.id, ' - ', title) AS label FROM sce WHERE title LIKE '$escapequery%'
+		UNION ALL
+		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$escapequery%'
+		UNION
+		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(surname,' ',firstname) LIKE '$escapequery%'
 	");
 	header("Content-Type: application/json");
 	print json_encode( $refs );
