@@ -270,6 +270,7 @@ $(function() {
 	
 	$( "input.articlereferences" ).autocomplete({
 		source: 'lookup.php?type=articlereference',
+		autoFocus: true,
 		minLength: 3,
 		delay: 100
 	})
@@ -314,6 +315,7 @@ $(function() {
 		$( td ).find('input.articlereferences')
 			.autocomplete({
 				source: 'lookup.php?type=articlereference',
+				autoFocus: true,
 				minLength: 3,
 				delay: 100
 			})
