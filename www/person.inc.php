@@ -174,7 +174,8 @@ $linklist = getlinklist($person,$this_type);
 $trivialist = gettrivialist($person,$this_type);
 
 // Articles
-$articles = getarticles($person, $this_type);
+$articlesfrom = getarticles($person, $this_type);
+$articles = getarticles($person, 'person');
 
 // Birthday
 $birth = "";
@@ -217,6 +218,7 @@ $t->assign('age',$age_year);
 $t->assign('slist',$slist);
 $t->assign('award',$awardlist);
 $t->assign('organizerlist',$organizerlist);
+$t->assign('articlesfrom',$articlesfrom);
 $t->assign('articles',$articles);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);

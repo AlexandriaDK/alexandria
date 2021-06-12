@@ -1080,7 +1080,7 @@ function getarticles ($data_id, $category) {
 			WHERE article.sce_id = $data_id
 			ORDER BY issue.releasedate, issue.id, article.page, article.id
 		");
-	} else { // Get references instead
+	} else { // Get references instead; person for aut
 		$articles = getall("
 			SELECT article.issue_id, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM article
@@ -1262,8 +1262,10 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 
 	switch ($cat) {
 		case 'aut':
+		case 'person':
 		$value = "CONCAT(firstname,' ',surname)";
 		$fullcat = "Person";
+		$cat = 'aut';
 		break;
 	
 		case 'sce':

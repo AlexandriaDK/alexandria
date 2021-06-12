@@ -23,6 +23,7 @@ $page = (int) $_REQUEST['page'];
 $articletype = trim((string) $_REQUEST['articletype']);
 $sce_id = (int) $_REQUEST['sce_id'];
 $contributors = (array) $_REQUEST['contributors'];
+$references = (array) $_REQUEST['references'];
 $original_article_id = (int) $_REQUEST['original_article_id'];
 
 $statuslist = [
@@ -48,6 +49,21 @@ function insertContributors($contributors, $article_id) {
 		");
 	}
 }
+
+function insertReferences($references, $article_id) {
+	doquery("DELETE FROM article_reference WHERE article_id = $article_id");
+	$match = '_^(c|cs|tag|sys|p)(\d+)_';
+	foreach ($references AS $reference) {
+		if (! preg_match($match, $reference, $matches)) {
+			continue;
+		}
+		doquery("
+			INSERT INTO article_reference (article_id, category, data_id)
+			VALUES ($article_id, '" . dbesc(getCategoryFromShort($matches[1])) . "', " . (int) $matches[2] . ")
+		");
+	}
+}
+
 
 if ($issue_id && ! $magazine_id) {
 	$magazine_id = getone("SELECT magazine_id FROM issue WHERE id = $issue_id");
@@ -173,6 +189,7 @@ if ($action == "changearticle" && $do != "Delete") {
 	if ($r) {
 		// Contributors
 		insertContributors($contributors, $article_id);
+		insertReferences($references, $article_id);
 		chlog($issue_id,'issue',"Article updated: $article_id - $title");
 	}
 	$_SESSION['admin']['info'] = "Article updated! " . dberror();
@@ -198,6 +215,7 @@ if ($action == "addarticle") {
 	if ($r) {
 		$id = dbid();
 		insertContributors($contributors, $id);
+		insertReferences($references, $article_id);
 		chlog($issue_id,'issue',"Article created: $id - $title");
 	}
 	$_SESSION['admin']['info'] = "Article created! " . dberror();
@@ -215,7 +233,6 @@ if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
 	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
 
 }
-
 ?>
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Administration - Magazines</TITLE>
@@ -251,6 +268,18 @@ $(function() {
 		minLength: 0
 	});
 	
+	$( "input.articlereferences" ).autocomplete({
+		source: 'lookup.php?type=articlereference',
+		minLength: 3,
+		delay: 100
+	})
+	.autocomplete( "instance" )._renderItem = function( ul, item ) {
+		return $( "<li>" )
+			.append(" <a>" + item.label + "</a>" )
+			.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
+			.appendTo ( ul );
+	}
+
 	$(".addnext").click( function() {
 		var td = $(this).parent();
 		var count = td.data('count') + 1;
@@ -275,7 +304,26 @@ $(function() {
 				minLength: 0
 			})
 		;
+	});
 
+	$(".addnextref").click( function() {
+		var td = $(this).parent();
+		var html = '';
+		html += '<input type="text" placeholder="Reference to entry" name="references[]" class="articlereferences" size="20"><br>';
+		td.append(html);
+		$( td ).find('input.articlereferences')
+			.autocomplete({
+				source: 'lookup.php?type=articlereference',
+				minLength: 3,
+				delay: 100
+			})
+			.autocomplete( "instance" )._renderItem = function( ul, item ) {
+				return $( "<li>" )
+				.append(" <a>" + item.label + "</a>" )
+				.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
+				.appendTo ( ul );
+
+			}
 	});
 
 });
@@ -309,13 +357,23 @@ if ($magazine_id && $issue_id) {
 	foreach ($articles AS $article) {
 		$article_id = $article['id'];
 		$new = ! isset($article_id);
-		$contributors = [];
+		$contributors = $references = [];
+		$references_html = "";
 		if ( ! $new) {
-			// Non-optimal contributor lookup
+			// Non-optimal contributor and reference lookup
 			$contributors = getall("SELECT c.aut_id, c.aut_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN aut a ON c.aut_id = a.id WHERE article_id = $article_id ORDER BY c.id");
+			$references = getall("SELECT category, data_id FROM article_reference ar WHERE article_id = $article_id ORDER BY ar.id");
+			foreach ($references AS $reference_id => $reference) {
+				$entry = getentry($reference['category'], $reference['data_id']);
+				$references[$reference_id]['label'] = $entry;
+				$references_html = $entry;
+			}
 		}
 		if (! $contributors) {
 			$contributors[] = [];
+		}
+		if (! $references) {
+			$references[] = [];
 		}
 		print '<tr><td>';
 		print '<form action="magazine.php" method="post">'.
@@ -342,10 +400,26 @@ if ($magazine_id && $issue_id) {
 			}
 			print '<br>';
 		}
+
 		print '</td>' .
 				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.style.height=\'10em\'" onblur="this.style.height=\'1em\'" style="height: 1em;">'.htmlspecialchars($article['description']).'</textarea></td>'.
 				'<td><input placeholder="Article type" type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
 				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="scenariotags" size=30 maxlength=150 placeholder="Existing game"></td>' .
+				'<td>';
+		$rcount = 0;
+		foreach ($references AS $reference) {
+			$label = '';
+			if ($reference) {
+				$label = getShortFromCategory($reference['category']) . $reference['data_id'] . ' - ' . $reference['label'];
+			}
+			$rcount++;
+			print '<input type="text" placeholder="Reference to entry" name="references[]" class="articlereferences" size="20" value="' . htmlspecialchars($label) . '">';
+			if ($rcount == 1) {
+				print '<span class="addnextref atoggle">➕</span>';
+			}
+			print '<br>';
+		}
+		print '</td>' .
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				(! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove article?\');">' : '') . '</td>'.
 				"</tr>\n";

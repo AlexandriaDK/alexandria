@@ -39,6 +39,31 @@ if ($type == 'languagecode' && $label != "") {
 	print $languagename;
 }
 
+if ($type == 'articlereference' && $term !== "") {
+	$escapequery = dbesc($term);
+	$refs = getcol("
+		SELECT CONCAT('c', convent.id, ' - ', convent.name, ' (', COALESCE(year,'?'), ')') AS label FROM convent
+		INNER JOIN conset ON convent.conset_id = conset.id
+		WHERE convent.name LIKE '$escapequery%'
+		OR CONCAT(convent.name,' (',year,')') LIKE '$escapequery%'
+		OR CONCAT(convent.name,' ',year) LIKE '$escapequery%'
+		OR CONCAT(conset.name, ' ', convent.year) LIKE '$escapequery%'
+		OR (
+			'$escapequery' REGEXP ' [0-9][0-9]$' AND
+			CONCAT(conset.name, ' ', convent.year) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' 19', RIGHT('$escapequery', 2))
+		)
+		OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
+		UNION ALL
+		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$escapequery%'
+		UNION ALL
+		SELECT CONCAT('tag', tag.id, ' - ', tag) AS label FROM tag WHERE tag LIKE '$escapequery%'
+	");
+	header("Content-Type: application/json");
+	print json_encode( $refs );
+	exit;
+}
+
+
 if ( $type == 'addperson' && $label != "" ) {
 	if ( $pid = intval( $label ) ) {
 		resultexit( [ "new" => false, "error" => false, "id" => $pid, "msg" => "Existing user" ] );

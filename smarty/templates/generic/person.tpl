@@ -86,10 +86,10 @@
 	</table>
 {/if}
 
-{if $articles}
+{if $articlesfrom}
 <h3 class="parttitle">{$_p_articles}</h3>
 	<table id="personarticles">
-	{foreach $articles as $article}
+	{foreach $articlesfrom as $article}
 	<tr>
 	<td>{if $article.sce_id}<a href="data?scenarie={$article.sce_id}">{$article.title|escape}</a>{else}{$article.title|escape}{/if}</td>
 	<td>{$article.role|escape}</td>
@@ -101,6 +101,7 @@
 	</table>
 {/if}
 
+{include file="articlereference.tpl"}
 {include file="trivialink.tpl"}
 {include file="internal.tpl"}
 {include file="updatelink.tpl"}

@@ -357,6 +357,30 @@ function strSplitParticipants($str) {
 	return [ $str_min, $str_max ];
 }
 
+function getCategoryFromShort($short) {
+	$categorymap = [
+		'c' => 'convent',
+		'cs' => 'conset',
+		'tag' => 'tag',
+		'sys' => 'sys',
+		'p' => 'person'
+	];
+	return $categorymap[$short];
+
+}
+
+function getShortFromCategory($category) {
+	$categorymap = [
+		'convent' => 'c',
+		'conset' => 'cs',
+		'tag' => 'tag',
+		'sys' => 'sys',
+		'person' => 'p'
+	];
+	return $categorymap[$category];
+}
+
+
 function htmladmstart($title = "", $headcontent = "") {
 	$find = $_REQUEST['find'] ?? '';
 	$htmltitle = "";
