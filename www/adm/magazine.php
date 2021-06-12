@@ -419,7 +419,7 @@ if ($magazine_id && $issue_id) {
 				$label = getShortFromCategory($reference['category']) . $reference['data_id'] . ' - ' . $reference['label'];
 			}
 			$rcount++;
-			print '<input type="text" placeholder="Reference to entry" name="references[]" class="articlereferences" size="20" value="' . htmlspecialchars($label) . '">';
+			print '<input type="text" placeholder="Reference to existing entry" name="references[]" class="articlereferences" size="25" value="' . htmlspecialchars($label) . '">';
 			if ($rcount == 1) {
 				print '<span class="addnextref atoggle">➕</span>';
 			}
