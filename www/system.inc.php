@@ -1,5 +1,7 @@
 <?php
 $this_type = 'sys';
+$this_type_new = 'system';
+$this_id = $system;
 
 if ($_SESSION['user_id']) {
 	$userlog = getuserloggames($_SESSION['user_id']);
@@ -79,7 +81,7 @@ $filelist = getfilelist($system,$this_type);
 // Trivia, links and articles
 $trivialist = gettrivialist($system,$this_type);
 $linklist = getlinklist($system,$this_type);
-$articles = getarticles($system,$this_type);
+$articles = getarticles($system,$this_type_new);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($system, $this_type);
@@ -91,7 +93,7 @@ $t->assign('type',$this_type);
 $t->assign('id',$system);
 $t->assign('name',$showname);
 $t->assign('pic',$available_pic);
-$t->assign('ogimage', getimageifexists($system, 'system') );
+$t->assign('ogimage', getimageifexists($this_id, $this_type_new) );
 $t->assign('alias',$aliaslist);
 $t->assign('description',$r['description']);
 $t->assign('gamelist',$gamelist);

@@ -359,31 +359,34 @@ function strSplitParticipants($str) {
 
 function getCategoryFromShort($short) {
 	$categorymap = [
-		'c' => 'convent',
+		'c' => 'convention',
 		'cs' => 'conset',
 		'tag' => 'tag',
-		'sys' => 'sys',
+		'sys' => 'system',
 		'p' => 'person',
 		'm' => 'magazine',
 		'i' => 'issue',
+		'g' => 'game',
 	];
 	return $categorymap[$short];
-
 }
 
 function getShortFromCategory($category) {
 	$categorymap = [
+		'convention' => 'c',
 		'convent' => 'c',
 		'conset' => 'cs',
 		'tag' => 'tag',
+		'system' => 'sys',
 		'sys' => 'sys',
 		'person' => 'p',
 		'magazine' => 'm',
-		'issue' => 'i'
+		'issue' => 'i',
+		'sce' => 'g',
+		'game' => 'g'
 	];
 	return $categorymap[$category];
 }
-
 
 function htmladmstart($title = "", $headcontent = "") {
 	$find = $_REQUEST['find'] ?? '';

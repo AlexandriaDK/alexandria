@@ -6,6 +6,7 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $this_type = 'convent';
+$this_type_new = 'convention';
 
 $con = (int) $_REQUEST['con'];
 $action = $_REQUEST['action'];
@@ -100,14 +101,14 @@ if ($action == "edit" && $con) {
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
-	if (getCount('csrel', $this_id, FALSE, $this_type) ) $error[] = "game";
-	if (getCount('acrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer)";
-	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
-	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
-	if (getCount('alias', $this_id, TRUE, $this_type) ) $error[] = "alias";
-	if (getCount('files', $this_id, TRUE, $this_type) ) $error[] = "files";
-	if (getCount('userlog', $this_id, TRUE, $this_type) ) $error[] = "user log (requires admin access)";
-	if (getCount('article_reference', $this_id, TRUE, $this_type) ) $error[] = "article reference";
+	if (getCount('csrel', $this_id, FALSE, $this_type_new) ) $error[] = "game";
+	if (getCount('acrel', $this_id, FALSE, $this_type_new) ) $error[] = "con (organizer)";
+	if (getCount('trivia', $this_id, TRUE, $this_type_new) ) $error[] = "trivia";
+	if (getCount('links', $this_id, TRUE, $this_type_new) ) $error[] = "link";
+	if (getCount('alias', $this_id, TRUE, $this_type_new) ) $error[] = "alias";
+	if (getCount('files', $this_id, TRUE, $this_type_new) ) $error[] = "files";
+	if (getCount('userlog', $this_id, TRUE, $this_type_new) ) $error[] = "user log (requires admin access)";
+	if (getCount('article_reference', $this_id, TRUE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ",$error);
 		rexit($this_type, ['con' => $con] );

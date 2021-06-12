@@ -1269,13 +1269,17 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 		break;
 	
 		case 'sce':
+		case 'game':
 		$value = "title";
 		$fullcat = "Scenarie";
+		$cat = 'sce';
 		break;
 
 		case 'convent':
+		case 'convention':
 		$value = "name";
 		$fullcat = "Con";
+		$cat = 'convent';
 		break;
 
 		case 'conset':
@@ -1284,8 +1288,10 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 		break;
 
 		case 'sys':
+		case 'system':
 		$value = "name";
 		$fullcat = "System";
+		$cat = 'sys';
 		break;
 	
 		case 'tag':

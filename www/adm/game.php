@@ -6,6 +6,7 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $this_type = 'game';
+$this_type_old = 'sce';
 
 $action = $_REQUEST['action'];
 $jsenabled = $_REQUEST['jsenabled'];
@@ -151,17 +152,17 @@ if ($action == "update" && $game) {
 // Delete game
 if ($action == "Delete" && $game) { // should check if game exists
 	$error = [];
-	if (getCount('asrel', $game, FALSE, 'sce') ) $error[] = "person";
-	if (getCount('csrel', $game, FALSE, 'sce') ) $error[] = "con";
-	if (getCount('gsrel', $game, FALSE, 'sce') ) $error[] = "genre";
-	if (getCount('scerun', $game, FALSE, 'sce') ) $error[] = "run";
-	if (getCount('trivia', $game, TRUE, 'sce') ) $error[] = "trivia";
-	if (getCount('links', $game, TRUE, 'sce') ) $error[] = "link";
-	if (getCount('alias', $game, TRUE, 'sce') ) $error[] = "alias";
-	if (getCount('files', $game, TRUE, 'sce') ) $error[] = "file";
-	if (getCount('tags', $game, FALSE, 'sce') ) $error[] = "tags";
-	if (getCount('article', $game, FALSE, 'sce') ) $error[] = "article";
-	if (getCount('userlog', $game, TRUE, 'sce') ) $error[] = "user log (requires admin)";
+	if (getCount('asrel', $this_id, FALSE, $this_type_old) ) $error[] = "person";
+	if (getCount('csrel', $this_id, FALSE, $this_type_old) ) $error[] = "con";
+	if (getCount('gsrel', $this_id, FALSE, $this_type_old) ) $error[] = "genre";
+	if (getCount('scerun', $this_id, FALSE, $this_type_old) ) $error[] = "run";
+	if (getCount('trivia', $this_id, TRUE, $this_type_old) ) $error[] = "trivia";
+	if (getCount('links', $this_id, TRUE, $this_type_old) ) $error[] = "link";
+	if (getCount('alias', $this_id, TRUE, $this_type_old) ) $error[] = "alias";
+	if (getCount('files', $this_id, TRUE, $this_type_old) ) $error[] = "file";
+	if (getCount('tags', $this_id, FALSE, $this_type_old) ) $error[] = "tags";
+	if (getCount('article', $this_id, FALSE, $this_type_old) ) $error[] = "article";
+	if (getCount('userlog', $this_id, TRUE, $this_type_old) ) $error[] = "user log (requires admin)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['game' => $game] );
@@ -685,7 +686,7 @@ print '
 
 print '<tr><td>&nbsp;</td><td><input type="submit" value="'.($game ? "Update" : "Create").' game">' . ($game ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 
-$this_type = 'sce';
+$this_type = $this_type_old;
 if ($game) {
 	print changetags($game,$this_type);
 	print changelinks($game,$this_type);

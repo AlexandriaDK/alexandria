@@ -55,7 +55,7 @@ function insertContributors($contributors, $article_id) {
 
 function insertReferences($references, $article_id) {
 	doquery("DELETE FROM article_reference WHERE article_id = $article_id");
-	$match = '_^(c|cs|tag|sys|p|m|i)(\d+)_';
+	$match = '_^(c|cs|tag|sys|p|m|i|g)(\d+)_';
 	foreach ($references AS $reference) {
 		if (! preg_match($match, $reference, $matches)) {
 			continue;
@@ -219,7 +219,7 @@ if ($action == "addarticle") {
 	if ($r) {
 		$id = dbid();
 		insertContributors($contributors, $id);
-		insertReferences($references, $article_id);
+		insertReferences($references, $id);
 		chlog($issue_id,'issue',"Article created: $id - $title");
 	}
 	$_SESSION['admin']['info'] = "Article created! " . dberror();

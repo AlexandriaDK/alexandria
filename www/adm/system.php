@@ -5,6 +5,7 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'sys';
+$this_type_new = 'system';
 
 $system = (int) $_REQUEST['system'];
 $action = (string) $_REQUEST['action'];
@@ -66,8 +67,8 @@ if ($action == "create") {
 
 if ($action == "Delete" && $system) {
 	$error = [];
-	if (getCount('sce', $this_id, FALSE, $this_type) ) $error[] = "game";
-	if (getCount('article_reference', $this_id, TRUE, $this_type) ) $error[] = "article reference";
+	if (getCount('sce', $this_id, FALSE, $this_type_new) ) $error[] = "game";
+	if (getCount('article_reference', $this_id, TRUE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
 		rexit($this_type, ['system' => $system] );

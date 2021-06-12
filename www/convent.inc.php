@@ -1,5 +1,7 @@
 <?php
 $this_type = 'convent';
+$this_type_new = 'convention';
+$this_id = $con;
 
 if ($_SESSION['user_id']) {
 	$userlog = getuserloggames($_SESSION['user_id']);
@@ -286,7 +288,7 @@ if ( count( $alttitle ) == 1 ) {
 // Trivia, links and articles
 $trivialist = gettrivialist($con,$this_type);
 $linklist = getlinklist($con,$this_type);
-$articles = getarticles($con, $this_type);
+$articles = getarticles($con, $this_type_new);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($con, $this_type);
@@ -316,7 +318,7 @@ $t->assign('name', $showtitle);
 $t->assign('year',($convent['year'] ? $convent['year'] : "?") );
 $t->assign('arrowset',$arrows);
 $t->assign('pic',$available_pic);
-$t->assign('ogimage', getimageifexists($con, 'convent') );
+$t->assign('ogimage', getimageifexists($this_id, $this_type) );
 $t->assign('place',$convent['place']);
 $t->assign('countrycode',$convent['country']);
 $t->assign('dateset',nicedateset($convent['begin'],$convent['end']));
