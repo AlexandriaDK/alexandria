@@ -107,6 +107,8 @@
 	</div>
 	{/foreach}
 	</div>
+	{include file="articlereference.tpl"}
+
 {else}
 	<h2 class="pagetitle">
 		{$_magazines_list}

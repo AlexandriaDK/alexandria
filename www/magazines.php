@@ -13,6 +13,7 @@ $issue = $issues = $articles = $colophon = $arrows = [];
 $available_pic = $picpath = $picid = FALSE;
 $internal = '';
 $filelist = [];
+$articles = [];
 
 if ($magazineid) {
 	$id = $magazineid;
@@ -25,8 +26,7 @@ if ($magazineid) {
 		foreach ($issues AS $key => $issue) {
 			$issues[$key]['thumbnail'] = hasthumbnailpic($issue['id'], 'issue');
 		}
-		#var_dump($issues);
-		#exit;
+		$articles = getarticlereferences($magazineid, 'magazine');
 	}
 } elseif ($issueid) {
 	$id = $issueid;
@@ -135,6 +135,7 @@ $t->assign('arrowset',$arrows);
 // $t->assign('ogimage', getimageifexists($con, 'convent') );
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );
+$t->assign('articles', $articles);
 
 $t->display('magazines.tpl');
 
