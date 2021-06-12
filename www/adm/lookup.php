@@ -44,6 +44,8 @@ if ($type == 'articlereference' && $term !== "") {
 	$refs = getcol("
 		SELECT CONCAT('tag', tag.id, ' - ', tag) AS label FROM tag WHERE tag LIKE '$escapequery%'
 		UNION ALL
+		SELECT CONCAT('cs', conset.id, ' - ', name) AS label FROM conset WHERE name LIKE '$escapequery%'
+		UNION ALL
 		SELECT CONCAT('c', convent.id, ' - ', convent.name, ' (', COALESCE(year,'?'), ')') AS label FROM convent
 		INNER JOIN conset ON convent.conset_id = conset.id
 		WHERE convent.name LIKE '$escapequery%'
@@ -57,8 +59,6 @@ if ($type == 'articlereference' && $term !== "") {
 		OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
 		UNION ALL
 		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$escapequery%'
-		UNION ALL
-		SELECT CONCAT('cs', conset.id, ' - ', name) AS label FROM conset WHERE name LIKE '$escapequery%'
 		UNION ALL
 		SELECT CONCAT('m', magazine.id, ' - ', name) AS label FROM magazine WHERE name LIKE '$escapequery%'
 		UNION ALL
