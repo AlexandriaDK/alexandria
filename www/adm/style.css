@@ -209,11 +209,11 @@ tr.zerousermap td.accounts {
 	background-color: #ff0;
 }
 
-.issuestatus label.finished {
-	background-color: #0f0;
+.issuestatus label.finishednorefcon, .issuestatus label.finishednoref, .issuestatus label.finishednocon {
+	background-color: #0c0;
 }
 
-.issuestatus label.finishedpublished  {
+.issuestatus label.finishedpublished, .issuestatus label.finished {
 	background-color: #0f0;
 }
 

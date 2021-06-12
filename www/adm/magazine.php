@@ -30,8 +30,11 @@ $statuslist = [
 	  0 => [ 'label' => 'notstarted', 'text' => 'Not started', 'short' => 'No'],
 	//  20 => [ 'label' => 'issueuploaded', 'text' => 'Issue uploaded'],
 	 40 => [ 'label' => 'wip', 'text' => 'Work in progress', 'short' => 'WIP'],
-	 60 => [ 'label' => 'almostfinished', 'text' => 'Finished (missing small parts)', 'short' => '~Finished'],
-	 80 => [ 'label' => 'finished', 'text' => 'Finished', 'short' => 'Finished'],
+	 60 => [ 'label' => 'almostfinished', 'text' => 'Finished (missing small parts - please write comment)', 'short' => 'Almost'],
+	 80 => [ 'label' => 'finishednorefcon', 'text' => 'Finished (not checked for references or cons+events)', 'short' => 'Finished (-ref, -con)'],
+	 85 => [ 'label' => 'finishednoref', 'text' => 'Finished (not checked for references) ', 'short' => 'Finished (-ref)'],
+	 90 => [ 'label' => 'finishednocon', 'text' => 'Finished (not checked for cons+events)', 'short' => 'Finished (-con)'],
+	 95 => [ 'label' => 'finished', 'text' => 'Finished (and checked)', 'short' => 'Finished'],
 	100 => [ 'label' => 'finishedpublished', 'text' => 'Finished and published', 'short' => 'Published'],
 ];
 
@@ -481,13 +484,19 @@ if ($magazine_id && $issue_id) {
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right;">' . ($issue['id'] ?? 'New') . '</td>'.
 				'<td><input type="text" name="title" value="'.htmlspecialchars($issue['title']).'" size=40 maxlength=150>'.
-				($new ? '' : '<br>' . $statushtml . '<a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' . ($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries'). '</a>' . ' - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a>') . '</td>' .
 				'<td><input type="date" name="releasedate" value="'.htmlspecialchars($issue['releasedate']).'"></td>' .
 				'<td><input type="text" name="releasetext" value="'.htmlspecialchars($issue['releasetext']).'" size=40 maxlength=150></td>' .
-				'<td><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($issue['internal']).'</textarea></td>'.
+				'<td rowspan="2"><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($issue['internal']).'</textarea></td>'.
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				($issue['entries'] == 0 && ! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove issue?\');">' : '') . '</td>'.
 				"</tr>\n";
+		if ( ! $new ) {
+			print '<tr><td></td><td colspan="3">' . 
+			$statushtml .
+			'<a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' .
+			($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries') .
+			'</a> - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a></td></tr>';
+		}
 		print "</form>\n\n";
 	}
 	print "</tbody></table>";
