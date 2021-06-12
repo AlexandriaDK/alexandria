@@ -67,8 +67,13 @@ if ($magazineid) {
 	// Adding contributor count to create rowspan for title and description
 	foreach ($articles AS $articleid => $article) {
 		if ($lastarticleid !== $article['id']) {
+			$articles[$articleid]['references'] = [];
 			$articles[$articleid]['contributorcount'] = 0;
 			$lastid = $articleid;
+			$references = getall('SELECT category, data_id FROM article_reference WHERE article_id = ' . $article['id'] . ' ORDER BY category');
+			foreach ($references AS $reference_id => $reference) {
+				$articles[$articleid]['references'][] = getentryhtml($reference['category'], $reference['data_id']);
+			}
 		} else {
 			$articles[$articleid]['contributorcount'] = 0;
 		}

@@ -858,11 +858,16 @@ function getalluserentries($category, $data_id) {
 	return $result;
 }
 
+function getentryhtml ($cat, $data_id, $admin = FALSE) {
+	return getdatahtml($cat, $data_id, getentry($cat, $data_id), $admin);
+}
+
 function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 	$link = getdatalink($cat, $data_id, $admin);
 
 	switch ($cat) {
 		case 'aut':
+		case 'person':
 			$css = "person";
 			break;
 	
@@ -876,10 +881,12 @@ function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 			break;
 
 		case 'sys':
+		case 'system':
 			$css = "system";
 			break;
 	
 		case 'convent':
+		case 'convention':
 			$css = "con";
 			break;
 
@@ -899,9 +906,7 @@ function getdatahtml ($cat, $data_id, $text, $admin = FALSE) {
 			$css = "person";
 			break;
 	}
-
-	$html = "<a href=\"$link\" class=\"$css\">".htmlspecialchars($text)."</a>";
-
+	$html = '<a href="' . $link . '" class="' . $css . '">' . htmlspecialchars( $text ) . '</a>';
 	return $html;
 }
 
@@ -925,6 +930,7 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 
 	switch ($cat) {
 		case 'aut':
+		case 'person':
 		$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
 		break;
 	
@@ -938,10 +944,12 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 		break;
 
 		case 'sys':
+		case 'system':
 		$value = ($admin ? "/adm/system.php?system=$data_id" : "data?system=$data_id");
 		break;
 	
 		case 'convent':
+		case 'convention':
 		$value = ($admin ? "/adm/convent.php?con=$data_id" : "data?con=$data_id");
 		break;
 	
@@ -958,9 +966,7 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 		$value = ($admin ? "/adm/magazine.php?magazine_id=$data_id" : "magazines?id=$data_id");
 		break;
 	
-
 		default:
-		case 'aut':
 		$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
 		break;
 	}

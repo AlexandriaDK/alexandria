@@ -307,15 +307,15 @@ a:link, a:visited {
 }
 
 div.scenarie a:link, a.scenarie:link {
-	color: #c60;
+	color: #e80;
 }
 
 div.scenarie a:visited, a.scenarie:visited {
-	color: #930;
+	color: #b50;
 }
 
 div.person a:link, a.person:link {
-	color: #b01;
+	color: #b00;
 }
 
 div.person a:visited, a.person:visited {
@@ -611,7 +611,7 @@ span.authorlistextra {
 
 span.moreauthors {
 	cursor: pointer;
-	color: #b01;
+	color: #b00;
 }
 
 h4.awardconventhead {
@@ -818,4 +818,41 @@ table.magazinecontent td.page, table.magazinecontent td.contributor, table.magaz
 table.magazinecontent span.description {
 	font-size: 0.8em;
 	font-style: italic;
+}
+
+.references {
+	margin: 3px;
+}
+
+.references a {
+	border: 1px solid black;
+	border-radius: 1em;
+	padding: 2px 4px 2px 4px;
+	font-size: 0.8em;
+	color: black;
+}
+
+.references a.person {
+	background-color: #f77;
+	color: black;
+}
+
+.references a.scenarie {
+	background-color: #e80;
+	color: black;
+}
+
+.references a.con {
+	background-color: #6e6;
+	color: black;
+}
+
+.references a.system {
+	background-color: #aaf;
+	color: black;
+}
+
+.references a.magazine {
+	background-color: #e7e;
+	color: black;
 }
