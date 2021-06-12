@@ -55,7 +55,7 @@ function insertContributors($contributors, $article_id) {
 
 function insertReferences($references, $article_id) {
 	doquery("DELETE FROM article_reference WHERE article_id = $article_id");
-	$match = '_^(c|cs|tag|sys|p)(\d+)_';
+	$match = '_^(c|cs|tag|sys|p|m|i)(\d+)_';
 	foreach ($references AS $reference) {
 		if (! preg_match($match, $reference, $matches)) {
 			continue;
