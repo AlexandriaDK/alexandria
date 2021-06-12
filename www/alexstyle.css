@@ -829,7 +829,7 @@ table.magazinecontent span.description {
 	border-radius: 1em;
 	padding: 2px 4px 2px 4px;
 	font-size: 0.8em;
-	color: black;
+	white-space: nowrap;
 }
 
 .references a.person {
