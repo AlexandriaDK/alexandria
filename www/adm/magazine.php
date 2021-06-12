@@ -314,7 +314,7 @@ $(function() {
 	$(".addnextref").click( function() {
 		var td = $(this).parent();
 		var html = '';
-		html += '<input type="text" placeholder="Reference to entry" name="references[]" class="articlereferences" size="20"><br>';
+		html += '<input type="text" placeholder="Reference to existing entry" name="references[]" class="articlereferences" size="25"><br>';
 		td.append(html);
 		$( td ).find('input.articlereferences')
 			.autocomplete({
