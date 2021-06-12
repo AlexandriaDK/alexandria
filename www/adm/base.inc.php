@@ -363,7 +363,9 @@ function getCategoryFromShort($short) {
 		'cs' => 'conset',
 		'tag' => 'tag',
 		'sys' => 'sys',
-		'p' => 'person'
+		'p' => 'person',
+		'm' => 'magazine',
+		'i' => 'issue',
 	];
 	return $categorymap[$short];
 
@@ -375,7 +377,9 @@ function getShortFromCategory($category) {
 		'conset' => 'cs',
 		'tag' => 'tag',
 		'sys' => 'sys',
-		'person' => 'p'
+		'person' => 'p',
+		'magazine' => 'm',
+		'issue' => 'i'
 	];
 	return $categorymap[$category];
 }
