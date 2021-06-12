@@ -76,12 +76,12 @@ if ( count( $alttitle ) == 1 ) {
 }
 
 // List of files
-$filelist = getfilelist($system,$this_type);
+$filelist = getfilelist($this_id,$this_type);
 
 // Trivia, links and articles
-$trivialist = gettrivialist($system,$this_type);
-$linklist = getlinklist($system,$this_type);
-$articles = getarticles($system,$this_type_new);
+$trivialist = gettrivialist($this_id,$this_type);
+$linklist = getlinklist($this_id,$this_type);
+$articles = getarticlereferences($this_id,$this_type_new);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($system, $this_type);

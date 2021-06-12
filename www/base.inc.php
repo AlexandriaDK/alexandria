@@ -1094,6 +1094,19 @@ function getarticles ($data_id, $category) {
 	return $articles;
 }
 
+function getarticlereferences($data_id, $category) {
+	$articles = getall("
+		SELECT article.issue_id, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+		FROM article
+		INNER JOIN issue ON article.issue_id = issue.id
+		INNER JOIN magazine ON issue.magazine_id = magazine.id
+		INNER JOIN article_reference ON article.id = article_reference.article_id
+		WHERE article_reference.data_id = $data_id AND article_reference.category = '" . dbesc($category) . "'
+		ORDER BY issue.releasedate, issue.id, article.page, article.id
+	");
+	return $articles;
+}
+
 function getorganizerlist ($data_id, $category, $order = FALSE) {
 	if (!$order) {
 		$order = "a.role";

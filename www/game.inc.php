@@ -1,8 +1,10 @@
 <?php
 $this_type = 'sce';
+$this_type_new = 'game';
 if ($game) {
 	$scenarie = $game;
 }
+$this_id = $scenarie;
 
 $r = getrow("
 	SELECT sce.id, title, sce.intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname, COALESCE(alias.label, sys.name) AS system_translation
@@ -221,9 +223,9 @@ foreach($q AS $rs) {
 $genre = join(", ",$genre);
 
 // Links, trivia, tags
-$linklist = getlinklist($scenarie,$this_type);
-$trivialist = gettrivialist($scenarie,$this_type);
-$taglist = gettaglist($scenarie,$this_type);
+$linklist = getlinklist($this_id,$this_type);
+$trivialist = gettrivialist($this_id,$this_type);
+$taglist = gettaglist($this_id,$this_type);
 if ($_SESSION['can_edit_participant'][$scenarie] ?? FALSE) {
 	foreach($taglist AS $tag_id => $tag) {
 		$_SESSION['can_edit_tag'][$tag_id] = TRUE;
@@ -233,7 +235,8 @@ $alltags = getalltags();
 $json_alltags = json_encode($alltags);
 
 // Articles
-$articles = getarticles($scenarie, $this_type);
+$articlesfrom = getarticles($this_id, $this_type);
+$articles = getarticlereferences($this_id, $this_type_new);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($scenarie, $this_type);
@@ -272,6 +275,7 @@ $t->assign('conlist',$conlist);
 $t->assign('runlist',$runlist);
 $t->assign('awards',$awards);
 $t->assign('genre',$genre);
+$t->assign('articlesfrom',$articlesfrom);
 $t->assign('articles',$articles);
 $t->assign('trivia',$trivialist);
 $t->assign('link',$linklist);

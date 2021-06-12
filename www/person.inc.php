@@ -1,5 +1,7 @@
 <?php
 $this_type = 'aut';
+$this_type_new = 'person';
+$this_id = $person;
 
 if ($_SESSION['user_id']) {
 	$userlog = getuserloggames($_SESSION['user_id']);
@@ -170,12 +172,12 @@ foreach($awarddata AS $convent_id => $data) {
 $organizerlist = getorganizerlist($person,$this_type);
 
 // Links and trivia
-$linklist = getlinklist($person,$this_type);
-$trivialist = gettrivialist($person,$this_type);
+$linklist = getlinklist($this_id,$this_type);
+$trivialist = gettrivialist($this_id,$this_type);
 
 // Articles
-$articlesfrom = getarticles($person, $this_type);
-$articles = getarticles($person, 'person');
+$articlesfrom = getarticles($this_id, $this_type);
+$articles = getarticlereferences($this_id, $this_type_new);
 
 // Birthday
 $birth = "";
@@ -210,7 +212,7 @@ $t->assign('id',$person);
 $t->assign('name',$r['name']);
 $t->assign('intern',$intern);
 $t->assign('pic',$available_pic);
-$t->assign('ogimage', getimageifexists($person, 'person') );
+$t->assign('ogimage', getimageifexists($this_id, $this_type_new) );
 $t->assign('alias',$aliaslist);
 $t->assign('birth',$birth);
 $t->assign('death',$death);

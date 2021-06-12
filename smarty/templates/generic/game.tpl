@@ -158,10 +158,10 @@ $( function() {
 {/foreach}
 {/if}
 
-{if $articles}
+{if $articlesfrom}
 <h3 class="parttitle">{$_p_articles}</h3>
 	<table id="gamearticles">
-	{foreach $articles as $article}
+	{foreach $articlesfrom as $article}
 	<tr>
 	<td>{$article.title|escape}</td>
 	<td>{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
@@ -172,6 +172,7 @@ $( function() {
 	</table>
 {/if}
 
+{include file="articlereference.tpl"}
 {include file="trivialink.tpl"}
 {include file="internal.tpl"}
 {include file="updatelink.tpl"}

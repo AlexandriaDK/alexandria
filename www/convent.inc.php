@@ -286,9 +286,9 @@ if ( count( $alttitle ) == 1 ) {
 }
 
 // Trivia, links and articles
-$trivialist = gettrivialist($con,$this_type);
-$linklist = getlinklist($con,$this_type);
-$articles = getarticles($con, $this_type_new);
+$trivialist = gettrivialist($this_id,$this_type);
+$linklist = getlinklist($this_id,$this_type);
+$articles = getarticlereferences($this_id, $this_type_new);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($con, $this_type);

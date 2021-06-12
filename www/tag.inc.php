@@ -6,6 +6,7 @@ if ($_SESSION['user_id']) {
 }
 
 list($tag_id, $ttag, $description) = getrow("SELECT id, tag, description FROM tag WHERE tag = '" . dbesc($tag) . "'");
+$this_id = $tag_id;
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
@@ -78,15 +79,15 @@ if (count($q) > 0) {
 }
 
 // List of files
-$filelist = getfilelist($tag_id,$this_type);
+$filelist = getfilelist($this_id, $this_type);
 
 // Trivia, links and articles
-$trivialist = gettrivialist($tag_id,$this_type);
-$linklist = getlinklist($tag_id,$this_type);
-$articles = getarticles($tag_id,$this_type);
+$trivialist = gettrivialist($this_id, $this_type);
+$linklist = getlinklist($this_id, $this_type);
+$articles = getarticlereferences($this_id, $this_type);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($tag_id, $this_type);
+$available_pic = hasthumbnailpic($this_id, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$tag);
@@ -95,7 +96,7 @@ $t->assign('type',$this_type);
 $t->assign('id',$tag_id);
 $t->assign('tag',$tag);
 $t->assign('pic',$available_pic);
-$t->assign('ogimage', getimageifexists($tag_id, 'tag') );
+$t->assign('ogimage', getimageifexists($this_id, $this_type) );
 $t->assign('description',$description);
 $t->assign('slist',$slist);
 $t->assign('trivia',$trivialist);

@@ -1,5 +1,6 @@
 <?php
 $this_type = 'conset';
+$this_id = $conset;
 
 if ($_SESSION['user_id']) {
 	$userlog = getuserlogconvents($_SESSION['user_id']);
@@ -54,14 +55,13 @@ if ( count( $alttitle ) == 1 ) {
 }
 
 // Trivia, links and articles
-$trivialist = gettrivialist($conset,$this_type);
-$linklist = getlinklist($conset,$this_type);
-$articles = getarticles($conset,$this_type);
-
-$filelist = getfilelist($conset,$this_type);
+$trivialist = gettrivialist($this_id,$this_type);
+$linklist = getlinklist($this_id,$this_type);
+$articles = getarticlereferences($this_id,$this_type);
+$filelist = getfilelist($this_id,$this_type);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($conset, $this_type);
+$available_pic = hasthumbnailpic($this_id, $this_type);
 
 // Smarty
 $t->assign('pagetitle',$showtitle);
