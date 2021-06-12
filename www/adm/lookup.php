@@ -42,6 +42,8 @@ if ($type == 'languagecode' && $label != "") {
 if ($type == 'articlereference' && $term !== "") {
 	$escapequery = dbesc($term);
 	$refs = getcol("
+		SELECT CONCAT('tag', tag.id, ' - ', tag) AS label FROM tag WHERE tag LIKE '$escapequery%'
+		UNION ALL
 		SELECT CONCAT('c', convent.id, ' - ', convent.name, ' (', COALESCE(year,'?'), ')') AS label FROM convent
 		INNER JOIN conset ON convent.conset_id = conset.id
 		WHERE convent.name LIKE '$escapequery%'
@@ -56,7 +58,7 @@ if ($type == 'articlereference' && $term !== "") {
 		UNION ALL
 		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$escapequery%'
 		UNION ALL
-		SELECT CONCAT('tag', tag.id, ' - ', tag) AS label FROM tag WHERE tag LIKE '$escapequery%'
+		SELECT CONCAT('cs', conset.id, ' - ', name) AS label FROM conset WHERE name LIKE '$escapequery%'
 	");
 	header("Content-Type: application/json");
 	print json_encode( $refs );
