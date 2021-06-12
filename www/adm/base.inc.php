@@ -243,12 +243,12 @@ function strNullEscape($str) {
 	}
 }
 
-function getCount ($table, $data_id, $requiresData = FALSE, $category = "") {
+function getCount ($table, $data_id, $requiresCategoryAndData = FALSE, $category = "") {
 	if (!$category) {
 		$category = "sce";
 	}
 	$field = $category . "_id";
-	if (!$requiresData) {
+	if (!$requiresCategoryAndData) {
 		$result = getone("SELECT COUNT(*) FROM $table WHERE $field = $data_id");
 	} else {
 		$result = getone("SELECT COUNT(*) FROM $table WHERE category = '$category' AND data_id = $data_id");

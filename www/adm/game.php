@@ -37,6 +37,8 @@ list ($players_min, $players_max) = strSplitParticipants($players);
 
 $participants_extra = $_REQUEST['participants_extra'];
 
+$this_id = $game;
+
 if (!$action && $game) {
 	$row = getrow("SELECT * FROM sce WHERE id = '$game'");
 	if ($row) {

@@ -198,6 +198,7 @@ if ($action == "changearticle" && $do != "Delete") {
 
 if ($action == "changearticle" && $do == "Delete") {
 	doquery("DELETE FROM contributor WHERE article_id = $article_id");
+	doquery("DELETE FROM article_reference WHERE article_id = $article_id");
 	$q = "DELETE FROM article WHERE id = $article_id";
 	$r = doquery($q);
 	if ($r) {

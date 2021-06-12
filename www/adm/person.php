@@ -14,6 +14,8 @@ $birth = $_REQUEST['birth'];
 $death = $_REQUEST['death'];
 $intern = $_REQUEST['intern'];
 
+$this_id = $person;
+
 if ( $action ) {
 	validatetoken( $token );
 }
@@ -51,13 +53,14 @@ if ($action == "ret" && $person) {
 // Delete person
 if ($action == "Delete" && $person) { // Should check if $person id exists
 	$error = [];
-	if (getCount('asrel', $person, FALSE, 'aut') ) $error[] = "scenario";
-	if (getCount('acrel', $person, FALSE, 'aut') ) $error[] = "con (organizer roles)";
-	if (getCount('trivia', $person, TRUE, 'aut') ) $error[] = "trivia";
-	if (getCount('links', $person, TRUE, 'aut') ) $error[] = "link";
-	if (getCount('alias', $person, TRUE, 'aut') ) $error[] = "alias";
-	if (getCount('users', $person, FALSE, 'aut') ) $error[] = "user";
-	if (getCount('contributor', $person, FALSE, 'aut') ) $error[] = "article (magazine)";
+	if (getCount('asrel', $this_id, FALSE, $this_type) ) $error[] = "scenario";
+	if (getCount('acrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer roles)";
+	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
+	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
+	if (getCount('alias', $this_id, TRUE, $this_type) ) $error[] = "alias";
+	if (getCount('users', $this_id, FALSE, $this_type) ) $error[] = "user";
+	if (getCount('contributor', $this_id, FALSE, $this_type) ) $error[] = "article (magazine)";
+	if (getCount('article_reference', $this_id, TRUE, 'person') ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['person' => $person] );

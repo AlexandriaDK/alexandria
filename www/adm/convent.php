@@ -21,6 +21,8 @@ $confirmed = $_REQUEST['confirmed'];
 $country = trim( (string) $_REQUEST['country'] );
 $cancelled = (int) (bool) $_REQUEST['cancelled'];
 
+$this_id = $con;
+
 if ( $action ) {
 	validatetoken( $token );
 }
@@ -98,13 +100,14 @@ if ($action == "edit" && $con) {
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
-	if (getCount('csrel', $con, FALSE, 'convent') ) $error[] = "scenario";
-	if (getCount('acrel', $con, FALSE, 'convent') ) $error[] = "con (organizer)";
-	if (getCount('trivia', $con, TRUE, 'convent') ) $error[] = "trivia";
-	if (getCount('links', $con, TRUE, 'convent') ) $error[] = "link";
-	if (getCount('alias', $con, TRUE, 'convent') ) $error[] = "alias";
-	if (getCount('files', $con, TRUE, 'convent') ) $error[] = "files";
-	if (getCount('userlog', $con, TRUE, 'convent') ) $error[] = "user log (requires admin access)";
+	if (getCount('csrel', $this_id, FALSE, $this_type) ) $error[] = "game";
+	if (getCount('acrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer)";
+	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
+	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
+	if (getCount('alias', $this_id, TRUE, $this_type) ) $error[] = "alias";
+	if (getCount('files', $this_id, TRUE, $this_type) ) $error[] = "files";
+	if (getCount('userlog', $this_id, TRUE, $this_type) ) $error[] = "user log (requires admin access)";
+	if (getCount('article_reference', $this_id, TRUE, $this_type) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ",$error);
 		rexit($this_type, ['con' => $con] );

@@ -11,6 +11,8 @@ $action = (string) $_REQUEST['action'];
 $tag = (string) $_REQUEST['tag'];
 $description = (string) $_REQUEST['description'];
 
+$this_id = $tag_id;
+
 if ( $action ) {
 	validatetoken( $token );
 }
@@ -25,9 +27,10 @@ if (!$action && $tag_id) {
 
 if ($action == "Remove" && $tag_id) {
 	$error = [];
-	if (getCount('trivia', $tag_id, TRUE, 'tag') ) $error[] = "trivia";
-	if (getCount('links', $tag_id, TRUE, 'tag') ) $error[] = "link";
-	if (getCount('files', $tag_id, TRUE, 'tag') ) $error[] = "files";
+	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
+	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
+	if (getCount('files', $this_id, TRUE, $this_type) ) $error[] = "files";
+	if (getCount('article_reference', $this_id, TRUE, $this_type) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
 		rexit( $this_type, [ 'tag_id' => $tag_id ] );

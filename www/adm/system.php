@@ -11,6 +11,8 @@ $action = (string) $_REQUEST['action'];
 $name = (string) $_REQUEST['name'];
 $description = (string) $_REQUEST['description'];
 
+$this_id = $system;
+
 if ( $action ) {
 	validatetoken( $token );
 }
@@ -64,9 +66,10 @@ if ($action == "create") {
 
 if ($action == "Delete" && $system) {
 	$error = [];
-	if (getCount('sce', $system, FALSE, 'sys') ) $error[] = "scenarie";
+	if (getCount('sce', $this_id, FALSE, $this_type) ) $error[] = "game";
+	if (getCount('article_reference', $this_id, TRUE, $this_type) ) $error[] = "article reference";
 	if ($error) {
-		$_SESSION['admin']['info'] = "Can't delete. The RPG system still has scenarios registered to it.";
+		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
 		rexit($this_type, ['system' => $system] );
 	} else {
 		$name = getone("SELECT name FROM sys WHERE id = $system");
@@ -78,7 +81,7 @@ if ($action == "Delete" && $system) {
 			chlog($person,$this_type,"System deleted: $name");
 		}
 		$_SESSION['admin']['info'] = "System deleted! " . dberror();
-		rexit($this_type, ['system' => $system] );
+		rexit($this_type);
 	}
 }
 htmladmstart("System");
