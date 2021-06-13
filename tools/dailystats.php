@@ -17,7 +17,8 @@ $editors = getone("SELECT COUNT(*) FROM users WHERE editor = 1");
 $magazines = getone("SELECT COUNT(*) FROM magazine");
 $issues = getone("SELECT COUNT(*) FROM issue");
 $articles = getone("SELECT COUNT(*) FROM article");
+$references = getone("SELECT COUNT(*) FROM article_reference");
 
-print implode(",", [ $date, $scenarios, $persons, $conventions, $rpgsystems, $downloads, $boardgames, $conseries, $users, $editors, $magazines, $issues, $articles ] ) . PHP_EOL;
+print implode(",", [ $date, $scenarios, $persons, $conventions, $rpgsystems, $downloads, $boardgames, $conseries, $users, $editors, $magazines, $issues, $articles, $references ] ) . PHP_EOL;
 
 ?>
