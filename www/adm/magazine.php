@@ -352,7 +352,7 @@ if ($magazine_id && $issue_id) {
 		FROM article
 		LEFT JOIN sce ON article.sce_id = sce.id
 		WHERE issue_id = $issue_id
-		ORDER BY article.page, article.id
+		ORDER BY article.page, article.title != '', article.id
 	");
 	$articles[] = [];
 	$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . $issue_id . "/*"));

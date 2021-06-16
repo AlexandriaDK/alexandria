@@ -1075,7 +1075,7 @@ function getarticles ($data_id, $category) {
 			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
 			WHERE contributor.aut_id = $data_id
-			ORDER BY issue.releasedate, issue.id, article.page, article.id
+			ORDER BY issue.releasedate, issue.id, article.page, article.id, contributor.id
 		");
 	} elseif ($category == 'sce' || $category == 'game') {
 		$articles = getall("
