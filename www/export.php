@@ -35,10 +35,11 @@ $exportqueries = [
 	'person_game_title_relations' => "SELECT id, aut_id AS person_id, sce_id AS game_id, tit_id AS title_id, note FROM asrel ORDER BY aut_id, sce_id, id",
 	'game_convention_presentation_relations' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
 	'person_convention_relations' => "SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id",
-	'contributors' => "SELECT id, aut_id AS person_id, aut_extra AS person_extra, role, article_id FROM contributor ORDER BY id",
-	'articles' => "SELECT id, issue_id, page, title, description, articletype, sce_id AS game_id FROM article ORDER BY issue_id, id",
-	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
 	'magazines' => "SELECT id, name, description FROM magazine ORDER BY id",
+	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
+	'articles' => "SELECT id, issue_id, page, title, description, articletype, sce_id AS game_id FROM article ORDER BY issue_id, id",
+	'contributors' => "SELECT id, aut_id AS person_id, aut_extra AS person_extra, role, article_id FROM contributor ORDER BY id",
+	'article_reference' => "SELECT id, article_id, category, data_id FROM article_reference ORDER BY id"
 ];
 
 if ( $dataset ) {
@@ -73,7 +74,8 @@ if ( $dataset ) {
 	case 'issues':
 	case 'articles':
 	case 'contributors':
-		$output = getall( $exportqueries[ $dataset ], FALSE );
+	case 'article_reference':
+			$output = getall( $exportqueries[ $dataset ], FALSE );
 		break;
 	case 'all':
 		$output = [];
@@ -88,7 +90,7 @@ if ( $dataset ) {
 		$output = $data;
 	}
 } elseif ( $setup === 'sqlstructure' ) { // Order is important due to foreign keys
-	$tables = [ 'aut', 'sys', 'sce', 'conset', 'convent', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'loginmap', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'rpgforum_posts' ];
+	$tables = [ 'aut', 'sys', 'sce', 'conset', 'convent', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'loginmap', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -138,6 +140,7 @@ if ( $dataset ) {
 			'issues' => 'Issues for magazines',
 			'articles' => 'Articles in issues',
 			'contributors' => 'Contributors for magazines',
+			'article_reference' => 'References in articles to other data entries'
 		],
 		'examples' => [
 			'export' => 'This overview',

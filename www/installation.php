@@ -142,6 +142,7 @@ if ( $action == 'importstructure' ) {
 		case 'issues':
 		case 'articles':
 		case 'contributors':
+		case 'article_reference':
 		case 'person_game_title_relations':
 		case 'game_convention_presentation_relations':
 		case 'person_convention_relations':
