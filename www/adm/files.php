@@ -49,7 +49,15 @@ if ($action == "changefile" && $do == "Remove") {
 		chlog($data_id,$category,"File removed");
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
-} elseif ($action == "changefile") { // Ret fil
+} elseif ($action == "changefile" && $do == "OCR") { // Mark file to be OCR'ed
+	$q = "UPDATE files SET indexed = 11 WHERE id = '$id' AND indexed IN(0,1)";
+	$r = doquery($q);
+	$_SESSION['admin']['info'] = "File in OCR queue! " . dberror();
+	if ($r) {
+		chlog($data_id,$category,"File in OCR queue");
+	}
+	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
+} elseif ($action == "changefile") { // Edit file data
 	$downloadable = ($downloadable?1:0);
 	$q = "UPDATE files SET description = '" . dbesc($description) . "', downloadable = '$downloadable', language = '" . dbesc($language) . "' WHERE id = '$id'";
 	$r = doquery($q);
@@ -276,7 +284,14 @@ if ($data_id && $category) {
 	}
 	$title = getone($q);
 	
-	$query = "SELECT id, filename, description, downloadable, language FROM files WHERE data_id = '$data_id' AND category = '$category' ORDER BY id";
+	$query = "
+		SELECT COUNT(fd.id) AS pages, f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
+		FROM files f
+		LEFT JOIN filedata fd ON f.id = fd.files_id
+		WHERE f.data_id = '$data_id' AND f.category = '$category'
+		GROUP BY f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
+		ORDER BY f.id
+	";
 	$result = getall($query);
 }
 
@@ -294,12 +309,25 @@ if ($data_id && $category) {
 	      "<th>Public</th>".
 	      "<th>Language code</th>".
 	      "<th>Edit</th>".
-	      "<th>Download</th>".
+	      '<th>Download</th>'.
+	      '<th style="padding-left: 1em;"><span title="Mark file to be OCR\'ed - takes a couple of minutes">OCR file</th>'.
 	      "</tr>\n";
 
-        foreach($result AS $row) {
+	foreach($result AS $row) {
 		$selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
 		$path = DOWNLOAD_PATH . getcategorydir($category) . '/' . $data_id . '/' . $row['filename'];
+		$OCRpossible = ($row['pages'] == 0 && in_array($row['indexed'], [0,1]) && strtolower(pathinfo($path)['extension']) == 'pdf');
+		if ($OCRpossible) {
+			$ocrhtml = '<input type="submit" name="do" value="OCR">';
+		} elseif ($row['indexed'] == 11) {
+			$ocrhtml = 'In queue';
+		} elseif ($row['indexed'] == 12) {
+			$ocrhtml = 'OCR\'ing';
+		} elseif ($row['indexed'] == 20) {
+			$ocrhtml = 'OCR done, waiting for index';
+		} else {
+			$ocrhtml = '';
+		}
 		print '<form action="files.php" method="post">'.
 		      '<input type="hidden" name="action" value="changefile">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
@@ -316,7 +344,8 @@ if ($data_id && $category) {
 	      	'<td style="text-align: center"><input type="checkbox" name="downloadable" '.$selected.'></td>'.
 		      '<td ><input type="text" name="language" value="'.htmlspecialchars($row['language']).'" size="2" maxlength="20" placeholder="da"></td>'.
 		      '<td><input type="submit" name="do" value="Edit"> <input type="submit" name="do" value="Remove"></td>'.
-		      '<td ><a href="https://download.alexandria.dk/files/'.getcategorydir($category).'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
+		      '<td style="text-align: center"><a href="https://download.alexandria.dk/files/'.getcategorydir($category).'/'.$data_id.'/'.rawurlencode($row['filename']).'" title="Download file">💾</a></td>'.
+		      '<td style="padding-left: 1em;">' . $ocrhtml . '</td>' .
 		      "</tr>\n";
 		print "</form>\n\n";
 	}

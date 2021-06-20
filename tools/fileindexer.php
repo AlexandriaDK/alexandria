@@ -3,12 +3,15 @@
 # Assuming (!) access to commands: antiword, pdftotext, docx2txt
 
 /* Indexed
- * 0: Ready to be indexed
- * 1: Indexed
- * 2: In queue, this script
- * 3: Skipped
- * 4: Error
- * 5: Not found
+ *  0: Ready to be indexed
+ *  1: Indexed
+ *  2: In queue, this script
+ *  3: Skipped
+ *  4: Error
+ *  5: Not found
+ * 11: To be OCR'ed
+ * 12: Currently OCR'ing, this script
+ * 20: OCR'ed, ready to be indexed
  */
 
 chdir( __DIR__ . "/../www/");
@@ -39,16 +42,6 @@ function checkArchiveFile($path) {
 	if (substr($path, -9) == '.DS_Store') return false; // Mac custom attributes
 	return true;
 }
-
-$files = getall("SELECT id, data_id, category, filename FROM files WHERE indexed = 0 AND downloadable = 1 LIMIT $limit");
-if ( ! $files) {
-	exit;
-}
-$ids = [];
-foreach ($files AS $file) {
-	$ids[] = $file['id'];
-}
-doquery("UPDATE files SET indexed = 2 WHERE id IN(" . implode( ",", $ids ) . ")");
 
 function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
@@ -119,6 +112,65 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 	print "File indexed! ($numpages pages) " . dberror() . PHP_EOL;
 	return 1;
 }
+
+function OCRFile($file) {
+	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+	$languages = [
+		'da' => 'dan',
+		'en' => 'eng',
+		'sv' => 'swe',
+		'nb' => 'nor',
+		'nn' => 'nor',
+		'da,en' => 'dan+eng',
+		'it' => 'ita',
+		'fr' => 'fra',
+		'fi' => 'fin',
+		'de' => 'deu',
+	];
+
+	$extension = strtolower(pathinfo($filepath)['extension']);
+	print "OCR'ing " . ($filepath ) . PHP_EOL;
+	if ($extension != 'pdf') { // We are not OCR'ing ZIP files yet
+		print "File is not PDF. Skipping." . PHP_EOL;
+		return 3;
+	}
+
+	$lang = $languages[$file['language']] ?? 'eng';
+	$langparm = "-l $lang";
+	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+	$command = "ocrmypdf -s $langparm '$filepath' '$filepath' 2>&1";
+	print "Command: " . $command . PHP_EOL;
+	$result = `$command`;
+	print $result . PHP_EOL;
+	doquery("DELETE FROM filedata WHERE files_id = " . $file['id']); // clean up old possible content
+	return 20;
+}
+
+// OCR queue
+$files = getall("SELECT id, data_id, category, filename, language FROM files WHERE indexed = 11 AND downloadable = 1 LIMIT $limit");
+if ( $files ) {
+	$ids = [];
+	foreach ($files AS $file) {
+		$ids[] = $file['id'];
+	}
+	doquery("UPDATE files SET indexed = 12 WHERE id IN(" . implode( ",", $ids ) . ")");
+	foreach ($files AS $file) {
+		$indexed = OCRFile($file);
+		doquery("UPDATE files SET indexed = $indexed WHERE id = " .$file['id']);
+	}	
+	exit; // Don't OCR and index in the same run
+}
+
+$files = getall("SELECT id, data_id, category, filename FROM files WHERE indexed IN(0,20) AND downloadable = 1 LIMIT $limit");
+if ( ! $files) {
+	exit;
+}
+$ids = [];
+foreach ($files AS $file) {
+	$ids[] = $file['id'];
+}
+doquery("UPDATE files SET indexed = 2 WHERE id IN(" . implode( ",", $ids ) . ")");
+
 
 // File by file
 foreach ($files AS $file) {
