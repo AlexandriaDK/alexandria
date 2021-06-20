@@ -316,7 +316,7 @@ if ($data_id && $category) {
 	foreach($result AS $row) {
 		$selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
 		$path = DOWNLOAD_PATH . getcategorydir($category) . '/' . $data_id . '/' . $row['filename'];
-		$OCRpossible = ($row['pages'] == 0 && in_array($row['indexed'], [0,1]) && strtolower(pathinfo($path)['extension']) == 'pdf');
+		$OCRpossible = ($row['pages'] == 0 && in_array($row['indexed'], [1]) && strtolower(pathinfo($path)['extension']) == 'pdf'); // only indexed PDFs with no text content
 		if ($OCRpossible) {
 			$ocrhtml = '<input type="submit" name="do" value="OCR">';
 		} elseif ($row['indexed'] == 11) {
