@@ -147,7 +147,7 @@ function OCRFile($file) {
 }
 
 // OCR queue
-$files = getall("SELECT id, data_id, category, filename, language FROM files WHERE indexed = 11 AND downloadable = 1 LIMIT $limit");
+$files = getall("SELECT id, data_id, category, filename, language FROM files WHERE indexed = 11 LIMIT $limit");
 if ( $files ) {
 	$ids = [];
 	foreach ($files AS $file) {
