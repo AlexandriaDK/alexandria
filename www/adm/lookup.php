@@ -54,8 +54,8 @@ if ($type == 'articlereference' && $term !== "") {
 		OR CONCAT(conset.name, ' ', convent.year) LIKE '$escapequery%'
 		OR (
 			'$escapequery' REGEXP ' [0-9][0-9]$' AND
-			CONCAT(conset.name, ' ', convent.year) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' 19', RIGHT('$escapequery', 2))
-		)
+			CONCAT(conset.name, ' ', RIGHT(convent.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
+			)
 		OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
 		UNION ALL
 		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$escapequery%'
