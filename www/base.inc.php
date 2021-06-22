@@ -1487,6 +1487,13 @@ function dbid () {
 	return mysqli_insert_id($dblink);
 }
 
+function likeesc ($string) {
+	global $dblink;
+	$string = mysqli_real_escape_string($dblink,$string);
+	$string = str_replace(['%','_'], ['\%','\_'],$string);
+	return $string;
+}
+
 /*
  * Image functions
  */

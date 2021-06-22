@@ -41,32 +41,33 @@ if ($type == 'languagecode' && $label != "") {
 
 if ($type == 'articlereference' && $term !== "") {
 	$escapequery = dbesc($term);
+	$likeescapequery = likeesc($term);
 	$refs = getcol("
-		SELECT CONCAT('tag', tag.id, ' - ', tag) AS label FROM tag WHERE tag LIKE '$escapequery%'
+		SELECT CONCAT('tag', tag.id, ' - ', tag) AS label FROM tag WHERE tag LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('cs', conset.id, ' - ', name) AS label FROM conset WHERE name LIKE '$escapequery%'
+		SELECT CONCAT('cs', conset.id, ' - ', name) AS label FROM conset WHERE name LIKE '$likeescapequery%'
 		UNION ALL
 		SELECT CONCAT('c', convent.id, ' - ', convent.name, ' (', COALESCE(year,'?'), ')') AS label FROM convent
 		INNER JOIN conset ON convent.conset_id = conset.id
-		WHERE convent.name LIKE '$escapequery%'
-		OR CONCAT(convent.name,' (',year,')') LIKE '$escapequery%'
-		OR CONCAT(convent.name,' ',year) LIKE '$escapequery%'
-		OR CONCAT(conset.name, ' ', convent.year) LIKE '$escapequery%'
+		WHERE convent.name LIKE '$likeescapequery%'
+		OR CONCAT(convent.name,' (',year,')') LIKE '$likeescapequery%'
+		OR CONCAT(convent.name,' ',year) LIKE '$likeescapequery%'
+		OR CONCAT(conset.name, ' ', convent.year) LIKE '$likeescapequery%'
 		OR (
 			'$escapequery' REGEXP ' [0-9][0-9]$' AND
 			CONCAT(conset.name, ' ', RIGHT(convent.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
 			)
-		OR CONCAT(conset.name,' (',year,')') LIKE '$escapequery%'
+		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$escapequery%'
+		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('m', magazine.id, ' - ', name) AS label FROM magazine WHERE name LIKE '$escapequery%'
+		SELECT CONCAT('m', magazine.id, ' - ', name) AS label FROM magazine WHERE name LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('g', sce.id, ' - ', title) AS label FROM sce WHERE title LIKE '$escapequery%'
+		SELECT CONCAT('g', sce.id, ' - ', title) AS label FROM sce WHERE title LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$escapequery%'
+		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
 		UNION
-		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(surname,' ',firstname) LIKE '$escapequery%'
+		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
 	print json_encode( $refs );

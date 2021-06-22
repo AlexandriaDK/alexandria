@@ -46,6 +46,10 @@ foreach($chars AS $char) {
 	}
 }
 
+if ( $b != '#' && ! in_array($b, $chars) ) {
+	$b = 'a';
+}
+
 if ( $b != '#') {
 	$persons = getall("SELECT id, firstname, surname FROM aut WHERE $orderfield LIKE '$b%' ORDER BY $orderby");
 } else {

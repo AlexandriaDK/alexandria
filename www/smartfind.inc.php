@@ -110,10 +110,10 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 // Let's try to match a part of the text
 // if the text is long this is an okay match ("b" match) - otherwise it's mediocre ("c" match)
 	if (strlen($find) >= 3) {
-		$r = getcol("SELECT $idfield AS id FROM $table WHERE $string LIKE '%".dbesc($find)."%' $whereextend");
+		$r = getcol("SELECT $idfield AS id FROM $table WHERE $string LIKE '%".likeesc($find)."%' $whereextend");
 		$match['b'] = $r;
 	} elseif (strlen($find) >= 1 && strlen($find) < 3) {
-		$r = getcol("SELECT $idfield AS id FROM $table WHERE $string LIKE '%".dbesc($find)."%' $whereextend");
+		$r = getcol("SELECT $idfield AS id FROM $table WHERE $string LIKE '%".likeesc($find)."%' $whereextend");
 		$match['c'] = $r;
 	}
 

@@ -47,15 +47,15 @@ if (preg_match("/^([csgpfat#]|cs)(\d+)$/i",$find,$regs)) {
 }
 
 $r1 = getall("
-	(SELECT id, title, 0 AS alias FROM sce WHERE title LIKE '%".dbesc($find)."%')
+	(SELECT id, title, 0 AS alias FROM sce WHERE title LIKE '%".likeesc($find)."%')
 	UNION
-	(SELECT data_id, label AS title, 1 AS alias FROM alias WHERE label LIKE '%".dbesc($find)."%' AND category = 'sce')
+	(SELECT data_id, label AS title, 1 AS alias FROM alias WHERE label LIKE '%".likeesc($find)."%' AND category = 'sce')
 	ORDER BY title
 ");
 $r2 = getall("
-	(SELECT id, CONCAT(firstname,' ',surname) AS name, 0 AS alias FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '%".dbesc($find)."%')
+	(SELECT id, CONCAT(firstname,' ',surname) AS name, 0 AS alias FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '%".likeesc($find)."%')
 	UNION
-	(SELECT data_id, label AS name, 1 AS alias FROM alias WHERE label LIKE '%".dbesc($find)."%' AND category = 'aut')
+	(SELECT data_id, label AS name, 1 AS alias FROM alias WHERE label LIKE '%".likeesc($find)."%' AND category = 'aut')
 	ORDER BY name
 ");
 
@@ -93,7 +93,7 @@ foreach($r2 AS list($id, $name, $alias) ) {
 }
 if ($antal == 0) print "&nbsp;&nbsp;None<br>";
 
-print "<br><a href=\"{$_SERVER['HTTP_REFERER']}\">Back</a><br>";
+print "<br><a href=\"" . htmlspecialchars( $_SERVER['HTTP_REFERER'] ) ."\">Back</a><br>";
 
 ?>
 </body>

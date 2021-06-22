@@ -39,8 +39,8 @@ function search_articles($find) {
 		FROM article a
 		INNER JOIN issue i ON a.issue_id = i.id
 		INNER JOIN magazine m ON i.magazine_id = m.id 
-		WHERE a.title LIKE '%".dbesc($find)."%'
-		OR a.description LIKE '%".dbesc($find)."%'
+		WHERE a.title LIKE '%".likeesc($find)."%'
+		OR a.description LIKE '%".likeesc($find)."%'
 		ORDER BY m.name, i.title, a.title, i.id
 	";
 	$articles = getall($sql);
@@ -125,7 +125,7 @@ function search_blogposts ($find) {
 		SELECT a.id, a.feed_id, a.title, a.link, a.pubdate, a.content, SUBSTRING(a.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.owner, b.name
 		FROM feedcontent a
 		INNER JOIN feeds b ON a.feed_id = b.id
-		WHERE a.content LIKE '%".dbesc($find)."%'
+		WHERE a.content LIKE '%".likeesc($find)."%'
 		ORDER BY a.pubdate DESC
 	";
 	$result = getall($sql);
@@ -149,9 +149,9 @@ function search_blogposts ($find) {
 
 function search_tags ($find) {
 	$sql = "
-		(SELECT tag FROM tag WHERE tag LIKE '%" . dbesc($find) . "%')
+		(SELECT tag FROM tag WHERE tag LIKE '%" . likeesc($find) . "%')
 		UNION
-		(SELECT DISTINCT tag FROM tags WHERE tag LIKE '%" . dbesc($find) . "%' ORDER BY tag)
+		(SELECT DISTINCT tag FROM tags WHERE tag LIKE '%" . likeesc($find) . "%' ORDER BY tag)
 	";
 	$result = getall($sql);
 	if (!$result) return false;
@@ -336,7 +336,7 @@ if ($find) {
 				SELECT sce.id
 				FROM sce
 				INNER JOIN game_description ON sce.id = game_description.game_id
-				WHERE game_description.description LIKE '%".dbesc($search_description)."%'
+				WHERE game_description.description LIKE '%".likeesc($search_description)."%'
 				AND sce.id IN (".implode(",",$match['sce']).")
 				GROUP BY sce.id
 			";

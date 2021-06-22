@@ -3,18 +3,20 @@ require("./connect.php");
 require("./base.inc.php");
 $output = "";
 
+$likesearch = likeesc((string) $_REQUEST['q']);
+
 if ($_REQUEST['action'] == "lookup") {
 	if ($_REQUEST['q']) {
 		$query = "
-			SELECT id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '{$_REQUEST['q']}%'
+			SELECT id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, CONCAT(surname,', ',firstname) AS label, 'aut' AS type, 'person' AS linkpart FROM aut WHERE CONCAT(surname,', ',firstname) LIKE '{$_REQUEST['q']}%'
+			SELECT id, CONCAT(surname,', ',firstname) AS label, 'aut' AS type, 'person' AS linkpart FROM aut WHERE CONCAT(surname,', ',firstname) LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, title AS label, 'sce' AS type, 'scenarie' AS linkpart FROM sce WHERE title LIKE '{$_REQUEST['q']}%'
+			SELECT id, title AS label, 'sce' AS type, 'scenarie' AS linkpart FROM sce WHERE title LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, name AS label, 'sys' AS type, 'system' AS linkpart FROM sys WHERE name LIKE '{$_REQUEST['q']}%'
+			SELECT id, name AS label, 'sys' AS type, 'system' AS linkpart FROM sys WHERE name LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart FROM convent WHERE name LIKE '{$_REQUEST['q']}%' OR CONCAT(name,' (',year,')') LIKE '{$_REQUEST['q']}%' OR CONCAT(name,' ',year) LIKE '{$_REQUEST['q']}%'
+			SELECT id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart FROM convent WHERE name LIKE '$likesearch%' OR CONCAT(name,' (',year,')') LIKE '$likesearch%' OR CONCAT(name,' ',year) LIKE '$likesearch%'
 			ORDER BY label
 			
 		";
