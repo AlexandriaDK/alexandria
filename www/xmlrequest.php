@@ -42,7 +42,9 @@ if ($_REQUEST['action'] == "lookup") {
 		// achievements
 		if ($_REQUEST['category'] == 'sce') {
 			list($sys_id, $boardgame) = getrow("SELECT sys_id, boardgame FROM sce WHERE id = " . (int) $_REQUEST['data_id'] );
-			list($fanboy_count) = getone("SELECT COUNT(*), user_id, GROUP_CONCAT(sce_id), asrel.aut_id FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+			// list($fanboy_count) = getone("SELECT COUNT(*), user_id, GROUP_CONCAT(sce_id), asrel.aut_id FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+			$fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+			$polandsce = getcol("SELECT DISTINCT sce_id FROM scerun WHERE country = 'pl'");
 			if ($_REQUEST['type'] == 'read') {
 				award_achievement(3);
 			}	
@@ -61,7 +63,6 @@ if ($_REQUEST['action'] == "lookup") {
 			if ($fanboy_count) {
 				award_achievement(89); // played at least 10 scenarios written by the same author
 			}
-			$polandsce = [4002, 4279, 4884];
 			if (in_array($_REQUEST['data_id'], $polandsce) ) { 
 				award_achievement(95); // attend scenario in Poland
 			}
