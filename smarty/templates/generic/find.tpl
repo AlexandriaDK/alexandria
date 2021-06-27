@@ -75,7 +75,7 @@
 	{$find_blogposts}
 {/if}
 
-{if ! $find_aut && ! $find_sce && ! $find_convent && ! $find_sys && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_issues}
+{if ! $find_aut && ! $find_sce && ! $find_convent && ! $find_sys && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_articles}
 	<p class="nomatch">
 		{$_find_nomatch}
 	</p>
