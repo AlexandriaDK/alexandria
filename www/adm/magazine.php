@@ -531,7 +531,7 @@ if ($magazine_id && $issue_id) {
 	      '<input type="hidden" name="action" value="addmagazine">';
 	print "<tr valign=\"top\">\n".
 	      '<td style="text-align:right;">New</td>'.
-	      '<td><input type="text" name="name" value="" size=40 maxlength=150 autofocus></td>'.
+	      '<td><input type="text" name="name" value="" size=40 maxlength=150></td>'.
 	      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
 		  '<td><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;"></textarea></td>'.
 	      '<td colspan=2><input type="submit" name="do" value="Create"></td>'.
