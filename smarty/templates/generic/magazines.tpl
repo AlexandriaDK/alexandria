@@ -61,6 +61,7 @@
 	<tr>
 	{if not isset($lastid) || $row.id != $lastid}
 	<td class="page">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
+	<td>{$row.articletype|escape}</td>
 	<td {if $row.contributorcount > 1} rowspan="{$row.contributorcount}"{/if}>
 	{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}
 	{if $row.description}<br><span class="description">{$row.description|escape|textlinks|nl2br}</span>{/if}
@@ -68,7 +69,7 @@
 	{foreach $row.references AS $reference}{$reference} {/foreach}</div></td>
 	{/if}
 	{else}
-	<td></td>
+	<td colspan="2"></td>
 	{/if}
 	<td class="contributor">
 		{if $row.aut_id}

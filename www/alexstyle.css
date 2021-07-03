@@ -811,7 +811,7 @@ table.magazinecontent td.page {
 	text-align: right;
 }
 
-table.magazinecontent td.page, table.magazinecontent td.contributor, table.magazinecontent td.role {
+table.magazinecontent td.page, table.magazinecontent td.contributor, table.magazinecontent td.role, table#personarticles td.magazine, table#gamearticles td.magazine {
 	white-space: nowrap;
 }
 
