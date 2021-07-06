@@ -560,7 +560,7 @@ print "</tr>\n\n";
 
 ### Board game? ###
 
-print "<tr valign=top><td>Board&nbsp;game?</td>";
+print "<tr><td>Board&nbsp;game?</td>";
 print "<td>\n";
 print "<input type=\"checkbox\" name=\"boardgame\" " . ($boardgame ? "checked=\"checked\"" : "") . "/>\n";
 print "</td>\n";
@@ -569,19 +569,18 @@ print "</tr>\n\n";
 
 ### System? ###
 
-print "<tr valign=top><td>RPG System</td>";
+print "<tr><td>RPG System</td>";
 print "<td>\n";
-print "<select name=\"sys_id\">\n";
+print "<select name=\"sys_id\" id=\"sys_id\">\n";
 
 foreach ($sys AS $id => $name) {
 	$selected = ($id == $sys_id ? "selected" : "");
 	print "<option value=\"$id\" $selected>" . htmlspecialchars($name) . "</option>" . PHP_EOL;
 }
 print "</select>\n";
+print '(<span onclick="document.getElementById(\'sys_id\').value=73; return false;" title="Set system to LARP" style="text-decoration-line: underline; text-decoration-style: dashed; cursor: pointer;">← LARP</span>) ';
 print "- possible note: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
-
 print "</td>";
-
 print "</tr>\n\n";
 
 ### persons ###
