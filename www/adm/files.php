@@ -78,13 +78,14 @@ if ( $action == 'uploadfile' &&
 	$upload_path = DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/" . $basename;
 	$upload_dir = dirname($upload_path);
 	if (!is_dir($upload_dir) ) {
-		mkdir($upload_dir, 0755);
+		mkdir($upload_dir, 0775);
 	}
 	if (file_exists($upload_path) ) {
 		$_SESSION['admin']['info'] = "Error: A file with this file name already exists";
 	} elseif ($_FILES['file']['error']) {
 		$_SESSION['admin']['info'] = "Error during upload. Error code: " . $_FILES['file']['error'];
 	} elseif (move_uploaded_file($_FILES['file']['tmp_name'], $upload_path) ) {
+		chmod($upload_path, 0664);
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"File uploaded: " . $basename);
 	} else {
@@ -106,7 +107,7 @@ if ( $action == 'uploadfile' &&
 	$upload_dir = dirname($upload_path);
 	$pathinfo = pathinfo($upload_path);
 	if (!is_dir($upload_dir) ) {
-		mkdir($upload_dir, 0755);
+		mkdir($upload_dir, 0775);
 	}
 	if (!in_array($urldata['scheme'], $allowed_schemes ) ) {
 		$_SESSION['admin']['info'] = "Error: Not a valid URL";
@@ -117,6 +118,7 @@ if ( $action == 'uploadfile' &&
 	} elseif (!copy($remoteurl, $upload_path) ) {
 		$_SESSION['admin']['info'] = "Unknown error when transferring file: " . error_get_last()['message'];
 	} else {
+		chmod($upload_path, 0664);
 		$_SESSION['admin']['info'] = "The file has been uploaded.";
 		chlog($data_id,$category,"File remote uploaded: " . $remoteurl);
 		$remoteurl = "";
