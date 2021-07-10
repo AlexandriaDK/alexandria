@@ -384,7 +384,7 @@ if ($data_id && $category) {
 		print "<br />\n";
 	}
 	print "</td><td>";
-	$descriptions = ['{$_sce_file_scenario}' => "Scenario", '{$_sce_file_characters}' => "Characters", '{$_sce_file_handouts}' => "Handouts", '{$_sce_file_rules}' => "Rules", '{$_sce_file_programme}' => "Programme" ];
+	$descriptions = ['{$_sce_file_scenario}' => "Scenario", '{$_sce_file_characters}' => "Characters", '{$_sce_file_handouts}' => "Handouts", '{$_sce_file_rules}' => "Rules", '{$_sce_file_programme}' => "Programme", '{$_sce_file_pamphlet}' => "Pamphlet" ];
 	foreach( $descriptions AS $templatecode => $label ) {
 		print '<div class="descriptionexamples">';
 		print "<a href=\"#\" onclick=\"document.getElementById('newdescription').value=this.title;\" title=\"" . htmlspecialchars( $templatecode ) . "\">";
