@@ -195,7 +195,7 @@ if ($action == "changearticle" && $do != "Delete") {
 		insertReferences($references, $article_id);
 		chlog($issue_id,'issue',"Article updated: $article_id - $title");
 	}
-	$_SESSION['admin']['info'] = "Article updated! " . dberror();
+	$_SESSION['admin']['info'] = "Article $article_id updated! " . dberror();
 	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
 }
 
