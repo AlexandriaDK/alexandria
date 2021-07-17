@@ -41,18 +41,20 @@ function search_articles($find) {
 		INNER JOIN magazine m ON i.magazine_id = m.id 
 		WHERE a.title LIKE '%".likeesc($find)."%'
 		OR a.description LIKE '%".likeesc($find)."%'
-		ORDER BY m.name, i.title, a.title, i.id
+		ORDER BY m.name, i.releasedate, i.title, a.title, i.id
 	";
 	$articles = getall($sql);
 	if (!$articles) return false;
-	$output = "<ul>";
+	$output = "<ul>" . PHP_EOL;
 	foreach ($articles AS $article) {
 		$output .= "<li>" .
 		getdatahtml('issue',$article['issueid'],getentry('issue',$article['issueid'], FALSE, TRUE ) ) .
-		"<ul><li>" . textlinks(htmlspecialchars($article['title'] . ($article['description'] ? ' - ' . $article['description'] : '') ) ) . " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($article['page']) . ')</li></ul>';
-		"</li>";
+		"<ul><li>" . textlinks(htmlspecialchars($article['title'] . ($article['description'] ? ' - ' . $article['description'] : '') ) ) .
+		($article['page'] ? " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($article['page']) . ')' : '') .
+		'</li></ul>' .
+		'</li>' . PHP_EOL;
 	}
-	$output .= "</ul>";
+	$output .= "</ul>" . PHP_EOL;
 	return $output;
 }
 
