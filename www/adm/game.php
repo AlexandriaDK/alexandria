@@ -535,7 +535,7 @@ foreach($descriptions AS $d) {
 	$inputhtml .= "<div id=\"d-" . $dcount . "\" style=\"padding: 4px;\">" . PHP_EOL;
 	$inputhtml .= "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][language]\" value=\"" . htmlspecialchars($d['language']) . "\">" . PHP_EOL;
 	$inputhtml .= "<input type=\"hidden\" name=\"descriptions[" . $dcount . "][note]\" value=\"" . htmlspecialchars($d['note']) . "\">" . PHP_EOL;
-	$inputhtml .= "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>\n" . htmlspecialchars($d['description']) . PHP_EOL . "</textarea>" . PHP_EOL;
+	$inputhtml .= "<textarea name=\"descriptions[" . $dcount . "][description]\" style=\"width: 100%;\" rows=10>" . htmlspecialchars($d['description']) . PHP_EOL . "</textarea>" . PHP_EOL;
 	$inputhtml .= "</div>" . PHP_EOL . PHP_EOL;
 
 }
