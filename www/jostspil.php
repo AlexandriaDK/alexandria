@@ -108,7 +108,7 @@ if ($mainperson && $subperson) {
 				WHERE
 					t1.aut_id IN ($inlist) AND
 					t2.aut_id NOT IN ($notlist) AND
-					t1.tit_id = 1 AND t2.tit_id = 1
+					t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
 				GROUP BY
 					link
 				ORDER BY
@@ -144,7 +144,8 @@ if ($mainperson && $subperson) {
 				LEFT JOIN convent ON convent.id = csrel.convent_id
 				WHERE
 					t1.aut_id IN ($inlist) AND
-					t2.aut_id NOT IN ($notlist)
+					t2.aut_id NOT IN ($notlist) AND
+					t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
 				GROUP BY
 					link
 				ORDER BY
