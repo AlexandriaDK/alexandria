@@ -25,8 +25,8 @@ if ( $action ) {
 // valid user
 
 // Get id or text
-$role = (string) $_REQUEST['role'];
-$aut_text = (string) $_REQUEST['aut_text'];
+$role = trim((string) $_REQUEST['role']);
+$aut_text = trim((string) $_REQUEST['aut_text']);
 $aut_id = (int) $aut_text;
 $aut_extra = "";
 if (!$aut_id) {
