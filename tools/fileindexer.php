@@ -32,6 +32,7 @@ function getdirfromcategory($category) {
 		"conset" => "conset",
 		"tag" => "tag",
 		"issue" => "issue",
+		"sys" => "system",
 	];
 	return $paths[$category];
 }

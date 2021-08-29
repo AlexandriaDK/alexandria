@@ -12,7 +12,6 @@ if (file_exists($fileondisk) ) {
 	$referer = $_SERVER['HTTP_REFERER'];
 	list($file_id) = getrow("SELECT id FROM files WHERE category = '$category' AND data_id = '$data_id'");
 	doquery("INSERT INTO filedownloads (files_id, data_id, category, accesstime, referer) VALUES ('$file_id','$data_id','$category',NOW(),'".dbesc($referer)."')");
-	#header("Location: http://download.alexandria.dk/files".$_SERVER['PATH_INFO']);
 
 	// achievements
 	if ($category == 'sce') {
