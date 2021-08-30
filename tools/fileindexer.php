@@ -25,18 +25,6 @@ if (! is_dir(ALEXFILEPATH) ) {
 	die("Directory does not exist: " . ALEXFILEPATH);
 }
 
-function getdirfromcategory($category) {
-	$paths = [
-		"sce" => "scenario",
-		"convent" => "convent",
-		"conset" => "conset",
-		"tag" => "tag",
-		"issue" => "issue",
-		"sys" => "system",
-	];
-	return $paths[$category];
-}
-
 function checkArchiveFile($path) {
 	if (substr($path, -1) == '/') return false; // directory
 	if (substr($path, 0, 9) == '__MACOSX/') return false; // Mac resource forks
@@ -45,7 +33,7 @@ function checkArchiveFile($path) {
 }
 
 function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
-	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
 	if ($tmpfile) {
 		$filepathoriginal = $filepath;
 		$filepath = $tmpfile;
@@ -115,7 +103,7 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 }
 
 function OCRFile($file) {
-	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
 	$languages = [
 		'da' => 'dan',
 		'en' => 'eng',
@@ -138,7 +126,7 @@ function OCRFile($file) {
 
 	$lang = $languages[$file['language']] ?? 'eng';
 	$langparm = "-l $lang";
-	$filepath = ALEXFILEPATH . getdirfromcategory($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
 	$command = "ocrmypdf -s $langparm '$filepath' '$filepath' 2>&1";
 	print "Command: " . $command . PHP_EOL;
 	$result = `$command`;
