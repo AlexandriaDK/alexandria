@@ -27,8 +27,8 @@ function loadData() {
     a = [];
     license = data.license;
     access = data.access;
-    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines'];
-    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia'];
+    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines', 'issues', 'articles'];
+    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference' ];
     categories_with_ids.forEach(function(category) {
         a[category] = {};
         for (element of data.result[category]) {
@@ -42,6 +42,7 @@ function loadData() {
     $("#menu").show();
     $("#currentdatainfo").text("This data set is from the following date: " + niceDate(data.request.received))
 //    data = null; // Free up memory
+    showContent('');
 }
 
 function showContent(html) {
@@ -155,11 +156,6 @@ function showConventions(data) {
     html += '</table>';
     showContent(html);
     onlineLink('data?conset=' + id);
-}
-
-function showRPGSystems() {
-    showCategoryList('RPG Systems', 'systems', 'rpgsystem', 'system', 'name');
-    onlineLink('systemer');
 }
 
 function showRPGSystems() {
@@ -439,8 +435,8 @@ function showGame(data) {
         html += '<h3>By</h3>';
         html += '<ul>';
         for (element of persons) {
-            pid = element.person_id;
-            html += makeLink('person', 'person', element.person_id, a.persons[pid].firstname + ' ' + a.persons[pid].surname, a.titles[element.title_id].title + (element.note ? ' (' + esc(element.note) + ')' : '' ) );
+            var pid = element.person_id;
+            html += makeLink('person', 'person', pid, a.persons[pid].firstname + ' ' + a.persons[pid].surname, a.titles[element.title_id].title + (element.note ? ' (' + esc(element.note) + ')' : '' ) );
         }
         html += '</ul>';
     }
@@ -532,15 +528,101 @@ function showTag(data) {
 function showMagazine(data) {
     var id = data.target.dataset.id;
     var magazine = a.magazines[id];
+    var issues = [];
+    for (var issue in a.issues) { issues.push(a.issues[issue]); }
+    issues = issues.filter(i => i.magazine_id == id )
+
     var html = '';
     html += '<h2>' + esc(magazine.name) + '</h2>';
     html += getDescription(magazine.description);
+    if (issues.length > 0) {
+        issues.sort(function(x,y) {
+            return (x.releasedate > y.releasedate);
+        });
+        html += '<h3>Issues</h3><ul>';
+        for (issue of issues) {
+            html += makeLink('issue', 'issue', issue.id, issue.title + (issue.releasetext ? ', ' + issue.releasetext : ''))
+        }
+        html += '</ul>';
+    }
 
     showContent(html);
 }
 
 function showIssue(data) {
+    var id = data.target.dataset.id;
+    var issue = a.issues[id];
+    var magazinename = a.magazines[issue.magazine_id].name;
+    var title = magazinename + ': ' + issue.title + (issue.releasetext ? ', ' + issue.releasetext : '');
+    var allarticles = [];
+    for (var article in a.articles) { allarticles.push(a.articles[article]); }
+    var articles = allarticles.filter(i => i.issue_id == id && (i.title || i.page) );
+    var colophones = allarticles.filter(i => i.issue_id == id && ! (i.title || i.page) );
 
+    var html = '';
+    html += '<h2>' + esc(title) + '</h2>';
+
+    if (colophones.length) {
+        html += '<h3>Colophon</h3>';
+        html += '<table>';
+        for (colophon of colophones) {
+            var contributors = a.contributors.filter(c => c.article_id == colophon.id);
+            for (var contributor of contributors) {
+                var pid = contributor.person_id;
+                html += '<tr><td class="issuerole">' + esc(contributor.role) + '</td>';
+                html += '<td>';
+                if (pid) {
+                    html += makeLink('person', 'person', pid, a.persons[pid].firstname + ' ' + a.persons[pid].surname, '', false );
+                } else {
+                    html += esc(contributor.person_extra);
+                }
+                html += '</td></tr>';
+
+            }
+        }
+        html += '</table>';
+    }
+
+    if (articles.length) {
+        html += '<h3>Articles</h3>';
+        html += '<table>';
+        for (article of articles) {
+            var contributors = a.contributors.filter(c => c.article_id == article.id);
+            var references = a.article_reference.filter(c => c.article_id == article.id);
+
+            html += '<tr>';
+            html += '<td class="page">'
+            if (article.page) { 
+                html += 'Page ' + article.page;
+            }
+            html += '</td>';
+            html += '<td>' + esc(article.articletype) + '</td>';
+            html += '<td>' + esc(article.title) + '<br><span class="articledescription">' +  getDescription(article.description, false) + '</span>';
+            if (references) {
+                html += '<br><span class="references">'
+                for (var reference of references) {
+                    html += linkFromReference(reference.category, reference.data_id) + ' ';
+                }
+                html += '</span>';
+            }
+            html += '</td>';
+            html += '<td>';
+            for (var contributor of contributors) {
+                var pid = contributor.person_id;
+                if (pid) {
+                    html += makeLink('person', 'person', pid, a.persons[pid].firstname + ' ' + a.persons[pid].surname, '(' + contributor.role + ')', false );
+                } else {
+                    html += esc(contributor.person_extra) + ' (' + contributor.role + ')';
+                }
+                html += '<br>';
+            }
+            html += '</td>';
+            html += '</tr>';
+        }
+        html += '</table>';
+    }
+
+    showContent(html);
 }
 
 function showSingleData(data) {
@@ -557,15 +639,21 @@ function showSingleData(data) {
     }
 }
 
-function getDescription(description) {
+function getDescription(description, p = true) {
     var html = '';
     if (description) {
-        html += '<p>' + esc(description).replace(/\n/g, '</br>'); + '</p>';
+        html += esc(description).replace(/\n/g, '</br>');
+    }
+    if (p) {
+        html = '<p>' + html + '</p>';
     }
     return html;
 }
 
 function esc (text) { // escape, replace templates and then parse [[[links]]]
+    if (! text) {
+        return '';
+    }
     text = text.replace(/[\"&<>]/g, function (a) {
         return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
     });
@@ -606,8 +694,11 @@ function onlineLink(parturl) {
     $('#onlinelink').html('<a href="' + url + '">Online version of current page</a>');
 }
 
-function makeLink(anchor, datatype, elementid, linktext, optional = '') {
-    var html = '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a> ' + esc(optional) + '</li>';
+function makeLink(anchor, datatype, elementid, linktext, optional = '', li = true) {
+    var html = '<a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a> ' + esc(optional);
+    if (li) {
+        html = '<li>' + html + '</li>';
+    }
     return html;
 }
 
@@ -654,7 +745,10 @@ function makeFileLink(data_id, category, filename, description, language) {
     var map = {
         'sce': 'scenario',
         'convent': 'convent',
-        'conset': 'conset'
+        'conset': 'conset',
+        'system': 'system',
+        'issue': 'issue',
+        'tag': 'tag',
     };
     var url = 'https://alexandria.dk/download/' + map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
     var html = '<li><a href="' + url + '">' + esc(description) + '</a> ' + (language ? '(' + esc(language) + ')' : '') + '</li>';
@@ -692,6 +786,26 @@ function makeConGameList(title, games) {
 
     return html;
 
+}
+
+function linkFromReference(category, id) {
+    if (category == 'game') {
+        return gameLink(id);
+    } else if (category == 'person') {
+        return personLink(id);
+    } else if (category == 'tag') {
+        return tagIdLink(id);
+    } else if (category == 'system') {
+        return RPGSystemLink(id);
+    } else if (category == 'convention') {
+        return conLink(id);
+    } else if (category == 'magazine') {
+        return magazineLink(id);
+    } else if (category == 'conset') {
+        return consetLink(id);
+    } else {
+        return '';
+    }
 }
 
 function typeLink(data_id, category, linktext, title = '', extraClass = '') {
@@ -733,8 +847,18 @@ function magazineLink(id, label = '') {
     return typeLink(id, 'magazine', (label ? label : a.magazine[id].name) );
 }
 
+function issueLink(id, label = '') {
+    return typeLink(id, 'issue', (label ? label : a.issue[id].title + (a.issue[id].releasetext ? ', ' + a.issue[id].releasetext : '') ) );
+}
+
 function tagLink(tag, text) {
     return typeLink(tag, 'tag', text);
+}
+
+function tagIdLink(tag_id) {
+    tag = a.tags[tag_id].tag;
+    console.log(tag_id, tag);
+    return typeLink(tag, 'tag', tag);
 }
 
 function downloadable(game_id) {
