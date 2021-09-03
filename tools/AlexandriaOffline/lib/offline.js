@@ -27,7 +27,7 @@ function loadData() {
     a = [];
     license = data.license;
     access = data.access;
-    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations'];
+    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines'];
     categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia'];
     categories_with_ids.forEach(function(category) {
         a[category] = {};
@@ -52,6 +52,8 @@ function showContent(html) {
     $('a[data-category="person"]').click(showPerson);
     $('a[data-category="system"]').click(showRPGSystem);
     $('a[data-category="tag"]').click(showTag);
+    $('a[data-category="magazine"]').click(showMagazine);
+    $('a[data-category="issue"]').click(showIssue);
 }
 
 function showPersons() {
@@ -137,7 +139,7 @@ function showConventions(data) {
 
     html = '<h2>' + esc(title) + '</h2>';
     if (conset.description) {
-        html += '<h3>About the convention:</h3><p>' + esc(conset.description).replace(/\n/g, '</br>'); + '</p>';
+        html += '<h3>About the convention:</h3>' + getDescription(conset.description);
     }
     html += makeFileSection(files, id, 'conset');
 
@@ -209,9 +211,7 @@ function showRPGSystem(data) {
     var html = '';
     html += '<h2>' + esc(system.name) + '</h2>';
     html += makeFileSection(files, id, 'system');
-    if (system.description) {
-        html += '<p>' + esc(system.description).replace(/\n/g, '</br>'); + '</p>';
-    }
+    html += getDescription(system.description);
     if (sysgames.length > 0) {
         sysgames.sort(function(x,y) {
             return (x.title > y.title ? 1 : -1);
@@ -252,6 +252,7 @@ function showRPGSystem(data) {
 }
 
 function showMagazines() {
+    showCategoryList('Magazines', 'magazines', 'magazines', 'magazine', 'name');
     return false;
 }
 
@@ -318,7 +319,7 @@ function showConvention(data) {
         html += '<h3 class="cancelnotice">This convention was cancelled.</h3>';
     }
     if (con.description) {
-        html += '<h3>About the convention:</h3><p>' + esc(con.description).replace(/\n/g, '</br>'); + '</p>';
+        html += '<h3>About the convention:</h3>' + getDescription(con.description);
     }
     html += makeFileSection(files, id, 'convent');
     html += makeConGameList('Scenarios', scenarios);
@@ -451,7 +452,7 @@ function showGame(data) {
                 html += '<hr>';
                 html += "<h4>" + esc(description.language) + "</h4>";
             }
-            html += '<p>' + esc(description.description).replace(/\n/g, '</br>');
+            html += getDescription(description.description);
         }
     }
     if (cons.length > 0) {
@@ -487,9 +488,7 @@ function showTag(data) {
     var html = '';
     html += '<h2>' + esc(tagname) + '</h2>';
     html += makeFileSection(files, id, 'tag');
-    if (tag.description) {
-        html += '<p>' + esc(tag.description).replace(/\n/g, '</br>'); + '</p>';
-    }
+    html += getDescription(tag.description);
     if (taggames.length > 0) {
         taggames.sort(function(x,y) {
             return (x.title > y.title ? 1 : -1);
@@ -530,6 +529,20 @@ function showTag(data) {
     return false;
 }
 
+function showMagazine(data) {
+    var id = data.target.dataset.id;
+    var magazine = a.magazines[id];
+    var html = '';
+    html += '<h2>' + esc(magazine.name) + '</h2>';
+    html += getDescription(magazine.description);
+
+    showContent(html);
+}
+
+function showIssue(data) {
+
+}
+
 function showSingleData(data) {
     id = data.target.dataset.id;
     type = data.target.dataset.type;
@@ -543,6 +556,15 @@ function showSingleData(data) {
         showRPGSystem(data);
     }
 }
+
+function getDescription(description) {
+    var html = '';
+    if (description) {
+        html += '<p>' + esc(description).replace(/\n/g, '</br>'); + '</p>';
+    }
+    return html;
+}
+
 function esc (text) { // escape, replace templates and then parse [[[links]]]
     text = text.replace(/[\"&<>]/g, function (a) {
         return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
@@ -554,7 +576,7 @@ function esc (text) { // escape, replace templates and then parse [[[links]]]
 
 function bracketTemplate(text) {
     var text = text.replace(/\[\[\[(c|s|p|cs|sys)(\d+)\|([^\]]+)\]\]\]/g, bracketSections);
-    var text = text.replace(/\[\[\[tag\|([^\]]+)\]\]\]/g, bracketTagSections);
+    var text = text.replace(/\[\[\[tag\|([^|\]]+)(?:\|([^\]]+))?\]\]\]/g, bracketTagSections);
     return text;
 }
 
@@ -573,8 +595,8 @@ function bracketSections(match, category, data_id, label) {
     return match;
 }
 
-function bracketTagSections(match, tag) {
-    return tagLink(tag);
+function bracketTagSections(match, tag, text) {
+    return tagLink(tag, text || tag);
 }
 
 function onlineLink(parturl) {
@@ -705,8 +727,8 @@ function RPGSystemLink(id, label = '') {
     return typeLink(id, 'system', (label ? label : a.systems[id].name ) );
 }
 
-function tagLink(tag) {
-    return typeLink(tag, 'tag', tag);
+function tagLink(tag, text) {
+    return typeLink(tag, 'tag', text);
 }
 
 function downloadable(game_id) {
