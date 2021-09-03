@@ -126,6 +126,8 @@ function showConventions(data) {
     var conset = a.conventionsets[id]
     var category = 'conventions';
     var title = 'Conventions for ' + esc(conset.name);
+    var links = a.links.filter(rel => rel.data_id == id && rel.category == 'conset');
+    var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'conset');
     var files = a.files.filter(rel => rel.data_id == id && rel.category == 'conset');
 
     var list = [];
@@ -154,6 +156,11 @@ function showConventions(data) {
         html += '</tr>';
     }
     html += '</table>';
+
+    html += makeTriviaSection(trivia);
+    html += makeLinkSection(links);
+    html += makeArticleReferenceSection('conset', id);
+
     showContent(html);
     onlineLink('data?conset=' + id);
 }
@@ -193,6 +200,38 @@ function showTags() {
     html += '</ul>';
     showContent(html);
     onlineLink('tags');
+}
+
+function showMagazines() {
+    showCategoryList('Magazines', 'magazines', 'magazines', 'magazine', 'name');
+    return false;
+}
+
+function showCategoryList(title, category, anchor, datatype, label, unique = false) {
+    if (sortcache[category]) {
+        var list = sortcache[category];
+    } else {
+        var list = [];
+        for (var element in a[category]) {
+            list.push(a[category][element]);
+        }
+        list.sort(function(a,b) {
+            return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
+        });
+        sortcache[category] = list;
+    }
+    html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
+    var seen = {};
+    for (element of list) {
+        if (! seen[element[label]] ) {
+            html += '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
+        }
+        if (unique) {
+            seen[element[label]] = true;
+        }
+    }
+    html += '</ul>';
+    showContent(html);
 }
 
 function showRPGSystem(data) {
@@ -242,41 +281,9 @@ function showRPGSystem(data) {
 
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
-
+    html += makeArticleReferenceSection('system', id);
     showContent(html);
     onlineLink('data?system=' + id);
-}
-
-function showMagazines() {
-    showCategoryList('Magazines', 'magazines', 'magazines', 'magazine', 'name');
-    return false;
-}
-
-function showCategoryList(title, category, anchor, datatype, label, unique = false) {
-    if (sortcache[category]) {
-        var list = sortcache[category];
-    } else {
-        var list = [];
-        for (var element in a[category]) {
-            list.push(a[category][element]);
-        }
-        list.sort(function(a,b) {
-            return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
-        });
-        sortcache[category] = list;
-    }
-    html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
-    var seen = {};
-    for (element of list) {
-        if (! seen[element[label]] ) {
-            html += '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
-        }
-        if (unique) {
-            seen[element[label]] = true;
-        }
-    }
-    html += '</ul>';
-    showContent(html);
 }
 
 function showConvention(data) {
@@ -334,6 +341,7 @@ function showConvention(data) {
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
+    html += makeArticleReferenceSection('convention', id);
 
     showContent(html);
     onlineLink('data?con=' + id);
@@ -387,6 +395,7 @@ function showPerson(data) {
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
+    html += makeArticleReferenceSection('person', id);
 
     showContent(html);
     onlineLink('data?person=' + id);
@@ -462,6 +471,7 @@ function showGame(data) {
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
+    html += makeArticleReferenceSection('game', id);
 
     showContent(html);
     onlineLink('data?scenarie=' + id);
@@ -519,6 +529,7 @@ function showTag(data) {
 
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
+    html += makeArticleReferenceSection('tag', id);
 
     showContent(html);
     onlineLink('data?tag=' + esc(tagname));
@@ -545,6 +556,7 @@ function showMagazine(data) {
         }
         html += '</ul>';
     }
+    html += makeArticleReferenceSection('magazine', id);
 
     showContent(html);
 }
@@ -622,6 +634,8 @@ function showIssue(data) {
         html += '</table>';
     }
 
+    html += makeArticleReferenceSection('issue', id);
+
     showContent(html);
 }
 
@@ -664,7 +678,7 @@ function esc (text) { // escape, replace templates and then parse [[[links]]]
 
 function bracketTemplate(text) {
     var text = text.replace(/\[\[\[(c|s|p|cs|sys|m)(\d+)\|([^\]]+)\]\]\]/g, bracketSections);
-    var text = text.replace(/\[\[\[tag\|([^|\]]+)(?:\|([^\]]+))?\]\]\]/g, bracketTagSections);
+    var text = text.replace(/\[\[\[(?:t|tag)\|([^|\]]+)(?:\|([^\]]+))?\]\]\]/g, bracketTagSections);
     return text;
 }
 
@@ -752,6 +766,28 @@ function makeFileLink(data_id, category, filename, description, language) {
     };
     var url = 'https://alexandria.dk/download/' + map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
     var html = '<li><a href="' + url + '">' + esc(description) + '</a> ' + (language ? '(' + esc(language) + ')' : '') + '</li>';
+    return html;
+}
+
+function makeArticleReferenceSection(category, data_id) {
+    var references = a.article_reference.filter(rel => rel.data_id == data_id && rel.category == category);
+    if (references.length == 0) {
+        return '';
+    }
+    var html = '<h3>Referenced in the following articles</h3>';
+    html += '<table>';
+    for (var reference of references) {
+        var article = a.articles[reference.article_id];
+        var issue = a.issues[article.issue_id];
+        var magazine = a.magazines[issue.magazine_id];
+        html += '<tr>';
+        html += '<td>' + esc(article.title) + '</td>';
+        html += '<td class="page">' + (article.page ? 'Page ' + article.page : '') + '</td>';
+        html += '<td>' + makeLink('issue', 'issue', issue.id, issue.title, issue.releasetext, false) + '</td>';
+        html += '<td>' + makeLink('magazine', 'magazine', magazine.id, magazine.name, '', false) + '</td>';
+        html += '</tr>';
+    }
+    html += '</table>';
     return html;
 }
 
@@ -844,7 +880,7 @@ function RPGSystemLink(id, label = '') {
 }
 
 function magazineLink(id, label = '') {
-    return typeLink(id, 'magazine', (label ? label : a.magazine[id].name) );
+    return typeLink(id, 'magazine', (label ? label : a.magazines[id].name) );
 }
 
 function issueLink(id, label = '') {
@@ -856,8 +892,8 @@ function tagLink(tag, text) {
 }
 
 function tagIdLink(tag_id) {
-    tag = a.tags[tag_id].tag;
-    console.log(tag_id, tag);
+    tag = a.tags.filter(rel => rel.id == tag_id)[0].tag;
+//    tag = a.tags[tag_id].tag;
     return typeLink(tag, 'tag', tag);
 }
 
