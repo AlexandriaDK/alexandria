@@ -768,6 +768,18 @@ function getSystems() {
     });
 }
 
+function getTags() {
+    return getCache('tags', function(a,b) {
+        return (a.name > b.name ? 1 : -1);
+    });
+}
+
+function getTagsUsed() {
+    return getCache('gametags', function(a,b) {
+        return (a.name > b.name ? 1 : -1);
+    });
+}
+
 function search() {
     var search = $('#searchtext').val()
     if (search === '') {
@@ -780,6 +792,17 @@ function search() {
     result.boardgames = getBoardgames().filter(p => (p.title).toUpperCase().includes(searchUpper) );
     result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) || (a.conventionsets[p.conset_id].name + ' ' + p.year).toUpperCase().includes(searchUpper)  );
     result.systems = getSystems().filter(p => (p.name).toUpperCase().includes(searchUpper) );
+    result.tags = [];
+    var tagsdefined = getTags().filter(p => (p.tag).toUpperCase().includes(searchUpper) );
+    var tagsused = getTagsUsed().filter(p => (p.tag).toUpperCase().includes(searchUpper) );
+    var resulttags = tagsdefined.concat(tagsused);
+    var seen = {};
+    for (thistag of resulttags) {
+        if (!seen[thistag.tag]) {
+            result.tags.push(thistag);
+        }
+        seen[thistag.tag] = true;
+    }
 
     var html = '<h2>Search result</h2>';
     if (result.persons.length > 0) {
@@ -817,7 +840,14 @@ function search() {
         }
         html += '</ul>';
     }
-    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length == 0 ) {
+    if (result.tags.length > 0) {
+        html += '<h3>Tags</h3><ul>';
+        for (element of result.tags) {
+            html += makeLink('tag', 'tag', element.tag, element.tag);
+        }
+        html += '</ul>';
+    }
+    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length + result.tags.length == 0 ) {
         html += 'Nothing found.'
     }
 
