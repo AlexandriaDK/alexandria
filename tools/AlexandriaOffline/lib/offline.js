@@ -14,6 +14,7 @@ function initialize() {
     $('a[href="#conventionsets"]').click(showConventionSets);
     $('a[href="#rpgsystems"]').click(showRPGSystems);
     $('a[href="#tags"]').click(showTags);
+    $('a[href="#magazines"]').click(showMagazines);
 
     $( "#search" ).submit(function( event ) {
         search( $('#searchtext').val() );
@@ -159,19 +160,30 @@ function showRPGSystems() {
     onlineLink('systemer');
 }
 
+function showRPGSystems() {
+    showCategoryList('RPG Systems', 'systems', 'rpgsystem', 'system', 'name');
+    onlineLink('systemer');
+}
+
 function showTags() {
     title = 'Tags';
     category = 'gametags';
     anchor = datatype = label = 'tag';
-    var list = [];
-    for (var element in a[category]) {
-        list.push(a[category][element]);
+    if (sortcache.tagslist) {
+        var list = sortcache.tagslist;
+    } else {
+        var list = [];
+        for (var element in a['gametags']) {
+            list.push(a['gametags'][element]);
+        }
+        for (var element in a['tags']) {
+            list.push(a['tags'][element]);
+        }
+        list.sort(function(a,b) {
+            return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
+        });
+        sortcache.tagslist = list;
     }
-    list.sort(function(a,b) {
-        return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
-    });
-    sortcache[category] = list;
-
     html = '<h2>' + esc(title) + '</h2><ul class="datalist">';
     var seen = {};
     for (element of list) {
@@ -237,6 +249,10 @@ function showRPGSystem(data) {
 
     showContent(html);
     onlineLink('data?system=' + id);
+}
+
+function showMagazines() {
+    return false;
 }
 
 function showCategoryList(title, category, anchor, datatype, label, unique = false) {
@@ -468,7 +484,6 @@ function showTag(data) {
     var links = a.links.filter(rel => rel.data_id == id && rel.category == 'tag');
     var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'tag');
     var taggames = a.gametags.filter(rel => rel.tag == tagname);
-    console.log(taggames);
     var html = '';
     html += '<h2>' + esc(tagname) + '</h2>';
     html += makeFileSection(files, id, 'tag');
