@@ -395,7 +395,8 @@ function showPerson(data) {
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
-    html += makeArticleReferenceSection('person', id);
+    html += makeArticleReferenceSection('person', id, 'contributor');
+    html += makeArticleReferenceSection('person', id, 'reference');
 
     showContent(html);
     onlineLink('data?person=' + id);
@@ -471,7 +472,8 @@ function showGame(data) {
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
-    html += makeArticleReferenceSection('game', id);
+    html += makeArticleReferenceSection('game', id, 'publishedgame');
+    html += makeArticleReferenceSection('game', id, 'reference');
 
     showContent(html);
     onlineLink('data?scenarie=' + id);
@@ -769,12 +771,28 @@ function makeFileLink(data_id, category, filename, description, language) {
     return html;
 }
 
-function makeArticleReferenceSection(category, data_id) {
-    var references = a.article_reference.filter(rel => rel.data_id == data_id && rel.category == category);
+function makeArticleReferenceSection(category, data_id, referencetype = 'reference') {
+    if (referencetype == 'reference') {
+        var references = a.article_reference.filter(rel => rel.data_id == data_id && rel.category == category);
+        var title = 'Referenced in the following articles';
+    } else if (referencetype == 'contributor') {
+        var references = a.contributors.filter(rel => rel.person_id == data_id);
+        var title = 'Articles';
+    } else if (referencetype == 'publishedgame') {
+        var references = [];
+        for (var article in a.articles) {
+            if (a.articles[article].game_id == data_id) {
+                var myarticle = a.articles[article];
+                myarticle['article_id'] = myarticle.id;
+                references.push(myarticle);
+            }
+        }
+        var title = 'Articles';
+    }
     if (references.length == 0) {
         return '';
     }
-    var html = '<h3>Referenced in the following articles</h3>';
+    var html = '<h3>' + esc(title) + '</h3>';
     html += '<table>';
     for (var reference of references) {
         var article = a.articles[reference.article_id];
