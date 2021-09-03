@@ -82,6 +82,11 @@ a.system:visited {
 	color: #009;
 }
 
+
+a.magazine:link, a.magazine:visited {
+	color: #808;
+}
+
 tr {
     vertical-align: top;
 }

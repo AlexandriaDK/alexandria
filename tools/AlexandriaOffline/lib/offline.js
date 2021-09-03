@@ -575,7 +575,7 @@ function esc (text) { // escape, replace templates and then parse [[[links]]]
 }
 
 function bracketTemplate(text) {
-    var text = text.replace(/\[\[\[(c|s|p|cs|sys)(\d+)\|([^\]]+)\]\]\]/g, bracketSections);
+    var text = text.replace(/\[\[\[(c|s|p|cs|sys|m)(\d+)\|([^\]]+)\]\]\]/g, bracketSections);
     var text = text.replace(/\[\[\[tag\|([^|\]]+)(?:\|([^\]]+))?\]\]\]/g, bracketTagSections);
     return text;
 }
@@ -591,6 +591,8 @@ function bracketSections(match, category, data_id, label) {
         return consetLink(data_id, label);
     } else if (category == 'sys') {
         return RPGSystemLink(data_id, label);
+    } else if (category == 'm') {
+        return magazineLink(data_id, label);
     }
     return match;
 }
@@ -725,6 +727,10 @@ function personLink(id, label = '') {
 
 function RPGSystemLink(id, label = '') {
     return typeLink(id, 'system', (label ? label : a.systems[id].name ) );
+}
+
+function magazineLink(id, label = '') {
+    return typeLink(id, 'magazine', (label ? label : a.magazine[id].name) );
 }
 
 function tagLink(tag, text) {
