@@ -343,7 +343,7 @@ printinfo();
 
 if ($magazine_id && $issue_id) {
 	$mainlink = "magazine.php?magazine_id=" . $magazine_id;
-	$publiclink = "../magazines.php?issue=" . $issue_id;
+	$publiclink = "../magazines?issue=" . $issue_id;
 	list($magazine_name, $issue_title, $issue_releasename) = getrow("SELECT m.name, i.title, i.releasetext FROM issue i INNER JOIN magazine m ON i.magazine_id = m.id WHERE i.id = $issue_id");
 	$files = getone("SELECT COUNT(*) FROM files WHERE category = 'issue' AND data_id = $issue_id");
 
