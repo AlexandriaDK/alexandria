@@ -16,6 +16,7 @@ $data_id = (int) $_REQUEST['data_id'];
 $action = (string) $_REQUEST['action'];
 $section = (string) ($_REQUEST['section'] ?? '');
 $do = (string) $_REQUEST['do'];
+$ocr = (string) $_REQUEST['ocr'];
 $description = trim((string) $_REQUEST['description']);
 $downloadable = (string) $_REQUEST['downloadable'];
 $language = trim((string) $_REQUEST['language']);
@@ -49,7 +50,7 @@ if ($action == "changefile" && $do == "Remove") {
 		chlog($data_id,$category,"File removed");
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
-} elseif ($action == "changefile" && $do == "OCR") { // Mark file to be OCR'ed
+} elseif ($action == "changefile" && $ocr) { // Mark file to be OCR'ed
 	$q = "UPDATE files SET indexed = 11 WHERE id = '$id' AND indexed IN(0,1)";
 	$r = doquery($q);
 	$_SESSION['admin']['info'] = "File in OCR queue! " . dberror();
@@ -312,7 +313,7 @@ if ($data_id && $category) {
 	      "<th>Language code</th>".
 	      "<th>Edit</th>".
 	      '<th>Download</th>'.
-	      '<th style="padding-left: 1em;"><span title="Mark file to be OCR\'ed - takes a couple of minutes">OCR file</th>'.
+	      '<th style="padding-left: 1em;">Content indexing</th>'.
 	      "</tr>\n";
 
 	foreach($result AS $row) {
@@ -320,13 +321,25 @@ if ($data_id && $category) {
 		$path = DOWNLOAD_PATH . getcategorydir($category) . '/' . $data_id . '/' . $row['filename'];
 		$OCRpossible = ($row['pages'] == 0 && in_array($row['indexed'], [1]) && strtolower(pathinfo($path)['extension']) == 'pdf'); // only indexed PDFs with no text content
 		if ($OCRpossible) {
-			$ocrhtml = '<input type="submit" name="do" value="OCR">';
+			$ocrhtml = 'No text in file <input type="submit" name="ocr" value="Queue for OCR" title="Mark file to be OCR\'ed - takes a couple of minutes">';
+		} elseif ($row['indexed'] == 0) {
+			$ocrhtml = 'Ready to be indexed';
+		} elseif ($row['indexed'] == 1) {
+			$ocrhtml = 'Indexed';
+		} elseif ($row['indexed'] == 2) {
+			$ocrhtml = 'Currently being indexing';
+		} elseif ($row['indexed'] == 3) {
+			$ocrhtml = 'Skipped';
+		} elseif ($row['indexed'] == 4) {
+			$ocrhtml = 'Error while indexing';
+		} elseif ($row['indexed'] == 5) {
+			$ocrhtml = 'File was not found when indexing';
 		} elseif ($row['indexed'] == 11) {
-			$ocrhtml = 'In queue';
+			$ocrhtml = 'In queue for OCR\'ing';
 		} elseif ($row['indexed'] == 12) {
-			$ocrhtml = 'OCR\'ing';
+			$ocrhtml = 'Currently OCR\'ing';
 		} elseif ($row['indexed'] == 20) {
-			$ocrhtml = 'OCR done, waiting for index';
+			$ocrhtml = 'OCR done, in queue for indexing';
 		} else {
 			$ocrhtml = '';
 		}
