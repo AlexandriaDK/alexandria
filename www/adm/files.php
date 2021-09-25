@@ -321,7 +321,7 @@ if ($data_id && $category) {
 		$path = DOWNLOAD_PATH . getcategorydir($category) . '/' . $data_id . '/' . $row['filename'];
 		$OCRpossible = ($row['pages'] == 0 && in_array($row['indexed'], [1]) && strtolower(pathinfo($path)['extension']) == 'pdf'); // only indexed PDFs with no text content
 		if ($OCRpossible) {
-			$ocrhtml = 'No text in file <input type="submit" name="ocr" value="Queue for OCR" title="Mark file to be OCR\'ed - takes a couple of minutes">';
+			$ocrhtml = 'Indexed; no text in file <input type="submit" name="ocr" value="Queue for OCR" title="Mark file to be OCR\'ed - takes a couple of minutes">';
 		} elseif ($row['indexed'] == 0) {
 			$ocrhtml = 'Ready to be indexed';
 		} elseif ($row['indexed'] == 1) {
