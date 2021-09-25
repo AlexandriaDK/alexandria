@@ -313,7 +313,7 @@ if ($data_id && $category) {
 	      "<th>Language code</th>".
 	      "<th>Edit</th>".
 	      '<th>Download</th>'.
-	      '<th style="padding-left: 1em;">Content indexing</th>'.
+	      '<th style="padding-left: 1em;">Content index status</th>'.
 	      "</tr>\n";
 
 	foreach($result AS $row) {
