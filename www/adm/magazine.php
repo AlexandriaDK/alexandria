@@ -69,22 +69,8 @@ function insertReferences($references, $article_id) {
 	}
 }
 
-
 if ($issue_id && ! $magazine_id) {
 	$magazine_id = getone("SELECT magazine_id FROM issue WHERE id = $issue_id");
-}
-
-$people = [];
-
-$result = getall("SELECT id, firstname, surname FROM aut ORDER BY firstname, surname");
-foreach($result AS $row) {
-	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
-}
-
-$scenarios = [];
-$result = getall("SELECT id, title FROM sce ORDER BY title");
-foreach($result AS $row) {
-	$scenarios[] = $row['id'] . " - " . $row['title'];
 }
 
 // Magazines
@@ -264,18 +250,16 @@ if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
 <script src="adm.js"></script>
 <script type="text/javascript">
 $(function() {
-	var availablePeople = <?php print json_encode($people); ?>;
 	$( ".peopletags" ).autocomplete({
-		source: availablePeople,
+		source: 'lookup.php?type=person',
 		autoFocus: true,
-		delay: 30,
+		delay: 50,
 		minLength: 3
 	});
-	var availableScenarios= <?php print json_encode($scenarios); ?>;
-	$( ".scenariotags" ).autocomplete({
-		source: availableScenarios,
+	$( ".gametags" ).autocomplete({
+		source: 'lookup.php?type=game',
 		autoFocus: true,
-		delay: 30,
+		delay: 50,
 		minLength: 3
 	});
 	var peopleRoles = ['Skribent', 'Illustrator', 'Fotograf', 'Redaktør', 'Chefredaktør', 'Redaktion', 'Layout', 'Forfatter', 'Tegner', 'Anmelder', 'Brevkasseredaktør', 'Ansvarshavende redaktør', 'Lokalredaktion - Århus']
@@ -309,9 +293,9 @@ $(function() {
 		td.data('count', count);
 		$( td ).find('input.peopletags')
 			.autocomplete({
-				source: availablePeople,
+				source: 'lookup.php?type=person',
 				autoFocus: true,
-				delay: 30,
+				delay: 50,
 				minLength: 3
 			})
 		;
@@ -439,7 +423,7 @@ if ($magazine_id && $issue_id) {
 			print '<br>';
 		}
 		print '</td>' .
-				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="scenariotags" size=20 maxlength=150 placeholder="Copy of existing game"></td>' .
+				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="gametags" size=20 maxlength=150 placeholder="Copy of existing game"></td>' .
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				(! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove article?\');">' : '') . '</td>'.
 				"</tr>\n";

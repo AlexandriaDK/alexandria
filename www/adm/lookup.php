@@ -39,6 +39,30 @@ if ($type == 'languagecode' && $label != "") {
 	print $languagename;
 }
 
+if ($type == 'person' && $term !== "") {
+	$escapequery = dbesc($term);
+	$likeescapequery = likeesc($term);
+	$refs = getcol("
+		SELECT CONCAT(aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
+		UNION
+		SELECT CONCAT(aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
+	");
+	header("Content-Type: application/json");
+	print json_encode( $refs );
+	exit;
+}
+
+if ($type == 'game' && $term !== "") {
+	$escapequery = dbesc($term);
+	$likeescapequery = likeesc($term);
+	$refs = getcol("
+		SELECT CONCAT(sce.id, ' - ', title) AS label FROM sce WHERE title LIKE '$likeescapequery%'
+	");
+	header("Content-Type: application/json");
+	print json_encode( $refs );
+	exit;
+}
+
 if ($type == 'articlereference' && $term !== "") {
 	$escapequery = dbesc($term);
 	$likeescapequery = likeesc($term);
