@@ -453,7 +453,6 @@ var tabs;
 	if (language) {
 		tabCounter++;
 		var errorStyle = 'text-decoration: maroon wavy underline';
-		tabCounter++;
 		var label = language, notice = '', style = '';
 		if (label.substr(0,2) == 'dk') {
 			notice = 'Did you mean "da" for "Danish"?';
@@ -489,10 +488,25 @@ function changeLanguage( elem ) {
 	language = elem.innerHTML;
 	var language = prompt("Language", language);
 	if ( language ) {
+		var errorStyle = 'text-decoration: maroon wavy underline';
+		var style = '';
+		var notice = '';
 		var lid = '#d-' + dcount + ' input:first-child';
+
+		if (language.substr(0,2) == 'dk') {
+			notice = 'Did you mean "da" for "Danish"?';
+			style = errorStyle;
+		}
+		if (language.substr(0,2) == 'se') {
+			notice = 'Did you mean "sv" for "Swedish"?';
+			style = errorStyle;
+		}
+
 		$(elem).text( language );
-		$(lid).attr( 'value', language )
-		
+		$(elem).attr( 'style', style );
+		$(elem).attr( 'title', notice );
+		$(lid).attr( 'value', language );
+
 	}
 }
 
