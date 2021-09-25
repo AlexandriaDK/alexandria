@@ -66,6 +66,11 @@ if ($_REQUEST['action'] == "lookup") {
 			if (in_array($_REQUEST['data_id'], $polandsce) ) { 
 				award_achievement(95); // attend scenario in Poland
 			}
+		} elseif ($_REQUEST['category'] == 'convent') {
+			$future = getone("SELECT begin > NOW() + INTERVAL 7 DAY AS future FROM convent WHERE id = " . (int) $_REQUEST['data_id'] );
+			if ($future) {
+				award_achievement(102); // attend a convention in the future (+ 7 days due to organizer setup)
+			}
 		}
 	} else {
 		$output = compare_token_error( $token, $_SESSION['token'] );
