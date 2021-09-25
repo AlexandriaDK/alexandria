@@ -201,12 +201,27 @@ if ($action == "changearticle" && $do == "Delete") {
 }
 
 if ($action == "addarticle") {
+	$contributor_count = $reference_count = 0;
+	foreach($contributors as $contributor) {
+		if ($contributor['person'] != "" || $contributor['role'] != "") {
+			$contributor_count++;
+		}
+	}
+
+	foreach($references as $reference) {
+		if ($reference != "") {
+			$reference_count++;
+		}
+	}
+
 	if (
 		! $page &&
 		! $title &&
 		! $description &&
 		! $articletype &&
-		! $sce_id
+		! $sce_id &&
+		! $contributor_count &&
+		! $reference_count
 	) {
 		$_SESSION['admin']['info'] = "No article data provided " . dberror();
 		rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
