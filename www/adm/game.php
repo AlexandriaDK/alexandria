@@ -439,7 +439,7 @@ var tabs;
   $( function() {
     var tabTitle = $( "#tab_title" ),
       tabContent = $( "#tab_content" ),
-      tabTemplate = "<li><a href='#{href}' data-id='#{id}' ondblclick='changeLanguage(this)' >#{label}</a></li>",
+      tabTemplate = "<li><a href='#{href}' data-id='#{id}' ondblclick='changeLanguage(this)' style='#{style}' title='#{notice}' >#{label}</a></li>",
       tabCounter = countTabs,
       tabContentTemplate = '<input type="hidden" name="descriptions[NUMBER][language]" value="MYLANGUAGE">' +
                            '<input type="hidden" name="descriptions[NUMBER][note]" value="">' +
@@ -452,9 +452,20 @@ var tabs;
 	var language = prompt("Language", "en");
 	if (language) {
 		tabCounter++;
-		var label = language || "Tab " + tabCounter,
-			id = "d-" + tabCounter,
-			li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, tabCounter ) ) ,
+		var errorStyle = 'text-decoration: maroon wavy underline';
+		tabCounter++;
+		var label = language, notice = '', style = '';
+		if (label.substr(0,2) == 'dk') {
+			notice = 'Did you mean "da" for "Danish"?';
+			style = errorStyle;
+		}
+		if (label.substr(0,2) == 'se') {
+			notice = 'Did you mean "sv" for "Swedish"?';
+			style = errorStyle;
+		}
+
+		var id = "d-" + tabCounter,
+			li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{style\}/g, style ).replace( /#\{notice\}/g, notice ).replace( /#\{id\}/g, tabCounter ) ) ,
 			content = tabContentTemplate.replace( /NUMBER/g, tabCounter ).replace( /MYLANGUAGE/, language),
 			tabContentHtml = "Tab " + tabCounter + " content.";
 
@@ -526,7 +537,7 @@ if ($game) {
 }
 
 print "<tr><td>Title</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
-print "<tr><td>Description<br><a href='#' id='add_my_tab' accesskey='e'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
+print "<tr><td>Description<br><a href='#' id='add_my_tab' accesskey='e' title='Hotkey: E'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
 $dcount = 0;
 $lihtml = $inputhtml = '';
 foreach($descriptions AS $d) {

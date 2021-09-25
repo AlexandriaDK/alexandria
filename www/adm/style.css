@@ -280,3 +280,7 @@ tr.zerousermap td.accounts {
 .highlightarticle {
 	background-color: #cf9;
 }
+
+.languagetabnotice {
+	text-decoration: maroon wavy underline;
+}
