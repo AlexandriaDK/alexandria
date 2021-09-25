@@ -275,4 +275,8 @@ tr.zerousermap td.accounts {
 	border-width: 5px;
 	border-style: solid;
 	border-color: rgb(255, 232, 232) transparent transparent transparent;
-  }
+}
+
+.highlightarticle {
+	background-color: #cf9;
+}

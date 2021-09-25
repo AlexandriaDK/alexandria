@@ -19,12 +19,14 @@ $status = (int) $_REQUEST['status'];
 $magazine_id = (int) $_REQUEST['magazine_id'];
 $issue_id = (int) $_REQUEST['issue_id'];
 $article_id = (int) $_REQUEST['article_id'];
+$highlight_article_id = (int) $_SESSION['highlight_article_id'];
 $page = (int) $_REQUEST['page'];
 $articletype = trim((string) $_REQUEST['articletype']);
 $sce_id = (int) $_REQUEST['sce_id'];
 $contributors = (array) $_REQUEST['contributors'];
 $references = (array) $_REQUEST['references'];
 $original_article_id = (int) $_REQUEST['original_article_id'];
+unset($_SESSION['highlight_article_id']);
 
 $statuslist = [
 	  0 => [ 'label' => 'notstarted', 'text' => 'Not started', 'short' => 'No'],
@@ -196,7 +198,8 @@ if ($action == "changearticle" && $do != "Delete") {
 		chlog($issue_id,'issue',"Article updated: $article_id - $title");
 	}
 	$_SESSION['admin']['info'] = "Article $article_id updated! " . dberror();
-	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
+	$_SESSION['highlight_article_id'] = $article_id;
+	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id]);
 }
 
 if ($action == "changearticle" && $do == "Delete") {
@@ -212,6 +215,16 @@ if ($action == "changearticle" && $do == "Delete") {
 }
 
 if ($action == "addarticle") {
+	if (
+		! $page &&
+		! $title &&
+		! $description &&
+		! $articletype &&
+		! $sce_id
+	) {
+		$_SESSION['admin']['info'] = "No article data provided " . dberror();
+		rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
+	}
 	$q = "INSERT INTO article " .
 	     "(issue_id, page, title, description, articletype, sce_id) VALUES ".
 	     "($issue_id, ".  sqlifnull($page) . ", '" . dbesc($title) . "', '" . dbesc($description) . "', '" . dbesc($articletype) . "', " . sqlifnull($sce_id) . ")";
@@ -222,7 +235,8 @@ if ($action == "addarticle") {
 		insertReferences($references, $id);
 		chlog($issue_id,'issue',"Article created: $id - $title");
 	}
-	$_SESSION['admin']['info'] = "Article created! " . dberror();
+	$_SESSION['admin']['info'] = "Article $id created! " . dberror();
+	$_SESSION['highlight_article_id'] = $id;
 	rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
 }
 
@@ -391,7 +405,7 @@ if ($magazine_id && $issue_id) {
 		$game = ($article['sce_id'] ? $article['sce_id'] . " - " . $article['scetitle'] : '' );
 		print "<table>";
 		print '<tr valign="top" style="white-space: nowrap">' .
-				'<td style="text-align:right; min-width: 2em;">' . ($article['id'] ?? 'New') . '</td>'.
+				'<td style="text-align:right; min-width: 2em;" ' . ($article['id'] && $highlight_article_id == $article['id'] ? 'class="highlightarticle"' : '') . '>' . ($article['id'] ?? 'New') . '</td>'.
 				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
 				'<td><input placeholder="Page" type="number" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>';
 		print '<td data-count="' . count($contributors) . '">';
