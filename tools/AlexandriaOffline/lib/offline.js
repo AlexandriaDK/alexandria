@@ -27,8 +27,8 @@ function loadData() {
     a = [];
     license = data.license;
     access = data.access;
-    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines', 'issues', 'articles'];
-    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference', 'gameruns' ];
+    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines', 'issues', 'articles', 'award_nominees', 'award_categories'];
+    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference', 'gameruns', 'award_nominee_entities'];
     categories_with_ids.forEach(function(category) {
         a[category] = {};
         for (element of data.result[category]) {
@@ -103,10 +103,7 @@ function showConventionSets() {
     if (sortcache.conventionsets) {
         var list = sortcache.conventionsets
     } else {
-        var list = [];
-        for (var element in a[category]) {
-            list.push(a[category][element]);
-        }
+        var list = ota(category);
         list.sort(function(a,b) {
             return (a.name > b.name ? 1 : -1);
         });
@@ -129,14 +126,9 @@ function showConventions(data) {
     var links = a.links.filter(rel => rel.data_id == id && rel.category == 'conset');
     var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'conset');
     var files = a.files.filter(rel => rel.data_id == id && rel.category == 'conset');
+    var conlist = ota(category).filter(convent => convent.conset_id == id)
 
-    var list = [];
-    for (var element in a[category]) {
-        list.push(a[category][element]);
-    }
-    list = list.filter(convent => convent.conset_id == id)
-
-    list.sort(function(a,b) {
+    conlist.sort(function(a,b) {
         return a.year - b.year;
     });
 
@@ -148,7 +140,7 @@ function showConventions(data) {
 
     html += '<h3>Conventions</h3>';
     html += '<table>';
-    for (con of list) {
+    for (con of conlist) {
         var country = a.conventions[con.id].country || conset.country;
         html += '<tr>';
         html += '<td>' + conLink(con.id) + '</td>';
@@ -211,10 +203,7 @@ function showCategoryList(title, category, anchor, datatype, label, unique = fal
     if (sortcache[category]) {
         var list = sortcache[category];
     } else {
-        var list = [];
-        for (var element in a[category]) {
-            list.push(a[category][element]);
-        }
+        var list = ota(category);
         list.sort(function(a,b) {
             return (a[label].toUpperCase() > b[label].toUpperCase() ? 1 : -1 ) ;
         });
@@ -492,22 +481,22 @@ function showGame(data) {
                 }
             }
             if (run.location) {
-                html += run.location;
+                html += esc(run.location);
                 if (run.country) {
                     html += ', ';
                 }
             }
             if (run.country) {
-                html += run.country.toUpperCase();
+                html += esc(run.country.toUpperCase());
             }
         }
         html += '</ul>';
-
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
     html += makeArticleReferenceSection('game', id, 'publishedgame');
     html += makeArticleReferenceSection('game', id, 'reference');
+    html += makeAwardSection(getAwards('game',id));
 
     showContent(html);
     onlineLink('data?scenarie=' + id);
@@ -750,6 +739,41 @@ function onlineLink(parturl) {
     $('#onlinelink').html('<a href="' + url + '">Online version of current page</a>');
 }
 
+function ota(category) {
+    var list = [];
+    for (var element in a[category]) {
+        list.push(a[category][element]);
+    }
+    return list;
+}
+
+function getAwards(category, id) {
+    var awards = [];
+    if (category == 'game') {
+        var cawards = [];
+        awards = ota('award_nominees').filter(rel => rel.game_id == id);
+        for (award_id in awards) {
+            var award_category = a.award_categories[awards[award_id].award_category_id];
+            var convention_id = award_category.convent_id;
+            var convention = a.conventions[convention_id];
+            var convention_name = convention.name + ' (' + convention.year + ')';
+            awards[award_id].category_name = award_category.name;
+            awards[award_id].convention_name = convention_name;
+            awards[award_id].convention_id = convention_id;
+            if (! cawards[convention_id] ) {
+                cawards[convention_id] = [];
+                cawards[convention_id].name = convention_name;
+                cawards[convention_id].id = convention_id;
+                cawards[convention_id].awards = [];
+            }
+            cawards[convention_id].awards.push(awards[award_id]);
+        }
+        awards = cawards;
+    }
+    return awards;
+}
+
+
 function makeLink(anchor, datatype, elementid, linktext, optional = '', li = true) {
     var html = '<a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a> ' + esc(optional);
     if (li) {
@@ -846,6 +870,22 @@ function makeArticleReferenceSection(category, data_id, referencetype = 'referen
         html += '</tr>';
     }
     html += '</table>';
+    return html;
+}
+
+function makeAwardSection(awards) {
+    if (awards.length == 0) {
+        return '';
+    }
+    var html = '<h3>Awards</h3>';
+    for (con_id in awards) {
+        html += '<p>' + makeLink('convention', 'convention', con_id, awards[con_id].name, '', false) + '<br>';
+        for (award of awards[con_id].awards) {
+            html += (award.winner == 1 ? 'Winner' : 'Nominated') + ', ' + esc(award.category_name) + '<br>';
+        }
+        html += '</p>';
+
+    }
     return html;
 }
 
@@ -978,10 +1018,7 @@ function getCache(category, sortfunction) {
     if (sortcache[category]) {
         var list = sortcache[category];
     } else {
-        var list = [];
-        for (var element in a[category]) {
-            list.push(a[category][element]);
-        }
+        var list = ota(category);
         list.sort(sortfunction);
         sortcache[category] = list;
     }
@@ -1000,9 +1037,7 @@ function getGames(boardgames) {
     if (sortcache[cachename]) {
         var allgames = sortcache[cachename]
     } else {
-        var allgames = [];
-        for (var element in a[category]) { allgames.push(a[category][element]); }
-        allgames = allgames.filter(game => game.boardgame == (boardgames ? 1 : 0) )
+        var allgames = ota(category).filter(game => game.boardgame == (boardgames ? 1 : 0) )
         allgames.sort(function(a,b) { return (a.title > b.title ? 1 : -1); });
         sortcache[cachename] = allgames;
     }
@@ -1054,6 +1089,7 @@ function search() {
     result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) || (a.conventionsets[p.conset_id].name + ' ' + p.year).toUpperCase().includes(searchUpper)  );
     result.systems = getSystems().filter(p => (p.name).toUpperCase().includes(searchUpper) );
     result.tags = [];
+    // :TODO: Search for magazine names
     var tagsdefined = getTags().filter(p => (p.tag).toUpperCase().includes(searchUpper) );
     var tagsused = getTagsUsed().filter(p => (p.tag).toUpperCase().includes(searchUpper) );
     var resulttags = tagsdefined.concat(tagsused);
