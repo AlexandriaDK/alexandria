@@ -28,7 +28,7 @@ function loadData() {
     license = data.license;
     access = data.access;
     categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines', 'issues', 'articles'];
-    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference' ];
+    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference', 'gameruns' ];
     categories_with_ids.forEach(function(category) {
         a[category] = {};
         for (element of data.result[category]) {
@@ -95,10 +95,10 @@ function showGames(data) {
 }
 
 function showConventionSets() {
-    title = 'Convention sets';
-    category = 'conventionsets';
-    anchor = 'conventionset';
-    datatype = 'conventionset';
+    var title = 'Convention sets';
+    var category = 'conventionsets';
+    var anchor = 'conventionset';
+    var datatype = 'conventionset';
 
     if (sortcache.conventionsets) {
         var list = sortcache.conventionsets
@@ -410,11 +410,15 @@ function showGame(data) {
     var descriptions = a.gamedescriptions.filter(rel => rel.game_id == id);
     var cons = a.game_convention_presentation_relations.filter(rel => rel.game_id == id);
     // awards :TODO:
-    // runs :TODO:
+    var runs = a.gameruns.filter(rel => rel.game_id == id);
     var tags = a.gametags.filter(rel => rel.game_id == id);
     var files = a.files.filter(rel => rel.data_id == id && rel.category == 'sce');
     var links = a.links.filter(rel => rel.data_id == id && rel.category == 'sce');
     var trivia = a.trivia.filter(rel => rel.data_id == id && rel.category == 'sce');
+
+    runs.sort(function(a,b) {
+        return (a.begin > a.end ? 1 : -1);
+    })
 
     var html = '<h2>' + esc(title) + '</h2>';
     if (tags.length > 0) {
@@ -469,6 +473,36 @@ function showGame(data) {
             html += '<li>' + conLink(cid) + esc(' (' + replaceTemplateDirect(a.presentations[con.presentation_id].event_label) + ')' ) + '</li>';
         }
         html += '</ul>';
+    }
+    if (runs.length > 0) {
+        if (cons.length > 0) {
+            html += '<h3>Other runs</h3>';
+        } else {
+            html += '<h3>Runs</h3>';
+        }
+        html += '<ul>';
+        for (run of runs) {
+            var cancelledClass = (run.cancelled == 1 ? 'cancelled' : '');
+            html += '<li>';
+            html += '<span class="' + cancelledClass + '">';
+            if (run.begin && run.begin != '0000-00-00') {
+                html += niceDateSet(run.begin, run.end);
+                if (run.location || run.country) {
+                    html += ', ';
+                }
+            }
+            if (run.location) {
+                html += run.location;
+                if (run.country) {
+                    html += ', ';
+                }
+            }
+            if (run.country) {
+                html += run.country.toUpperCase();
+            }
+        }
+        html += '</ul>';
+
     }
     html += makeTriviaSection(trivia);
     html += makeLinkSection(links);
@@ -564,6 +598,8 @@ function showMagazine(data) {
 }
 
 function showIssue(data) {
+    var category = 'issue';
+
     var id = data.target.dataset.id;
     var issue = a.issues[id];
     var magazinename = a.magazines[issue.magazine_id].name;
@@ -572,6 +608,10 @@ function showIssue(data) {
     for (var article in a.articles) { allarticles.push(a.articles[article]); }
     var articles = allarticles.filter(i => i.issue_id == id && (i.title || i.page) );
     var colophones = allarticles.filter(i => i.issue_id == id && ! (i.title || i.page) );
+
+    articles.sort(function(a,b) {
+        return (parseInt(a.page) > parseInt(b.page) ? 1 : -1);
+    });
 
     var html = '';
     html += '<h2>' + esc(title) + '</h2>';
@@ -606,7 +646,7 @@ function showIssue(data) {
 
             html += '<tr>';
             html += '<td class="page">'
-            if (article.page) { 
+            if (article.page) {
                 html += 'Page ' + article.page;
             }
             html += '</td>';
