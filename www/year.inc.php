@@ -55,8 +55,8 @@ foreach($q AS $row) {
 	if ($month > $thismonth) {
 		$printmonth = ucfirst( monthname( intval($month) ) );
 		if ($month == 0) $printmonth = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
-		if ($output) $output .= "</p>" . PHP_EOL;
-		$output .= "<h3 class=\"calendarhead\">$printmonth</h3>" . PHP_EOL . "<p class=\"calendarmonth\">" . PHP_EOL;
+		if ($output) $output .= "</p></div>" . PHP_EOL;
+		$output .= "<div><h3 class=\"calendarhead\">$printmonth</h3>" . PHP_EOL . "<p class=\"calendarmonth\">" . PHP_EOL;
 		$thismonth = $month;
 	}
 
@@ -87,7 +87,7 @@ foreach($q AS $row) {
 	}
 }
 if ($output) {
-	$output .= "</p>" . PHP_EOL;
+	$output .= "</p></div>" . PHP_EOL;
 }
 
 $t->assign('pagetitle',$year);
