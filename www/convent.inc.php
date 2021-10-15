@@ -346,5 +346,9 @@ $t->assign('user_can_edit_organizers',$_SESSION['can_edit_organizers'] ?? FALSE 
 $t->assign('user_visited',in_array('visited',$userlog));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
+if ($con == 504) { // Rollespil din Pride
+	$t->assign('lgbtmenu', TRUE);
+}
+
 $t->display('data.tpl');
 ?>

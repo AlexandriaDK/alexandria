@@ -73,7 +73,7 @@
 	<body>
 
 		{* Logo: Traditional Arabic, 30px, bold *}
-		<div id="leftmenu">
+		<div id="{if not isset($lgbtmenu)}leftmenu{else}leftmenulgbtq{/if}">
 			<p>
 				<a href="./" accesskey="q"><img src="/gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151" height="28"></a>
 			</p>

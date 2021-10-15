@@ -291,5 +291,9 @@ $t->assign('user_played',in_array('played',$userlog));
 $t->assign('user_played_html',getdynamicscehtml($scenarie,'played',in_array('played',$userlog)));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
+if (in_array('LGBTQ', $taglist) ) {
+	$t->assign('lgbtmenu', TRUE);
+}
+
 $t->display('data.tpl');
 ?>

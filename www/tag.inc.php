@@ -104,6 +104,9 @@ $t->assign('link',$linklist);
 $t->assign('articles',$articles);
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );
+if (strtoupper($tag) == 'LGBTQ') {
+	$t->assign('lgbtmenu', TRUE);
+}
 
 $t->display('data.tpl');
 ?>

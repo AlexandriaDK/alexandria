@@ -12,8 +12,36 @@ body {
 	border: 1px solid black;
 }
 
-#leftmenu p {
+#leftmenu p, #leftmenulgbtq p {
 	margin: 2px 2px 20px 10px;
+}
+
+#leftmenulgbtq {
+	padding: 2px;
+	width: 170px;
+	float: left;
+	border: 1px solid black;
+	--transparency: 0.5;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, var(--transparency) ),
+		rgba(0, 0, 0, var(--transparency) ) 12.5%,
+		rgba(120, 79, 22, var(--transparency) ) 12.5%,
+		rgba(120, 79, 22, var(--transparency) ) 25%,
+		rgba(228, 3, 3, var(--transparency) ) 25%,
+		rgba(228, 3, 3, var(--transparency) ) 37.5%,
+		rgba(255, 140, 0, var(--transparency) ) 37.5%,
+		rgba(255, 140, 0, var(--transparency) ) 50%,
+		rgba(255, 237, 0, var(--transparency) ) 50%,
+		rgba(255, 237, 0, var(--transparency) ) 62.5%,
+		rgba(0, 128, 38, var(--transparency) ) 62.5%,
+		rgba(0, 128, 38, var(--transparency) ) 75%,
+		rgba(0, 77, 255, var(--transparency) ) 75%,
+		rgba(0, 77, 255, var(--transparency) ) 87.5%,
+		rgba(117, 7, 135, var(--transparency) ) 87.5%,
+		rgba(117, 7, 135, var(--transparency) )
+	), url(gfx/textureback.jpg);
+	background-blend-mode: normal;
 }
 
 div.leftmenucontent {
