@@ -449,7 +449,7 @@ var tabs;
  
     $( "#add_my_tab" )
       .on( "click", function() {
-	var language = prompt("Language (da for Danish, sv for Swedish, etc.)", en);
+	var language = prompt("Language (da for Danish, sv for Swedish, etc.)", "en");
 	if (language) {
 		tabCounter++;
 		var errorStyle = 'text-decoration: maroon wavy underline';
