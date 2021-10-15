@@ -291,7 +291,7 @@ $t->assign('user_played',in_array('played',$userlog));
 $t->assign('user_played_html',getdynamicscehtml($scenarie,'played',in_array('played',$userlog)));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
-if (in_array('LGBTQ', $taglist) ) {
+if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist) ) {
 	$t->assign('lgbtmenu', TRUE);
 }
 
