@@ -486,7 +486,7 @@ function changeLanguage( elem ) {
 	console.log(elem);
 	dcount = elem.getAttribute( 'data-id' );
 	language = elem.innerHTML;
-	var language = prompt("Language", language);
+	var language = prompt("Language (da for Danish, sv for Swedish, etc.)", language);
 	if ( language ) {
 		var errorStyle = 'text-decoration: maroon wavy underline';
 		var style = '';
