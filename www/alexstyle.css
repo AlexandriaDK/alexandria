@@ -44,6 +44,10 @@ body {
 	background-blend-mode: normal;
 }
 
+div#leftmenulgbtq img#alexandrialogo {
+	mix-blend-mode: multiply;
+}
+
 div.leftmenucontent {
 	background: rgba(255,255,255,0.8);
 	border: 1px solid black;

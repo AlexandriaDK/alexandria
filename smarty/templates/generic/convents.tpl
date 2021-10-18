@@ -13,7 +13,7 @@
 
 	<div class="con concolumns">
 {foreach $cons as $conset}
-		<div class="conblock" data-countries="{$conset.countries|array_keys|implode:' '}">
+		<div class="conblock" data-countries="{" "|implode:$conset.countrieslist}">
 {* conset 40 is "other" *}
 			<h3><a href="data?conset={$conset@key}">{if $conset@key != 40}{$conset.setname|escape}{else}{$_cons_other|escape}{/if}</a></h3>
 			<ul style="display: block;">

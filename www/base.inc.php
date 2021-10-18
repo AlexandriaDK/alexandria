@@ -679,7 +679,7 @@ function yearname ( $year ) {
 
 function fulldate ( $dateString ) {
 	$parts = explode("-", $dateString);
-	if ( ! checkdate( $parts[1], $parts[2], $parts[0]) ) { //partial date
+	if ( ! checkdate( (int) $parts[1], (int) $parts[2], (int) $parts[0]) ) { //partial date
 		if ((int) $parts[0] && ! (int) $parts[1] && ! (int) $parts[2] ) { //only year
 			return yearname( $parts[0] );
 		}

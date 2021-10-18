@@ -44,39 +44,15 @@ foreach( $result AS $c ) {
 		$countries[$c['country']]++;
 	}
 }
+// PHP 8.0 Smarty workaround, as implode now requires separator string as first argument
+foreach($cons AS $id => $con) {
+	$cons[$id]['countrieslist'] = array_keys($cons[$id]['countries']);
+}
 arsort( $countries, SORT_NUMERIC );
 $countries = array_keys( $countries );
 
-/*
-foreach($result AS $r) {
-	if ($conset != $r['setid']) {
-		if ($r['setid'] == 40) {
-			$setid = 40;
-			$setname = $t->getTemplateVars('_cons_other');
-		} else {
-			$setid = $r['setid'];
-			$setname = $r['setname'];
-			
-		}
-		if ($conset != "") {
-			$list .= "\n</div>\n\n";
-		}
-		$list .= "<div class=\"conblock\">";
-		$conset = $r['setid'];
-		$list .= "<h3 style=\"display: inline;\"><a href=\"data?conset=$setid\">" . htmlspecialchars($setname) . "</a></h3><br />\n";
-	}
-	$coninfo = nicedateset($r['begin'],$r['end']);
-	if ($_SESSION['user_id']) {
-		$list .= getdynamicconventhtml($r['id'],'visited',$r['visited']);
-	} else {
-		$list .= "&nbsp;&nbsp;";
-	}
-	
-	$list .= smarty_function_con( $r ) . "<br>";
-}
-$list .= "\n</div>\n";
- */
-//
+
+
 // Smarty
 $t->assign('cons',$cons);
 $t->assign('countries',$countries);
