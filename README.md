@@ -5,7 +5,7 @@ First online code version of Alexandria.dk, the online gaming library of role-pl
 The project was started in 2000. Some of the code might be from that era.
 
 ## Install
-The code requires PHP 7. MySQL 5+ is needed as RDBMS.
+The code requires PHP 7 or PHP 8. MySQL 5+ is needed as RDBMS.
 
 The code is currently Apache based. The site includes an installer feature for setting up the database and fetching content when accessed the first time.
 
