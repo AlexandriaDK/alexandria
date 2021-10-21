@@ -24,7 +24,7 @@ function typechange($type) {
 	if ($type !== 'date') {
 		return '';
 	}
-	$html = ' <span onclick="switchType($(this).prev());" class="changeTypeCog">⚙️</span>';
+	$html = ' <span onclick="switchType($(this).prev());" class="changeTypeCog" title="Switch between date and text input">⚙️</span>';
 	return $html;
 }
 
