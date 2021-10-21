@@ -161,7 +161,7 @@ $runlist = "";
 $q = getall("SELECT begin, end, location, country, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end, id");
 foreach($q AS $rs) {
 	$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
-	$runlist .= nicedateset($rs['begin'],$rs['end']);
+	$runlist .= ucfirst(nicedateset($rs['begin'],$rs['end']));
 	if ( $rs['location'] || $rs['description'] || $rs['country'] ) {
 		if ( nicedateset($rs['begin'],$rs['end']) ) {
 			$runlist .= ", ";
