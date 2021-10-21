@@ -183,6 +183,7 @@ if ($data_id && $category) {
 		'{$_links_rules}' => 'Rules',
 		'{$_links_bgg}' => 'BoardGameGeek entry',
 		'{$_links_description}' => 'Description',
+		'{$_links_nordiclarpwiki}' => 'Nordic Larp Wiki article',
 	];
 	print '<tr><td></td><td></td><td colspan="3">';
 	foreach( $descriptions AS $templatecode => $label ) {
