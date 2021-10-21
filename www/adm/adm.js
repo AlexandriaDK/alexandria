@@ -48,9 +48,15 @@ function reviewSubmit() {
 	
 	return true;
 }
+
 function filenameToDescription(filename) {
 	description = filename.charAt(0).toUpperCase() + filename.slice(1);
 	description = description.substr(0,description.lastIndexOf('.'));
 	return description;
 }
 
+function switchType(elem) {
+	var newType = ( $(elem).attr('type') == 'date' ? 'text' : 'date' );
+	$(elem).attr('type', newType);
+	return;
+}

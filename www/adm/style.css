@@ -284,3 +284,8 @@ tr.zerousermap td.accounts {
 .languagetabnotice {
 	text-decoration: maroon wavy underline;
 }
+
+.changeTypeCog {
+	cursor: pointer;
+	font-size: 0.8em;
+}

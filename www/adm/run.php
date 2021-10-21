@@ -20,6 +20,14 @@ $cancelled = (int) isset($_REQUEST['cancelled']);
 $q = "SELECT title FROM sce WHERE id = '$id'";
 $title = getone($q);
 
+function typechange($type) {
+	if ($type !== 'date') {
+		return '';
+	}
+	$html = ' <span onclick="switchType($(this).prev());" class="changeTypeCog">⚙️</span>';
+	return $html;
+}
+
 // Update run
 if ($action == "changerun" && $do != "Delete") {
 	if (strlen($begin) == 4) $begin .= "-00-00"; // add blank month+date
@@ -98,8 +106,8 @@ if ($id) {
 		      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
-		      '<td><input type="' . $typebegin . '" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
-		      '<td><input type="' . $typeend . '" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
+		      '<td><input type="' . $typebegin . '" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typebegin) . '</td>'.
+		      '<td><input type="' . $typeend . '" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typeend) . '</td>'.
 			  '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
 			  '<td><input type="text" id="country" name="country" value="' . htmlspecialchars( $row['country'] ) . '" placeholder="E.g. se" size="8"></td>'.
 		      '<td><input type="text" name="description" value="'.htmlspecialchars($row['description']).'" size="30" ></td>'.
@@ -115,8 +123,8 @@ if ($id) {
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print "<tr>\n".
 	      '<td style="text-align:right;">New</td>'.
-	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
-	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD"></td>'.
+	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>'.
+	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>'.
 	      '<td><input type="text" name="location" value="" size="30" maxlength="80"></td>'.
 		  '<td><input type="text" id="country" name="country" value="" placeholder="E.g. se" size="8"></td>'.
 	      '<td><input type="text" name="description" value="" size="30" ></td>'.
