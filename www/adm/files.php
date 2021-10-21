@@ -149,6 +149,7 @@ if ($action == "addfile") {
 	} else {
 		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, language, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
 		$_SESSION['admin']['info'] = "The file has been created." . dberror();
+		chlog($data_id,$category,"File created: " . $filename);
 	}
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id] );
 } elseif ($action == "thumbnail") {
