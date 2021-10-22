@@ -406,7 +406,7 @@ if ($magazine_id && $issue_id) {
 		print '<tr valign="top" style="white-space: nowrap">' .
 				'<td style="text-align:right; min-width: 2em;" ' . ($article['id'] && $highlight_article_id == $article['id'] ? 'class="highlightarticle"' : '') . '>' . ($article['id'] ?? 'New') . '</td>'.
 				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
-				'<td><input placeholder="Page" type="number" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>';
+				'<td><input placeholder="Page" type="number" min="1" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>';
 		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
