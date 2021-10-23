@@ -21,25 +21,25 @@ body {
 	width: 170px;
 	float: left;
 	border: 1px solid black;
-	--transparency: 0.5;
+	--alpha: 0.6;
 	background: linear-gradient(
 		to bottom,
-		rgba(0, 0, 0, var(--transparency) ),
-		rgba(0, 0, 0, var(--transparency) ) 12.5%,
-		rgba(120, 79, 22, var(--transparency) ) 12.5%,
-		rgba(120, 79, 22, var(--transparency) ) 25%,
-		rgba(228, 3, 3, var(--transparency) ) 25%,
-		rgba(228, 3, 3, var(--transparency) ) 37.5%,
-		rgba(255, 140, 0, var(--transparency) ) 37.5%,
-		rgba(255, 140, 0, var(--transparency) ) 50%,
-		rgba(255, 237, 0, var(--transparency) ) 50%,
-		rgba(255, 237, 0, var(--transparency) ) 62.5%,
-		rgba(0, 128, 38, var(--transparency) ) 62.5%,
-		rgba(0, 128, 38, var(--transparency) ) 75%,
-		rgba(0, 77, 255, var(--transparency) ) 75%,
-		rgba(0, 77, 255, var(--transparency) ) 87.5%,
-		rgba(117, 7, 135, var(--transparency) ) 87.5%,
-		rgba(117, 7, 135, var(--transparency) )
+		rgba(0, 0, 0, var(--alpha) ),
+		rgba(0, 0, 0, var(--alpha) ) 12.5%,
+		rgba(120, 79, 22, var(--alpha) ) 12.5%,
+		rgba(120, 79, 22, var(--alpha) ) 25%,
+		rgba(228, 3, 3, var(--alpha) ) 25%,
+		rgba(228, 3, 3, var(--alpha) ) 37.5%,
+		rgba(255, 140, 0, var(--alpha) ) 37.5%,
+		rgba(255, 140, 0, var(--alpha) ) 50%,
+		rgba(255, 237, 0, var(--alpha) ) 50%,
+		rgba(255, 237, 0, var(--alpha) ) 62.5%,
+		rgba(0, 128, 38, var(--alpha) ) 62.5%,
+		rgba(0, 128, 38, var(--alpha) ) 75%,
+		rgba(0, 77, 255, var(--alpha) ) 75%,
+		rgba(0, 77, 255, var(--alpha) ) 87.5%,
+		rgba(117, 7, 135, var(--alpha) ) 87.5%,
+		rgba(117, 7, 135, var(--alpha) )
 	), url(gfx/textureback.jpg);
 	background-blend-mode: normal;
 }
@@ -795,6 +795,14 @@ div.selectlanguage img:first-child {
 
 table#personarticles td, table#gamearticles td {
 	padding-right: 10px;
+}
+
+table#personarticles .colophon {
+	font-style: italic;
+}
+
+table#personarticles .page {
+	white-space: nowrap;
 }
 
 div#magazinelist {

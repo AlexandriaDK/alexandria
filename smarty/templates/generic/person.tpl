@@ -91,9 +91,9 @@
 	<table id="personarticles">
 	{foreach $articlesfrom as $article}
 	<tr>
-	<td>{if $article.sce_id}<a href="data?scenarie={$article.sce_id}">{$article.title|escape}</a>{else}{$article.title|escape}{/if}</td>
+	<td>{if $article.sce_id}<a href="data?scenarie={$article.sce_id}" class="scenarie">{$article.title|escape}</a>{elseif $article.title != ''}{$article.title|escape}{else}<span class="colophon">{$_magazines_colophon|escape}</span>{/if}</td>
 	<td>{$article.role|escape}</td>
-	<td>{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
+	<td class="page">{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
 	<td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a>{if $article.releasetext} ({$article.releasetext|escape}){/if}</td>
 	<td class="magazine"><a href="magazines?id={$article.magazine_id}">{$article.magazinename|escape}</a></td>
 	</tr>

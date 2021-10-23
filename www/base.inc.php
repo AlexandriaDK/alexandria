@@ -1069,7 +1069,7 @@ function getarticles ($data_id, $category) {
 	$data_id = (int) $data_id;
 	if ($category == 'aut') {
 		$articles = getall("
-			SELECT article.issue_id, contributor.role, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			SELECT article.issue_id, contributor.role, article.title, article.page, article.sce_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM contributor
 			INNER JOIN article ON contributor.article_id = article.id
 			INNER JOIN issue ON article.issue_id = issue.id
@@ -1079,7 +1079,7 @@ function getarticles ($data_id, $category) {
 		");
 	} elseif ($category == 'sce' || $category == 'game') {
 		$articles = getall("
-			SELECT article.issue_id, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			SELECT article.issue_id, article.title, article.page, article.sce_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM article
 			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
@@ -1088,7 +1088,7 @@ function getarticles ($data_id, $category) {
 		");
 	} else { // Get references instead; person for aut
 		$articles = getall("
-			SELECT article.issue_id, article.title, article.page, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			SELECT article.issue_id, article.title, article.page, article.sce_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM article
 			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
