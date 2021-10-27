@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Alexandria.dk - Forum 2021</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/league.css">
+		<!--
+		<link rel="stylesheet" href="dist/theme/sky.css">
+		-->
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					Alexandria.dk
+					<br>
+					Logo
+					<aside class="notes">
+						Mine noter
+					</aside>
+
+				</section>
+				<section data-auto-animate data-auto-animate-unmatched="fade">
+					<h2 class="fragment fade-in-then-semi-out">Do you have the courage ...</h2>
+					<h1 class="fragment">to imagine?</h1>
+				</section>
+				<section data-auto-animate data-auto-animate-unmatched="fade">
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Rollespillet Alexandria</h2>
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2 style="font-size: 80%;">Rollespillet Alexandria</h2>
+						<h3>Læse regler eller kaste os ud i det?</h3>
+					</section>
+					<section data-background-color="black">
+						<!--
+						<section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"></section>
+						-->
+						<h2>Jeg synes, der kommer en drage ...</h2>
+						<h2>Du er død!</h2>
+						<h2>Lav en ny karakter!</h2>
+					</section>
+				</section>
+				<section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+					</section>
+					<section data-background-iframe="https://alexandria.dk/da/" data-background-interactive data-background-transition="zoom">
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+						<div>Hvad skal en tabel for kongresser hedde?</div>
+						<ul class="fragment">
+							<li>con</li>
+							<li>convent</li>
+							<li>convention</li>
+						</ul>
+					</section>
+					<section data-background-color="black">
+						<!--
+						<section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"></section>
+						-->
+						<h2>Windows bryder sig ikke om con!</h2>
+						<h2>Din server er død!</h2>
+						<h2>Omdøb dine tabeller!</h2>
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+						<div>
+							Før 11th Edition af <em>Windows &amp; Dragons</em> kunne man ikke have
+							en fil ved navn <code>con.txt</code>.
+						</div>
+						<div>
+							<img src="gfx/confile.png" />
+						</div>
+						<aside class="notes">
+							MySQL oprettede tabeller ved navn con.myd, hvilket fik serveren til at hænge under Windows.
+							MyISAM til InnoDB, intet problem.
+						</aside>
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+						<h3>Tabeller</h3>
+						<div><img src="gfx/erdiagram.png" /></div>
+						<aside class="notes">
+							Der er mange flere tabeller.<br><br>"aut" bør være "person", "sce" bør være "game", m.m.
+						</aside>
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+						<h3>PHP</h3>
+						<div>
+<pre style="font-size: 1rem;"><code>&lt;?php
+...
+function getfilelist ($data_id, $cat) {
+	global $t;
+	$files = getall("SELECT filename, description, language FROM files WHERE data_id = '$data_id' AND category = '$cat' AND downloadable = 1 ORDER BY id");
+	$fmt = new NumberFormatter( Locale::getDefault(), NumberFormatter::DECIMAL );
+	foreach($files AS $id =&gt; $file) {
+		$template_description = parseTemplate( $file['description'] );
+		if ( $file['language'] ) {
+			$languages = explode( ",", $file['language']);
+			$fulllanguages = [];
+			foreach( $languages AS $language ) {
+				$fulllanguages[] = getLanguageName( $language );
+			}
+			$template_description .= " [" . implode( ", ", $fulllanguages) . "]";
+		}
+		$path = ALEXFILES . getcategorydir($cat) . '/' . $data_id . '/' . $file['filename'];
+		$files[$id]['path'] = $path;
+		$files[$id]['extension'] = strtolower(substr(strrchr($file['filename'], "."), 1)); // any reason not to use pathinfo() ?
+		$files[$id]['template_description'] = $template_description;
+		if (file_exists($path)) {
+			$files[$id]['filesize'] = filesize($path);
+			$files[$id]['filesizetext'] = $fmt-&gt;format(round( $files[$id]['filesize']/1024/1024, 1) );
+		}
+	}
+	return $files;
+}
+...
+?&gt;</code></pre>
+						</div>
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+						<h3>MySQL</h3>
+						<div>
+<pre style="font-size: 1rem;"><code>	SELECT
+		COUNT(*) AS antal,
+		t2.aut_id AS link,
+		sce.id AS sceid,
+		sce.title,
+		COALESCE(alias.label, sce.title) AS title_translation,
+		t2.tit_id,
+		t1.aut_id AS rlink,
+		t1.tit_id AS rtit_id
+	FROM aut AS a1
+	INNER JOIN asrel t1 ON t1.aut_id = a1.id
+	INNER JOIN sce ON sce.id = t1.sce_id
+	INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
+	INNER JOIN aut a2 ON a2.id = t2.aut_id
+	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = 'da' AND alias.visible = 1
+	WHERE
+		t1.aut_id IN ($inlist) AND
+		t2.aut_id NOT IN ($notlist) AND
+		t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
+	GROUP BY
+		link
+	ORDER BY
+		a1.firstname,
+		a1.surname,
+		a2.firstname,
+		a2.surname,
+		t1.tit_id,
+		t2.tit_id,
+		title_translation
+</code></pre>
+						</div>
+					</section>
+					<section data-auto-animate data-auto-animate-unmatched="fade">
+						<h2>Regler</h2>
+						<blockquote>
+							You can not have a meaningful campaign if strict time records are not kept.
+						</blockquote>
+						<div><em>"Time in the Campaign"<br>AD&D Dungeon Masters Guide (1979), p. 38</em></div>
+					</section>
+
+				</section>
+				<section>
+					<h2>Karakterbaggrund</h2>
+					<section>
+						<h3>Vi begynder på kroen …</h3>
+					</section>
+					<section>
+						<div>
+							<img src="gfx/drfcon1991.jpg">
+						</div>
+						<aside class="notes">
+							Min bror introducerede mig til Conner. Han havde skrevet scenarier, som jeg læste. Så jeg kendte noget af forhistorien, før jeg kom på con.
+						</aside>
+					</section>
+					<section>
+						<div>
+							TRC billede
+						</div>
+						<aside class="notes">
+							I 90'erne gik jeg i en rollespilsklub, hvor alle havde været på Fastaval. Jeg havde ikke været med. Men de talte jævnligt om oplevelser og scenarier derfra, og jeg ville også gerne tale med. 
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<h2>Eventyret er i gang</h2>
+					<section></section>
+					<section>
+						<div style="display: flex">
+							<div style="flex: 1">
+								<div class="fragment" data-fragment-index="1">
+									Dansk Varefakta Nævn <a href="https://loot.alexandria.dk/varefakta.php">truer med at sagsøge dig</a>,
+									fordi du viderebringer ordet <em>Varefakta</em>	i en <a href="https://alexandria.dk/en/data?scenarie=525">foromtale</a>.
+								</div>
+								<div class="fragment" data-fragment-index="2"><img src="gfx/varefakta_vaernepligt.png"></div>
+								<div class="fragment" data-fragment-index="4" data-background-color="black"><em>Hvad gør du?</em></div>
+							</div>
+							<blockquote style="overflow: auto; max-height: 30em; font-size: 1rem; text-align: left; flex: 1;" class="fragment" data-fragment-index="3">
+								Peter Brodersen<br>
+								Jydeholmen 55D, 4.th<br>
+								2720 Vanløse<br>
+								<br>
+								2003.07.28<br>
+								<br>
+								Vedr. misbrug af ordet Varefakta<br>
+								Vi har på internettet set, at De for hjemmeside for Alexandria under stykket Værnepligt anvender ordet Varefakta.<br>
+								<br>
+								Vi må i den forbindelse gøre Dem opmærksom på, at ordet VAREFAKTA er indregistreret i forbindelse med Dansk Varefakta Nævns bomærke, og derudover har ordet brugt separat vundet beskyttelse på grund af indarbejdelse. VAREFAKTA må derfor kun benyttes, når der deklareres efter DVN's forskrifter, oplysningerne er kontrollerede, og der på baggrund heraf er givet en mærkningstilladelse.<br>
+								<br>
+								Det er også en klar overtrædelse af bekendtgørelse af lov om markedsføring nr. 699 af 17. juli 2000, både hvad angår § 2 men især § 5, hvor der står "Erhvervsdrivende må ikke benytte forretningskendetegn og lignende, der ikke tilhører dem, eller benytte andre kendetegn på en måde, der er egnet til at fremkalde forveksling med andres."<br>
+								<br>
+								Vi må derfor bede Dem omgående og senest<br>
+								<br>
+								mandag den 11. august 2003<br>
+								<br>
+								meddele os, hvad De vil gøre for at stoppe misbruget, som vi er overbevist om ikke er sket af ond vilje. De bedes også meddele os, om De anvender ordet VAREFAKTA i andre materialer.<br>
+								<br>
+								Venlig hilsen<br>
+								f. Dansk Varefakta Nævn<br>
+								<br>
+								(signatur)<br>
+								<br>
+								Bente Falkenfleth<br>
+								Konsulent<br>
+								<br>
+								F:\JOURNAL1\N04\109\0\1.WPD\bf
+							</blockquote>
+						</div>
+					</section>
+				</section>
+
+				<section>
+					<h2>Datakvalitet</h2>
+					<section></section>
+					<section>
+
+					</section>
+				</section>
+
+				<section>
+					Offentlig kode og data
+				</section>
+				<section>
+					<section>
+						Server crash
+					</section>
+					<section>
+						Backup, død
+					</section>
+					<section>
+						Resurrection (backup!)
+					</section>
+				</section>
+
+				<section>
+					<h2>Heltens tvivl</h2>
+
+				</section>
+
+			</div>
+			<div style="position: fixed; left: 0em; bottom: 0em; font-size: 3em;">
+				⛄
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
