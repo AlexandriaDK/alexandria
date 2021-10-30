@@ -43,7 +43,7 @@ if ($user_id && $asked) {
 	award_user_achievement($user_id, 94);
 	header("Location: users.php");
 	exit;
-} elseif ($user_id && $brother) {
+} elseif ($user_id && $talk) {
 	award_user_achievement($user_id, 103);
 	header("Location: users.php");
 	exit;
