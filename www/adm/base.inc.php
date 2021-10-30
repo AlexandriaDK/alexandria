@@ -328,7 +328,7 @@ function printinfo() {
 }
 
 function sqlifnull($string) {
-	if ($string == "") { // also matches int value of 0
+	if ($string == "" || $string == 0) {
 		return "NULL";
 	}
 	return "'" . dbesc($string) . "'";

@@ -40,9 +40,6 @@ $participants_extra = $_REQUEST['participants_extra'];
 
 $this_id = $game;
 
-// For 10,000 scenarios
-$scenarios = getone("SELECT COUNT(*) FROM sce WHERE boardgame != 1");
-
 if (!$action && $game) {
 	$row = getrow("SELECT * FROM sce WHERE id = '$game'");
 	if ($row) {
@@ -530,11 +527,6 @@ function titleoptions ( $titles, $count, $default = FALSE ) {
 	}
 	$html .= '</select>';
 	return $html;
-}
-
-if ( ! $game && $scenarios == 9999 ) {
-	print "<h1>We are at 9,999 scenarios - please don't add anymore scenarios without asking Peter first!</h1>";
-	print "<h2>(boardgames are okay)</h2>";
 }
 
 print "<form action=\"game.php\" method=\"post\" id=\"theForm\" name=\"theForm\" onsubmit=\"return doSubmit();\">\n";
