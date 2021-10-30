@@ -19,6 +19,7 @@ $asked = (int) $_REQUEST['asked'];
 $beer = (int) $_REQUEST['beer'];
 $elite = (int) $_REQUEST['elite'];
 $brother = (int) $_REQUEST['brother'];
+$talk = (int) $_REQUEST['talk'];
 $achievement_id = (int) $_REQUEST['achievement_id'];
 
 if ( $action ) {
@@ -40,6 +41,10 @@ if ($user_id && $asked) {
 	exit;
 } elseif ($user_id && $brother) {
 	award_user_achievement($user_id, 94);
+	header("Location: users.php");
+	exit;
+} elseif ($user_id && $brother) {
+	award_user_achievement($user_id, 103);
 	header("Location: users.php");
 	exit;
 }
@@ -83,10 +88,10 @@ if ($order == 'lastlogin') {
 }
 
 if ($achievement_id) {
-	$query = "SELECT a.id, a.name, a.aut_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, COUNT(b.id) AS achievements FROM users a INNER JOIN user_achievements b ON a.id = b.user_id WHERE b.achievement_id = $achievement_id GROUP BY a.id ORDER BY $orderby";
+	$query = "SELECT a.id, a.name, a.aut_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, SUM(b.achievement_id = 103) AS talk, COUNT(b.id) AS achievements FROM users a INNER JOIN user_achievements b ON a.id = b.user_id WHERE b.achievement_id = $achievement_id GROUP BY a.id ORDER BY $orderby";
 	$label = getone("SELECT label FROM achievements WHERE id = $achievement_id");
 } else {
-	$query = "SELECT a.id, a.name, a.aut_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, COUNT(b.id) AS achievements FROM users a LEFT JOIN user_achievements b ON a.id = b.user_id GROUP BY a.id ORDER BY $orderby";
+	$query = "SELECT a.id, a.name, a.aut_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, SUM(b.achievement_id = 103) AS talk, COUNT(b.id) AS achievements FROM users a LEFT JOIN user_achievements b ON a.id = b.user_id GROUP BY a.id ORDER BY $orderby";
 
 }
 $result = getall($query);
@@ -118,6 +123,7 @@ print "<table align=\"center\" border=0>".
       "<th>Beer</th>".
       "<th>Elite</th>".
       "<th>Brother</th>".
+      "<th>Talk</th>".
       "</tr>\n";
 
 foreach($result AS $row) {
@@ -140,6 +146,7 @@ foreach($result AS $row) {
 			'<td align="center">'.($row['beer'] ? 'Yes' : '<b><a href="users.php?beer=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
 			'<td align="center">'.($row['elite'] ? 'Yes' : '<b><a href="users.php?elite=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
 			'<td align="center">'.($row['brother'] ? 'Yes' : '<b><a href="users.php?brother=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
+			'<td align="center">'.($row['talk'] ? 'Yes' : '<b><a href="users.php?talk=1&amp;user_id=' . $row['id'] . '">No</b>').'</td>'.
 			'<td><input type="submit" name="do" value="Ret"></td>'.
 			"\n</tr>\n";
 	print "</form>\n\n";
