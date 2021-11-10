@@ -14,6 +14,7 @@ $available_pic = $picpath = $picid = FALSE;
 $internal = '';
 $filelist = [];
 $articles = [];
+$ogimage = FALSE;
 
 if ($magazineid) {
 	$id = $magazineid;
@@ -33,6 +34,7 @@ if ($magazineid) {
 	if ($available_pic = hasthumbnailpic($issueid, $this_type)) {
 		$picpath = getcategorythumbdir('issue');
 		$picid = $issueid;
+		$ogimage = getimageifexists($issueid, $picpath);
 	}
 	$issue = getrow("
 		SELECT issue.title, issue.releasetext, issue.internal, magazine.id AS magazineid, magazine.name AS magazinename
@@ -137,7 +139,8 @@ $t->assign('pic',$available_pic);
 $t->assign('picpath',$picpath);
 $t->assign('picid',$picid);
 $t->assign('arrowset',$arrows);
-// $t->assign('ogimage', getimageifexists($con, 'convent') );
+// $t->assign('ogimage', getimageifexists($con, $categorydir) );
+$t->assign('ogimage', $ogimage );
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );
 $t->assign('articles', $articles);
