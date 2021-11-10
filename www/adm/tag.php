@@ -8,7 +8,7 @@ $this_type = 'tag';
 
 $tag_id = (int) $_REQUEST['tag_id'];
 $action = (string) $_REQUEST['action'];
-$tag = (string) $_REQUEST['tag'];
+$tag = trim((string) $_REQUEST['tag'] ?? '');
 $description = (string) $_REQUEST['description'];
 
 $this_id = $tag_id;

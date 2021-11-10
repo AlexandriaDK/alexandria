@@ -70,7 +70,7 @@ if ($magazineid) {
 			$articles[$articleid]['references'] = [];
 			$articles[$articleid]['contributorcount'] = 0;
 			$lastid = $articleid;
-			$references = getall('SELECT category, data_id FROM article_reference WHERE article_id = ' . $article['id'] . ' ORDER BY category');
+			$references = getall('SELECT category, data_id FROM article_reference WHERE article_id = ' . $article['id'] . ' ORDER BY category, id');
 			foreach ($references AS $reference_id => $reference) {
 				$articles[$articleid]['references'][] = getentryhtml($reference['category'], $reference['data_id']);
 			}
