@@ -830,6 +830,12 @@ function nicedateset ($begin, $end) {
 	return $out;
 }
 
+function nicenumber($number) {
+	$formatter = new NumberFormatter(LANG, NumberFormatter::DECIMAL);
+	$output = $formatter->format($number);
+	return $output;
+}
+
 function parseTemplate($string) {
 	$string = preg_replace_callback('/\{\$_(.*?)\}/', function($matches) {
 		global $t; return $t->getTemplateVars('_' . $matches[1] );

@@ -26,12 +26,12 @@
 			{$_fp_alexnumbers}
 		</h3>
 		<table class="tableoverview">
-			<tr><td>{$_scenarios|@ucfirst}:</td><td class="statnumber">{$stat_all_sce}</td></tr>
-			<tr><td>{$_boardgames|@ucfirst}:</td><td class="statnumber">{$stat_all_board}</td></tr>
-			<tr><td>{$_persons|@ucfirst}:</td><td class="statnumber">{$stat_all_aut}</td></tr>
-			<tr><td>{$_conventions|@ucfirst}:</td><td class="statnumber">{$stat_all_convent}</td></tr>
-			<tr><td>{$_rpgsystems|@ucfirst}:</td><td class="statnumber">{$stat_all_sys}</td></tr>
-			<tr><td>{$_fp_scefordownload}:</td><td class="statnumber">{$scenarios_downloadable}</td></tr>
+			<tr><td>{$_scenarios|@ucfirst}:</td><td class="statnumber">{$stat_all_sce|nicenumber}</td></tr>
+			<tr><td>{$_boardgames|@ucfirst}:</td><td class="statnumber">{$stat_all_board|nicenumber}</td></tr>
+			<tr><td>{$_persons|@ucfirst}:</td><td class="statnumber">{$stat_all_aut|nicenumber}</td></tr>
+			<tr><td>{$_conventions|@ucfirst}:</td><td class="statnumber">{$stat_all_convent|nicenumber}</td></tr>
+			<tr><td>{$_rpgsystems|@ucfirst}:</td><td class="statnumber">{$stat_all_sys|nicenumber}</td></tr>
+			<tr><td>{$_fp_scefordownload}:</td><td class="statnumber">{$scenarios_downloadable|nicenumber}</td></tr>
 			<tr><td colspan="2"><a href="statistik">{$_fp_morenumbers}</a></td></tr>
 		</table>				
 

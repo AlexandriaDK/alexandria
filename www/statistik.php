@@ -8,7 +8,7 @@ $exposure = 40;
 $cooperation = 35;
 $usedsystem = 50;
 $mostcons = 7;
-$mostauthors = 10;
+$mostauthors = 5;
 $mostscenarios = 30;
 
 $larp_id = 73;
@@ -328,7 +328,7 @@ foreach($yearstat AS $year => $row) {
 	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['sce'] ?? 0 ];
 }
 
-// Countries
+// Countries, cons
 $concountry = [];
 $place = 0;
 $lastcount = 0;
@@ -338,6 +338,18 @@ foreach ($r AS $row) {
 	$placeout = ($lastcount != $row['count'] ? "$place." : "");
 	$lastcount = $row['count'];
 	$concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => getCountryName($row['ccountry']) ];
+}
+
+// Countries, runs
+$runcountry = [];
+$place = 0;
+$lastcount = 0;
+$r = getall("SELECT COUNT(*) AS count, country FROM scerun WHERE country IS NOT NULL AND country != '' GROUP BY country ORDER BY count DESC, country");
+foreach ($r AS $row) {
+	$place++;
+	$placeout = ($lastcount != $row['count'] ? "$place." : "");
+	$lastcount = $row['count'];
+	$runcountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country']) ];
 }
 
 // Description languages
@@ -364,6 +376,7 @@ $t->assign('stat_sce_auts',$stat_sce_auts);
 $t->assign('stat_con_sce',$stat_con_sce);
 $t->assign('stat_con_year',$yearstatpart);
 $t->assign('stat_con_country',$concountry);
+$t->assign('stat_run_country',$runcountry);
 $t->assign('stat_description_language',$descriptionlanguage);
 
 $t->display('statistics.tpl');

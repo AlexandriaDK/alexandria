@@ -305,6 +305,10 @@ table.tablestatlist, table.people, table.conlist {
 	padding: 1px;
 }
 
+table.tablestat th {
+	text-align: left;
+}
+
 table.tableoverview {
 	border-spacing: 1px;
 	padding: 0px;
@@ -319,7 +323,7 @@ table.tableoverview td:first-child {
 }
 
 table.tablestartpad td:first-child {
-	padding-right: 2em;
+	padding-right: 1em;
 }
 
 tr {
