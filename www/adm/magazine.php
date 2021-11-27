@@ -291,12 +291,6 @@ $(function() {
 		minLength: 3,
 		delay: 100
 	})
-	.autocomplete( "instance" )._renderItem = function( ul, item ) {
-		return $( "<li>" )
-			.append(" <a>" + item.label + "</a>" )
-			.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
-			.appendTo ( ul );
-	}
 
 	$(".addnext").click( function() {
 		var td = $(this).parent();
@@ -336,13 +330,6 @@ $(function() {
 				minLength: 3,
 				delay: 100
 			})
-			.autocomplete( "instance" )._renderItem = function( ul, item ) {
-				return $( "<li>" )
-				.append(" <a>" + item.label + "</a>" )
-				.append(" <br><span class='autosearchnote'>" + item.note + "</span>" )
-				.appendTo ( ul );
-
-			}
 	});
 
 });
