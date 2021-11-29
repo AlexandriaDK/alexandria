@@ -673,8 +673,10 @@ span.preicon, span.titicon {
 	text-decoration: line-through;
 }
 h3.cancelnotice {
-	font-style: italic;
+	text-align: center;
 	color: #e22;
+	border: 3px dashed red;
+	border-radius: 20px;
 }
 
 ul.remotelogin {
