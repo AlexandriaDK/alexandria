@@ -677,6 +677,8 @@ h3.cancelnotice {
 	color: #e22;
 	border: 3px dashed red;
 	border-radius: 20px;
+	width: fit-content;
+	padding: 8px;
 }
 
 ul.remotelogin {
