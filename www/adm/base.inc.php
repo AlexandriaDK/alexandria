@@ -438,6 +438,7 @@ function validatetoken( $token1 ) {
 
 // Add data
 function get_create_person($name, $intern = "Autoimport") {
+	$name = trim($name);
     preg_match('_(.*) (.*)_', $name, $names);
     $person_id = getone("SELECT id FROM aut WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($name) . "'");
     if (!$person_id) {
@@ -455,7 +456,11 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
     $genres = $game['genres'] ?? [];
     $tags = $game['tags'] ?? [];
     $persons = $game['persons'] ?? [];
+    $cons = $game['cons'] ?? []; // list of con ids, e.g. [1, 4, 6] - assuming premiere
 	$organizer = $game['organizer'] ?? '';
+	$descriptions = $game['descriptions'] ?? [];
+	$players_min = $game['players_min'] ?? NULL;
+	$players_max = $game['players_max'] ?? NULL;
     $person_ids = [];
     foreach($persons AS $person) {
         $person_ids[] = [
@@ -465,8 +470,8 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
     }
 
 	// insert game
-	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, rlyeh_id, boardgame) " .
-	"VALUES ('" . dbesc($title) . "', '" . dbesc($intern) ."', $sys_id, '" . dbesc($organizer) . "', 0, 0)";
+	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, players_min, players_max, rlyeh_id, boardgame) " .
+	"VALUES ('" . dbesc($title) . "', '" . dbesc($intern) ."', $sys_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", 0, 0)";
 	$game_id = doquery($game_id_sql);
 	chlog($game_id, 'sce', 'Game created');
 
@@ -497,13 +502,20 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
         }
         doquery($assql);
     }
+
+	foreach($descriptions AS $language => $description) {
+		$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
+        doquery($desc_sql);
+	}
+
     foreach ($genres AS $gid) {
         if ( ! getone("SELECT 1 FROM gsrel WHERE gen_id = $gid AND sce_id = $game_id")) {
             $gsql = "INSERT INTO gsrel (gen_id, sce_id) VALUES ($gid, $game_id)";
             doquery($gsql);
         }
     }
-    foreach ($tags AS $tag) {
+
+	foreach ($tags AS $tag) {
         if ( ! getone("SELECT 1 FROM tags WHERE sce_id = $game_id AND tag = '". dbesc($tag) . "'")) {
             $gsql = "INSERT INTO tags (sce_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
             doquery($gsql);
@@ -516,6 +528,12 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 			doquery($lsql);
 		}
 	}
+
+	foreach($cons AS $con_id) { // assuming premiere
+		$csql = "INSERT INTO csrel (convent_id, sce_id, pre_id) VALUES ($con_id, $game_id, 1)";
+		doquery($csql);
+	}
+
 	return $game_id;
 }
 
