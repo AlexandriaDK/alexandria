@@ -12,6 +12,7 @@ $authors = (string) $_REQUEST['authors'];
 $organizer = (string) $_REQUEST['organizer'];
 $players = (string) $_REQUEST['players'];
 $description = (string) $_REQUEST['description'];
+$url = (string) $_REQUEST['url'];
 $intercon_letter = (string) ($_REQUEST['intercon_letter']); // Name of con, e.g. H for "Intercon H"
 $con_id = intval($_REQUEST['con_id']); // Alexandria ID
 
@@ -28,6 +29,7 @@ if ($action == 'creategame') {
         'sys_id' => 73, // LARP, assuming games are LARPs
         'cons' => [ $con_id ],
         'descriptions' => ['en' => trim($description)],
+        'urls' => [ $url ],
         'players_min' => $players_min,
         'players_max' => $players_max,
     ];
@@ -44,7 +46,7 @@ if ($action == 'creategame') {
     }
 }
 
-function create_game_form($title, $authors, $players, $description) {
+function create_game_form($title, $authors, $players, $description, $fulldescription) {
     global $intercon_letter;
     global $con_id;
     $title = preg_replace("_\s+_", " ", $title);
@@ -53,6 +55,10 @@ function create_game_form($title, $authors, $players, $description) {
     foreach($d_parts AS $d_part) {
         $descriptionfix .= preg_replace('_ ?\r?\n_',' ',$d_part) . "\r\n\r\n";
     }
+    $url = '';
+    if (preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
+        $url = $matches[1];
+    }
     $authorfix = preg_replace('_, (and )?| and _', '#',$authors);
     $html  = '<form method="post"><table>';
     $html .= '<tr><td>Title:</td><td><input type="text" size="100" name="title" value="' . htmlspecialchars($title) . '"></td></tr>';
@@ -60,6 +66,7 @@ function create_game_form($title, $authors, $players, $description) {
     $html .= '<tr><td>Organizer:</td><td><input type="text" size="100"  name="organizer" value=""></td></tr>';
     $html .= '<tr><td>Players:</td><td><input type="text" size="100"  name="players" value="' . htmlspecialchars($players) . '"></td></tr>';
     $html .= '<tr><td>Description:</td><td><textarea name="description" cols="200" rows="10">' . htmlspecialchars($descriptionfix) . '</textarea></td></tr>';
+    $html .= '<tr><td>URL:</td><td><input type="text" size="100"  name="url" value="' . htmlspecialchars($url) . '"></td></tr>';
     $html .= '<tr><td></td><td><input type="submit"><input type="hidden" name="action" value="creategame"><input type="hidden" name="intercon_letter" value="' . $intercon_letter . '"><input type="hidden" name="con_id" value="' . $con_id . '"></td></tr>';
     $html .= '</table></form>' . PHP_EOL;
     return $html;
@@ -115,9 +122,11 @@ if ($type == 1) { // HTML scraper
             $title = strip_tags($game[1]);
             $authors = strip_tags($game[2]);
             $players = strip_tags($game[3]);
-            $description = strip_tags($game[4]);
+            $fulldescription = $game[4];
+            $description = strip_tags($fulldescription);
+
             print $title . "<br>";
-            print create_game_form($title, $authors, $players, $description);
+            print create_game_form($title, $authors, $players, $description, $fulldescription);
             print "<pre>" . htmlspecialchars($dataset) . "</pre>";
             print "<hr>";
         } else {
