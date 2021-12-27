@@ -119,11 +119,11 @@ if ($type == 1) { // HTML scraper
     foreach(preg_split($pattern, $data) AS $dataset) {
         $pattern = '_\s*<h3>(.*?)</h3>\s*<p><b>Authors?:</b> (.*?)<br />\s*<b>Players:</b>\s*(.*?)</p>\s*<(?:p|div)[^>]*>(.*)_sm';
         if ( preg_match($pattern, $dataset, $game) ) {
-            $title = strip_tags($game[1]);
+            $title = html_entity_decode(strip_tags($game[1]));
             $authors = strip_tags($game[2]);
             $players = strip_tags($game[3]);
             $fulldescription = $game[4];
-            $description = strip_tags($fulldescription);
+            $description = html_entity_decode(strip_tags($fulldescription));
 
             print $title . "<br>";
             print create_game_form($title, $authors, $players, $description, $fulldescription);
