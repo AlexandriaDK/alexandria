@@ -47,7 +47,7 @@ if ($action == 'creategame') {
 function create_game_form($title, $authors, $players, $description) {
     global $intercon_letter;
     global $con_id;
-    $title = preg_replace("_\s+", " ", $title);
+    $title = preg_replace("_\s+_", " ", $title);
     $d_parts = preg_split('_\r?\n\r?\n_',$description);
     $descriptionfix = '';
     foreach($d_parts AS $d_part) {
