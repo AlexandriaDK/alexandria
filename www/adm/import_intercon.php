@@ -47,11 +47,11 @@ if ($action == 'creategame') {
 function create_game_form($title, $authors, $players, $description) {
     global $intercon_letter;
     global $con_id;
-    $title = str_replace("\n", " ", $title);
+    $title = preg_replace("_\s+", " ", $title);
     $d_parts = preg_split('_\r?\n\r?\n_',$description);
     $descriptionfix = '';
     foreach($d_parts AS $d_part) {
-        $descriptionfix .= preg_replace('_\r?\n_',' ',$d_part) . "\r\n\r\n";
+        $descriptionfix .= preg_replace('_ ?\r?\n_',' ',$d_part) . "\r\n\r\n";
     }
     $authorfix = preg_replace('_, (and )?| and _', '#',$authors);
     $html  = '<form method="post"><table>';
