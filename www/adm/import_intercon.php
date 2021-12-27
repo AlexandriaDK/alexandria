@@ -24,6 +24,7 @@ if ($action == 'creategame') {
     $game = [
         'title' => $title,
         'persons' => $author_list,
+        'organizer' => $organizer,
         'sys_id' => 73, // LARP, assuming games are LARPs
         'cons' => [ $con_id ],
         'descriptions' => ['en' => trim($description)],
