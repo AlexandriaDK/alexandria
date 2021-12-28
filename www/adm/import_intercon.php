@@ -6,7 +6,6 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 chdir("adm/");
 
-
 $action = (string) $_REQUEST['action'];
 $intercon_letter = (string) ($_REQUEST['intercon_letter']); // Name of con, e.g. H for "Intercon H"
 $con_id = intval($_REQUEST['con_id']); // Alexandria ID
@@ -178,7 +177,7 @@ if ($type == 1) { // HTML scraper
             continue;
         }
 
-        $fulldescription = $form->description;
+        $fulldescription = mojibakefix($form->description);
         $organization = $form->organization;
         $authors = $form->author;
         $length_hours = $form->length_seconds / 3600;

@@ -307,7 +307,12 @@ function rexit($this_type, $dataset = [] ) {
 	}
 	header("Location: " . $location);
 	exit;
+}
 
+function mojibakefix ($string) {
+    $from = ['â€™', 'â€œ', 'â€', 'â€¦'];
+    $to = ['\'', '"', '"', '…'];
+    return str_replace($from, $to, $string);
 }
 
 function printinfo() {
