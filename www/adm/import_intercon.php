@@ -77,7 +77,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     if (preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
         $url = $matches[1];
     }
-    $authorfix = preg_replace('_, (and )?| and | ?& ?_', '#',$authors);
+    $authorfix = preg_replace('_, (and )?| and | ?[&/] ?_', '#',$authors);
     $html  = '<form method="post" class="creategame"><table>';
     $html .= '<tr><td>Title:</td><td><input type="text" size="100" name="title" value="' . htmlspecialchars($title) . '"></td></tr>';
     $html .= '<tr><td>Authors (#):</td><td><input type="text" size="100"  name="authors" value="' . htmlspecialchars($authorfix) . '"></td></tr>';
