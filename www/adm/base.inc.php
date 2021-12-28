@@ -310,8 +310,8 @@ function rexit($this_type, $dataset = [] ) {
 }
 
 function mojibakefix ($string) {
-    $from = ['â€™', 'â€œ', 'â€', 'â€¦'];
-    $to = ['\'', '"', '"', '…'];
+    $from = ['â€™', 'â€œ', 'â€', 'â€¦', 'Ã©', 'â€“', 'â€”'];
+    $to = ['\'', '"', '"', '…', 'é', '–', '—'];
     return str_replace($from, $to, $string);
 }
 

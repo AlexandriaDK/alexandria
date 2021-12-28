@@ -181,8 +181,8 @@ if ($type == 1) { // HTML scraper
         }
 
         $fulldescription = mojibakefix($form->description);
-        $organization = $form->organization;
-        $authors = $form->author;
+        $organization = mojibakefix($form->organization);
+        $authors = mojibakefix($form->author);
         $length_hours = $form->length_seconds / 3600;
         $description = strip_tags($fulldescription);
         $team_members = [];
