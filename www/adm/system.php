@@ -73,13 +73,13 @@ if ($action == "Delete" && $system) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
 		rexit($this_type, ['system' => $system] );
 	} else {
-		$name = getone("SELECT name FROM sys WHERE id = $system");
+		$name = getone("SELECT name FROM sys WHERE id = $this_id");
 
 		$q = "DELETE FROM sys WHERE id = $system";
 		$r = doquery($q);
 
 		if ($r) {
-			chlog($person,$this_type,"System deleted: $name");
+			chlog($this_id,$this_type,"System deleted: $name");
 		}
 		$_SESSION['admin']['info'] = "System deleted! " . dberror();
 		rexit($this_type);
