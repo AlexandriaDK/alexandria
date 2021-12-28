@@ -469,10 +469,12 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 	$participants_extra = $game['participants_extra'] ?? '';
     $person_ids = [];
     foreach($persons AS $person) {
-        $person_ids[] = [
-			'pid' => get_create_person($person['name'], $intern),
-			'role_id' => $person['role_id']
-		];
+		if (trim($person['name'])) {
+			$person_ids[] = [
+				'pid' => get_create_person(trim($person['name']), $intern),
+				'role_id' => $person['role_id']
+			];
+		}
     }
 
 	// insert game
