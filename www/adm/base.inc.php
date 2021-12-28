@@ -461,6 +461,7 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 	$descriptions = $game['descriptions'] ?? [];
 	$players_min = $game['players_min'] ?? NULL;
 	$players_max = $game['players_max'] ?? NULL;
+	$participants_extra = $game['participants_extra'] ?? '';
     $person_ids = [];
     foreach($persons AS $person) {
         $person_ids[] = [
@@ -470,9 +471,12 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
     }
 
 	// insert game
-	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, players_min, players_max, rlyeh_id, boardgame) " .
-	"VALUES ('" . dbesc($title) . "', '" . dbesc($intern) ."', $sys_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", 0, 0)";
+	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
+	               "VALUES ('" . dbesc($title) . "', '" . dbesc($intern) ."', $sys_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
 	$game_id = doquery($game_id_sql);
+	if (! $game_id ) {
+		return false;
+	}
 	chlog($game_id, 'sce', 'Game created');
 
 	/*

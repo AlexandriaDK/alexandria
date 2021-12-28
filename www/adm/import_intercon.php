@@ -16,7 +16,7 @@ $title = (string) $_REQUEST['title'];
 $authors = (string) $_REQUEST['authors'];
 $organizer = (string) $_REQUEST['organizer'];
 $players = (string) $_REQUEST['players'];
-$players_extra = (string) $_REQUEST['players_extra'];
+$participants_extra = (string) $_REQUEST['participants_extra'];
 $description = (string) $_REQUEST['description'];
 $url = (string) $_REQUEST['url'];
 $internal = (string) $_REQUEST['internal'];
@@ -30,6 +30,7 @@ if ($action == 'creategame') {
     $game = [
         'title' => $title,
         'persons' => $author_list,
+        'participants_extra' => $participants_extra,
         'organizer' => $organizer,
         'sys_id' => 73, // LARP, assuming games are LARPs
         'cons' => [ $con_id ],
@@ -62,7 +63,7 @@ if ($action == 'creategame') {
     }
 }
 
-function create_game_form($title, $authors, $organization, $players, $players_extra, $description, $fulldescription, $internal, $dataset) {
+function create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset) {
     global $intercon_letter;
     global $con_id;
     $d_parts = preg_split('_\r?\n\r?\n_',$description);
@@ -81,7 +82,7 @@ function create_game_form($title, $authors, $organization, $players, $players_ex
     $html .= '<tr><td>Authors (#):</td><td><input type="text" size="100"  name="authors" value="' . htmlspecialchars($authorfix) . '"></td></tr>';
     $html .= '<tr><td>Organizer:</td><td><input type="text" size="100"  name="organizer" value="' . htmlspecialchars($organization) . '"></td></tr>';
     $html .= '<tr><td>Players:</td><td><input type="text" size="100"  name="players" value="' . htmlspecialchars($players) . '"></td></tr>';
-    $html .= '<tr><td>Players extra:</td><td><input type="text" size="100"  name="players_extra" value="' . htmlspecialchars($players_extra) . '"></td></tr>';
+    $html .= '<tr><td>Players extra:</td><td><input type="text" size="100"  name="participants_extra" value="' . htmlspecialchars($participants_extra) . '"></td></tr>';
     $html .= '<tr><td>Description:</td><td><textarea name="description" cols="200" rows="10">' . htmlspecialchars($descriptionfix) . '</textarea></td></tr>';
     $html .= '<tr><td>Internal:</td><td><textarea name="internal" cols="200" rows="3">' . htmlspecialchars($internal) . '</textarea></td></tr>';
     $html .= '<tr><td>URL:</td><td><input type="text" size="100"  name="url" value="' . htmlspecialchars($url) . '"></td></tr>';
@@ -146,13 +147,13 @@ if ($type == 1) { // HTML scraper
             $authors = strip_tags($game[2]);
             $organization = '';
             $players = strip_tags($game[3]);
-            $players_extra = '';
+            $participants_extra = '';
             $fulldescription = $game[4];
             $description = html_entity_decode(strip_tags($fulldescription));
             $internal = '';
             $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'");
             print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
-            print create_game_form($title, $authors, $organization, $players, $players_extra, $description, $fulldescription, $internal, $dataset);
+            print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset);
             print "<hr>";
         } else {
             // for manual checks, e.g. special events
@@ -199,16 +200,16 @@ if ($type == 1) { // HTML scraper
         }
         $players = $min_players . "-" . $max_players;
         if (count($playernotes) == 1 && $last_bucket_key == 'signups') {
-            $players_extra = '';
+            $participants_extra = '';
         } else {
-            $players_extra = implode(", ", $playernotes);
+            $participants_extra = implode(", ", $playernotes);
         }
         $members = implode(', ', $team_members); // For internal note
         $internal = "Autoimport: Import Intercon\nIntercon ID: $intercon_id\nDuration: $length_hours hours\nGMs: $members\n\nEntry: " . json_encode($entry) . "\n\nForm: " . json_encode($form) . "\n";
 
         $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'");
         print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
-        print create_game_form($title, $authors, $organization, $players, $players_extra, $description, $fulldescription, $internal, '' );
+        print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, '' );
         print "<hr>";
     }
 
