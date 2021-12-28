@@ -6,15 +6,20 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 chdir("adm/");
 
+
 $action = (string) $_REQUEST['action'];
+$intercon_letter = (string) ($_REQUEST['intercon_letter']); // Name of con, e.g. H for "Intercon H"
+$con_id = intval($_REQUEST['con_id']); // Alexandria ID
+$format = (string) $_REQUEST['format'];
+
 $title = (string) $_REQUEST['title'];
 $authors = (string) $_REQUEST['authors'];
 $organizer = (string) $_REQUEST['organizer'];
 $players = (string) $_REQUEST['players'];
+$players_extra = (string) $_REQUEST['players_extra'];
 $description = (string) $_REQUEST['description'];
 $url = (string) $_REQUEST['url'];
-$intercon_letter = (string) ($_REQUEST['intercon_letter']); // Name of con, e.g. H for "Intercon H"
-$con_id = intval($_REQUEST['con_id']); // Alexandria ID
+$internal = (string) $_REQUEST['internal'];
 
 if ($action == 'creategame') {
     $author_list = [];
@@ -32,13 +37,24 @@ if ($action == 'creategame') {
         'urls' => [ $url ],
         'players_min' => $players_min,
         'players_max' => $players_max,
+        'internal' => $internal
     ];
-    $game_id = create_game($game, 'Autoimport: Import Intercon');
+    $game_id = create_game($game, ($internal ? $internal : 'Autoimport: Import Intercon') );
     if ($game_id) {
+        if ($format == 'json') {
+            header("Content-Type: text/json");
+            print json_encode(["success" => 1, "game_id" => $game_id]);
+            exit;
+        }
         $_SESSION['admin']['info'] = "Game created: $title " . dberror();
         header("Location: import_intercon.php?intercon_letter=$intercon_letter&con_id=$con_id");
         exit;
     } else {
+        if ($format == 'json') {
+            header("Content-Type: text/json");
+            print json_encode(["success" => 0]);
+            exit;
+        }
         print "<p>Fejl:</p><p>";
         var_dump($game);
         print "</p>";
@@ -46,28 +62,31 @@ if ($action == 'creategame') {
     }
 }
 
-function create_game_form($title, $authors, $players, $description, $fulldescription) {
+function create_game_form($title, $authors, $organization, $players, $players_extra, $description, $fulldescription, $internal, $dataset) {
     global $intercon_letter;
     global $con_id;
-    $title = preg_replace("_\s+_", " ", $title);
     $d_parts = preg_split('_\r?\n\r?\n_',$description);
     $descriptionfix = '';
     foreach($d_parts AS $d_part) {
-        $descriptionfix .= preg_replace('_ ?\r?\n_',' ',$d_part) . "\r\n\r\n";
+        $descriptionfix .= preg_replace('_\s+_',' ',$d_part) . "\r\n\r\n";
     }
+    $descriptionfix = trim($descriptionfix) . "\r\n";
     $url = '';
     if (preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
         $url = $matches[1];
     }
     $authorfix = preg_replace('_, (and )?| and _', '#',$authors);
-    $html  = '<form method="post"><table>';
+    $html  = '<form method="post" class="creategame"><table>';
     $html .= '<tr><td>Title:</td><td><input type="text" size="100" name="title" value="' . htmlspecialchars($title) . '"></td></tr>';
     $html .= '<tr><td>Authors (#):</td><td><input type="text" size="100"  name="authors" value="' . htmlspecialchars($authorfix) . '"></td></tr>';
-    $html .= '<tr><td>Organizer:</td><td><input type="text" size="100"  name="organizer" value=""></td></tr>';
+    $html .= '<tr><td>Organizer:</td><td><input type="text" size="100"  name="organizer" value="' . htmlspecialchars($organization) . '"></td></tr>';
     $html .= '<tr><td>Players:</td><td><input type="text" size="100"  name="players" value="' . htmlspecialchars($players) . '"></td></tr>';
+    $html .= '<tr><td>Players extra:</td><td><input type="text" size="100"  name="players_extra" value="' . htmlspecialchars($players_extra) . '"></td></tr>';
     $html .= '<tr><td>Description:</td><td><textarea name="description" cols="200" rows="10">' . htmlspecialchars($descriptionfix) . '</textarea></td></tr>';
+    $html .= '<tr><td>Internal:</td><td><textarea name="internal" cols="200" rows="3">' . htmlspecialchars($internal) . '</textarea></td></tr>';
     $html .= '<tr><td>URL:</td><td><input type="text" size="100"  name="url" value="' . htmlspecialchars($url) . '"></td></tr>';
-    $html .= '<tr><td></td><td><input type="submit"><input type="hidden" name="action" value="creategame"><input type="hidden" name="intercon_letter" value="' . $intercon_letter . '"><input type="hidden" name="con_id" value="' . $con_id . '"></td></tr>';
+    $html .= '<tr><td></td><td><input type="submit"><input type="hidden" name="action" value="creategame"><input type="hidden" name="intercon_letter" value="' . $intercon_letter . '"><input type="hidden" name="con_id" value="' . $con_id . '"><input type="hidden" name="submitted" value="0"></td></tr>';
+    $html .= '<tr><td colspan="2"><pre>' . htmlspecialchars($dataset) . '</pre></td></tr>';
     $html .= '</table></form>' . PHP_EOL;
     return $html;
 }
@@ -84,6 +103,8 @@ function create_game_form($title, $authors, $players, $description, $fulldescrip
 
 
 htmladmstart("Import Intercon");
+ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
 ?>
 <h1>Import Intercon</h1>
 <form action="import_intercon.php">
@@ -101,7 +122,8 @@ if (strlen($intercon_letter) != 1 || ! $con_id) {
 }
 
 list($con_name, $con_year) = getrow("SELECT name, year FROM convent WHERE id = $con_id");
-print "<p><a href=\"convent.php?con=" . $con_id . "\">" . htmlspecialchars($con_name) . " ($con_year)</a></p>";
+$gamecount = getone("SELECT COUNT(*) FROM csrel WHERE convent_id = $con_id");
+print "<p><a href=\"convent.php?con=" . $con_id . "\">" . htmlspecialchars($con_name) . " ($con_year)</a> ($gamecount " . ($gamecount == 1 ? 'game' : 'games') . ")</p>";
 print "<hr>";
 
 
@@ -120,14 +142,17 @@ if ($type == 1) { // HTML scraper
         $pattern = '_\s*<h3>(.*?)</h3>\s*<p><b>Authors?:</b> (.*?)<br />\s*<b>Players:</b>\s*(.*?)</p>\s*<(?:p|div)[^>]*>(.*)_sm';
         if ( preg_match($pattern, $dataset, $game) ) {
             $title = html_entity_decode(strip_tags($game[1]));
+            $title = preg_replace("_\s+_", " ", $title);
             $authors = strip_tags($game[2]);
+            $organization = '';
             $players = strip_tags($game[3]);
+            $players_extra = '';
             $fulldescription = $game[4];
             $description = html_entity_decode(strip_tags($fulldescription));
-
-            print $title . "<br>";
-            print create_game_form($title, $authors, $players, $description, $fulldescription);
-            print "<pre>" . htmlspecialchars($dataset) . "</pre>";
+            $internal = '';
+            $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'");
+            print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
+            print create_game_form($title, $authors, $organization, $players, $players_extra, $description, $fulldescription, $internal, $dataset);
             print "<hr>";
         } else {
             // for manual checks, e.g. special events
@@ -137,8 +162,78 @@ if ($type == 1) { // HTML scraper
         }
     }
 } elseif ($type == 2) { // JSON scraper
-    $url = 'https://' . strtolower($intercon_letter) . '.interconlarp.org/graphql';
+    $dataset = json_decode($data);
+    $con = $dataset->data->convention;
+    $conname = $con->name;
+    foreach($con->events_paginated->entries AS $entry) {
+        $intercon_id = $entry->id;
+        $title = $entry->title;
+        $form = json_decode($entry->form_response_attrs_json);
+#        print "<pre>"; var_dump($form); print "</pre>";
+        $category = $entry->event_category->name;
+        if ($category != 'Larp') {
+            print "<p>" . htmlspecialchars("$title ($category)") . "</p>";
+            print "<hr>";
+            continue;
+        }
+
+        $fulldescription = $form->description;
+        $organization = $form->organization;
+        $authors = $form->author;
+        $length_hours = $form->length_seconds / 3600;
+        $description = strip_tags($fulldescription);
+        $team_members = [];
+        foreach($entry->team_members AS $member) {
+            $team_members[] = $member->user_con_profile->name_without_nickname;
+        }
+        $min_players = 0;
+        $max_players = 0;
+        $playernotes = [];
+        foreach($form->registration_policy->buckets AS $bucket) {
+            $min = $bucket->minimum_slots;
+            $max = $bucket->total_slots;
+            $min_players += $min;
+            $max_players += $max;
+            $playernotes[] = $bucket->description . ": " . ($min == $max ? $min : $min . "-" . $max);
+            $last_bucket_key = $bucket->key;
+        }
+        $players = $min_players . "-" . $max_players;
+        if (count($playernotes) == 1 && $last_bucket_key == 'signups') {
+            $players_extra = '';
+        } else {
+            $players_extra = implode(", ", $playernotes);
+        }
+        $members = implode(', ', $team_members); // For internal note
+        $internal = "Autoimport: Import Intercon\nIntercon ID: $intercon_id\nDuration: $length_hours hours\nGMs: $members\n\nEntry: " . json_encode($entry) . "\n\nForm: " . json_encode($form) . "\n";
+
+        $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'");
+        print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
+        print create_game_form($title, $authors, $organization, $players, $players_extra, $description, $fulldescription, $internal, '' );
+        print "<hr>";
+    }
+
 }
+?>
+<script>
+$( ".creategame" ).submit(function( event ) {
+    event.preventDefault();
+    if ($(this).find("input[name=submitted]").val() == 1) {
+        return false;
+    }
+    $(this).find("input[name=submitted]").val(1);
+    var query = $(this).serialize() + '&format=json';
+    var myform = this;
+    $.post("import_intercon.php", query, function (data) {
+        if (data.success == 1) {
+            $(myform).hide('fast');
+            $(myform).prev().append(' <a href="game.php?game=' + data.game_id + '" target="_blank">✔️</a>');
+        } else {
+            $(myform).prev().append(" ❌");
+        }
+    }, "json");
 
-
+});
+</script>
+<?php
+htmladmend();
 ?>

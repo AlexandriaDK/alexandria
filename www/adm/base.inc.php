@@ -311,7 +311,7 @@ function rexit($this_type, $dataset = [] ) {
 }
 
 function printinfo() {
-	if ($_SESSION['admin']['info']) {
+	if ($_SESSION['admin']['info'] ?? '') {
 		print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">";
 		if ($_SESSION['admin']['link']) {
 			print "<a href=\"" . $_SESSION['admin']['link'] . "\">";
