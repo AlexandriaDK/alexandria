@@ -525,7 +525,7 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
     }
 
 	foreach ($tags AS $tag) {
-        if ( ! getone("SELECT 1 FROM tags WHERE sce_id = $game_id AND tag = '". dbesc($tag) . "'")) {
+        if ( $tag != '' && ! getone("SELECT 1 FROM tags WHERE sce_id = $game_id AND tag = '". dbesc($tag) . "'")) {
             $gsql = "INSERT INTO tags (sce_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
             doquery($gsql);
         }

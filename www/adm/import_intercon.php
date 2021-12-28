@@ -18,6 +18,7 @@ $players = (string) $_REQUEST['players'];
 $participants_extra = (string) $_REQUEST['participants_extra'];
 $description = (string) $_REQUEST['description'];
 $url = (string) $_REQUEST['url'];
+$tags = (string) $_REQUEST['tags'];
 $internal = (string) $_REQUEST['internal'];
 
 if ($action == 'creategame') {
@@ -37,7 +38,8 @@ if ($action == 'creategame') {
         'urls' => [ $url ],
         'players_min' => $players_min,
         'players_max' => $players_max,
-        'internal' => $internal
+        'internal' => $internal,
+        'tags' => explode("#", $tags),
     ];
     $game_id = create_game($game, ($internal ? $internal : 'Autoimport: Import Intercon') );
     if ($game_id) {
@@ -85,6 +87,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     $html .= '<tr><td>Description:</td><td><textarea name="description" cols="200" rows="10">' . htmlspecialchars($descriptionfix) . '</textarea></td></tr>';
     $html .= '<tr><td>Internal:</td><td><textarea name="internal" cols="200" rows="3">' . htmlspecialchars($internal) . '</textarea></td></tr>';
     $html .= '<tr><td>URL:</td><td><input type="text" size="100"  name="url" value="' . htmlspecialchars($url) . '"></td></tr>';
+    $html .= '<tr><td>Tags (#):</td><td><input type="text" size="100"  name="tags" value=""></td></tr>';
     $html .= '<tr><td></td><td><input type="submit"><input type="hidden" name="action" value="creategame"><input type="hidden" name="intercon_letter" value="' . $intercon_letter . '"><input type="hidden" name="con_id" value="' . $con_id . '"><input type="hidden" name="submitted" value="0"></td></tr>';
     $html .= '<tr><td colspan="2"><pre>' . htmlspecialchars($dataset) . '</pre></td></tr>';
     $html .= '</table></form>' . PHP_EOL;
