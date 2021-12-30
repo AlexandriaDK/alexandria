@@ -667,12 +667,12 @@ print '
 						</select>
 					</td>
 					<td>
-						<input type="button" class="flytknap" value="&lt;- Premiere" onClick="addtocon(m4,1)" title="Premiere (first official run)"><br>
-						<input type="button" class="flytknap" value="&lt;- Re-run" onClick="addtocon(m4,2)" title="Re-run (about same version as original)"><br>
-						<input type="button" class="flytknap" value="&lt;- Re-run (mod.)" onClick="addtocon(m4,3)" title="Re-run (modified from original)"><br>
-						<input type="button" class="flytknap" value="&lt;- Test run" onClick="addtocon(m4,42)" title="Test run (announced but officially scheduled for another con)"><br>
-						<input type="button" class="flytknap" value="&lt;- Cancelled" onClick="addtocon(m4,99)" title="Cancelled (was annunced in the programme but was not run)"><br>
-						<input type="button" class="flytknapright" value="-&gt; Remove" onClick="removefrom(m4)" ><br>
+						<input type="button" class="flytknap" value="← Premiere" onClick="addtocon(m4,1)" title="Premiere (first official run)"><br>
+						<input type="button" class="flytknap" value="← Re-run" onClick="addtocon(m4,2)" title="Re-run (about same version as original)"><br>
+						<input type="button" class="flytknap" value="← Re-run (mod.)" onClick="addtocon(m4,3)" title="Re-run (modified from original)"><br>
+						<input type="button" class="flytknap" value="← Test run" onClick="addtocon(m4,42)" title="Test run (announced but officially scheduled for another con)"><br>
+						<input type="button" class="flytknap" value="← Cancelled" onClick="addtocon(m4,99)" title="Cancelled (was annunced in the programme but was not run)"><br>
+						<input type="button" class="flytknapright" value="Remove →" onClick="removefrom(m4)" ><br>
 					</td>
 
 					<td>
