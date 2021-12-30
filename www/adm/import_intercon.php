@@ -170,7 +170,7 @@ if ($type == 1) { // HTML scraper
     $conname = $con->name;
     foreach($con->events_paginated->entries AS $entry) {
         $intercon_id = $entry->id;
-        $title = $entry->title;
+        $title = html_entity_decode($entry->title);
         $form = json_decode($entry->form_response_attrs_json);
 #        print "<pre>"; var_dump($form); print "</pre>";
         $category = $entry->event_category->name;
@@ -180,9 +180,9 @@ if ($type == 1) { // HTML scraper
             continue;
         }
 
-        $fulldescription = mojibakefix($form->description);
-        $organization = mojibakefix($form->organization);
-        $authors = mojibakefix($form->author);
+        $fulldescription = html_entity_decode(mojibakefix($form->description));
+        $organization = html_entity_decode(mojibakefix($form->organization));
+        $authors = html_entity_decode(mojibakefix($form->author));
         $length_hours = $form->length_seconds / 3600;
         $description = strip_tags($fulldescription);
         $team_members = [];
