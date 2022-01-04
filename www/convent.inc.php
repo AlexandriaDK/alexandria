@@ -52,7 +52,7 @@ $filelist = getfilelist($con,$this_type);
 // Part of con series? Find previous and next.
 if ($convent['conset_id']) {
 	$cname = ($convent['conset_id'] == 40 ? $t->getTemplateVars('_cons_other') : $convent['cname']);
-	$delafout = "<a href=\"data?conset=" . $convent['conset_id'] . "\" class=\"con\">" . htmlspecialchars( $cname ) . "</a>";
+	$partofhtml = "<a href=\"data?conset=" . $convent['conset_id'] . "\" class=\"con\">" . htmlspecialchars( $cname ) . "</a>";
 	$qq = getall("
 		SELECT id, name, year, begin, end
 		FROM convent 
@@ -322,7 +322,7 @@ $t->assign('ogimage', getimageifexists($this_id, $this_type) );
 $t->assign('place',$convent['place']);
 $t->assign('countrycode',$convent['country']);
 $t->assign('dateset',nicedateset($convent['begin'],$convent['end']));
-$t->assign('partof',$delafout);
+$t->assign('partof',$partofhtml);
 $t->assign('confirmed',$convent['confirmed']);
 $t->assign('cancelled',$convent['cancelled']);
 $t->assign('description',$convent['description']);
@@ -346,7 +346,7 @@ $t->assign('user_can_edit_organizers',$_SESSION['can_edit_organizers'] ?? FALSE 
 $t->assign('user_visited',in_array('visited',$userlog));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
-if ($con == 504) { // Rollespil din Pride
+if ($con == 504 || $convent['conset_id'] == 117) { // Hardcoded: "Rollespil din Pride" + QueerCon cons
 	$t->assign('lgbtmenu', TRUE);
 }
 

@@ -80,5 +80,9 @@ $t->assign('alias',$aliaslist);
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );
 
+if ($conset == 117) { // Hardcoded: QueerCon
+	$t->assign('lgbtmenu', TRUE);
+}
+
 $t->display('data.tpl');
 ?>
