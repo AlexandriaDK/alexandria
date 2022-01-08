@@ -143,7 +143,7 @@ foreach(preg_split($pattern, $data) AS $dataset) {
         $title = html_entity_decode(strip_tags($game[1]));
         $title = preg_replace("_\s+_", " ", $title);
         $title = trim($title);
-        $authors = strip_tags(trim($game[2]));
+        $authors = html_entity_decode(strip_tags(trim($game[2])));
         $organization = '';
         $players = '';
         $participants_extra = '';
