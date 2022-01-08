@@ -66,7 +66,7 @@ if ($action == 'creategame') {
     }
 }
 
-function create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset) {
+function create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset, $link = '') {
     global $year;
     $d_parts = preg_split('_\r?\n\r?\n_',$description);
     $descriptionfix = '';
@@ -76,8 +76,8 @@ function create_game_form($title, $authors, $organization, $players, $participan
     $descriptionfix = preg_replace('_^ _m', '', $descriptionfix);
     $descriptionfix = trim($descriptionfix) . "\r\n";
     $descriptionfix = preg_replace('_(\r\n){3,}_',"\r\n\r\n",$descriptionfix); // collapse 3+ newlines into 2
-    $url = '';
-    if (preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
+    $url = $link;
+    if ($url == '' && preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
         $url = $matches[1];
     }
     $authorfix = preg_replace('_^by\s*_','',$authors);
@@ -140,6 +140,10 @@ $pattern = '_<!--SPLIT-->_sm';
 foreach(preg_split($pattern, $data) AS $dataset) {
     $pattern = '_<h2>(.*?)</h2>\s*(?:<h3>(.*?)</h3>)\s*(.*)_sm';
     if ( preg_match($pattern, $dataset, $game) ) {
+        $link = '';
+        if (preg_match('_ href="(.*?)"_i', $game[1], $matches)) {
+            $link = $matches[1];
+        }
         $title = html_entity_decode(strip_tags($game[1]));
         $title = preg_replace("_\s+_", " ", $title);
         $title = trim($title);
@@ -153,7 +157,7 @@ foreach(preg_split($pattern, $data) AS $dataset) {
         $internal = '';
         $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'") + getone("SELECT COUNT(*) FROM alias WHERE category = 'sce' AND label = '" . dbesc($title) . "'");
         print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
-        print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset);
+        print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset, $link);
         print "<hr>";
     } else {
         // for manual checks, e.g. special events
