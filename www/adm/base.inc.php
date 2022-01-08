@@ -535,7 +535,7 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 
 	foreach($urls AS $url) {
 		if ( $url != '' && ! getone("SELECT 1 FROM links WHERE category = 'sce' AND data_id = $game_id AND url = '" . dbesc($url) . "'")) {
-			$lsql = "INSERT INTO links (category, data_id, url, description) VALUES ('sce', $game_id, '" . dbesc($url) . "', '{\$_links_website_scenario}')";
+			$lsql = "INSERT INTO links (category, data_id, url, description) VALUES ('sce', $game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
 			doquery($lsql);
 		}
 	}
