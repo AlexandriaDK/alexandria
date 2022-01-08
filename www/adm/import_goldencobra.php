@@ -74,7 +74,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     }
     $descriptionfix = preg_replace('_^ _m', '', $descriptionfix);
     $descriptionfix = trim($descriptionfix) . "\r\n";
-    $descriptionfix = preg_replace('_(\r\n){3,}_','\r\n\r\n',$descriptionfix); // collapse 3+ newlines into 2
+    $descriptionfix = preg_replace('_(\r\n){3,}_',"\r\n\r\n",$descriptionfix); // collapse 3+ newlines into 2
     $url = '';
     if (preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
         $url = $matches[1];
