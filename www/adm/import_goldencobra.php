@@ -82,7 +82,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     }
     $authorfix = preg_replace('_^by\s*_','',$authors);
     $authorfix = preg_replace('_, ?(and )?| and | ?[&/] ?_', '#',$authorfix);
-    $islarp = preg_match('_Live.?action|LARP_',$description);
+    $islarp = preg_match('_live.?action|LARP_i',$description);
     $html  = '<form method="post" class="creategame"><table>';
     $html .= '<tr><td>Title:</td><td><input type="text" size="100" name="title" value="' . htmlspecialchars($title) . '"></td></tr>';
     $html .= '<tr><td>Authors (#):</td><td><input type="text" size="100"  name="authors" value="' . htmlspecialchars($authorfix) . '"></td></tr>';
