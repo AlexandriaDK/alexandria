@@ -19,6 +19,7 @@ $description = (string) $_REQUEST['description'];
 $url = (string) $_REQUEST['url'];
 $tags = (string) $_REQUEST['tags'];
 $internal = (string) $_REQUEST['internal'];
+$larp = (int) (bool) $_REQUEST['larp'];
 
 $con_id = getone("SELECT id FROM convent WHERE conset_id = 183 AND year = $year");
 
@@ -33,7 +34,7 @@ if ($action == 'creategame') {
         'persons' => $author_list,
         'participants_extra' => $participants_extra,
         'organizer' => $organizer,
-        'sys_id' => 73, // LARP, assuming games are LARPs
+        'sys_id' => ($larp ? 73 : NULL), // LARP, assuming games are LARPs
         'cons' => [ $con_id ],
         'descriptions' => ['en' => trim($description)],
         'urls' => [ $url ],
@@ -81,6 +82,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     }
     $authorfix = preg_replace('_^by\s*_','',$authors);
     $authorfix = preg_replace('_, ?(and )?| and | ?[&/] ?_', '#',$authorfix);
+    $islarp = preg_match('_Live.?action|LARP_',$description);
     $html  = '<form method="post" class="creategame"><table>';
     $html .= '<tr><td>Title:</td><td><input type="text" size="100" name="title" value="' . htmlspecialchars($title) . '"></td></tr>';
     $html .= '<tr><td>Authors (#):</td><td><input type="text" size="100"  name="authors" value="' . htmlspecialchars($authorfix) . '"></td></tr>';
@@ -91,6 +93,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     $html .= '<tr><td>Internal:</td><td><textarea name="internal" cols="200" rows="3">' . htmlspecialchars($internal) . '</textarea></td></tr>';
     $html .= '<tr><td>URL:</td><td><input type="text" size="100"  name="url" value="' . htmlspecialchars($url) . '"></td></tr>';
     $html .= '<tr><td>Tags (#):</td><td><input type="text" size="100"  name="tags" value="' . htmlspecialchars($organization) . '"></td></tr>';
+    $html .= '<tr><td>Larp?:</td><td><input type="checkbox" name="larp" ' . ($islarp ? 'checked' : '' ) . '></td></tr>';
     $html .= '<tr><td></td><td><input type="submit"><input type="hidden" name="action" value="creategame"><input type="hidden" name="year" value="' . $year . '"><input type="hidden" name="submitted" value="0"></td></tr>';
     $html .= '<tr><td colspan="2"><pre>' . htmlspecialchars($dataset) . '</pre></td></tr>';
     $html .= '</table></form>' . PHP_EOL;

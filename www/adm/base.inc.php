@@ -476,6 +476,9 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 			];
 		}
     }
+	if ($sys_id == NULL) { // insert text NULL into SQL
+		$sys_id = 'NULL';
+	}
 
 	// insert game
 	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
