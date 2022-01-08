@@ -135,10 +135,15 @@ $data = file_get_contents($file);
 // HTML scraper
     // $pattern = '_<h3>(.*?)</h3>\s*<p><b>Authors?:</b> (.*?)<br />\s*<b>Players:</b>\s*(.*?)</p>\s*<p>(.*?)<!--_';
     // $pattern = '_<h3>(.*?)</h3>\s*<p><b>Authors?:</b> (.*?)<br />\s*<b>Players:</b>\s*(.*?)</p>\s*<p>(.*?)<!--_sm';
-$data = str_replace('<h2>','<!--SPLIT--><h2>', $data);
-$pattern = '_<!--SPLIT-->_sm';
-foreach(preg_split($pattern, $data) AS $dataset) {
+if ($year == 2014 || $year == 2015) {
+    $data = str_replace('<h2>','<!--SPLIT--><h2>', $data);
+    $outerpattern = '_<!--SPLIT-->_sm';
     $pattern = '_<h2>(.*?)</h2>\s*(?:<h3>(.*?)</h3>)\s*(.*)_sm';
+} else {
+    $outerpattern = '_<hr>_';
+    $pattern = '_(<h2>(?:.*?)</h2>|<a(?:.*?)</a>)\s*(?:<h3>(.*?)</h3>)\s*(.*)_sm';
+}
+foreach(preg_split($outerpattern, $data) AS $dataset) {
     if ( preg_match($pattern, $dataset, $game) ) {
         $link = '';
         if (preg_match('_ href="(.*?)"_i', $game[1], $matches)) {
