@@ -131,7 +131,7 @@ print "<hr>";
 
 
 $type = in_array(strtoupper($intercon_letter), ['A','B','C']) ? 1 : 2;
-$file = 'intercon/' . ($type == 1 ? strtoupper($intercon_letter) . '.html' : strtolower($intercon_letter) . '.json');
+$file = '../../imports/intercon/' . ($type == 1 ? strtoupper($intercon_letter) . '.html' : strtolower($intercon_letter) . '.json');
 if (! file_exists($file)) {
     die("Error: File " . $file . " does not exist.\n");
 }

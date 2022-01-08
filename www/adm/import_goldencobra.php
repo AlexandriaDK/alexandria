@@ -123,7 +123,7 @@ $gamecount = getone("SELECT COUNT(*) FROM csrel WHERE convent_id = $con_id");
 print "<p><a href=\"convent.php?con=" . $con_id . "\">" . htmlspecialchars($con_name) . " ($con_year)</a> ($gamecount " . ($gamecount == 1 ? 'game' : 'games') . ")</p>";
 print "<hr>";
 
-$file = 'goldencobra/submissions' . $year . '.html';
+$file = '../../imports/goldencobra/submissions' . $year . '.html';
 if (! file_exists($file)) {
     die("Error: File " . $file . " does not exist.\n");
 }
