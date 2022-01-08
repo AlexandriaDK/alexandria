@@ -148,7 +148,7 @@ foreach(preg_split($pattern, $data) AS $dataset) {
         $players = '';
         $participants_extra = '';
         $fulldescription = $game[3];
-        $description = html_entity_decode(strip_tags(str_replace("</p>","</p>\n\n",$fulldescription)));
+        $description = html_entity_decode(strip_tags(str_replace("</a>","</a>\r\n",str_replace("</p>","</p>\n\n",$fulldescription))));
         $description = preg_replace('_^\(.*?\)_',"\\0\r\n", $description);
         $internal = '';
         $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'") + getone("SELECT COUNT(*) FROM alias WHERE category = 'sce' AND label = '" . dbesc($title) . "'");
