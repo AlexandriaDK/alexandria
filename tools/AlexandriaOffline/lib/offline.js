@@ -144,7 +144,7 @@ function showConventions(data) {
         var country = a.conventions[con.id].country || conset.country;
         html += '<tr>';
         html += '<td>' + conLink(con.id) + '</td>';
-        html += '<td>' + a.conventions[con.id].place + (country ? (a.conventions[con.id].place ? ', ' : '') + country.toUpperCase() : '') + '</td>';
+        html += '<td>' + a.conventions[con.id].place + (country ? (a.conventions[con.id].place ? ', ' : '') + getCountryName(country) : '') + '</td>';
         html += '</tr>';
     }
     html += '</table>';
@@ -290,7 +290,7 @@ function showConvention(data) {
     var boardgames = games.filter(rel => a.games[rel.game_id].boardgame == 1);
     var cancelled = parseInt(a.conventions[id].cancelled);
     var html = '<h2>' + esc(nom) + '</h2>';
-    var location = ''
+    var location = '';
     if (con.place) {
         location = con.place;
         if (country) {
@@ -298,7 +298,7 @@ function showConvention(data) {
         }
     }
     if (country) {
-        location += country.toUpperCase()
+        location += getCountryName(country);
     }
     if (location) {
         html += '<p>Location: ' + esc(location) + '</p>';
@@ -449,7 +449,7 @@ function showGame(data) {
         for (description of descriptions) {
             if (descriptions.length > 1) {
                 html += '<hr>';
-                html += "<h4>" + esc(description.language) + "</h4>";
+                html += "<h4>" + esc(getLanguageName(description.language)) + "</h4>";
             }
             html += getDescription(description.description);
         }
@@ -487,7 +487,7 @@ function showGame(data) {
                 }
             }
             if (run.country) {
-                html += esc(run.country.toUpperCase());
+                html += esc(getCountryName(run.country));
             }
         }
         html += '</ul>';
@@ -831,7 +831,7 @@ function makeFileLink(data_id, category, filename, description, language) {
         'tag': 'tag',
     };
     var url = 'https://alexandria.dk/download/' + map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
-    var html = '<li><a href="' + url + '">' + esc(description) + '</a> ' + (language ? '(' + esc(language) + ')' : '') + '</li>';
+    var html = '<li><a href="' + url + '">' + esc(description) + '</a> ' + (language ? '(' + esc(getLanguageName(language)) + ')' : '') + '</li>';
     return html;
 }
 
@@ -1172,4 +1172,18 @@ function niceDateSet(begin, end) {
         datetext = begin;
     }
     return datetext;
+}
+
+function getCountryName(code) {
+    if (code.length != 2) {
+        return code.toUpperCase();
+    }
+    return new Intl.DisplayNames(['en'], { type: 'region' }).of(code)
+}
+
+function getLanguageName(code) {
+    if (code.length != 2) {
+        return code;
+    }
+    return new Intl.DisplayNames(['en'], { type: 'language' }).of(code)
 }
