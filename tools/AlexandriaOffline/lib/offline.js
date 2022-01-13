@@ -1178,12 +1178,12 @@ function getCountryName(code) {
     if (code.length != 2) {
         return code.toUpperCase();
     }
-    return new Intl.DisplayNames(['en'], { type: 'region' }).of(code)
+    return new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
 }
 
 function getLanguageName(code) {
-    if (code.length != 2) {
+    if (code.length < 2) {
         return code;
     }
-    return new Intl.DisplayNames(['en'], { type: 'language' }).of(code)
+    return new Intl.DisplayNames(['en'], { type: 'language' }).of(code.substring(0,2)) + code.substring(2);
 }
