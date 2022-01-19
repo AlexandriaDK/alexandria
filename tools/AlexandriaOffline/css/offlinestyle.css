@@ -42,8 +42,12 @@ ul {
 }
 
 h3.cancelnotice {
-	font-style: italic;
+	text-align: center;
 	color: #e22;
+	border: 3px dashed red;
+	border-radius: 20px;
+	width: fit-content;
+	padding: 8px;
 }
 
 .cancelled {
