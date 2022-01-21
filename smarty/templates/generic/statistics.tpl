@@ -17,7 +17,7 @@
 		</thead>
 		<tbody>
 		{foreach from=$stat_con_country item=$scc}
-		<tr><td class="statnumber">{$scc.placeout}</td><td>{$scc.localecountry}</td><td class="statnumber">{$scc.count} </td></tr>
+		<tr><td class="statnumber">{$scc.placeout}</td><td>{$scc.localecountry}</td><td class="statnumber">{$scc.count|nicenumber} </td></tr>
 		{/foreach}
 		</tbody>
 		</table>
@@ -27,7 +27,7 @@
 		<table class="tablestat tablestartpad">
 		<tr><th colspan="3">{$_stat_runsbycountry|nl2br}</th></tr>
 		{foreach from=$stat_run_country item=$src}
-		<tr><td class="statnumber">{$src.placeout}</td><td>{$src.localecountry}</td><td class="statnumber">{$src.count} </td></tr>
+		<tr><td class="statnumber">{$src.placeout}</td><td>{$src.localecountry}</td><td class="statnumber">{$src.count|nicenumber} </td></tr>
 		{/foreach}
 		</table>
 	</td>
@@ -36,7 +36,7 @@
 		<table class="tablestat tablestartpad">
 		<tr><th colspan="3">{$_stat_descriptionsbylanguage|nl2br}</th></tr>
 		{foreach from=$stat_description_language item=$sdl}
-		<tr><td class="statnumber">{$sdl.placeout}</td><td>{$sdl.localecountry|ucfirst}</td><td class="statnumber">{$sdl.count} </td></tr>
+		<tr><td class="statnumber">{$sdl.placeout}</td><td>{$sdl.localecountry|ucfirst}</td><td class="statnumber">{$sdl.count|nicenumber} </td></tr>
 		{/foreach}
 		</table>
 	</td>
@@ -51,7 +51,7 @@
 		<table class="tablestat tablestartpad">
 		<tr><th colspan="3">{$_stat_conscelist|nl2br}</th></tr>
 		{foreach from=$stat_con_year item=$scy}
-		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
+		<tr><td><a href="data?year={$scy.year}" class="con">{$scy.year|yearname}</a></td><td class="statnumber">{$scy.cons|nicenumber} </td><td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td><td class="statnumber">{$scy.games|nicenumber}</td><td>{if $scy.games == 1}{$_game}{else}{$_games}{/if}</td></tr>
 		{/foreach}
 		</table>
 	</td>
