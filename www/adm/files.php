@@ -21,6 +21,7 @@ $description = trim((string) $_REQUEST['description']);
 $downloadable = (string) $_REQUEST['downloadable'];
 $language = trim((string) $_REQUEST['language']);
 $remoteurl = (string) $_REQUEST['remoteurl'];
+$pages = (string) ($_REQUEST['pages'] ?? '');
 $allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png","gif","webp"];
 $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
 
@@ -36,6 +37,36 @@ if (! function_exists('mb_basename') ) {
 	function mb_basename ( $path ) {
 		return array_reverse(explode("/",$path))[0];
 	}
+}
+
+function splitpdf($path, $pages) { // requires pdftk
+	$pages = trim($pages);
+	if (! preg_match('/^\d+(-\d+)?( +\d+(-\d+)?)?$/', $pages) ) {
+		$_SESSION['admin']['info'] = "Bad page range: $pages";
+		return false;
+	}
+	if ( ! is_readable($path)) {
+		$_SESSION['admin']['info'] = "Can't read file";
+		return false;
+	}
+	$command = 'pdftk ' . escapeshellarg($path) . ' cat ' . escapeshellarg($pages) . ' output -';
+	// die($command);
+	$fileparts = pathinfo($path);
+	$newname = $fileparts['filename'] . '_' . $pages . '.' . $fileparts['extension'];
+	$pdfdata = `LANG=en_US.UTF-8 $command`; // remember to add LANG variable, otherwise e.g. 'ø' vil be converted to '??'
+	header("Content-Type: application/pdf");
+	header('Content-Disposition: attachment; filename="' . rawurlencode($newname) . '"');
+	header("Content-Length: " . strlen($pdfdata) );
+	print $pdfdata;
+	exit;
+}
+
+// Split PDF to new file (cut pages, etc.)
+if ($action == "splitpdf") {
+	$filename = mb_basename( $_REQUEST['filename'] );
+	$subdir = getcategorydir($category);
+	$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" .$filename;
+	splitpdf($path, $pages);
 }
 
 // Remove file from database
@@ -388,12 +419,20 @@ if ($data_id && $category) {
 		$accesskey = ($thumbshortcut ? 'accesskey="t"' : '');
 		$thumbshortcut = FALSE;
 		$basename = mb_basename( $file );
+		$extension = strtolower(pathinfo($basename,  PATHINFO_EXTENSION));
 		$createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&amp;data_id=' . $data_id . '&amp;action=thumbnail&amp;filename=' . rawurlencode( $basename );
+		$createcuturl = 'files.php?category=' . htmlspecialchars($category) . '&data_id=' . $data_id . '&action=splitpdf&filename=' . rawurlencode( $basename );
+		print '<div class="tooltip">';
 		print '<a href="https://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
+		if ($extension == 'pdf') {
+			print '<span class="tooltiptext">Create new PDF<br><br>Pages: <input type="text" name="pdfcutpages" placeholder="1-3 5" style="width: 50px"><br><input type="submit" value="Create" onclick="window.location.href=\'' . $createcuturl . '&pages=\' + encodeURIComponent(this.previousSibling.previousSibling.value)"></span>';
+		}
+		print '</div>&nbsp;' . PHP_EOL;
+		// print '<a href="https://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
 		print '<div class="tooltip">';
 		print '<a ' . $accesskey . ' href="' . $createthumbnailurl. '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
 		print '<span class="tooltiptext"><a href="' . $createthumbnailurl . '" onclick="return confirm(\'Create thumbnail?\');" title="Create thumbnail">Full</a> • <a href="' . $createthumbnailurl . '&amp;section=left" onclick="return confirm(\'Create thumbnail, left half?\');" title="Create thumbnail, use left half of first page">Left</a> • <a href="' . $createthumbnailurl . '&amp;section=right" onclick="return confirm(\'Create thumbnail, right half?\');" title="Create thumbnail, use right half of first page">Right</a></span>';
-		print '</div>&nbsp;';
+		print '</div>&nbsp;' . PHP_EOL;
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
 		print htmlspecialchars( $basename );
 		print "</a>";
