@@ -42,6 +42,9 @@ if ($magazineid) {
 		INNER JOIN magazine ON issue.magazine_id = magazine.id
 		WHERE issue.id = $issueid
 	");
+	if ($issue['magazineid'] == 1) { // Fønix achievement
+		award_achievement(104);
+	}
 	$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $issue['internal'] : ''); // only set internal if editor
 	// two lookups with and without page being NULL could be combined to one
 	// No need to create article tree with authors as subset. Template already handles that.
