@@ -39,11 +39,13 @@ if (! function_exists('mb_basename') ) {
 	}
 }
 
-function splitpdf($path, $pages) { // requires pdftk
+function splitpdf($path, $pages, $category, $data_id) { // requires pdftk
 	$pages = trim($pages);
 	if (! preg_match('/^\d+(-\d+)?( +\d+(-\d+)?)?$/', $pages) ) {
 		$_SESSION['admin']['info'] = "Bad page range: $pages";
 		return false;
+	} else {
+		$firstpage = (int) $pages;
 	}
 	if ( ! is_readable($path)) {
 		$_SESSION['admin']['info'] = "Can't read file";
@@ -52,7 +54,20 @@ function splitpdf($path, $pages) { // requires pdftk
 	$command = 'pdftk ' . escapeshellarg($path) . ' cat ' . escapeshellarg($pages) . ' output -';
 	// die($command);
 	$fileparts = pathinfo($path);
-	$newname = $fileparts['filename'] . '_' . $pages . '.' . $fileparts['extension'];
+	if ($category == 'issue') {
+		$newname = getone("
+			SELECT s.title
+			FROM issue i
+			INNER JOIN article a ON i.id = a.issue_id  
+			INNER JOIN sce s ON a.sce_id = s.id
+			WHERE i.id = $data_id
+			AND a.page = $firstpage
+		");
+	}
+	if (! $newname) {
+		$newname = $fileparts['filename'] . '_' . $pages;
+	}
+	$newname .= '.' . $fileparts['extension'];
 	$pdfdata = `LANG=en_US.UTF-8 $command`; // remember to add LANG variable, otherwise e.g. 'ø' vil be converted to '??'
 	header("Content-Type: application/pdf");
 	header('Content-Disposition: attachment; filename="' . rawurlencode($newname) . '"');
@@ -66,7 +81,7 @@ if ($action == "splitpdf") {
 	$filename = mb_basename( $_REQUEST['filename'] );
 	$subdir = getcategorydir($category);
 	$path = DOWNLOAD_PATH . $subdir . "/" . $data_id . "/" .$filename;
-	splitpdf($path, $pages);
+	splitpdf($path, $pages, $category, $data_id);
 }
 
 // Remove file from database
