@@ -489,6 +489,23 @@ if ($data_id && $category) {
 	      '</form>' . PHP_EOL . PHP_EOL
 	;
 
+	if ($category == 'sce') { // suggest scenario extract from magazine PDF
+		$magazineprint = getrow("
+			SELECT i.id, a.page, m.name, i.title, f.filename
+			FROM magazine m
+			INNER JOIN issue i ON m.id = i.magazine_id
+			INNER JOIN article a ON i.id = a.issue_id 
+			INNER JOIN files f ON i.id = f.data_id AND f.category = 'issue'
+			WHERE a.sce_id = $data_id
+		");
+		// https://localhost/en/adm/files.php?category=issue&data_id=1&action=splitpdf&filename=no7web.pdf&pages=2-3,6
+		if ($magazineprint) {
+			$pdfurl = 'https://download.alexandria.dk/files/' . getcategorydir('issue') . "/" . $magazineprint['id'] . "/" . rawurlencode($magazineprint['filename']) . '#page=' . $magazineprint['page'];
+			print '<form><input type="hidden" name="category" value="issue"><input type="hidden" name="data_id" value="' . $magazineprint['id'] . '"><input type="hidden" name="action" value="splitpdf"><input type="hidden" name="filename" value="' . htmlspecialchars($magazineprint['filename']) . '"><div>Extract from ' . htmlspecialchars($magazineprint['name']) . ', <a href="' . $pdfurl . '">' . htmlspecialchars($magazineprint['title']) . '</a>:<br>';
+			print 'Pages: <input type="text" name="pages" value="' . $magazineprint['page'] . '" placeholder="1-3 5" style="width: 50px"> <input type="submit" value="Extract"></div></form>';
+		}
+	}
+
 	if ( ($path = getthumbnailpath($data_id, $category)) !== FALSE ) {
 		print '<form action="files.php" method="post" onsubmit="return confirm(\'Delete thumbnail?\');">' .
 		      '<input type="hidden" name="action" value="deletethumbnail">' . 
