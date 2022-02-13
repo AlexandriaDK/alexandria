@@ -51,8 +51,7 @@ function splitpdf($path, $pages, $category, $data_id) { // requires pdftk
 		$_SESSION['admin']['info'] = "Can't read file";
 		return false;
 	}
-	$command = 'pdftk ' . escapeshellarg($path) . ' cat ' . escapeshellarg($pages) . ' output -';
-	// die($command);
+	$command = 'pdftk ' . escapeshellarg($path) . ' cat ' . $pages . ' output -';
 	$fileparts = pathinfo($path);
 	if ($category == 'issue') {
 		$newname = getone("
