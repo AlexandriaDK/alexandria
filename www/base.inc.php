@@ -596,6 +596,8 @@ function _textlink ($string, $absolute_url = 0) {
 			return $html;
 		}
 		if ($cat == "tag") {
+			// Ugly hack to prevent cases with double html escaping; we do an escape further down when creating the link and text
+			$text = html_entity_decode($text);
 			if ( strpos( $text, '|') !== FALSE) {
 				list($taglink, $text) = explode( "|", $text, 2);
 			} else {
