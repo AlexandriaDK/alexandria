@@ -19,7 +19,7 @@ if (!$tag) {
 	$tag = $ttag;
 }
 $q = getall("
-	SELECT sce.id, title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
+	SELECT sce.id, title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, convent.cancelled, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
 	FROM sce
 	INNER JOIN tags ON sce.id = tags.sce_id
 	LEFT JOIN csrel ON csrel.sce_id = sce.id AND csrel.pre_id = 1
@@ -48,6 +48,7 @@ if (count($q) > 0) {
 		$slist[$sl]['title'] = $rs['title_translation'];
 		$slist[$sl]['origtitle'] = $rs['title'];
 		$slist[$sl]['personlist'] = "";
+		$slist[$sl]['cancelled'] = $rs['cancelled'];
 
 		$personlist = [];
 		$qq = getall("

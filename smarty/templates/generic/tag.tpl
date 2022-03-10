@@ -38,7 +38,7 @@
 			<td>{if $game.files}<a href="{$game.link}"  title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
 			<td><a href="{$game.link}" class="scenarie" title="{$game.origtitle|escape}">{$game.title|escape}</a></td>
 			<td class="lpad">{$game.personlist}</td>
-			<td>{if isset($game.conlink)}<a href="{$game.conlink}" class="con" title="{$game.coninfo}">{$game.conname|escape}</a>{/if}</td>
+			<td {if $game.cancelled}class="cancelled"{/if}>{if isset($game.conlink)}<a href="{$game.conlink}" class="con" title="{$game.coninfo}">{$game.conname|escape}</a>{/if}</td>
 		</tr>
 	{/foreach}
 	</table>
