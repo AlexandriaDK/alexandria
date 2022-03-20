@@ -363,20 +363,21 @@ $(function() {
 		minLength: 3
 	});
 	$(".addnext").click( function() {
-		var acount = $( "#persontable tr" ).length;
-		var newcount = acount + 1;
-		var options = '<?php print titleoptions( $titles, 'NEWCOUNT' ); ?>'.replace( 'NEWCOUNT', newcount );
-		var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span></td></tr>';
-		var newtr = $( "#persontable" ).append( dynhtml );
-		var bar = $( "#persontable" ).find('tr:last input:first')
-			.autocomplete({
-				source: availableNames,
-				delay: 30,
-				minLength: 3
-			})
-			.change( checkperson )
-		;
-		
+		for (let i = 0; i < 5; i++) { // five name inputs at a time
+			var acount = $( "#persontable tr" ).length;
+			var newcount = acount + 1;
+			var options = '<?php print titleoptions( $titles, 'NEWCOUNT' ); ?>'.replace( 'NEWCOUNT', newcount );
+			var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span></td></tr>';
+			var newtr = $( "#persontable" ).append( dynhtml );
+			var bar = $( "#persontable" ).find('tr:last input:first')
+				.autocomplete({
+					source: availableNames,
+					delay: 30,
+					minLength: 3
+				})
+				.change( checkperson )
+			;
+		}
 
 	});
 
