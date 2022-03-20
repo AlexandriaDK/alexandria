@@ -66,6 +66,8 @@ if ($action == "changerun" && $do == "Delete") {
 if ($action == "addrun") {
 	if (strlen($begin) == 4) $begin .= "-00-00"; // add blank month+date
 	if (strlen($begin) == 7) $begin .= "-00"; // add blank date
+	if (strlen($end) == 4) $end .= "-00-00"; // add blank month+date
+	if (strlen($end) == 7) $end .= "-00"; // add blank date
 	if (!$end) $end = $begin;
 	$q = "INSERT INTO scerun " .
 	     "(sce_id, begin, end, location, country, description, cancelled) VALUES ".
