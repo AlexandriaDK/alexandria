@@ -25,51 +25,61 @@ $aliaslist = getaliaslist($person,$this_type);
 // Game list
 $q = getall("
 	SELECT
-		MIN(convent.year) AS firstyear,
-		MIN(convent.begin) AS firstbegin,
-		LEAST(COALESCE(MIN(COALESCE(convent.begin,convent.year)),'9999-99-99'),COALESCE(MIN(scerun.begin),'9999-99-99')) AS combinedfirstrun,
-		MIN(convent.begin) < MIN(scerun.begin) AS wasconfirst,
-		sce.id,
-		sce.title AS title,
-		sce.boardgame AS boardgame,
-		title.title AS auttitle,
-		title.title_label AS auttitlelabel,
-		title.iconfile,
-		title.iconwidth,
-		title.iconheight,
-		title.textsymbol,
-		COUNT(files.id) AS files,
-		COALESCE(alias.label, sce.title) AS title_translation
-	FROM
-		asrel,
-		title,
-		sce
-	LEFT JOIN csrel ON
-		csrel.sce_id = sce.id
-	LEFT JOIN convent ON
-		csrel.convent_id = convent.id
-	LEFT JOIN scerun ON
-		sce.id = scerun.sce_id 
-	LEFT JOIN files ON
-		sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-	LEFT JOIN alias ON
-		sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE
-		sce.id = asrel.sce_id AND
-		asrel.tit_id = title.id AND
-		asrel.aut_id = '$person' 
-	GROUP BY
-		sce.id, title.id
+		*,
+		LEAST(COALESCE(firstcondate,'9999-99-99'), COALESCE(firstrundate,'9999-99-99')) AS combinedfirstrun,
+		CASE
+		WHEN ISNULL(firstcondate) AND ISNULL(firstrundate) THEN NULL
+		WHEN !ISNULL(firstcondate) AND ISNULL(firstrundate) THEN 'con'
+		WHEN ISNULL(firstcondate) AND !ISNULL(firstrundate) THEN 'run'
+		WHEN firstcondate <= firstrundate THEN 'con'
+		ELSE 'run'
+		END AS runtype
+	FROM (
+		SELECT
+			MIN(COALESCE(convent.begin,convent.year)) AS firstcondate,
+			MIN(scerun.begin) AS firstrundate,
+			sce.id,
+			sce.title AS title,
+			sce.boardgame AS boardgame,
+			MIN(title.id) AS title_id,
+			title.title AS auttitle,
+			title.title_label AS auttitlelabel,
+			title.iconfile,
+			title.iconwidth,
+			title.iconheight,
+			title.textsymbol,
+			COUNT(files.id) AS files,
+			COALESCE(alias.label, sce.title) AS title_translation
+		FROM
+			asrel,
+			title,
+			sce
+		LEFT JOIN csrel ON
+			csrel.sce_id = sce.id
+		LEFT JOIN convent ON
+			csrel.convent_id = convent.id
+		LEFT JOIN scerun ON
+			sce.id = scerun.sce_id 
+		LEFT JOIN files ON
+			sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+		LEFT JOIN alias ON
+			sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		WHERE
+			sce.id = asrel.sce_id AND
+			asrel.tit_id = title.id AND
+			asrel.aut_id = '$person' 
+		GROUP BY
+			sce.id, title.id
+	) a
 	ORDER BY
 		combinedfirstrun != '9999-99-99', -- Sort games without any found date first
 		combinedfirstrun,
-		firstyear,
-		firstbegin,
-		title.id,
+		title_id,
 		title_translation,
-		sce.title
+		title
 ");
-$slist = array();
+
+$slist = [];
 $sl = 0;
 
 if (count($q) > 0) {
@@ -98,17 +108,56 @@ if (count($q) > 0) {
 		$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
 		$slist[$sl]['title'] = $rs['title_translation'];
 		$slist[$sl]['origtitle'] = $rs['title'];
+		$slist[$sl]['firstdate'] = $rs['combinedfirstrun'] != '9999-99-99' ? $rs['combinedfirstrun'] : NULL;
 
-		$conlist = [];
-		$qq = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled FROM convent, csrel WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = '{$rs['id']}' ORDER BY convent.name");
-		foreach($qq AS $rrs) {
-			$coninfo = nicedateset($rrs['begin'],$rrs['end']);
-			$conlist[] = "<a href=\"data?con={$rrs['id']}\" class=\"con" . ($rrs['cancelled'] == 1 ? " cancelled" : "") . "\" title=\"$coninfo\">".htmlspecialchars($rrs['name'])." (" . yearname($rrs['year']) . ")</a>";
+		$game_id = $rs['id'];
+
+		$runlist = [];
+		if ($rs['runtype'] == 'con') { // get all "first cons"
+			$qq = getall("
+				SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled
+				FROM convent, csrel
+				WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = $game_id
+				ORDER BY convent.name
+			");
+			foreach($qq AS $rrs) {
+				$coninfo = nicedateset($rrs['begin'],$rrs['end']);
+				$runlist[] = "<a href=\"data?con={$rrs['id']}\" class=\"con" . ($rrs['cancelled'] == 1 ? " cancelled" : "") . "\" title=\"$coninfo\">".htmlspecialchars($rrs['name'])." (" . yearname($rrs['year']) . ")</a>";
+			}
+		} elseif ($rs['runtype'] == 'run') {
+			$yearname = '';
+			$qrun = getrow("
+				SELECT YEAR(begin) AS year, begin, end, location, country
+				FROM scerun
+				WHERE sce_id = $game_id
+				AND begin != '0000-00-00'
+				ORDER BY begin
+				LIMIT 1
+			");
+			$rundescription = '';
+			$runinfo = nicedateset($qrun['begin'], $qrun['end']);
+			if ($qrun['location']) {
+				$rundescription = $qrun['location'];
+			}
+			if ($qrun['country']) {
+				if ($rundescription !== '') {
+					$rundescription .= ', ';
+				}
+					$rundescription .= getCountryName($qrun['country']);
+			}
+			if ($rundescription !== '') {
+				$rundescription .= ' ';
+			}
+			if ($qrun['year']) {
+				$yearname = yearname($qrun['year']);
+				$rundescription .= '(' . $yearname . ')';
+			}
+			$runlist[] = '<span title="' . htmlspecialchars($runinfo) . '">' . htmlspecialchars($rundescription) . '</span>';
 		}
-		if ($conlist) {
-			$slist[$sl]['conlist'] = join("<br />",$conlist);
+		if ($runlist) {
+			$slist[$sl]['runlist'] = join("<br />",$runlist);
 		} else {
-			$slist[$sl]['conlist'] = "&nbsp;";
+			$slist[$sl]['runlist'] = "";
 		}
 		$sl++;
 	}

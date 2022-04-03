@@ -56,7 +56,7 @@
 			{/if}
 			</td>
 			<td><a href="{$game.link}" class="scenarie" title="{$game.origtitle|escape}">{$game.title|escape}</a></td>
-			<td style="padding-left: 10px;">{$game.conlist}</td>
+			<td style="padding-left: 10px;">{$game.runlist}</td>
 		</tr>
 	{/foreach}
 	</table>
