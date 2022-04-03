@@ -27,6 +27,8 @@ $q = getall("
 	SELECT
 		MIN(convent.year) AS firstyear,
 		MIN(convent.begin) AS firstbegin,
+		LEAST(COALESCE(MIN(COALESCE(convent.begin,convent.year)),'9999-99-99'),COALESCE(MIN(scerun.begin),'9999-99-99')) AS combinedfirstrun,
+		MIN(convent.begin) < MIN(scerun.begin) AS wasconfirst,
 		sce.id,
 		sce.title AS title,
 		sce.boardgame AS boardgame,
@@ -46,6 +48,8 @@ $q = getall("
 		csrel.sce_id = sce.id
 	LEFT JOIN convent ON
 		csrel.convent_id = convent.id
+	LEFT JOIN scerun ON
+		sce.id = scerun.sce_id 
 	LEFT JOIN files ON
 		sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
 	LEFT JOIN alias ON
@@ -57,6 +61,8 @@ $q = getall("
 	GROUP BY
 		sce.id, title.id
 	ORDER BY
+		combinedfirstrun != '9999-99-99', -- Sort games without any found date first
+		combinedfirstrun,
 		firstyear,
 		firstbegin,
 		title.id,
