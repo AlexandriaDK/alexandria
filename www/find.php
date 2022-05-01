@@ -246,8 +246,8 @@ if ($find) {
 // $match[kategori] are id's for any type of match
 // (in theory :)
 
-	$match = $link_a = $link_b = array();
-	$id_data = array();
+	$match = $link_a = $link_b = [];
+	$id_data = [];
 
 	if (!$cat || $cat == "aut" ) {
 		category_search($find, "CONCAT(firstname,' ',surname)", "aut");
@@ -259,6 +259,7 @@ if ($find) {
 
 	if (!$cat || $cat == "con" ) {
 		category_search($find, "CONCAT(name, ' (', year, ')') ", "convent");
+		category_search($find, "name", "conventwithyear");
 	}
 
 	if (!$cat || $cat == "sys" ) {
@@ -299,7 +300,7 @@ if ($find) {
 	if ($search_title) { // pre-search for titles
 		category_search($search_title, "title", "sce");
 	} else { // set titles
-		$id_data = array();
+		$id_data = [];
 		foreach(getall("SELECT id, title FROM sce") AS $row) {
 			$id_data['sce'][$row['id']] = $row['title'];
 		}

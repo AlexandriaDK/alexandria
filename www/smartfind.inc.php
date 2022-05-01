@@ -12,38 +12,44 @@ function log_search($find, $found="") {
 
 function category_search ($find, $searchfield, $category) {
 	global $match, $id_data, $link_a, $link_b, $id_a, $id_b;
-	$q = getall("SELECT id, $searchfield FROM $category");
+	$categoryfind = ($category == 'conventwithyear' ? 'convent' : $category);
+	$q = getall("SELECT id, $searchfield FROM $categoryfind");
 	foreach($q AS $row) $id_data[$category][$row[0]] = $row[1];
 	
 	switch($category) {
 		case 'aut':
-		$linkurl = URLAUT;
-		$getfunction = "getautidbyname";
-		break;
+			$linkurl = URLAUT;
+			$getfunction = "getautidbyname";
+			break;
 
 		case 'sce':
-		$linkurl = URLSCE;
-		$getfunction = "getsceidbytitle";
-		break;
+			$linkurl = URLSCE;
+			$getfunction = "getsceidbytitle";
+			break;
 
 		case 'sys':
-		$linkurl = URLSYS;
-		$getfunction = "getsysidbyname";
-		break;
+			$linkurl = URLSYS;
+			$getfunction = "getsysidbyname";
+			break;
 
 		case 'convent':
-		$linkurl = URLCON;
-		$getfunction = "getconidbyname";
-		break;
+			$linkurl = URLCON;
+			$getfunction = "getconidbyname";
+			break;
 
+		case 'conventwithyear':
+			$linkurl = URLCON;
+			$getfunction = "getconidbynameandyear";
+			break;
+			
 		case 'magazine':
-		$linkurl = URLMAGAZINE;
-		$getfunction = "getmagazineidbyname";
-		break;
+			$linkurl = URLMAGAZINE;
+			$getfunction = "getmagazineidbyname";
+			break;
 	
 		default:
-		$linkurl = URLAUT;
-		$getfunction = "getautidbyname";
+			$linkurl = URLAUT;
+			$getfunction = "getautidbyname";
 	}
 
 	list($a,$b,$c,$d) = $getfunction($find);
@@ -63,7 +69,7 @@ function category_search ($find, $searchfield, $category) {
 // find every key in array with specific value
 // array array_same ( array input, string search_value )
 function array_same ($array, $fixedvalue) {
-	$newarray = array();
+	$newarray = [];
 	foreach($array AS $key => $value) {
 		if ($value == $fixedvalue) {
 			$newarray[$key] = $value;
@@ -93,8 +99,9 @@ function array_larger ($array, $fixedvalue) {
 // $match['c'] are mediocre matches
 // $match_all is a unique list of all three matches
 function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = "") {
-	$match['a'] = $match['b'] = $match['c'] = array();
-	$listetegn = $listeprocent = array();
+	$match = [];
+	$match['a'] = $match['b'] = $match['c'] = [];
+	$listetegn = $listeprocent = [];
 	$whereextend = $whereextendshort = "";
 	
 // Due to aliases
@@ -199,6 +206,33 @@ function getsysidbyname($find) {
 
 function getconidbyname($find) {
 	return getalphaidbybeta ($find, "convent", "name");
+}
+
+function getconidbynameandyear($find) {
+	$escapequery = dbesc($find);
+	$likeescapequery = likeesc($find);
+	
+	$match = [];
+	$match['a'] = $match['b'] = $match['c'] = [];
+	$query = "
+		SELECT convent.id FROM convent
+		INNER JOIN conset ON convent.conset_id = conset.id
+		WHERE CONCAT(convent.name,' (',year,')') LIKE '$likeescapequery%'
+		OR CONCAT(convent.name,' ',year) LIKE '$likeescapequery%'
+		OR CONCAT(conset.name, ' ', convent.year) LIKE '$likeescapequery%'
+		OR (
+			'$escapequery' REGEXP ' [0-9][0-9]$' AND
+			CONCAT(conset.name, ' ', RIGHT(convent.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
+		)
+		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
+	";
+	$match['a'] = getcol($query);
+	return [
+		array_unique($match['a']),
+		array_unique($match['b']),
+		array_unique($match['c']),
+		array_unique(array_merge($match['a'],$match['b'],$match['c']))
+	];
 }
 
 function getconsetidbyname($find) {
