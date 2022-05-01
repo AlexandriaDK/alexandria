@@ -106,7 +106,7 @@ if ($action == "update" && $game) {
 
 				$aut_id = (int) $autdata['name'];
 				$tit_id = (int) $autdata['title'];
-				$note = (string) $autdata['note'];
+				$note = trim( (string) $autdata['note']);
 				if ($tit_id && $aut_id) {
 					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
 					     "VALUES ($game, $aut_id, $tit_id, '" . dbesc( $note ) ."')";
@@ -212,7 +212,7 @@ if ($action == "create") {
 
 			$aut_id = (int) $autdata['name'];
 			$tit_id = (int) $autdata['title'];
-			$note = (string) $autdata['note'];
+			$note = trim((string) $autdata['note']);
 			if ($tit_id && $aut_id) {
 				$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
 				     "VALUES ($game, $aut_id, $tit_id, '" . dbesc( $note ) ."')";
