@@ -8,35 +8,35 @@ require "base.inc.php";
 $this_type = 'game';
 $this_type_old = 'sce';
 
-$action = $_REQUEST['action'];
-$jsenabled = $_REQUEST['jsenabled'];
+$action = $_REQUEST['action'] ?? FALSE;
+$jsenabled = $_REQUEST['jsenabled'] ?? FALSE;
 
 if ( $action ) {
 	validatetoken( $token );
 }
 
-$game = (int) $_REQUEST['game'];
-$title = $_REQUEST['title'];
-$description = $_REQUEST['description'];
-$descriptions = (array) $_REQUEST['descriptions'];
+$game = (int) ($_REQUEST['game'] ?? FALSE);
+$title = (string) ($_REQUEST['title'] ?? '');
+$descriptions = (array) ($_REQUEST['descriptions'] ?? []);
+$langlock = $_COOKIE['langlock'] ?? LANG;
 if (!$descriptions) {
-	$descriptions = [1 => [ 'id' => 1, 'language' => ($_COOKIE['langlock'] ? $_COOKIE['langlock'] : LANG), 'description' => '', 'note' => '' ] ];
+	$descriptions = [1 => [ 'id' => 1, 'language' => $langlock, 'description' => '', 'note' => '' ] ];
 }
-$intern = $_REQUEST['intern'];
-$sys_id = (int) $_REQUEST['sys_id'];
-$sys_ext = $_REQUEST['sys_ext'];
-$aut = $_REQUEST['aut'];
-$aut_extra = $_REQUEST['aut_extra'];
-$con = $_REQUEST['con'];
-$boardgame = (int) (bool) $_REQUEST['boardgame'];
-$person = (array) $_REQUEST['person'] ?? [];
+$intern = $_REQUEST['intern'] ?? FALSE;
+$sys_id = (int) ($_REQUEST['sys_id'] ?? FALSE);
+$sys_ext = $_REQUEST['sys_ext'] ?? '';
+$aut = $_REQUEST['aut'] ?? FALSE;
+$aut_extra = $_REQUEST['aut_extra'] ?? '';
+$con = $_REQUEST['con'] ?? FALSE;
+$boardgame = (int) (bool) ($_REQUEST['boardgame'] ?? FALSE);
+$person = (array) ($_REQUEST['person'] ?? []);
 
-$gms = $_REQUEST['gms'];
-$players = $_REQUEST['players'];
+$gms = (string) ($_REQUEST['gms'] ?? '');
+$players = (string) ($_REQUEST['players'] ?? '');
 list ($gms_min, $gms_max) = strSplitParticipants($gms);
 list ($players_min, $players_max) = strSplitParticipants($players);
 
-$participants_extra = $_REQUEST['participants_extra'];
+$participants_extra = $_REQUEST['participants_extra'] ?? '';
 
 $this_id = $game;
 
@@ -44,10 +44,9 @@ if (!$action && $game) {
 	$row = getrow("SELECT * FROM sce WHERE id = '$game'");
 	if ($row) {
 		$title = $row['title'];
-		$description = $row['description'];
 		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $game ORDER BY priority, language");
 		if (!$descriptions) {
-			$descriptions = [1 => [ 'id' => 1, 'language' => ($_COOKIE['langlock'] ? $_COOKIE['langlock'] : LANG), 'description' => '', 'note' => '' ] ];
+			$descriptions = [1 => [ 'id' => 1, 'language' => $langlock, 'description' => '', 'note' => '' ] ];
 		}
 		$intern = $row['intern'];
 		$sys_id = $row['sys_id'];
@@ -187,19 +186,23 @@ if ($action == "create") {
 		$info = "Title is missing!";
 	} else {
 		$title = trim($title);
-		$q = "INSERT INTO sce (id, title, description, intern, sys_id, sys_ext, aut_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
-			 "VALUES (NULL, '".dbesc($title)."', '".dbesc($description)."', '".dbesc($intern)."', ".sqlifnull($sys_id).", '".dbesc($sys_ext)."', '".dbesc($aut_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
+		$q = "INSERT INTO sce (id, title, intern, sys_id, sys_ext, aut_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
+			 "VALUES (NULL, '".dbesc($title)."', '".dbesc($intern)."', ".sqlifnull($sys_id).", '".dbesc($sys_ext)."', '".dbesc($aut_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
 		$r = doquery($q);
 		if ($r) {
 			$game = dbid();
 			$inserts = [];
+			$insertcount = 0;
 			foreach($descriptions AS $d) {
 				if ($d['description'] !== "") {
+					$insertcount++;
 					$inserts[] = "($game, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
 				}
 			}
-			$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
-			$r = doquery($sql);
+			if ($insertcount > 0) { // only run query if at least one description; otherwise SQL is invalid
+				$sql = "INSERT INTO game_description (game_id, description, language, note) VALUES " . implode(",", $inserts);
+				$r = doquery($sql);
+			}
 			chlog($game,$this_type,"Game created");
 		}
 		$_SESSION['admin']['info'] = "Game created! " . dberror();

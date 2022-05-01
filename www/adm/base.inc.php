@@ -316,13 +316,15 @@ function mojibakefix ($string) {
 }
 
 function printinfo() {
-	if ($_SESSION['admin']['info'] ?? '') {
+	$info = $_SESSION['admin']['info'] ?? FALSE;
+	$link = $_SESSION['admin']['link'] ?? FALSE;
+	if ($info) {
 		print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">";
-		if ($_SESSION['admin']['link']) {
+		if ($link) {
 			print "<a href=\"" . $_SESSION['admin']['link'] . "\">";
 		}
 		print htmlspecialchars($_SESSION['admin']['info']);
-		if ($_SESSION['admin']['link']) {
+		if ($link) {
 			print "</a>";
 		}
 		print "</font></td></tr></table>\n";
@@ -394,7 +396,6 @@ function getShortFromCategory($category) {
 }
 
 function htmladmstart($title = "", $headcontent = "") {
-	$find = $_REQUEST['find'] ?? '';
 	$htmltitle = "";
 	if ($title) {
 		$htmltitle = " - " . htmlspecialchars($title);

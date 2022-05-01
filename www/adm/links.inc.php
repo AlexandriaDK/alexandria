@@ -1,3 +1,6 @@
+<?php
+$find = $_REQUEST['find'] ?? '';
+?>
 <div align="center" class="headlink">
 <nav>
 <form action="find.php">
@@ -13,8 +16,8 @@ if ($_SESSION['user_admin'] ) {
 <br>
 <span style="font-size: 12px;"><label for="ffind" accesskey="k"><span title="Hotkey: K">Quic<u>K</u> find:</span> <input id="ffind" type="text" name="find" value="<?php print htmlspecialchars($find); ?>" size="20"></label>
 <?php
-$conlock = (int) $_COOKIE['conlock'];
-$langlock = (string) $_COOKIE['langlock'];
+$conlock = (int) ($_COOKIE['conlock'] ?? 0);
+$langlock = (string) ($_COOKIE['langlock'] ?? '');
 if ($conlock) {
 	print "<br>Default con: <a href=\"convent.php?con=$conlock\">#$conlock</a> <sup><a href=\"../data?con=$conlock\">(show)</a></sup> - <a href=\"lock.php\">release</a>";
 }
