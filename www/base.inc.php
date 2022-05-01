@@ -664,7 +664,7 @@ function monthname ( $monthNo ) {
 	if ( $monthNo < 1 || $monthNo > 12) {
 		return false;
 	}
-	$f = new IntlDateFormatter(null, null, null, null, null, 'MMMM');
+	$f = new IntlDateFormatter(null, IntlDateFormatter::FULL, IntlDateFormatter::FULL, null, null, 'MMMM');
 	return $f->format(new DateTime("2020-" . $monthNo . "-02") );
 }
 
@@ -675,7 +675,7 @@ function yearname ( $year ) {
 	} elseif ($year < 0 || $year > 9999 ) { // Y10K BUG!
 		return false;
 	}
-	$f = new IntlDateFormatter(null, null, null, null, null, 'y');
+	$f = new IntlDateFormatter(null, IntlDateFormatter::FULL, IntlDateFormatter::FULL, null, null, 'y');
 	return $f->format(new DateTime( $year . "-02-02") );
 }
 

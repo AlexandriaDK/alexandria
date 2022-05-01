@@ -6,7 +6,7 @@ if ($_SESSION['user_id']) {
 }
 
 list($tag_id, $ttag, $description) = getrow("SELECT id, tag, description FROM tag WHERE tag = '" . dbesc($tag) . "'");
-$this_id = $tag_id;
+$this_id = $tag_id ?? 0;
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
