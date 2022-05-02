@@ -267,28 +267,14 @@ $htmlloneper = "<b>Persons without relation to game, organizer, award or magazin
 
 // Checking game, organizer, awards, magazines
 $query = "
-	SELECT a.id, a.name FROM
-	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.id IS NULL) a
-	INNER JOIN 
-	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN acrel ON aut.id = acrel.aut_id WHERE acrel.id IS NULL) b
-	ON a.id = b.id
-	INNER JOIN 
-	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN award_nominee_entities ON aut.id = award_nominee_entities.data_id AND award_nominee_entities.category = 'aut' WHERE award_nominee_entities.id IS NULL) c
-	ON a.id = c.id
-	INNER JOIN 
-	(SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut LEFT JOIN contributor ON aut.id = contributor.aut_id WHERE contributor.id IS NULL) d
-	ON a.id = d.id
-";
-
-$query = "
 	SELECT id, CONCAT(firstname,' ',surname) AS name
 	FROM aut
 	WHERE NOT EXISTS (SELECT 1 FROM asrel WHERE aut.id = asrel.aut_id)
 	AND NOT EXISTS (SELECT 1 FROM acrel WHERE aut.id = acrel.aut_id)
 	AND NOT EXISTS (SELECT 1 FROM contributor WHERE aut.id = contributor.aut_id)
+	AND NOT EXISTS (SELECT 1 FROM article_reference WHERE aut.id = article_reference.data_id AND category = 'person')
 	AND NOT EXISTS (SELECT 1 FROM award_nominee_entities WHERE aut.id = award_nominee_entities.data_id AND category = 'aut')
 ";
-
 
 $result = getall($query);
 foreach($result AS $row) {
