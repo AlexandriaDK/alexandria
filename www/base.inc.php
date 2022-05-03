@@ -1251,7 +1251,7 @@ function getCountryNameFallback($countrycode) {
 function getLocaleFromLang( $lang ) {
 	$langlocales = [
 		'da' => 'da_DK.UTF-8',
-		'en' => 'eb_GB.UTF-8',
+		'en' => 'en_GB.UTF-8',
 		'sv' => 'sv_SE.UTF-8',
 		'nb' => 'nb_NO.UTF-8',
 		'de' => 'de_DE.UTF-8',
