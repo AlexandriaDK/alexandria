@@ -224,7 +224,7 @@ if ($action == "create") {
 // Relation system for cons only works if javascript is enabled
 		if ($jsenabled == "1") {
 	
-	// Add scenario-con relations
+	// Add game-con relations
 			foreach( (array) $con AS $condata) {
 				unset($pre_id,$con_id);
 				list($pre_id,$con_id) = explode("_",$condata);
@@ -330,7 +330,7 @@ foreach($r AS $row) {
 $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 ?>
 <!DOCTYPE html>
-<HTML><HEAD><TITLE>Administration - Scenario</TITLE>
+<HTML><HEAD><TITLE>Administration - Game</TITLE>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/uistyle.css">
@@ -772,7 +772,7 @@ var m4 = document.theForm.con;
 $("#title").change(function() {
 	$.get( "lookup.php", { type: 'sce', label: $("#title").val() } , function( data ) {
 		if (data > 0) {
-			$("#titlenote").text("⚠ Note: A scenario with the same title already exists. You can still submit this new scenario.");
+			$("#titlenote").text("⚠ Note: A game with the same title already exists. You can still submit this new game.");
 		} else {
 			$("#titlenote").text("");
 		}
