@@ -83,7 +83,7 @@ if ($type == 'articlereference' && $term !== "") {
 			)
 		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM gamesystem WHERE name LIKE '$likeescapequery%'
+		SELECT CONCAT('sys', gs.id, ' - ', name) AS label FROM gamesystem gs WHERE name LIKE '$likeescapequery%'
 		UNION ALL
 		SELECT CONCAT('m', magazine.id, ' - ', name) AS label FROM magazine WHERE name LIKE '$likeescapequery%'
 		UNION ALL

@@ -149,7 +149,7 @@ if ($system) {
 <select name=system>
 
 <?php
-$q = getall("SELECT id, name FROM sys ORDER BY name");
+$q = getall("SELECT id, name FROM gamesystem ORDER BY name");
 foreach($q AS $r) {
 	print "<option value=$r[id]";
 	if ($r['id'] == $system) print " SELECTED";

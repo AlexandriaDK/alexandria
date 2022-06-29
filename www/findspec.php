@@ -2,7 +2,7 @@
 require("./connect.php");
 require("base.inc.php");
 
-$systems = getall("SELECT id, name FROM sys ORDER BY name");
+$systems = getall("SELECT id, name FROM gamesystem ORDER BY name");
 $genres = getall("SELECT id, name FROM genre WHERE genre = 1 ORDER BY name");
 $categories = getall("SELECT id, name FROM genre WHERE genre = 0 ORDER BY name");
 $consets = getall("SELECT id, name FROM conset ORDER BY name");

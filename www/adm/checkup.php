@@ -104,10 +104,10 @@ $query = "
 	FROM
 		sce
 	LEFT JOIN
-		sys ON g.gamesystem_id = sys.id
+		gamesystem ON g.gamesystem_id = gamesystem.id
 	WHERE
 		gamesystem_id > 0 AND
-		sys.id IS NULL
+		gamesystem.id IS NULL
 	";
 $result = getall($query);
 $htmlorpscesys .= "Check of orphans, game=&gt;system: ";

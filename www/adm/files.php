@@ -313,7 +313,7 @@ if ($data_id && $category) {
 		break;
 	case 'sys':
 		$cat = 'sys';
-		$q = "SELECT name FROM sys WHERE id = '$data_id'";
+		$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
 		$mainlink = "system.php?system=$data_id";
 		break;
 	case 'tag':

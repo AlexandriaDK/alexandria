@@ -3,11 +3,11 @@ require("./connect.php");
 require("base.inc.php");
 
 $result = getall("
-	SELECT sys.id, name, COALESCE(alias.label, sys.name) AS translation_name
-	FROM sys
-	LEFT JOIN alias ON sys.id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	GROUP BY sys.id
-	ORDER BY translation_name, sys.id
+	SELECT gamesystem.id, name, COALESCE(alias.label, gamesystem.name) AS translation_name
+	FROM gamesystem
+	LEFT JOIN alias ON gamesystem.id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	GROUP BY gamesystem.id
+	ORDER BY translation_name, gamesystem.id
 ");
 $syslist = [];
 foreach($result AS $r) {

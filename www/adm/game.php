@@ -295,11 +295,11 @@ foreach($q AS $r) {
 }
 
 // Get all systems
-$sys = [];
-$sys[0] = "[unknown or unspecified RPG system]";
-$q = getall("SELECT id, name FROM sys ORDER BY name");
+$gamesystem = [];
+$gamesystem[0] = "[unknown or unspecified RPG system]";
+$q = getall("SELECT id, name FROM gamesystem ORDER BY name");
 foreach($q AS $r) {
-	$sys[$r['id']] = $r['name'];
+	$gamesystem[$r['id']] = $r['name'];
 }
 
 
@@ -597,7 +597,7 @@ print "<tr><td>RPG System</td>";
 print "<td>\n";
 print "<select name=\"gamesystem_id\" id=\"gamesystem_id\">\n";
 
-foreach ($sys AS $id => $name) {
+foreach ($gamesystem AS $id => $name) {
 	$selected = ($id == $gamesystem_id ? "selected" : "");
 	print "<option value=\"$id\" $selected>" . htmlspecialchars($name) . "</option>" . PHP_EOL;
 }

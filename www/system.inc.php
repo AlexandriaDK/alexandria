@@ -12,7 +12,7 @@ if ($system == 33) award_achievement(53); // Vampire
 if ($system == 23) award_achievement(54); // MERP
 if ($system == 3)  award_achievement(68); // Paranoia
 
-$r = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
+$r = getrow("SELECT id, name, description FROM gamesystem WHERE id = '$system'");
 $showname = $sysname = $r['name'];
 
 if ($r['id'] == 0) {

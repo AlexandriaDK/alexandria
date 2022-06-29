@@ -19,7 +19,7 @@ if (strlen($term) >= 2) {
 		UNION ALL
 			SELECT game.id, title AS label, 'sce' AS type, 'scenarie' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(person.firstname,' ',person.surname) ORDER BY person.popularity DESC, person.id SEPARATOR '$separator'), '') AS note FROM game LEFT JOIN pgrel ON game.id = pgrel.game_id AND pgrel.title_id IN (1,5) LEFT JOIN person ON pgrel.person_id = person.id  WHERE title LIKE '$likeescapequery%' GROUP BY game.id
 		UNION ALL
-			SELECT sys.id, name AS label, 'sys' AS type, 'system' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(game.title ORDER BY game.popularity DESC SEPARATOR '$separator'), '') AS note FROM sys LEFT JOIN game ON sys.id = game.sys_id WHERE name LIKE '$likeescapequery%' GROUP BY sys.id
+			SELECT gamesystem.id, name AS label, 'gamesystem' AS type, 'system' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(game.title ORDER BY game.popularity DESC SEPARATOR '$separator'), '') AS note FROM gamesystem LEFT JOIN game ON gamesystem.id = game.sys_id WHERE name LIKE '$likeescapequery%' GROUP BY gamesystem.id
 		UNION ALL
 			SELECT convention.id, CONCAT(convention.name,' (',convention.year,')') AS label, 'convention' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convention
 			INNER JOIN conset ON convention.conset_id = conset.id
@@ -50,7 +50,7 @@ if (strlen($term) >= 2) {
 		if (file_exists($picfile) ) {
 			$data['thumbnail'] = $picfile;
 		}
-		if ( in_array( $data['type'], ['aut', 'sce', 'sys'] ) ) { // max 3 ($separator_limit) items
+		if ( in_array( $data['type'], ['aut', 'sce', 'gamesystem'] ) ) { // max 3 ($separator_limit) items
 			$anote = explode( $separator, $data['note'] );
 			$note = implode( ", ", array_slice( $anote, 0, $separator_limit ) );
 			if ( count( $anote ) > $separator_limit ) {
