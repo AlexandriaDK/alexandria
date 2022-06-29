@@ -73,10 +73,10 @@ foreach( glob( $glob ) AS $file) {
 
 	// persons
 	$person_id = NULL;
-	$aut_extra = '';
+	$person_extra = '';
 	if (strpos($data['organizer'], " ") === FALSE) {
-		$aut_extra = $data['organizer'];
-		print "EXTRA: " . $aut_extra . PHP_EOL;
+		$person_extra = $data['organizer'];
+		print "EXTRA: " . $person_extra . PHP_EOL;
 	} else { // find person
 		preg_match('_(.*) (.*)_', $data['organizer'], $names);
 		$person_id = getone("SELECT id FROM person WHERE firstname = '" . dbesc($names[1]). "' AND surname = '" . dbesc($names[2]) . "'");
@@ -99,7 +99,7 @@ foreach( glob( $glob ) AS $file) {
 
 	// insert game
 	$scenario_id_sql = "INSERT INTO game (title, description, internal, gamesystem_id, gamesystem_extra, person_extra, players_min, players_max, rlyeh_id, boardgame) " .
-	                   "VALUES ('" . dbesc($data['title']) . "', '" . dbesc($data['description']) . "', '" . dbesc($data['internal']) ."', $sys_id, '" . dbesc($sys_extra) ."', '" . dbesc($aut_extra) . "', $players_min, $players_max, 0, 0)";
+	                   "VALUES ('" . dbesc($data['title']) . "', '" . dbesc($data['description']) . "', '" . dbesc($data['internal']) ."', $sys_id, '" . dbesc($sys_extra) ."', '" . dbesc($person_extra) . "', $players_min, $players_max, 0, 0)";
 	print $scenario_id_sql . PHP_EOL . PHP_EOL;
 
 	$game_id = doquery($scenario_id_sql);

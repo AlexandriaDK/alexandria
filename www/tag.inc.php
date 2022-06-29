@@ -19,7 +19,7 @@ if (!$tag) {
 	$tag = $ttag;
 }
 $q = getall("
-	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
+	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, person_extra, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	INNER JOIN tags ON g.id = tags.game_id
 	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.presentation_id = 1
@@ -61,8 +61,8 @@ if (count($q) > 0) {
 			list($forfid,$forfname) = $thisforfatter;
 			$personlist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
 		}
-		if (!$personlist && $rs['aut_extra']) {
-			$personlist[] = $rs['aut_extra'];
+		if (!$personlist && $rs['person_extra']) {
+			$personlist[] = $rs['person_extra'];
 		}
 		if ($personlist) {
 			$slist[$sl]['personlist'] = join("<br />",$personlist);

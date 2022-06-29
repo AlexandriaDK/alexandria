@@ -22,7 +22,7 @@ if ($r['id'] == 0) {
 	exit;
 }
 $q = getall("
-	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, aut_extra, COUNT(files.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS presentation_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
+	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, person_extra, COUNT(files.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS presentation_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	LEFT JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id IN (1,5)
 	LEFT JOIN person p ON pgrel.person_id = p.id
@@ -42,7 +42,7 @@ if (count($q) > 0) {
 	foreach($q AS $rs) { // Put all together
 		$g.id = $rs['id'];
 		if ( ! isset($gamelist[$rs['id']]) ) {
-			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['aut_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
+			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
 		}
 		if ($rs['person_id']) {
 			$gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];

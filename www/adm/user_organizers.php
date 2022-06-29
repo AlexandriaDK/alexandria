@@ -28,9 +28,9 @@ if ( $action ) {
 $role = trim((string) $_REQUEST['role']);
 $aut_text = trim((string) $_REQUEST['aut_text']);
 $person_id = (int) $aut_text;
-$aut_extra = "";
+$person_extra = "";
 if (!$person_id) {
-	$aut_extra = $aut_text;
+	$person_extra = $aut_text;
 	$person_id = NULL;
 }
 
@@ -40,15 +40,15 @@ if (getone("SELECT 1 FROM convention WHERE id = $convention") != 1) { // check i
 	exit;
 }
 
-if ($action == 'add' && ($person_id || $aut_extra) ) {
+if ($action == 'add' && ($person_id || $person_extra) ) {
 	$r = doquery("
-		INSERT INTO pcrel (person_id, convent_id, aut_extra, role, added_by_user_id)
-		VALUES (" . strNullEscape($person_id) . ", $convention, '" . dbesc($aut_extra) . "', '" . dbesc($role) . "', $user_id)
+		INSERT INTO pcrel (person_id, convention_id, person_extra, role, added_by_user_id)
+		VALUES (" . strNullEscape($person_id) . ", $convention, '" . dbesc($person_extra) . "', '" . dbesc($role) . "', $user_id)
 	");
 	if ($pcrel_id = dbid($dblink) ) {
 		$_SESSION['can_edit_organizers'][$pcrel_id] = TRUE;
 		award_achievement(91);
-		chlog($convention,'convent','Organizer added: ' . ( $person_id ? $person_id : $aut_extra ));
+		chlog($convention,'convent','Organizer added: ' . ( $person_id ? $person_id : $person_extra ));
 	}
 } elseif ($action == 'delete') {
 	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$pcrel_id] ) {

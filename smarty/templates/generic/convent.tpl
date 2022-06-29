@@ -164,7 +164,7 @@ $(document).ready(function(){
 		{if $ol.person_id}
 		<a href="data?person={$ol.person_id}" class="person">{$ol.name|escape}</a>
 		{else}
-		{$ol.aut_extra|escape}
+		{$ol.person_extra|escape}
 		{/if}
 	</td>
 	{if $editmode}

@@ -263,8 +263,8 @@ function getCount ($table, $data_id, $requiresCategoryAndData = FALSE, $category
 
 function autidextra ($person) { 
 	$person_id = (int) $person;
-	$aut_extra = ($person_id ? '' : trim($person) );
-	return ['id' => $person_id, 'extra' => $aut_extra];
+	$person_extra = ($person_id ? '' : trim($person) );
+	return ['id' => $person_id, 'extra' => $person_extra];
 }
 
 function rexit($this_type, $dataset = [] ) {

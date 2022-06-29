@@ -49,7 +49,7 @@ if ($magazineid) {
 	// two lookups with and without page being NULL could be combined to one
 	// No need to create article tree with authors as subset. Template already handles that.
 	$colophon = getall("
-		SELECT article.id, contributor.person_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
+		SELECT article.id, contributor.person_id, contributor.person_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
 		LEFT JOIN person p ON contributor.person_id = p.id
@@ -59,7 +59,7 @@ if ($magazineid) {
 		ORDER BY article.id
 	");
 	$articles = getall("
-		SELECT article.id, contributor.person_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
+		SELECT article.id, contributor.person_id, contributor.person_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
 		LEFT JOIN person p ON contributor.person_id = p.id

@@ -44,7 +44,7 @@
 		{if $row.person_id}
 		<a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
 		{else}
-		{$row.aut_extra|escape|nl2br}
+		{$row.person_extra|escape|nl2br}
 		{/if}
 	</td>
 	</tr>
@@ -75,7 +75,7 @@
 		{if $row.person_id}
 		<a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
 		{else}
-		{$row.aut_extra|escape}
+		{$row.person_extra|escape}
 		{/if}
 	</td>
 	<td class="role">{$row.role|escape}</td>
