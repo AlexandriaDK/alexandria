@@ -28,6 +28,8 @@ ALTER TABLE game CHANGE sys_id gamesystem_id int NULL;
 ALTER TABLE game CHANGE sys_ext gamesystem_extra tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci NULL;
 ALTER TABLE game CHANGE aut_extra person_extra tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci NULL;
 
+ALTER TABLE gamerun CHANGE sce_id game_id int NOT NULL;
+
 ALTER TABLE users CHANGE aut_id person_id int NULL;
 
 ALTER TABLE tags CHANGE sce_id game_id int NOT NULL;
@@ -52,4 +54,4 @@ ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 
 
 -- Omdan `category`, `data_id` til eksplicitte felter for hver datatype aht. fremmednøgler
--- Links, Trivia, Updates, Files, Filedownloads, award_nominee_id, ...
+-- Links, Trivia, Updates, Files, Filedownloads, award_nominee_id, Alias ...
