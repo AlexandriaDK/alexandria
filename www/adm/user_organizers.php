@@ -6,7 +6,7 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$convent = (int) $_REQUEST['convent'];
+$convention = (int) $_REQUEST['convention'];
 $action = (string) $_REQUEST['action'];
 $user_id = $_SESSION['user_id'];
 $token = $_REQUEST['token'] ?? '';
@@ -34,7 +34,7 @@ if (!$person_id) {
 	$person_id = NULL;
 }
 
-if (getone("SELECT 1 FROM convent WHERE id = $convent") != 1) { // check if congress exists
+if (getone("SELECT 1 FROM convention WHERE id = $convention") != 1) { // check if congress exists
 	die("DB error");
 	header("Location: ../");
 	exit;
@@ -43,20 +43,20 @@ if (getone("SELECT 1 FROM convent WHERE id = $convent") != 1) { // check if cong
 if ($action == 'add' && ($person_id || $aut_extra) ) {
 	$r = doquery("
 		INSERT INTO pcrel (person_id, convent_id, aut_extra, role, added_by_user_id)
-		VALUES (" . strNullEscape($person_id) . ", $convent, '" . dbesc($aut_extra) . "', '" . dbesc($role) . "', $user_id)
+		VALUES (" . strNullEscape($person_id) . ", $convention, '" . dbesc($aut_extra) . "', '" . dbesc($role) . "', $user_id)
 	");
 	if ($pcrel_id = dbid($dblink) ) {
 		$_SESSION['can_edit_organizers'][$pcrel_id] = TRUE;
 		award_achievement(91);
-		chlog($convent,'convent','Organizer added: ' . ( $person_id ? $person_id : $aut_extra ));
+		chlog($convention,'convent','Organizer added: ' . ( $person_id ? $person_id : $aut_extra ));
 	}
 } elseif ($action == 'delete') {
 	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$pcrel_id] ) {
 		doquery("DELETE FROM pcrel WHERE id = $pcrel_id");
-		chlog($convent,'convent','Organizer removed');
+		chlog($convention,'convent','Organizer removed');
 	}
 }
 
-header("Location: ../data?con=$convent&edit=organizers#organizers");
+header("Location: ../data?con=$convention&edit=organizers#organizers");
 exit;
 ?>

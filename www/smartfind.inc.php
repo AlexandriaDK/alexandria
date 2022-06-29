@@ -193,19 +193,19 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 }
 
 function getgameidbytitle($find) {
-	return getalphaidbybeta ($find, "sce", "title");
+	return getalphaidbybeta ($find, "game", "title");
 }
 
 function getpersonidbyname($find) {
-	return getalphaidbybeta ($find, "aut", "CONCAT(firstname,' ',surname)");
+	return getalphaidbybeta ($find, "person", "CONCAT(firstname,' ',surname)");
 }
 
 function getsysidbyname($find) {
-	return getalphaidbybeta ($find, "sys", "name");
+	return getalphaidbybeta ($find, "gamesystem", "name");
 }
 
 function getconidbyname($find) {
-	return getalphaidbybeta ($find, "convent", "name");
+	return getalphaidbybeta ($find, "convention", "name");
 }
 
 function getconidbynameandyear($find) {

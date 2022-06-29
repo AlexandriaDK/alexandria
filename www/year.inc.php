@@ -1,7 +1,7 @@
 <?php
 $this_type = 'year';
 
-list($startyear,$endyear) = getrow("SELECT MIN(year), MAX(year) FROM convent");
+list($startyear,$endyear) = getrow("SELECT MIN(year), MAX(year) FROM convention");
 
 $yearlist = "";
 

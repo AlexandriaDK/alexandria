@@ -52,8 +52,8 @@ $sql = "select id, fact from trivia where fact regexp '$regexp_sql'";
 $trivias = getall("select id, fact, data_id, category from trivia where fact regexp '$regexp_sql'");
 $tags = getall("select id, tag, description from tag where description regexp '$regexp_sql'");
 $scenarios = getall("select id, title, description from game where description regexp '$regexp_sql'");
-$cons = getall("select id, description from convent where description regexp '$regexp_sql'");
-$syss = getall("select id, description from sys where description regexp '$regexp_sql'");
+$cons = getall("select id, description from convention where description regexp '$regexp_sql'");
+$syss = getall("select id, description from gamesystem where description regexp '$regexp_sql'");
 
 $total = count($trivias) + count($tags) + count($scenarios) + count($cons) + count($syss);
 print dberror();

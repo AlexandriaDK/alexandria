@@ -79,7 +79,7 @@ $htmlorpsce .= "Check of orphans, game&lt;=&gt;con: ";
 
 if ($result) {
 	$htmlorpsce .= "<table border=1 cellspacing=0 >";
-	$htmlorpsce .= "<tr><th>ID</th><th>convention_id</th><th>game_id</th><th>convent</th><th>sce</th></tr>";
+	$htmlorpsce .= "<tr><th>ID</th><th>convention_id</th><th>game_id</th><th>convention</th><th>sce</th></tr>";
 	foreach($result AS $row) {
 		$htmlorpsce .= "<tr>".
 		               "<td align=\"right\">$row[id]</td>".
@@ -184,7 +184,7 @@ foreach($persons AS $name => $data) {
 	$htmlorganizer .= " <span onclick=\"document.getElementById('organizer_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show cons\">[+]</span>";
 	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"organizer_$nameid\">";
 	foreach ($data AS $row) {
-		$htmlorganizer .= '<a href="organizers.php?category=convent&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
+		$htmlorganizer .= '<a href="organizers.php?category=convention&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
 	}
 	$htmlorganizer .= "</div>" . PHP_EOL;
 }
@@ -196,7 +196,7 @@ $result = getall($query);
 foreach($result AS $row) {
 	$htmlorganizermatch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['antal']})";
 	foreach(explode(",",$row['convention_ids']) AS $convention_id) {
-		$htmlorganizermatch .= " <a href=\"organizers.php?category=convent&data_id=$convention_id\">#$convention_id</a>";
+		$htmlorganizermatch .= " <a href=\"organizers.php?category=convention&data_id=$convention_id\">#$convention_id</a>";
 	}
 
 	$htmlorganizermatch .= "<br>\n";

@@ -303,7 +303,7 @@ if ($data_id && $category) {
 		break;
 	case 'convent':
 		$cat = 'convent';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convent WHERE id = '$data_id'";
+		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 		$mainlink = "convent.php?con=$data_id";
 		break;
 	case 'conset':

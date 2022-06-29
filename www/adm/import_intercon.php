@@ -124,7 +124,7 @@ if (strlen($intercon_letter) != 1 || ! $con_id) {
     exit;
 }
 
-list($con_name, $con_year) = getrow("SELECT name, year FROM convent WHERE id = $con_id");
+list($con_name, $con_year) = getrow("SELECT name, year FROM convention WHERE id = $con_id");
 $gamecount = getone("SELECT COUNT(*) FROM cgrel WHERE convention_id = $con_id");
 print "<p><a href=\"convent.php?con=" . $con_id . "\">" . htmlspecialchars($con_name) . " ($con_year)</a> ($gamecount " . ($gamecount == 1 ? 'game' : 'games') . ")</p>";
 print "<hr>";

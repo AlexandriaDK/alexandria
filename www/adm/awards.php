@@ -194,7 +194,7 @@ printinfo();
 if ($category == 'convent') {
 	// get data
 	$cat = 'convent';
-	$q = "SELECT CONCAT(name, ' (', year, ')') FROM convent WHERE id = '$data_id'";
+	$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 	$mainlink = "convent.php?con=$data_id";
 
 	$title = getone($q);
@@ -244,7 +244,7 @@ if ($category == 'convent') {
 
 } elseif ($category == "awardcategory" && $data_id) {
 	// get category
-	list($category_id, $name, $convention_id, $convent_name, $year) = getrow("SELECT a.id, a.name, a.convention_id, b.name AS convent_name, b.year FROM award_categories a LEFT JOIN convent b ON a.convention_id = b.id WHERE a.id = $data_id");
+	list($category_id, $name, $convention_id, $convent_name, $year) = getrow("SELECT a.id, a.name, a.convention_id, b.name AS convent_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convention_id = b.id WHERE a.id = $data_id");
 	if (!$category_id) {
 		die("Unknown award category");
 	}

@@ -111,7 +111,7 @@ if ($conset) {
 	print showtickets($conset,$this_type);
 
 // Afholdte con'er
-	$q = getall("SELECT convent.id, convent.name, year, confirmed, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE conset_id = '$conset' ORDER BY setname, year, begin, end, name");
+	$q = getall("SELECT convention.id, convention.name, year, confirmed, conset.name AS setname FROM convention LEFT JOIN conset ON convention.conset_id = conset.id WHERE conset_id = '$conset' ORDER BY setname, year, begin, end, name");
 	print "<tr valign=top><td>Contains the following cons</td><td>\n";
         foreach($q AS list($id, $name, $y, $c) ){
 		if ($c == 0) $conftext = "(missing scenarios)";

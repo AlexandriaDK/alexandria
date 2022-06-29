@@ -350,10 +350,10 @@ if ($find) {
 		if ($search_conset && $match['game']) {
 			$q = "
 				SELECT game.id
-				FROM game, cgrel, convent
+				FROM game, cgrel, convention
 				WHERE game.id = cgrel.game_id
-				AND cgrel.convention_id = convent.id
-				AND convent.conset_id = '$search_conset'
+				AND cgrel.convention_id = convention.id
+				AND convention.conset_id = '$search_conset'
 				AND game.id IN (".implode(",",$match['game']).")
 				GROUP BY game.id
 			";
