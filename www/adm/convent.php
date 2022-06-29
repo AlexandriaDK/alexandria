@@ -101,7 +101,7 @@ if ($action == "edit" && $con) {
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
-	if (getCount('csrel', $this_id, FALSE, $this_type) ) $error[] = "game";
+	if (getCount('cgrel', $this_id, FALSE, $this_type) ) $error[] = "game";
 	if (getCount('pcrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer)";
 	if (getCount('trivia', $this_id, TRUE, $this_type_new) ) $error[] = "trivia";
 	if (getCount('links', $this_id, TRUE, $this_type_new) ) $error[] = "link";

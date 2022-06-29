@@ -103,8 +103,8 @@ if ($mainperson && $subperson) {
 				INNER JOIN game g ON g.id = t1.game_id
 				INNER JOIN pgrel t2 ON t1.game_id = t2.game_id
 				INNER JOIN person p2 ON p2.id = t2.person_id
-				LEFT JOIN csrel ON g.id = csrel.game_id AND csrel.presentation_id = 1
-				LEFT JOIN convention c ON c.id = csrel.convention_id
+				LEFT JOIN cgrel ON g.id = cgrel.game_id AND cgrel.presentation_id = 1
+				LEFT JOIN convention c ON c.id = cgrel.convention_id
 				WHERE
 					t1.person_id IN ($inlist) AND
 					t2.person_id NOT IN ($notlist) AND

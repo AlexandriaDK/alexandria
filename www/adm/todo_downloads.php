@@ -53,7 +53,7 @@ if ($action == "calculate") {
 		if ($count_scenarios) {
 			$in = implode(",", $scenarios);
 			$titles = getcol("SELECT title FROM game WHERE id IN ($in)");
-			$runs = getone("SELECT COUNT(*) FROM csrel WHERE game_id IN ($in)");
+			$runs = getone("SELECT COUNT(*) FROM cgrel WHERE game_id IN ($in)");
 			$award_nominees = getone("SELECT COUNT(*) FROM award_nominees WHERE game_id IN ($in) AND winner = 0");
 			$award_winners = getone("SELECT COUNT(*) FROM award_nominees WHERE game_id IN ($in) AND winner = 1");
 			$userlogs = getone("SELECT COUNT(*) FROM userlog WHERE category = 'sce' AND data_id IN ($in)");

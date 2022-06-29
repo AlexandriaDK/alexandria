@@ -10,7 +10,7 @@ $convent = (int) $_REQUEST['convent'];
 $action = (string) $_REQUEST['action'];
 $user_id = $_SESSION['user_id'];
 $token = $_REQUEST['token'] ?? '';
-$acrel_id = (int) $_REQUEST['acrel_id'];
+$pcrel_id = (int) $_REQUEST['pcrel_id'];
 
 if (!$user_id) {
 	header("Location: ../data?con=$convent");
@@ -42,17 +42,17 @@ if (getone("SELECT 1 FROM convent WHERE id = $convent") != 1) { // check if cong
 
 if ($action == 'add' && ($person_id || $aut_extra) ) {
 	$r = doquery("
-		INSERT INTO acrel (person_id, convent_id, aut_extra, role, added_by_user_id)
+		INSERT INTO pcrel (person_id, convent_id, aut_extra, role, added_by_user_id)
 		VALUES (" . strNullEscape($person_id) . ", $convent, '" . dbesc($aut_extra) . "', '" . dbesc($role) . "', $user_id)
 	");
-	if ($acrel_id = dbid($dblink) ) {
-		$_SESSION['can_edit_organizers'][$acrel_id] = TRUE;
+	if ($pcrel_id = dbid($dblink) ) {
+		$_SESSION['can_edit_organizers'][$pcrel_id] = TRUE;
 		award_achievement(91);
 		chlog($convent,'convent','Organizer added: ' . ( $person_id ? $person_id : $aut_extra ));
 	}
 } elseif ($action == 'delete') {
-	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$acrel_id] ) {
-		doquery("DELETE FROM acrel WHERE id = $acrel_id");
+	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$pcrel_id] ) {
+		doquery("DELETE FROM pcrel WHERE id = $pcrel_id");
 		chlog($convent,'convent','Organizer removed');
 	}
 }
