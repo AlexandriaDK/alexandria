@@ -14,14 +14,14 @@ $name = (string) $_REQUEST['name'];
 $description = (string) $_REQUEST['description'];
 $nominationtext = (string) $_REQUEST['nominationtext'];
 $id = (int) $_REQUEST['id'];
-$sce_id = (int) $_REQUEST['sce_id'];
-if (!$sce_id) {
-	$sce_id = NULL;
+$game_id = (int) $_REQUEST['game_id'];
+if (!$game_id) {
+	$game_id = NULL;
 }
 $award_nominee_entity = (int) $_REQUEST['award_nominee_entity'];
 $award_nominee_entity_extra = $_REQUEST['award_nominee_entity'];
 $data_id = (int) $_REQUEST['data_id'];
-$convent_id = (int) $_REQUEST['convent_id'];
+$convention_id = (int) $_REQUEST['convention_id'];
 $winner = (int) isset($_REQUEST['winner']);
 $ranking = (string) $_REQUEST['ranking'];
 
@@ -30,13 +30,13 @@ $user_id = $_SESSION['user_id'];
 
 $people = [];
 
-$result = getall("SELECT id, firstname, surname FROM aut ORDER BY firstname, surname");
+$result = getall("SELECT id, firstname, surname FROM person ORDER BY firstname, surname");
 foreach($result AS $row) {
 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
 }
 
 $scenarios = [];
-$result = getall("SELECT id, title FROM sce ORDER BY title");
+$result = getall("SELECT id, title FROM game ORDER BY title");
 foreach($result AS $row) {
 	$scenarios[] = $row['id'] . " - " . $row['title'];
 }
@@ -45,7 +45,7 @@ foreach($result AS $row) {
 if ($action == "changecategory" && $do != "Delete") {
 
 	$q = "UPDATE award_categories SET " .
-	     "name= '" . dbesc($name) . "', " .
+	     "name = '" . dbesc($name) . "', " .
 	     "description = '" . dbesc($description) . "' " .
 	     "WHERE id = '$id'";
 	$r = doquery($q);
@@ -78,7 +78,7 @@ if ($action == "changecategory" && $do == "Delete") {
 // Add category
 if ($action == "addcategory") {
 	$q = "INSERT INTO award_categories " .
-	     "(name, description, convent_id) VALUES ".
+	     "(name, description, convention_id) VALUES ".
 	     "('" . dbesc($name) . "', '" . dbesc($description) . "', " . $data_id .")";
 	$r = doquery($q);
 	if ($r) {
@@ -94,7 +94,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	$award_name = getone("SELECT name FROM award_categories WHERE id = $data_id");
 	$q = "UPDATE award_nominees SET " .
 	     "name= '" . dbesc($name) . "', " .
-	     "sce_id = " . strNullEscape($sce_id) . ", " . 
+	     "game_id = " . strNullEscape($game_id) . ", " . 
 	     "nominationtext = '" . dbesc($nominationtext) . "', " .
 	     "winner = $winner, " .
 	     "ranking = '" . dbesc($ranking) . "' " .
@@ -106,7 +106,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	}
 	$r = doquery($q);
 	if ($r) {
-		chlog($convent_id,'convent',"Nominee updated: $name ($data_id), $award_name");
+		chlog($convention_id,'convent',"Nominee updated: $name ($data_id), $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee updated! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -114,15 +114,15 @@ if ($action == "changenominee" && $do != "Delete") {
 
 // Add nominee
 if ($action == "addnominee") {
-	var_dump($convent_id);
+	var_dump($convention_id);
 	$award_name = getone("SELECT name FROM award_categories WHERE id = $data_id");
 	$q = "INSERT INTO award_nominees " .
-	     "(award_category_id, sce_id, name, nominationtext, winner, ranking) VALUES ".
-	     "($data_id, " . strNullEscape($sce_id) . ", '" . dbesc($name) . "', '" . dbesc($nominationtext) . "', " . $winner .", '" . dbesc($ranking) ."')";
+	     "(award_category_id, game_id, name, nominationtext, winner, ranking) VALUES ".
+	     "($data_id, " . strNullEscape($game_id) . ", '" . dbesc($name) . "', '" . dbesc($nominationtext) . "', " . $winner .", '" . dbesc($ranking) ."')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($convent_id,'convent',"Nominee added: $name, $award_name");
+		chlog($convention_id,'convent',"Nominee added: $name, $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee added! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -140,7 +140,7 @@ if ($action == "changenominee" && $do == "Delete") {
 	$q = "DELETE FROM award_nominees WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($convent_id,'convent',"Nominee removed: $id");
+		chlog($convention_id,'convent',"Nominee removed: $id");
 	}
 	$_SESSION['admin']['info'] = "Nominee removed! " . dberror();
 	rexit($this_type, [ 'category' => $category, 'data_id' => $data_id ] );
@@ -149,7 +149,7 @@ if ($action == "changenominee" && $do == "Delete") {
 if ($action == 'deletenomineeentity') {
 	if (getone("SELECT id FROM award_nominee_entities WHERE id = $id") ) {
 		doquery("DELETE FROM award_nominee_entities WHERE id = $id");
-		chlog($convent_id,'convent',"Nominee connection deleted: $id");
+		chlog($convention_id,'convent',"Nominee connection deleted: $id");
 		$_SESSION['admin']['info'] = "Connection removed! " . dberror();
 	} else {
 		$_SESSION['admin']['info'] = "Could not find connection! " . dberror();
@@ -199,7 +199,7 @@ if ($category == 'convent') {
 
 	$title = getone($q);
 	
-	$query = "SELECT a.id, a.name, a.description, SUM(b.winner = 1) AS winners, COUNT(b.id) AS nominees FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convent_id = '$data_id' GROUP BY a.id";
+	$query = "SELECT a.id, a.name, a.description, SUM(b.winner = 1) AS winners, COUNT(b.id) AS nominees FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convention_id = '$data_id' GROUP BY a.id";
 	$result = getall($query);
 
 	print "<table align=\"center\" border=0>".
@@ -244,14 +244,14 @@ if ($category == 'convent') {
 
 } elseif ($category == "awardcategory" && $data_id) {
 	// get category
-	list($category_id, $name, $convent_id, $convent_name, $year) = getrow("SELECT a.id, a.name, a.convent_id, b.name AS convent_name, b.year FROM award_categories a LEFT JOIN convent b ON a.convent_id = b.id WHERE a.id = $data_id");
+	list($category_id, $name, $convention_id, $convent_name, $year) = getrow("SELECT a.id, a.name, a.convention_id, b.name AS convent_name, b.year FROM award_categories a LEFT JOIN convent b ON a.convention_id = b.id WHERE a.id = $data_id");
 	if (!$category_id) {
 		die("Unknown award category");
 	}
-	$nominees = getall("SELECT a.id, a.sce_id, a.name, a.nominationtext, a.winner, a.ranking, b.title, COUNT(c.id) AS count_entity FROM award_nominees a LEFT JOIN sce b ON a.sce_id = b.id LEFT JOIN award_nominee_entities c ON a.id = c.award_nominee_id WHERE award_category_id = $data_id GROUP BY a.id ORDER BY winner DESC, a.id");
+	$nominees = getall("SELECT a.id, a.game_id, a.name, a.nominationtext, a.winner, a.ranking, b.title, COUNT(c.id) AS count_entity FROM award_nominees a LEFT JOIN game b ON a.game_id = b.id LEFT JOIN award_nominee_entities c ON a.id = c.award_nominee_id WHERE award_category_id = $data_id GROUP BY a.id ORDER BY winner DESC, a.id");
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"q\">" . htmlspecialchars($convent_name) . " ($year)</a>".
+	      "<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convent&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convent_name) . " ($year)</a>".
 	      "</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
@@ -263,9 +263,9 @@ if ($category == 'convent') {
 	      "<th></th>" . 
 	      "</tr>\n";
 	foreach($nominees AS $nominee) {
-		$sce_id = "";
+		$game_id = "";
 		if ($nominee['title']) {
-			$sce_id = $nominee['sce_id'] . " - " . $nominee['title'];
+			$game_id = $nominee['game_id'] . " - " . $nominee['title'];
 		}
 		$html_entity = "";
 		$html_entity .= '<div style="margin-left: 3em;">';
@@ -275,7 +275,7 @@ if ($category == 'convent') {
 		$entities = getall("SELECT id, data_id,category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
 		$html_entity .= '<br>';
 		foreach($entities AS $entity) {
-			$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convent_id=' . $convent_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
+			$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
 			if ($entity['category']) {
 				$name = getentry($entity['category'], $entity['data_id']);	
 				$link = getdatalink($entity['category'], $entity['data_id'], TRUE);
@@ -292,14 +292,14 @@ if ($category == 'convent') {
 		      '<input type="hidden" name="action" value="changenominee">'.
 		      '<input type="hidden" name="category" value="'.$category.'">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-		      '<input type="hidden" name="convent_id" value="'.$convent_id.'">'.
+		      '<input type="hidden" name="convention_id" value="'.$convention_id.'">'.
 		      '<input type="hidden" name="id" value="'.$nominee['id'].'">';
 		print "<tr valign=\"top\">\n".
 		      '<td style="text-align:right;">'.$nominee['id'].'</td>'.
 		      '<td><input type="text" name="name" value="'.htmlspecialchars($nominee['name']).'" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)"><br>' .
 		      $html_entity . 
 		      '</td>'.
-		      '<td><input type="text" name="sce_id" value="'.htmlspecialchars($sce_id).'" size=30 maxlength=150 class="scenariotags"></td>'.
+		      '<td><input type="text" name="game_id" value="'.htmlspecialchars($game_id).'" size=30 maxlength=150 class="scenariotags"></td>'.
 		      '<td><textarea name="nominationtext" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;" >'.htmlspecialchars($nominee['nominationtext']).'</textarea></td>'.
 		      '<td style="text-align: center;"><input type="checkbox" name="winner" value="yes" ' . ($nominee['winner'] ? 'checked' : '' ) . '></td>'.
 		      '<td><input type="text" name="ranking" value="'.htmlspecialchars($nominee['ranking']).'" size=10 maxlength=150><br>' .
@@ -313,11 +313,11 @@ if ($category == 'convent') {
 	      '<input type="hidden" name="action" value="addnominee">'.
 	      '<input type="hidden" name="category" value="'.$category.'">'.
 	      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
-	      '<input type="hidden" name="convent_id" value="'.$convent_id.'">';
+	      '<input type="hidden" name="convention_id" value="'.$convention_id.'">';
 	print "<tr valign=\"top\">\n".
 	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="name" value="" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)" autofocus></td>'.
-	      '<td><input type="text" name="sce_id" value="" size=30 maxlength=150 class="scenariotags"></td>'.
+	      '<td><input type="text" name="game_id" value="" size=30 maxlength=150 class="scenariotags"></td>'.
 	      '<td><textarea name="nominationtext" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;" ></textarea></td>'.
 	      '<td style="text-align: center;"><input type="checkbox" name="winner" value="yes" ' . (count($nominees) == 0 ? 'checked' : '' ) . '></td>'.
 	      '<td><input type="text" name="ranking" value="" size=10 maxlength=150></td>'.

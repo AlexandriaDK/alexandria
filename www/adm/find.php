@@ -60,13 +60,13 @@ if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i",$find,$regs)) {
 }
 
 $r1 = getall("
-	(SELECT id, title, 0 AS alias FROM sce WHERE title LIKE '%".likeesc($find)."%')
+	(SELECT id, title, 0 AS alias FROM game WHERE title LIKE '%".likeesc($find)."%')
 	UNION
 	(SELECT data_id, label AS title, 1 AS alias FROM alias WHERE label LIKE '%".likeesc($find)."%' AND category = 'sce')
 	ORDER BY title
 ");
 $r2 = getall("
-	(SELECT id, CONCAT(firstname,' ',surname) AS name, 0 AS alias FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '%".likeesc($find)."%')
+	(SELECT id, CONCAT(firstname,' ',surname) AS name, 0 AS alias FROM person p WHERE CONCAT(firstname,' ',surname) LIKE '%".likeesc($find)."%')
 	UNION
 	(SELECT data_id, label AS name, 1 AS alias FROM alias WHERE label LIKE '%".likeesc($find)."%' AND category = 'aut')
 	ORDER BY name

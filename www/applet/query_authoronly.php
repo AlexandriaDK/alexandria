@@ -9,12 +9,12 @@ if (!$dataid) $dataid = '1';
 
 if ($category == 'aut') {
 	$other_category = 'aut';
-	$query_maininfo = "SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$dataid'";
+	$query_maininfo = "SELECT person.id, CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$dataid'";
 	$query = "
-	          SELECT t2.aut_id, CONCAT(firstname,' ',surname) AS name
-	          FROM asrel AS t1, asrel AS t2, aut
-	          WHERE t1.aut_id = '$dataid' AND t1.sce_id = t2.sce_id AND t2.aut_id != '$dataid' AND t2.aut_id = aut.id AND t1.tit_id = 1 AND t2.tit_id = 1
-	          GROUP BY t2.aut_id
+	          SELECT t2.person_id, CONCAT(firstname,' ',surname) AS name
+	          FROM pgrel AS t1, pgrel AS t2, person p
+	          WHERE t1.person_id = '$dataid' AND t1.game_id = t2.game_id AND t2.person_id != '$dataid' AND t2.person_id = p.id AND t1.title_id = 1 AND t2.title_id = 1
+	          GROUP BY t2.person_id
 		";
 
 }
@@ -34,10 +34,10 @@ if (count($dataset) > 0) {
 	foreach($dataset AS $key => $value) $commalist[] = $key;
 	$datasetlist = join(",",$commalist);
 	$query = "
-	          SELECT t2.aut_id, CONCAT(firstname,' ',surname) AS name
-	          FROM asrel AS t1, asrel AS t2, aut
-	          WHERE t1.aut_id IN ($datasetlist) AND t1.sce_id = t2.sce_id AND t2.aut_id NOT IN ($datasetlist) AND t2.aut_id = aut.id AND t1.tit_id = 1 AND t2.tit_id = 1
-	          GROUP BY t2.aut_id
+	          SELECT t2.person_id, CONCAT(firstname,' ',surname) AS name
+	          FROM pgrel AS t1, pgrel AS t2, person p
+	          WHERE t1.person_id IN ($datasetlist) AND t1.game_id = t2.game_id AND t2.person_id NOT IN ($datasetlist) AND t2.person_id = p.id AND t1.title_id = 1 AND t2.title_id = 1
+	          GROUP BY t2.person_id
 		";
 	$result = mysql_query($query) or die("ERROR: ".mysql_error() );
 	while (list($id,$data) = mysql_fetch_row($result)) {

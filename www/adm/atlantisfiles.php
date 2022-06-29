@@ -32,9 +32,9 @@ foreach ( $filelist AS $file ) {
 	if ($map[$scenario]) {
 		$scenario = $map[$scenario];
 	}
-	$sid = getone( "SELECT id FROM sce WHERE title = '" . dbesc( $scenario ) . "'" );
+	$sid = getone( "SELECT id FROM game WHERE title = '" . dbesc( $scenario ) . "'" );
 	if ( $sid ) {
-		$auts = getcol( "SELECT CONCAT(firstname, ' ', surname) FROM aut INNER JOIN asrel ON aut.id = asrel.aut_id WHERE asrel.sce_id = $sid AND asrel.tit_id = 1" );
+		$auts = getcol( "SELECT CONCAT(firstname, ' ', surname) FROM person p INNER JOIN pgrel ON p.id = pgrel.person_id WHERE pgrel.game_id = $sid AND pgrel.title_id = 1" );
 		$files = getcol( "SELECT filename FROM files WHERE category = 'sce' AND data_id = $sid AND downloadable = 1" );
 	}
 	$result[] = [

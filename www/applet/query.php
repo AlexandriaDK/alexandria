@@ -13,15 +13,15 @@ if (!$category) $category = 'aut';
 if (!$dataid) $dataid = '1';
 
 
-if ($category == 'aut') {
-	$other_category = 'sce';
-	$query_maininfo = "SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$dataid'";
-	$query = "SELECT sce.id, sce.title, sce.description FROM sce, asrel WHERE asrel.sce_id = sce.id AND asrel.aut_id = '$dataid'";
+if ($category == 'person') {
+	$other_category = 'person';
+	$query_maininfo = "SELECT p.id, CONCAT(firstname,' ',surname) AS name FROM person p WHERE id = '$dataid'";
+	$query = "SELECT g.id, g.title, g.description FROM game g, pgrel WHERE pgrel.game_id = g.id AND pgrel.person_id = '$dataid'";
 } else {
-	$category = 'sce';
-	$other_category = 'aut';
-	$query_maininfo = "SELECT sce.id, sce.title, sce.description FROM sce WHERE id = '$dataid'";
-	$query = "SELECT aut.id, CONCAT(firstname,' ',surname) AS name FROM aut, asrel WHERE asrel.aut_id = aut.id AND asrel.sce_id = '$dataid'";
+	$category = 'game';
+	$other_category = 'person';
+	$query_maininfo = "SELECT g.id, g.title, g.description FROM game g WHERE id = '$dataid'";
+	$query = "SELECT p.id, CONCAT(firstname,' ',surname) AS name FROM person p, pgrel WHERE pgrel.person_id = p.id AND pgrel.game_id = '$dataid'";
 }
 
 
@@ -58,7 +58,7 @@ foreach($dataset AS $id => $data) {
 	$edgeid++;
 	$toid = $other_category.'_'.$id;
 // Sortering for at lade pile pege fra forfattere til scenarier
-	if ($category == "aut") {
+	if ($category == "person") {
 		$out_fromid = $main_fromid;
 		$out_toid = $toid;
 	} else {

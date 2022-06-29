@@ -32,18 +32,18 @@ $yearlist .= "</table>";
 $output = "";
 $q = getall("
 	(
-		SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname, cancelled, convent.name AS origname
-		FROM convent
-		LEFT JOIN conset ON convent.conset_id = conset.id
+		SELECT 'convent' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled, c.name AS origname
+		FROM convention c
+		LEFT JOIN conset ON c.conset_id = conset.id
 		WHERE year = '$year'
 	)
 	UNION
 	(
-		SELECT 'sce' AS type, sce.id, COALESCE(alias.label, sce.title) AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname, scerun.cancelled, sce.title AS origname
-		FROM scerun
-		INNER JOIN sce ON scerun.sce_id = sce.id
-		LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-		WHERE scerun.begin BETWEEN '$year-00-00' AND '$year-12-31'
+		SELECT 'sce' AS type, g.id, COALESCE(alias.label, g.title) AS name, YEAR(gr.begin) AS year, g.description, gr.begin, gr.end, gr.location, g.id AS conset_id, g.title AS cname, gr.cancelled, g.title AS origname
+		FROM gamerun gr
+		INNER JOIN game g ON gr.game_id = g.id
+		LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		WHERE gr.begin BETWEEN '$year-00-00' AND '$year-12-31'
 	)
 	ORDER BY begin, end, name
 ");

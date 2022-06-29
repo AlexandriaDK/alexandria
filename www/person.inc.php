@@ -7,7 +7,7 @@ if ($_SESSION['user_id']) {
 	$userlog = getuserloggames($_SESSION['user_id']);
 }
 
-$r = getrow("SELECT id, intern, CONCAT(firstname,' ',surname) AS name, birth, death FROM aut WHERE id = $person");
+$r = getrow("SELECT id, internal, CONCAT(firstname,' ',surname) AS name, birth, death FROM person WHERE id = $person");
 if ($r['id'] == 0) {
 	$t->assign('content', $t->getTemplateVars('_nomatch') );
 	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
@@ -15,7 +15,7 @@ if ($r['id'] == 0) {
 	exit;
 }
 
-$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
+$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['internal'] : ""); // only set internal if editor
 // Achievements
 if (isset($_SESSION['user_author_id']) && $r['id'] == $_SESSION['user_author_id']) award_achievement(21); // view own page
 
@@ -36,11 +36,11 @@ $q = getall("
 		END AS runtype
 	FROM (
 		SELECT
-			MIN(COALESCE(convent.begin,convent.year)) AS firstcondate,
-			MIN(scerun.begin) AS firstrundate,
-			sce.id,
-			sce.title AS title,
-			sce.boardgame AS boardgame,
+			MIN(COALESCE(c.begin,c.year)) AS firstcondate,
+			MIN(gamerun.begin) AS firstrundate,
+			g.id,
+			g.title AS title,
+			g.boardgame AS boardgame,
 			MIN(title.id) AS title_id,
 			title.title AS auttitle,
 			title.title_label AS auttitlelabel,
@@ -49,27 +49,27 @@ $q = getall("
 			title.iconheight,
 			title.textsymbol,
 			COUNT(files.id) AS files,
-			COALESCE(alias.label, sce.title) AS title_translation
+			COALESCE(alias.label, g.title) AS title_translation
 		FROM
-			asrel,
+			pgrel,
 			title,
-			sce
-		LEFT JOIN csrel ON
-			csrel.sce_id = sce.id
-		LEFT JOIN convent ON
-			csrel.convent_id = convent.id
-		LEFT JOIN scerun ON
-			sce.id = scerun.sce_id 
+			game g
+		LEFT JOIN cgrel ON
+			cgrel.game_id = g.id
+		LEFT JOIN convention c ON
+			cgrel.convention_id = c.id
+		LEFT JOIN gamerun ON
+			g.id = gamerun.game_id 
 		LEFT JOIN files ON
-			sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+			g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
 		LEFT JOIN alias ON
-			sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 		WHERE
-			sce.id = asrel.sce_id AND
-			asrel.tit_id = title.id AND
-			asrel.aut_id = '$person' 
+			g.id = pgrel.game_id AND
+			pgrel.title_id = title.id AND
+			pgrel.person_id = '$person' 
 		GROUP BY
-			sce.id, title.id
+			g.id, title.id
 	) a
 	ORDER BY
 		combinedfirstrun != '9999-99-99', -- Sort games without any found date first
@@ -115,10 +115,11 @@ if (count($q) > 0) {
 		$runlist = [];
 		if ($rs['runtype'] == 'con') { // get all "first cons"
 			$qq = getall("
-				SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled
-				FROM convent, csrel
-				WHERE convent.id = csrel.convent_id AND csrel.pre_id = 1 AND csrel.sce_id = $game_id
-				ORDER BY convent.name
+				SELECT c.id, c.name, c.year, c.begin, c.end, c.cancelled
+				FROM convention c
+				INNER JOIN cgrel ON c.id = cgrel.convention_id
+				WHERE cgrel.presentation_id = 1 AND cgrel.game_id = $game_id
+				ORDER BY c.name
 			");
 			foreach($qq AS $rrs) {
 				$coninfo = nicedateset($rrs['begin'],$rrs['end']);
@@ -128,8 +129,8 @@ if (count($q) > 0) {
 			$yearname = '';
 			$qrun = getrow("
 				SELECT YEAR(begin) AS year, begin, end, location, country
-				FROM scerun
-				WHERE sce_id = $game_id
+				FROM gamerun
+				WHERE game_id = $game_id
 				AND begin != '0000-00-00'
 				ORDER BY begin
 				LIMIT 1
@@ -169,23 +170,23 @@ $awarddata = [];
 // awards if your are an author (1), organizer (4), or designer (5)
 $q = getall("
 	(
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.begin, c.conset_id, e.title, COALESCE(f.label,e.title) AS title_translation
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, e.title, COALESCE(f.label,e.title) AS title_translation
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	INNER JOIN convent c ON b.convent_id = c.id
-	INNER JOIN asrel d ON a.sce_id = d.sce_id AND d.tit_id IN (1,4,5) AND d.aut_id = $person
-	INNER JOIN sce e ON a.sce_id = e.id
+	INNER JOIN convention c ON b.convention_id = c.id
+	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person
+	INNER JOIN game e ON a.game_id = e.id
 	LEFT JOIN alias f ON e.id = f.data_id AND f.category = 'sce' AND f.language = '" . LANG . "' AND f.visible = 1
 	)
 	UNION ALL
 	(
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.begin, c.conset_id, '' AS title, '' as title_translation
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, '' AS title, '' as title_translation
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	INNER JOIN convent c ON b.convent_id = c.id
+	INNER JOIN convention c ON b.convention_id = c.id
 	INNER JOIN award_nominee_entities d ON a.id = d.award_nominee_id AND category = 'aut' AND data_id = $person
 	)
-	ORDER BY year ASC, begin ASC, convent_id ASC, winner DESC, id ASC
+	ORDER BY year ASC, begin ASC, convention_id ASC, winner DESC, id ASC
 ");
 
 foreach($q AS $rs) {
@@ -210,13 +211,13 @@ foreach($q AS $rs) {
 	}
 
 	// $awardtext .=  " – " . $rs['conventname'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") . "<br>" . PHP_EOL;
-	$awarddata[$rs['convent_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
-	$awarddata[$rs['convent_id']]['conset_id'] = $rs['conset_id'];
-	$awarddata[$rs['convent_id']]['text'][] = $awardtext;
+	$awarddata[$rs['convention_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
+	$awarddata[$rs['convention_id']]['conset_id'] = $rs['conset_id'];
+	$awarddata[$rs['convention_id']]['text'][] = $awardtext;
 }
 $awardlist = "";
-foreach($awarddata AS $convent_id => $data) {
-	$con_award_url = "/awards?cid=" . $data['conset_id'] . "#con" . $convent_id;
+foreach($awarddata AS $convention_id => $data) {
+	$con_award_url = "/awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
 	$awardlist .= "<h4 class=\"awardconventhead\"><a href=\"" . $con_award_url . "\" class=\"con\" title=\"Alle priser for " . htmlspecialchars($data['name']) . "\">" . htmlspecialchars($data['name']) . "</a></h4>" . PHP_EOL;
 	$awardlist .= "<div>";
 	$awardlist .= implode("<br>" . PHP_EOL, $data['text']);
@@ -265,7 +266,7 @@ $t->assign('type',$this_type);
 
 $t->assign('id',$person);
 $t->assign('name',$r['name']);
-$t->assign('intern',$intern);
+$t->assign('internal',$internal);
 $t->assign('pic',$available_pic);
 $t->assign('ogimage', getimageifexists($this_id, $this_type_new) );
 $t->assign('alias',$aliaslist);

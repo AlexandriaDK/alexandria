@@ -12,7 +12,7 @@ $firstname = $_REQUEST['firstname'];
 $surname = $_REQUEST['surname'];
 $birth = $_REQUEST['birth'];
 $death = $_REQUEST['death'];
-$intern = $_REQUEST['intern'];
+$internal = $_REQUEST['internal'];
 
 $this_id = $person;
 
@@ -21,9 +21,9 @@ if ( $action ) {
 }
 
 if (!$action && $person) {
-	$r = getrow("SELECT firstname, surname, intern, birth, death FROM aut WHERE id = '$person'");
+	$r = getrow("SELECT firstname, surname, internal, birth, death FROM person WHERE id = '$person'");
 	if ($r) {
-		list($firstname,$surname,$intern,$birth,$death) = $r;
+		list($firstname,$surname,$internal,$birth,$death) = $r;
 	} else {
 		unset($person);
 	}
@@ -33,12 +33,12 @@ if ($action == "ret" && $person) {
 	if (!$firstname) {
 		$_SESSION['admin']['info'] = "You are missing a name!";
 	} else {
-		$q = "UPDATE aut SET " .
+		$q = "UPDATE person SET " .
 		     "firstname = '".dbesc($firstname)."', " .
 		     "surname = '".dbesc($surname)."', " .
 		     "birth = " . sqlifnull($birth) . ", " .
 		     "death = " . sqlifnull($death) . ", " .
-		     "intern = '".dbesc($intern)."' " .
+		     "internal = '".dbesc($internal)."' " .
 		     "WHERE id = '$person'";
 		$r = doquery($q);
 		if ($r) {
@@ -53,8 +53,8 @@ if ($action == "ret" && $person) {
 // Delete person
 if ($action == "Delete" && $person) { // Should check if $person id exists
 	$error = [];
-	if (getCount('asrel', $this_id, FALSE, $this_type) ) $error[] = "scenario";
-	if (getCount('acrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer roles)";
+	if (getCount('pgrel', $this_id, FALSE, $this_type) ) $error[] = "scenario";
+	if (getCount('pcrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer roles)";
 	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
 	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
 	if (getCount('alias', $this_id, TRUE, $this_type) ) $error[] = "alias";
@@ -65,9 +65,9 @@ if ($action == "Delete" && $person) { // Should check if $person id exists
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['person' => $person] );
 	} else {
-		$name = getone("SELECT CONCAT(firstname, ' ', surname) AS name FROM aut WHERE id = $person");
+		$name = getone("SELECT CONCAT(firstname, ' ', surname) AS name FROM person WHERE id = $person");
 
-		$q = "DELETE FROM aut WHERE id = $person";
+		$q = "DELETE FROM person WHERE id = $person";
 		$r = doquery($q);
 
 		if ($r) {
@@ -86,14 +86,14 @@ if ($action == "create") {
 		$surname = substr($firstname, $pos+1);
 		$firstname = substr($firstname, 0, $pos);
 	}
-	$rid = getone("SELECT id FROM aut WHERE firstname = '".dbesc($firstname)."' AND surname = '".dbesc($surname)."'");
+	$rid = getone("SELECT id FROM person WHERE firstname = '".dbesc($firstname)."' AND surname = '".dbesc($surname)."'");
 	if ($rid) {
 		$_SESSION['admin']['info'] = "A person with this name <a href=\"person.php?person=$rid\">already exists</a>";
 	} elseif (!$firstname) {
 		$_SESSION['admin']['info'] = "You are missing a name!";
 	} else {
-		$q = "INSERT INTO aut (id, firstname, surname, intern, birth, death) " .
-		     "VALUES (NULL, '".dbesc($firstname)."', '".dbesc($surname)."', '".dbesc($intern)."', " . sqlifnull($birth) . ", " . sqlifnull($death) .")";
+		$q = "INSERT INTO person (id, firstname, surname, internal, birth, death) " .
+		     "VALUES (NULL, '".dbesc($firstname)."', '".dbesc($surname)."', '".dbesc($internal)."', " . sqlifnull($birth) . ", " . sqlifnull($death) .")";
 		$r = doquery($q);
 		if ($r) {
 			$person = dbid();
@@ -129,7 +129,7 @@ if ($person) {
 
 tr("First name","firstname",$firstname, "", "", "text", TRUE);
 tr("Surname","surname",$surname);
-print "<tr valign=\"top\"><td>Internal note</td><td><textarea name=\"intern\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
+print "<tr valign=\"top\"><td>Internal note</td><td><textarea name=\"internal\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
 tr("Date of birth", "birth", $birth, "", "YYYY-MM-DD", (invaliddate($birth) ? "text" : "date") );
 tr("Date of death","death", $death, "", "YYYY-MM-DD", (invaliddate($death) ? "text" : "date") );
 
@@ -142,19 +142,19 @@ if ($person) {
 	print showpicture($person,$this_type);
 	print showtickets($person,$this_type);
 
-	$q = getall("SELECT sce.id, sce.title AS title, title.title AS auttitle FROM sce, asrel, title WHERE sce.id = asrel.sce_id AND asrel.tit_id = title.id AND asrel.aut_id = '$person' ORDER BY title.id, sce.title");
+	$q = getall("SELECT g.id, g.title AS title, title.title AS auttitle FROM game g, pgrel, title WHERE g.id = pgrel.game_id AND pgrel.title_id = title.id AND pgrel.person_id = '$person' ORDER BY title.id, g.title");
 	print "<tr valign=top><td>Games</td><td>\n";
         foreach($q AS list($id, $title, $auttitle) ) {
 		print "<a href=\"game.php?game=$id\">" . htmlspecialchars($title) . "</a> ($auttitle)<br>";
 	}
 	print "</td></tr>\n";
-	$q = getall("SELECT convent.id, convent.name, convent.year, acrel.role FROM acrel INNER JOIN convent ON acrel.convent_id = convent.id WHERE acrel.aut_id = '$person' ORDER BY convent.year, convent.begin, convent.end, convent.id");
+	$q = getall("SELECT c.id, c.name, c.year, pcrel.role FROM pcrel INNER JOIN convention c ON pcrel.convention_id = c.id WHERE pcrel.person_id = '$person' ORDER BY c.year, c.begin, c.end, c.id");
 	print "<tr valign=top><td>Organizer</td><td>\n";
         foreach($q AS list($id, $name, $year, $role) ) {
-		print "<a href=\"convent.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
+		print "<a href=\"c.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
 	}
 	print "</td></tr>\n";
-	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM contributor INNER JOIN article ON contributor.article_id = article.id INNER JOIN issue ON article.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE contributor.aut_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
+	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM contributor INNER JOIN article ON contributor.article_id = article.id INNER JOIN issue ON article.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE contributor.person_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");
 	print "<tr valign=top><td>Contributor<br>(magazine)</td><td>\n";
         foreach($q AS list($count, $issue_id, $title, $name) ) {
 		print "<a href=\"magazine.php?issue_id=$issue_id\">" . htmlspecialchars("$name, $title") . "</a> ($count)<br>";

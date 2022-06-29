@@ -119,7 +119,7 @@ if ($tag_id) {
 	print showtickets($tag_id,$this_type);
 
 // Games with this tag
-	$q = getall("SELECT sce.id, sce.title FROM sce INNER JOIN tags ON sce.id = tags.sce_id WHERE tag = '" . dbesc($tag) . "' ORDER BY sce.title, sce.id");
+	$q = getall("SELECT g.id, g.title FROM game g INNER JOIN tags ON g.id = tags.game_id WHERE tag = '" . dbesc($tag) . "' ORDER BY g.title, g.id");
 	print "<tr valign=top><td align=right>Contains the<br>following scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {
 		print "<a href=\"game.php?game=$id\">$title</a><br>";
@@ -127,7 +127,7 @@ if ($tag_id) {
 	if (!$q) print "[None]";
 	print "</td></tr>\n";
 } elseif ($tag) {
-	$q = getall("SELECT sce.id, sce.title FROM sce INNER JOIN tags ON sce.id = tags.sce_id WHERE tag = '" . dbesc($tag) . "' ORDER BY sce.title, sce.id");
+	$q = getall("SELECT g.id, g.title FROM game g INNER JOIN tags ON g.id = tags.game_id WHERE tag = '" . dbesc($tag) . "' ORDER BY g.title, g.id");
 	print "<tr valign=top><td align=right>Contains the<br>following scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {
 		print "<a href=\"game.php?game=$id\">$title</a><br>";

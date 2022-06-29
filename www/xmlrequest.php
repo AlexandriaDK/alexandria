@@ -8,15 +8,15 @@ $likesearch = likeesc((string) $_REQUEST['q']);
 if ($_REQUEST['action'] == "lookup") {
 	if ($_REQUEST['q']) {
 		$query = "
-			SELECT id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$likesearch%'
+			SELECT id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart FROM person WHERE CONCAT(firstname,' ',surname) LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, CONCAT(surname,', ',firstname) AS label, 'aut' AS type, 'person' AS linkpart FROM aut WHERE CONCAT(surname,', ',firstname) LIKE '$likesearch%'
+			SELECT id, CONCAT(surname,', ',firstname) AS label, 'aut' AS type, 'person' AS linkpart FROM person WHERE CONCAT(surname,', ',firstname) LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, title AS label, 'sce' AS type, 'scenarie' AS linkpart FROM sce WHERE title LIKE '$likesearch%'
+			SELECT id, title AS label, 'sce' AS type, 'scenarie' AS linkpart FROM person WHERE title LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, name AS label, 'sys' AS type, 'system' AS linkpart FROM sys WHERE name LIKE '$likesearch%'
+			SELECT id, name AS label, 'sys' AS type, 'system' AS linkpart FROM gamesystem WHERE name LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart FROM convent WHERE name LIKE '$likesearch%' OR CONCAT(name,' (',year,')') LIKE '$likesearch%' OR CONCAT(name,' ',year) LIKE '$likesearch%'
+			SELECT id, CONCAT(name,' (',year,')') AS label, 'convent' AS type, 'con' AS linkpart FROM convention WHERE name LIKE '$likesearch%' OR CONCAT(name,' (',year,')') LIKE '$likesearch%' OR CONCAT(name,' ',year) LIKE '$likesearch%'
 			ORDER BY label
 			
 		";
@@ -41,10 +41,9 @@ if ($_REQUEST['action'] == "lookup") {
 		
 		// achievements
 		if ($_REQUEST['category'] == 'sce') {
-			list($sys_id, $boardgame) = getrow("SELECT sys_id, boardgame FROM sce WHERE id = " . (int) $_REQUEST['data_id'] );
-			// list($fanboy_count) = getone("SELECT COUNT(*), user_id, GROUP_CONCAT(sce_id), asrel.aut_id FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
-			$fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN asrel ON userlog.data_id = asrel.sce_id AND asrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.aut_id != asrel.aut_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY asrel.aut_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
-			$polandsce = getcol("SELECT DISTINCT sce_id FROM scerun WHERE country = 'pl'");
+			list($gamesystem_id, $boardgame) = getrow("SELECT gamesystem_id, boardgame FROM game WHERE id = " . (int) $_REQUEST['data_id'] );
+			$fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN pgrel ON userlog.data_id = pgrel.game_id AND pgrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.person_id != pgrel.person_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY pgrel.person_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+			$polandsce = getcol("SELECT DISTINCT game_id FROM gamerun WHERE country = 'pl'");
 			if ($_REQUEST['type'] == 'read') {
 				award_achievement(3);
 			}	
@@ -57,7 +56,7 @@ if ($_REQUEST['action'] == "lookup") {
 			if ($boardgame == 1) {
 				award_achievement(87); // board game
 			}
-			if ($sys_id == 99) { // System: Hinterlandet
+			if ($gamesystem_id == 99) { // System: Hinterlandet
 				award_achievement(88); // play, read or GM Hinterlandet
 			}
 			if ($fanboy_count) {

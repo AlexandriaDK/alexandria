@@ -22,30 +22,30 @@ if ($r['id'] == 0) {
 	exit;
 }
 $q = getall("
-	SELECT sce.id, sce.title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, convent.cancelled, convent.country, aut_extra, COUNT(files.id) AS files, aut.id AS aut_id, CONCAT(aut.firstname,' ',aut.surname) AS autname, pre.id AS pre_id, pre.event_label, pre.iconfile, pre.textsymbol, COALESCE(alias.label, sce.title) AS title_translation
-	FROM sce
-	LEFT JOIN asrel ON asrel.sce_id = sce.id AND asrel.tit_id IN (1,5)
-	LEFT JOIN aut ON asrel.aut_id = aut.id
-	LEFT JOIN csrel ON csrel.sce_id = sce.id
-	LEFT JOIN convent ON csrel.convent_id = convent.id
-	LEFT JOIN pre ON csrel.pre_id = pre.id
-	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE sys_id = '$system'
-	GROUP BY sce.id, convent.id, aut.id
-	ORDER BY title_translation, convent.year, convent.begin, convent.end, aut.surname, aut.firstname
+	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, aut_extra, COUNT(files.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS pre_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
+	LEFT JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id IN (1,5)
+	LEFT JOIN person p ON pgrel.person_id = p.id
+	LEFT JOIN cgrel ON cgrel.g.id = g.id
+	LEFT JOIN convention c ON cgrel.convention_id = c.id
+	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id
+	LEFT JOIN files ON g.id = files.data_id AND files.category = 'g. AND files.downloadable = 1
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'g. AND alias.language = '" . LANG . "' AND alias.visible = 1
+	WHERE gamesystem_id = '$system'
+	GROUP BY g.id, c.id, p.id
+	ORDER BY title_translation, c.year, c.begin, c.end, p.surname, p.firstname
 ");
 
 $gamelist = [];
 
 if (count($q) > 0) {
 	foreach($q AS $rs) { // Put all together
-		$sce_id = $rs['id'];
+		$g.id = $rs['id'];
 		if ( ! isset($gamelist[$rs['id']]) ) {
 			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['aut_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
 		}
-		if ($rs['aut_id']) {
-			$gamelist[$rs['id']]['person'][$rs['aut_id']] = $rs['autname'];
+		if ($rs['person_id']) {
+			$gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];
 		}
 		if ($rs['con_id']) {
 			$gamelist[$rs['id']]['convent'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'pre_id' => $rs['pre_id'] ];
@@ -55,7 +55,7 @@ if (count($q) > 0) {
 	if ($_SESSION['user_id']) {
 		foreach ($gamelist AS $id => $game) {
 			foreach( ['read','gmed','played'] AS $type) {
-				$gamelist[$id]['userdata']['html'][$type] = getdynamicscehtml($id,$type,$userlog[$id][$type] ?? FALSE );
+				$gamelist[$id]['userdata']['html'][$type] = getdynamicg.tml($id,$type,$userlog[$id][$type] ?? FALSE );
 			}
 		}
 	}
@@ -67,9 +67,9 @@ if ( count( $alttitle ) == 1 ) {
 	$showname = $alttitle[0];
 	$aliaslist = getaliaslist($system, $this_type, $showname);
 	if ( $aliaslist ) {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>, " . $aliaslist;
+		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_g.original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>, " . $aliaslist;
 	} else {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>";
+		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_g.original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>";
 	}
 } else {
 	$aliaslist = getaliaslist($system, $this_type);

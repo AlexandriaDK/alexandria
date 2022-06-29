@@ -22,7 +22,7 @@
 		<p>
 		{$_user_in_alexandria}: 
 {if $useraut}
-		{$_yes|ucfirst} - <a href="/data?person={$useraut['aut_id']}" class="person">{$useraut['firstname']|escape} {$useraut['surname']|escape}</a>
+		{$_yes|ucfirst} - <a href="/data?person={$useraut['person_id']}" class="person">{$useraut['firstname']|escape} {$useraut['surname']|escape}</a>
 {else}
 		{$_no|ucfirst}
 {/if}

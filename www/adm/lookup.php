@@ -18,12 +18,12 @@ function resultexit( $data ) {
 }
 
 if ($type == 'sce' && $label != "") {
-	$num = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($label) . "'");
+	$num = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($label) . "'");
 	print $num;
 }
 
 if ($type == 'games' && $term !== "") {
-	$games = getcol("SELECT CONCAT(id, ' - ', title) AS label FROM sce WHERE title LIKE '" . dbesc($term) . "%'");
+	$games = getcol("SELECT CONCAT(id, ' - ', title) AS label FROM game WHERE title LIKE '" . dbesc($term) . "%'");
 	header("Content-Type: application/json");
 	print json_encode( $games );
 	exit;
@@ -43,9 +43,9 @@ if ($type == 'person' && $term !== "") {
 	$escapequery = dbesc($term);
 	$likeescapequery = likeesc($term);
 	$refs = getcol("
-		SELECT CONCAT(aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
+		SELECT CONCAT(person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
 		UNION
-		SELECT CONCAT(aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
+		SELECT CONCAT(person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
 	print json_encode( $refs );
@@ -56,7 +56,7 @@ if ($type == 'game' && $term !== "") {
 	$escapequery = dbesc($term);
 	$likeescapequery = likeesc($term);
 	$refs = getcol("
-		SELECT CONCAT(sce.id, ' - ', title) AS label FROM sce WHERE title LIKE '$likeescapequery%'
+		SELECT CONCAT(g.id, ' - ', title) AS label FROM game g WHERE title LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
 	print json_encode( $refs );
@@ -71,27 +71,27 @@ if ($type == 'articlereference' && $term !== "") {
 		UNION ALL
 		SELECT CONCAT('cs', conset.id, ' - ', name) AS label FROM conset WHERE name LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('c', convent.id, ' - ', convent.name, ' (', COALESCE(year,'?'), ')') AS label FROM convent
-		INNER JOIN conset ON convent.conset_id = conset.id
-		WHERE convent.name LIKE '$likeescapequery%'
-		OR CONCAT(convent.name,' (',year,')') LIKE '$likeescapequery%'
-		OR CONCAT(convent.name,' ',year) LIKE '$likeescapequery%'
-		OR CONCAT(conset.name, ' ', convent.year) LIKE '$likeescapequery%'
+		SELECT CONCAT('c', c.id, ' - ', c.name, ' (', COALESCE(year,'?'), ')') AS label FROM convention c
+		INNER JOIN conset ON c.conset_id = conset.id
+		WHERE c.name LIKE '$likeescapequery%'
+		OR CONCAT(c.name,' (',year,')') LIKE '$likeescapequery%'
+		OR CONCAT(c.name,' ',year) LIKE '$likeescapequery%'
+		OR CONCAT(conset.name, ' ', c.year) LIKE '$likeescapequery%'
 		OR (
 			'$escapequery' REGEXP ' [0-9][0-9]$' AND
-			CONCAT(conset.name, ' ', RIGHT(convent.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
+			CONCAT(conset.name, ' ', RIGHT(c.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
 			)
 		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM sys WHERE name LIKE '$likeescapequery%'
+		SELECT CONCAT('sys', sys.id, ' - ', name) AS label FROM gamesystem WHERE name LIKE '$likeescapequery%'
 		UNION ALL
 		SELECT CONCAT('m', magazine.id, ' - ', name) AS label FROM magazine WHERE name LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('g', sce.id, ' - ', title) AS label FROM sce WHERE title LIKE '$likeescapequery%'
+		SELECT CONCAT('g', g.id, ' - ', title) AS label FROM game g WHERE title LIKE '$likeescapequery%'
 		UNION ALL
-		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
+		SELECT CONCAT('p', person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
 		UNION
-		SELECT CONCAT('p', aut.id, ' - ', firstname,' ',surname) AS label FROM aut WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
+		SELECT CONCAT('p', person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
 	print json_encode( $refs );
@@ -111,11 +111,11 @@ if ( $type == 'addperson' && $label != "" ) {
 	$pos = strrpos($name, " ");
 	$surname = substr($name, $pos+1);
 	$firstname = substr($name, 0, $pos);
-	$rid = getone("SELECT id FROM aut WHERE firstname = '" . dbesc( $firstname ) . "' AND surname = '" . dbesc( $surname ) . "'");
+	$rid = getone("SELECT id FROM person WHERE firstname = '" . dbesc( $firstname ) . "' AND surname = '" . dbesc( $surname ) . "'");
 	if ( $rid ) {
 		resultexit( [ "new" => false, "error" => false, "id" => $rid, "msg" => "Existing user" ] );
 	}
-	$q = "INSERT INTO aut (firstname, surname) VALUES ('" . dbesc( $firstname ) . "', '" . dbesc( $surname ) . "')";
+	$q = "INSERT INTO person (firstname, surname) VALUES ('" . dbesc( $firstname ) . "', '" . dbesc( $surname ) . "')";
 	if ($r = doquery( $q ) ) {
 		$pid = dbid();
 		chlog($pid,'aut',"Person created");

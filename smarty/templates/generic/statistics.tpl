@@ -44,7 +44,7 @@
 	
 	<tr>	
 	<td class="statleft"><span class="stathead">{$_stat_largestcons|nl2br}</span><br>
-		{$stat_con_sce}
+		{$stat_con_game}
 	</td>
 
 	<td>
@@ -60,30 +60,30 @@
 
 	<tr>
 	<td class="statleft"><span class="stathead">{$_stat_mostprolific|nl2br}</span><br>
-		{$stat_aut_active}
+		{$stat_person_active}
 	</td>
 
 	<td><span class="stathead">{$_stat_mostexposed|nl2br}</span>
 		<br>
-		{$stat_aut_exp}
+		{$stat_person_exp}
 	</td>
 
 	<td class="statleft"><span class="stathead">{$_stat_cowritten|nl2br}</span><br>
-		{$stat_aut_workwith}
+		{$stat_person_workwith}
 	</td>
 	</tr>
 	
 	<tr>
 	<td><span class="stathead">{$_stat_mostsystem|nl2br}</span><br>
-		{$stat_sys_used}
+		{$stat_gamesystem_used}
 	</td>
 
 	<td class="statleft"><span class="stathead">{$_stat_mostcons|nl2br}</span><br>
-		{$stat_sce_replay}
+		{$stat_game_replay}
 	</td>
 
 	<td><span class="stathead">{$_stat_mostauthors|nl2br}</span><br>
-		{$stat_sce_auts}
+		{$stat_game_auts}
 	</td>
 	</tr>
 	

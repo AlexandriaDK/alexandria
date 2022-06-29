@@ -17,7 +17,7 @@ $end = $_REQUEST['end'];
 $place = trim( (string) $_REQUEST['place'] );
 $conset_id = $_REQUEST['conset_id'];
 $description = ltrim( (string) $_REQUEST['description']);
-$intern = $_REQUEST['intern'];
+$internal = $_REQUEST['internal'];
 $confirmed = $_REQUEST['confirmed'];
 $country = trim( (string) $_REQUEST['country'] );
 $cancelled = (int) (bool) $_REQUEST['cancelled'];
@@ -29,7 +29,7 @@ if ( $action ) {
 }
 
 if (!$action && $con) {
-	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.intern, a.confirmed, a.country, b.country AS cscountry, a.cancelled FROM convent a LEFT JOIN conset b ON a.conset_id = b.id WHERE a.id = $con");
+	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.internal, a.confirmed, a.country, b.country AS cscountry, a.cancelled FROM convent a LEFT JOIN conset b ON a.conset_id = b.id WHERE a.id = $con");
 	if ($row) {
 		$name = $row['name'];
 		$year = $row['year'];
@@ -38,7 +38,7 @@ if (!$action && $con) {
 		$place = $row['place'];
 		$conset_id = $row['conset_id'];
 		$description = $row['description'];
-		$intern = $row['intern'];
+		$internal = $row['internal'];
 		$confirmed = $row['confirmed'];
 		$country = $row['country'];
 		$cscountry = $row['cscountry'];
@@ -79,7 +79,7 @@ if ($action == "edit" && $con) {
 		     "end = " . sqlifnull($end) . ", " .
 		     "place = '".dbesc($place)."', " .
 		     "description = '".dbesc($description)."', ".
-		     "intern = '".dbesc($intern)."', ".
+		     "internal = '".dbesc($internal)."', ".
 		     "conset_id = '".dbesc($conset_id)."', " .
 		     "country = ".sqlifnull($country).", " .
 		     "cancelled = '".dbesc($cancelled)."', " .
@@ -133,7 +133,7 @@ if ($action == "create") {
 	} else {
 		$year = intval($year);
 		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
-		$q = "INSERT INTO convent (id, name, year, begin, end, place, conset_id, description, intern, confirmed, cancelled, country) " .
+		$q = "INSERT INTO convent (id, name, year, begin, end, place, conset_id, description, internal, confirmed, cancelled, country) " .
 		     "VALUES (NULL, ".
 			 "'".dbesc($name)."', ".
 			 "$year, ".
@@ -142,7 +142,7 @@ if ($action == "create") {
 			 "'".dbesc($place)."', ".
 			 "'".dbesc($conset_id)."', ".
 			 "'".dbesc($description)."', ".
-			 "'".dbesc($intern)."', ".
+			 "'".dbesc($internal)."', ".
 			 "'".dbesc($confirmed)."',".
 			 "'".dbesc($cancelled)."',".
 			 sqlifnull($country).
@@ -221,7 +221,7 @@ tr("Location","place",$place);
 print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size="50"></td><td id="countrynote">' . htmlspecialchars($cscountry ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
-print "<tr valign=top><td>Internal note</td><td><textarea name=intern cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note</td><td><textarea name=internal cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
 
 
 ## Con-serie ##
@@ -274,7 +274,7 @@ if ($con) {
 	print showpicture($con,$this_type);
 	print showtickets($con,$this_type);
 
-	$q = getall("SELECT sce.id, title, pre.id AS preid, event FROM sce, csrel, pre WHERE csrel.convent_id = '$con' AND csrel.sce_id = sce.id AND csrel.pre_id = pre.id ORDER BY title");
+	$q = getall("SELECT g.id, g.title, p.id AS preid, event FROM game g, cgrel, presentation p WHERE cgrel.convention_id = '$con' AND cgrel.game_id = g.id AND cgrel.presentation_id = p.id ORDER BY title");
 	print dberror();
 	print "<tr valign=top><td>Scenarios connected</td><td>\n";
 	

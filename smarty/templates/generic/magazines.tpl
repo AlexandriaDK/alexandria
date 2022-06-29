@@ -41,8 +41,8 @@
 		{$row.role|escape}
 	</td>
 	<td>
-		{if $row.aut_id}
-		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
+		{if $row.person_id}
+		<a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
 		{else}
 		{$row.aut_extra|escape|nl2br}
 		{/if}
@@ -72,8 +72,8 @@
 	<td colspan="2"></td>
 	{/if}
 	<td class="contributor">
-		{if $row.aut_id}
-		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
+		{if $row.person_id}
+		<a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
 		{else}
 		{$row.aut_extra|escape}
 		{/if}

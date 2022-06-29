@@ -79,12 +79,12 @@ $( function() {
 {/if}
 
 
-{if $aut_extra != ""}
+{if $person_extra != ""}
 	<h3 class="parttitle">
 		{$_sce_organizedby}
 	</h3>
 	<p class="indata">
-		{$aut_extra}
+		{$person_extra}
 	</p>
 {/if}
 

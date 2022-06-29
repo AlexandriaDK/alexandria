@@ -15,7 +15,7 @@ if ($data_id && $category) {
 	switch($category) {
 	case 'sce':
 		$cat = 'sce';
-		$q = "SELECT title FROM sce WHERE id = '$data_id'";
+		$q = "SELECT title FROM game WHERE id = '$data_id'";
 		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':

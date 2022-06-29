@@ -8,7 +8,7 @@ require "base.inc.php";
 
 $title = $_REQUEST['title'] ?? NULL;
 $persons = $_REQUEST['persons'] ?? NULL;
-$intern = "Autoimport from table live_arrangoer /pb";
+$internal = "Autoimport from table live_arrangoer /pb";
 
 if ($title) {
     $person_list = [];
@@ -16,14 +16,14 @@ if ($title) {
         $person_list[] = ['name' => $person, 'role_id' => 4];
     }
     $game = ['title' => $title, 'persons' => $person_list, 'sys_id' => 73];
-    $game_id = create_game($game, $intern);
+    $game_id = create_game($game, $internal);
     header("Location: game.php?game=" . $game_id);
     exit;
 }
 
 htmladmstart("Import live_arrangoer");
 
-$lives = getall("SELECT titel, GROUP_CONCAT(arrangoer) AS names FROM live_arrangoer WHERE titel NOT IN (SELECT title FROM sce WHERE sys_id = 73) GROUP BY titel ORDER BY titel");
+$lives = getall("SELECT titel, GROUP_CONCAT(arrangoer) AS names FROM live_arrangoer WHERE titel NOT IN (SELECT title FROM game WHERE sys_id = 73) GROUP BY titel ORDER BY titel");
 print '<h1>live_arrangoer import</h1>';
 
 print '

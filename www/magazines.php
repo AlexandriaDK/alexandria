@@ -49,21 +49,21 @@ if ($magazineid) {
 	// two lookups with and without page being NULL could be combined to one
 	// No need to create article tree with authors as subset. Template already handles that.
 	$colophon = getall("
-		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		SELECT article.id, contributor.person_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
-		LEFT JOIN aut ON contributor.aut_id = aut.id
-		LEFT JOIN sce ON article.sce_id = sce.id
+		LEFT JOIN person p ON contributor.person_id = p.id
+		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issueid
 		AND page IS NULL AND article.title = ''
 		ORDER BY article.id
 	");
 	$articles = getall("
-		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		SELECT article.id, contributor.person_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
-		LEFT JOIN aut ON contributor.aut_id = aut.id
-		LEFT JOIN sce ON article.sce_id = sce.id
+		LEFT JOIN person p ON contributor.person_id = p.id
+		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issueid
 		AND (page IS NOT NULL OR article.title != '')
 		ORDER BY page, article.id
@@ -132,7 +132,7 @@ $t->assign('id',$id);
 $t->assign('magazines',$magazines);
 $t->assign('magazinename',$magazinename);
 $t->assign('magazinedescription',$magazinedescription);
-$t->assign('intern',$internal);
+$t->assign('internal',$internal);
 $t->assign('issues',$issues);
 $t->assign('issue',$issue);
 $t->assign('colophon',$colophon);

@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 mb_internal_encoding("UTF-8");
 header("Permissions-Policy: interest-cohort=()");
 header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiinterfaceusingvisualbasic");
@@ -521,6 +525,7 @@ function getcategorydir($category) {
 
 function getcategorythumbdir($category) {
 	$thumbpaths = [
+		"aut" => "person",
 		"sce" => "scenarie",
 		"convent" => "convent",
 		"conset" => "conset",
@@ -578,10 +583,11 @@ function _textlink ($string, $absolute_url = 0) {
 		$data_id = $regs[2];
 		$text = $regs[3];
 		switch ($pref) {
-			case "c": $cat = "convent"; $class = "con"; $search = "con"; break;
-			case "cx": $cat = "convent"; $class = "con cancelled"; $search = "con"; break;
-			case "s": $cat = "sce"; $class = "scenarie"; $search = "sce"; break;
-			case "p": $cat = "aut"; $class = "person"; $search = "aut"; break;
+			case "c": $cat = "convention"; $class = "con"; $search = "con"; break;
+			case "cx": $cat = "convention"; $class = "con cancelled"; $search = "con"; break;
+			case "g":
+			case "s": $cat = "game"; $class = "scenarie"; $search = "sce"; break;
+			case "p": $cat = "person"; $class = "person"; $search = "aut"; break;
 			case "cs": $cat = "conset"; $class = "con"; $search = "conset"; break;
 			case "sys": $cat = "sys"; $class = "system"; $search = "sys"; break;
 			case "t": 
@@ -1297,21 +1303,21 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 		case 'person':
 		$value = "CONCAT(firstname,' ',surname)";
 		$fullcat = "Person";
-		$cat = 'aut';
+		$cat = 'person';
 		break;
 	
 		case 'sce':
 		case 'game':
 		$value = "title";
 		$fullcat = "Scenarie";
-		$cat = 'sce';
+		$cat = 'game';
 		break;
 
 		case 'convent':
 		case 'convention':
 		$value = "name";
 		$fullcat = "Con";
-		$cat = 'convent';
+		$cat = 'convention';
 		break;
 
 		case 'conset':
@@ -1323,7 +1329,7 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 		case 'system':
 		$value = "name";
 		$fullcat = "System";
-		$cat = 'sys';
+		$cat = 'gamesystem';
 		break;
 	
 		case 'tag':

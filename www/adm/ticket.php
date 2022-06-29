@@ -8,7 +8,7 @@ require "base.inc.php";
 $id = (int) $_REQUEST['id'];
 $display = (string) $_REQUEST['display'];
 $action = (string) $_REQUEST['action'];
-$intern = (string) $_REQUEST['intern'];
+$internal = (string) $_REQUEST['internal'];
 $status = (string) $_REQUEST['status'];
 $display = ($display == 'all' ? 'all' : '');
 
@@ -19,7 +19,7 @@ if ( $action ) {
 }
 
 if ($action == "update" && $id) {
-	$query = "UPDATE updates SET intern = '" . dbesc($intern) . "', status = '$status' WHERE id = $id";
+	$query = "UPDATE updates SET internal = '" . dbesc($internal) . "', status = '$status' WHERE id = $id";
 	doquery($query);
 	if ($_REQUEST['display'] == 'all') {
 		header("Location: ticket.php?id=$id&display=all");
@@ -76,7 +76,7 @@ print "</td><td>";
 
 // Show single entry
 if ($id) {
-	$row = getrow("SELECT id, data_id, category, title, description, submittime, user_name, user_email, intern, status FROM updates WHERE id = '$id'") or die(dberror());
+	$row = getrow("SELECT id, data_id, category, title, description, submittime, user_name, user_email, internal, status FROM updates WHERE id = '$id'") or die(dberror());
 	if ($row['data_id'] && $row['category']) {
 		$label = getlabel($row['category'],$row['data_id'],TRUE,$row['title']);
 	} else {
@@ -105,7 +105,7 @@ if ($id) {
 
 	print '<tr style="background: #ffeebb"><th colspan="4">Internal log:</th></tr>';
 
-	print '<tr><td colspan="4"><textarea name="intern" rows="6" cols="60">'.htmlspecialchars($row['intern']).'</textarea></td></tr>';
+	print '<tr><td colspan="4"><textarea name="internal" rows="6" cols="60">'.htmlspecialchars($row['internal']).'</textarea></td></tr>';
 
 	print "<tr><td colspan=\"4\">Status: <select name=\"status\">\n";
 	foreach ($options AS $option) {

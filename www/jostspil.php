@@ -6,7 +6,7 @@ require_once("smartfind.inc.php");
 function getjostid ($name) {
 	global $id_a, $id_b, $id_data;
 	$id_a = $id_b = $id_data = array();
-	category_search($name, "CONCAT(firstname,' ',surname)", "aut");
+	category_search($name, "CONCAT(firstname,' ',surname)", "person");
 	/*
 	print "<!--";
 	print "id_a:";
@@ -45,8 +45,8 @@ if (is_numeric($to)) {
 	if (!$to_id) $to_error = TRUE;
 }
 
-if ($from_id) $from = getentry('aut',$from_id);
-if ($to_id)	$to = getentry('aut',$to_id);
+if ($from_id) $from = getentry('person',$from_id);
+if ($to_id)	$to = getentry('person',$to_id);
 
 $mainperson = $from_id;
 $subperson = $to_id;
@@ -63,7 +63,7 @@ unset($qnums);
 
 if ($mainperson && $subperson) {
 
-	$person = getcolid("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut");
+	$person = getcolid("SELECT id, CONCAT(firstname,' ',surname) AS name FROM person");
 	
 	$title = getcolid("SELECT id, title FROM title");
 	
@@ -86,76 +86,39 @@ if ($mainperson && $subperson) {
 		
 			$inlist = join(",",$check[$i]);	
 			$notlist = join(",",$checked);
-		
-		// Old query
-		
-			$query_nocon = "
-				SELECT
-					COUNT(*) AS antal,
-					t2.aut_id AS link,
-					sce.id AS sceid,
-					sce.title,
-					COALESCE(alias.label, sce.title) AS title_translation,
-					t2.tit_id,
-					t1.aut_id AS rlink,
-					t1.tit_id AS rtit_id
-				FROM aut AS a1
-				INNER JOIN asrel t1 ON t1.aut_id = a1.id
-				INNER JOIN sce ON sce.id = t1.sce_id
-				INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
-				INNER JOIN aut a2 ON a2.id = t2.aut_id
-				LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-				WHERE
-					t1.aut_id IN ($inlist) AND
-					t2.aut_id NOT IN ($notlist) AND
-					t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
-				GROUP BY
-					link
-				ORDER BY
-					a1.firstname,
-					a1.surname,
-					a2.firstname,
-					a2.surname,
-					t1.tit_id,
-					t2.tit_id,
-					title_translation
-			";
-		
-		// New query including cons
-		
+
 			$query_con = "
 				SELECT
 					COUNT(*) AS antal,
-					t2.aut_id AS link,
-					sce.id AS sceid,
-					sce.title,
-					t2.tit_id,
-					t1.aut_id AS rlink,
-					t1.tit_id AS rtit_id,
-					convent.name,
-					convent.year
-				FROM
-					aut AS a1
-				INNER JOIN asrel t1 ON t1.aut_id = a1.id
-				INNER JOIN sce ON sce.id = t1.sce_id
-				INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
-				INNER JOIN aut a2 ON a2.id = t2.aut_id
-				LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
-				LEFT JOIN convent ON convent.id = csrel.convent_id
+					t2.person_id AS link,
+					g.id AS gameid,
+					g.title,
+					t2.title_id,
+					t1.person_id AS rlink,
+					t1.title_id AS rtitle_id,
+					c.name,
+					c.year
+				FROM person AS p1
+				INNER JOIN pgrel t1 ON t1.person_id = p1.id
+				INNER JOIN game g ON g.id = t1.game_id
+				INNER JOIN pgrel t2 ON t1.game_id = t2.game_id
+				INNER JOIN person p2 ON p2.id = t2.person_id
+				LEFT JOIN csrel ON g.id = csrel.game_id AND csrel.presentation_id = 1
+				LEFT JOIN convention c ON c.id = csrel.convent_id
 				WHERE
-					t1.aut_id IN ($inlist) AND
-					t2.aut_id NOT IN ($notlist) AND
-					t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
+					t1.person_id IN ($inlist) AND
+					t2.person_id NOT IN ($notlist) AND
+					t1.title_id IN (1,4,5) AND t2.title_id IN (1,4,5)
 				GROUP BY
 					link
 				ORDER BY
-					a1.firstname,
-					a1.surname,
-					a2.firstname,
-					a2.surname,
-					t1.tit_id,
-					t2.tit_id,
-					sce.title
+					p1.firstname,
+					p1.surname,
+					p2.firstname,
+					p2.surname,
+					t1.title_id,
+					t2.title_id,
+					g.title
 			";
 		
 		// set query
@@ -242,7 +205,7 @@ if ($mainperson && $subperson) {
 }
 
 // people
-$people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM aut ORDER BY firstname, surname");	
+$people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM person ORDER BY firstname, surname");	
 $json_people = json_encode($people);
 
 $t->assign('type','jostgame');

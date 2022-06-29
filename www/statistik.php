@@ -15,7 +15,7 @@ $larp_id = 73;
 
 /*
 Statistik over antal gange, en bestemt forfatter har haft et scenarie afviklet:
-SELECT COUNT(*) AS antal, aut.id, aut.name FROM aut, asrel, sce, csrel WHERE aut.id = asrel.aut_id AND asrel.sce_id = sce.id AND sce.id = csrel.sce_id AND asrel.tit_id = 1 GROUP BY aut.id ORDER BY antal DESC LIMIT 15;
+SELECT COUNT(*) AS antal, p.id, p.name FROM person p, pgrel, game, cgrel WHERE p.id = pgrel.person_id AND pgrel.game_id = g.id AND g.id = cgrel.game_id AND pgrel.title_id = 1 GROUP BY p.id ORDER BY antal DESC LIMIT 15;
 */
 
 $content = '';
@@ -28,24 +28,24 @@ $stat_aut_active = '
 Ryan-forslag:
 
 SELECT
-COUNT(DISTINCT sce.id) AS antal,
-aut.id,
-CONCAT(aut.firstname,' ',aut.surname) AS name
+COUNT(DISTINCT g.id) AS antal,
+p.id,
+CONCAT(p.firstname,' ',p.surname) AS name
 FROM
-aut,
-asrel,
-sce,
-csrel
+person p,
+pgrel,
+game,
+cgrel
 WHERE
-asrel.aut_id = aut.id
-AND asrel.tit_id = 1
-AND asrel.sce_id = sce.id
-AND sce.id = csrel.sce_id
-AND csrel.pre_id = 1
+pgrel.person_id = p.id
+AND pgrel.title_id = 1
+AND pgrel.game_id = g.id
+AND g.id = cgrel.game_id
+AND cgrel.presentation_id = 1
 GROUP BY
-asrel.aut_id
+pgrel.person_id
 HAVING
-aut.id = 1
+p.id = 1
 ORDER BY
 antal DESC,
 name
@@ -56,18 +56,18 @@ name
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
-		aut.id,
-		CONCAT(aut.firstname,' ',aut.surname) AS name
+		p.id,
+		CONCAT(p.firstname,' ',p.surname) AS name
 	FROM
-		aut,
-		asrel,
-		sce
+		person p,
+		pgrel,
+		game g
 	WHERE
-		asrel.aut_id = aut.id
-		AND asrel.tit_id = 1
-		AND asrel.sce_id = sce.id
+		pgrel.person_id = p.id
+		AND pgrel.title_id = 1
+		AND pgrel.game_id = g.id
 	GROUP BY
-		asrel.aut_id
+		pgrel.game_id
 	HAVING
 		antal >= $act_person
 	ORDER BY
@@ -92,21 +92,21 @@ $stat_aut_exp = '<table class="tablestat">';
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
-		aut.id,
-		CONCAT(aut.firstname,' ',aut.surname) AS name
+		p.id,
+		CONCAT(p.firstname,' ',p.surname) AS name
 	FROM
-		aut,
-		asrel,
-		sce,
-		csrel
+		person p,
+		pgrel,
+		game g,
+		cgrel
 	WHERE
-		aut.id = asrel.aut_id AND
-		asrel.sce_id = sce.id AND
-		sce.id = csrel.sce_id AND
-		asrel.tit_id = 1 AND
-		csrel.pre_id IN (1,2,3,42)
+		p.id = pgrel.person_id AND
+		pgrel.game_id = g.id AND
+		g.id = cgrel.game_id AND
+		pgrel.title_id = 1 AND
+		cgrel.presentation_id IN (1,2,3,42)
 	GROUP BY
-		aut.id
+		p.id
 	HAVING 
 		antal >= $exposure
 	ORDER BY
@@ -132,21 +132,21 @@ $stat_aut_workwith = '
 // Authors with most cooperation with other authors
 $r = getall("
 	SELECT
-		COUNT(DISTINCT t2.aut_id) AS antal,
+		COUNT(DISTINCT t2.person_id) AS antal,
 		a1.id,
 		CONCAT(a1.firstname,' ',a1.surname) AS name
 	FROM
-		asrel AS t1,
-		asrel AS t2,
-		aut AS a1
+		pgrel AS t1,
+		pgrel AS t2,
+		person AS a1
 	WHERE
-		t1.sce_id = t2.sce_id AND
-		t1.aut_id != t2.aut_id AND
-		t1.aut_id = a1.id AND
-		t1.tit_id = 1 AND
-		t2.tit_id = 1
+		t1.game_id = t2.game_id AND
+		t1.person_id != t2.person_id AND
+		t1.person_id = a1.id AND
+		t1.title_id = 1 AND
+		t2.title_id = 1
 	GROUP BY 
-		t1.aut_id
+		t1.person_id
 	HAVING
 		antal >= $cooperation
 	ORDER BY
@@ -170,16 +170,16 @@ $stat_sys_used = '
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
-		sys.id,
-		sys.name
+		gs.id,
+		gs.name
 	FROM
-		sce,
-		sys
+		game g,
+		gamesystem gs
 	WHERE
-		sce.sys_id = sys.id AND
-		sys.id != '$larp_id'
+		g.gamesystem_id = gs.id AND
+		gs.id != '$larp_id'
 	GROUP BY
-		sys.id
+		gs.id
 	HAVING
 		antal >= $usedsystem
 	ORDER BY
@@ -201,17 +201,17 @@ $stat_sce_replay = '
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
-		sce.id,
-		sce.title AS origtitle,
-		COALESCE(alias.label, sce.title) AS title_translation
+		g.id,
+		g.title AS origtitle,
+		COALESCE(alias.label, g.title) AS title_translation
 	FROM
-		sce
-	INNER JOIN csrel ON sce.id = csrel.sce_id
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		game g
+	INNER JOIN cgrel ON g.id = cgrel.game_id
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE
-		csrel.pre_id IN (1,2,3,42)
+		cgrel.presentation_id IN (1,2,3,42)
 	GROUP BY
-		sce.id
+		g.id
 	HAVING
 		antal >= $mostcons
 	ORDER BY
@@ -231,12 +231,12 @@ $stat_sce_auts = '
 ';
 
 // We are currently disregarding LARP
-$r = getall("SELECT COUNT(*) AS antal, sce.id, sce.title AS origtitle, COALESCE(alias.label, sce.title) AS title_translation
-	FROM sce
-	INNER JOIN asrel ON asrel.sce_id = sce.id AND asrel.tit_id = 1
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE sce.sys_id != '$larp_id'
-	GROUP BY asrel.sce_id
+$r = getall("SELECT COUNT(*) AS antal, g.id, g.title AS origtitle, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
+	INNER JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id = 1
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	WHERE g.sys_id != '$larp_id'
+	GROUP BY pgrel.game_id
 	HAVING antal >= $mostauthors
 	ORDER BY antal DESC, title
 ");
@@ -257,29 +257,29 @@ $stat_con_sce = '
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
-		convent.id,
-		convent.name,
-		convent.year,
-		convent.begin,
-		convent.end,
-		convent.cancelled
+		c.id,
+		c.name,
+		c.year,
+		c.begin,
+		c.end,
+		c.cancelled
 	FROM
 		convent,
-		csrel,
-		sce
+		cgrel,
+		game g
 	WHERE
-		convent.id = csrel.convent_id AND
-		csrel.sce_id = sce.id AND
-		csrel.pre_id IN (1,2,3,42) AND
-		sce.boardgame = 0
+		c.id = cgrel.convent_id AND
+		cgrel.game_id = g.id AND
+		cgrel.presentation_id IN (1,2,3,42) AND
+		g.boardgame = 0
 	GROUP BY
-		convent.id
+		c.id
 	HAVING
 		antal >= $mostscenarios
 	ORDER BY
 		antal DESC,
-		convent.year,
-		convent.name
+		c.year,
+		c.name
 ");
 $placering = 0;
 $lastantal = "";
@@ -310,22 +310,22 @@ foreach($r AS $row) {
 $r = getall("
 	SELECT
 		COUNT(*) AS antal,
-		convent.year 
+		c.year 
 	FROM
-		csrel,
-		convent
+		cgrel,
+		convent c
 	WHERE
-		csrel.pre_id = 1 AND
-		csrel.convent_id = convent.id
+		cgrel.presentation_id = 1 AND
+		cgrel.convent_id = c.id
 	GROUP BY
-		convent.year
+		c.year
 ");
 foreach($r AS $row) {
-	$yearstat[$row['year']]['sce'] = $row['antal'];
+	$yearstat[$row['year']]['game'] = $row['antal'];
 }
 
 foreach($yearstat AS $year => $row) {
-	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['sce'] ?? 0 ];
+	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['game'] ?? 0 ];
 }
 
 // Countries, cons
@@ -344,7 +344,7 @@ foreach ($r AS $row) {
 $runcountry = [];
 $place = 0;
 $lastcount = 0;
-$r = getall("SELECT COUNT(*) AS count, country FROM scerun WHERE country IS NOT NULL AND country != '' GROUP BY country ORDER BY count DESC, country");
+$r = getall("SELECT COUNT(*) AS count, country FROM gamerun WHERE country IS NOT NULL AND country != '' GROUP BY country ORDER BY count DESC, country");
 foreach ($r AS $row) {
 	$place++;
 	$placeout = ($lastcount != $row['count'] ? "$place." : "");

@@ -20,7 +20,7 @@ if ( $action ) {
 
 
 if (!$action && $system) {
-	list($id, $name, $description) = getrow("SELECT id, name, description FROM sys WHERE id = '$system'");
+	list($id, $name, $description) = getrow("SELECT id, name, description FROM gamesystem WHERE id = '$system'");
 }
 
 if ($action == "edit" && $system) {
@@ -28,7 +28,7 @@ if ($action == "edit" && $system) {
 	if (!$name) {
 		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
-		$q = "UPDATE sys SET " .
+		$q = "UPDATE gamesystem SET " .
 		     "name = '".dbesc($name)."', " .
 		     "description = '".dbesc($description)."' ".
 		     "WHERE id = '$system'";
@@ -43,14 +43,14 @@ if ($action == "edit" && $system) {
 
 if ($action == "create") {
 	$name = trim($name);
-	$rid = getone("SELECT id FROM sys WHERE name = '$name'");
+	$rid = getone("SELECT id FROM gamesystem WHERE name = '$name'");
 	if ($rid) {
 		$_SESSION['admin']['info'] = "A system with this name already exists!";
 		$_SESSION['admin']['link'] = "system.php?system=" . $rid;
 	} elseif (!$name) {
 		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
-		$q = "INSERT INTO sys (name, description) " .
+		$q = "INSERT INTO gamesystem (name, description) " .
 		     "VALUES ( ".
 			 "'".dbesc($name)."', ".
 			 "'".dbesc($description)."' ".
@@ -67,15 +67,15 @@ if ($action == "create") {
 
 if ($action == "Delete" && $system) {
 	$error = [];
-	if (getCount('sce', $this_id, FALSE, $this_type_new) ) $error[] = "game";
+	if (getCount('game', $this_id, FALSE, $this_type_new) ) $error[] = "game";
 	if (getCount('article_reference', $this_id, TRUE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
 		rexit($this_type, ['system' => $system] );
 	} else {
-		$name = getone("SELECT name FROM sys WHERE id = $this_id");
+		$name = getone("SELECT name FROM gamesystem WHERE id = $this_id");
 
-		$q = "DELETE FROM sys WHERE id = $system";
+		$q = "DELETE FROM gamesystem WHERE id = $system";
 		$r = doquery($q);
 
 		if ($r) {
@@ -121,7 +121,7 @@ if ($system) {
 	print showpicture($system,$this_type);
 	print showtickets($system,$this_type);
 
-	$q = getall("SELECT id, title FROM sce WHERE sys_id = '$system' ORDER BY title, id");
+	$q = getall("SELECT id, title FROM game WHERE gamesystem_id = '$system' ORDER BY title, id");
 	print "<tr valign=top><td align=right>Contains the following<br>scenarios</td><td>\n";
 	foreach($q AS list($id, $title) ) {
 		print "<a href=\"game.php?game=$id\">$title</a><br>";

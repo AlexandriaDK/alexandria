@@ -31,9 +31,9 @@ $languages = ['da','en']
 <body>
 <?php
 $aliases = getall("
-	SELECT sce.id, sce.title, alias.id AS aliasid, alias.label, alias.language
-	FROM sce
-	INNER JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce'
+	SELECT g.id, g.title, alias.id AS aliasid, alias.label, alias.language
+	FROM game g
+	INNER JOIN alias ON g.id = alias.data_id AND alias.category = 'sce'
 	WHERE alias.visible = 1
 ");
 

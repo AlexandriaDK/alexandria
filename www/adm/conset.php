@@ -10,7 +10,7 @@ $conset = (int) $_REQUEST['conset'];
 $action = (string) $_REQUEST['action'];
 $name = (string) $_REQUEST['name'];
 $description = (string) $_REQUEST['description'];
-$intern = (string) $_REQUEST['intern'];
+$internal = (string) $_REQUEST['internal'];
 $country = (string) $_REQUEST['country'];
 $countryname = getCountryName( $country );
 
@@ -19,11 +19,11 @@ if ( $action ) {
 }
 
 if (!$action && $conset) {
-	$row = getrow("SELECT id, name, description, intern, country FROM conset WHERE id = '$conset'");
+	$row = getrow("SELECT id, name, description, internal, country FROM conset WHERE id = '$conset'");
 	if ($row) {
 		$name = $row['name'];
 		$description = $row['description'];
-		$intern = $row['intern'];
+		$internal = $row['internal'];
 		$country = $row['country'];
 	} else {
 		unset($conset);
@@ -37,7 +37,7 @@ if ($action == "edit" && $conset) {
 		$q = "UPDATE conset SET " .
 		     "name = '" . dbesc($name) . "', " .
 		     "description = '" . dbesc($description) . "', " .
-		     "intern = '" . dbesc($intern) . "', " .
+		     "internal = '" . dbesc($internal) . "', " .
 		     "country = " . sqlifnull($country) . " " .
 		     "WHERE id = '$conset'";
 		$r = doquery($q);
@@ -53,8 +53,8 @@ if ($action == "create") {
 	if (!$name) {
 		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
-		$q = "INSERT INTO conset (id, name, description, intern, country) " .
-		     "VALUES (NULL, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($intern) . "', " . sqlifnull($country) . ")";
+		$q = "INSERT INTO conset (id, name, description, internal, country) " .
+		     "VALUES (NULL, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($internal) . "', " . sqlifnull($country) . ")";
 		$r = doquery($q);
 		if ($r) {
 			$conset = dbid();
@@ -92,7 +92,7 @@ $countryname = getCountryName( $country );
 
 tr("Name","name",$name);
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
-print "<tr valign=top><td>Internal note</td><td><textarea name=\"intern\" cols=\"60\" rows=\"6\">\n" . stripslashes(htmlspecialchars($intern)) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note</td><td><textarea name=\"internal\" cols=\"60\" rows=\"6\">\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
 
 print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size="10"></td><td id="countrynote">' . htmlspecialchars( $countryname ) . '</td></tr>';
 

@@ -8,10 +8,10 @@ if ($_SESSION['user_id']) {
 }
 
 $result = getall("
-	SELECT convent.id, convent.name, convent.conset_id AS setid, conset.name AS setname, convent.year, convent.begin, convent.end, convent.cancelled, COALESCE(convent.country, conset.country) AS country
-	FROM convent
-	LEFT JOIN conset ON convent.conset_id = conset.id
-	ORDER BY conset.id = 40, conset.name, convent.year, convent.begin, convent.end, name
+	SELECT c.id, c.name, c.conset_id AS setid, conset.name AS setname, c.year, c.begin, c.end, c.cancelled, COALESCE(c.country, conset.country) AS country
+	FROM convention c
+	LEFT JOIN conset ON c.conset_id = conset.id
+	ORDER BY conset.id = 40, conset.name, c.year, c.begin, c.end, name
 ");
 
 $conset = "";

@@ -58,7 +58,7 @@ function splitpdf($path, $pages, $category, $data_id) { // requires pdftk
 			SELECT s.title
 			FROM issue i
 			INNER JOIN article a ON i.id = a.issue_id  
-			INNER JOIN sce s ON a.sce_id = s.id
+			INNER JOIN game s ON a.game_id = s.id
 			WHERE i.id = $data_id
 			AND a.page = $firstpage
 		");
@@ -293,12 +293,12 @@ if ($data_id && $category) {
 	switch($category) {
 	case 'aut':
 		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
+		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 		$mainlink = "person.php?person=$data_id";
 		break;
 	case 'sce':
 		$cat = 'sce';
-		$q = "SELECT title FROM sce WHERE id = '$data_id'";
+		$q = "SELECT title FROM game WHERE id = '$data_id'";
 		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
@@ -328,7 +328,7 @@ if ($data_id && $category) {
 		break;
 	default:
 		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
+		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 		$mainlink = "person.php?person=$data_id";
 	}
 	$title = getone($q);
@@ -497,7 +497,7 @@ if ($data_id && $category) {
 			INNER JOIN issue i ON m.id = i.magazine_id
 			INNER JOIN article a ON i.id = a.issue_id 
 			INNER JOIN files f ON i.id = f.data_id AND f.category = 'issue'
-			WHERE a.sce_id = $data_id
+			WHERE a.game_id = $data_id
 		");
 		// https://localhost/en/adm/files.php?category=issue&data_id=1&action=splitpdf&filename=no7web.pdf&pages=2-3,6
 		if ($magazineprint) {

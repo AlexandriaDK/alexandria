@@ -1,5 +1,5 @@
 <?php
-// Denne side scraper intern igennem efter spiller- og spilleder-antal
+// Denne side scraper internal igennem efter spiller- og spilleder-antal
 $admonly = TRUE;
 require "adm.inc.php";
 require "base.inc.php";
@@ -19,16 +19,16 @@ if ($scenarie && $auto_players_min) {
 	if (strpos($auto_players_min, '-') ) {
 		list($auto_players_min, $auto_players_max) = explode('-', $auto_players_min);
 	}
-	doquery("UPDATE sce SET players_min = $auto_players_min, players_max = $auto_players_max WHERE id = $scenarie");
+	doquery("UPDATE game SET players_min = $auto_players_min, players_max = $auto_players_max WHERE id = $scenarie");
 	doquery("INSERT INTO log (data_id, category, time, user, user_id, ip, note) VALUES ($scenarie, 'sce', NOW(), 'Peter Brodersen', 4, '77.66.4.55', 'GM-antal oprettet')");
 	header("Location: game.php?game=$scenarie");
 	exit;
 }
 htmladmstart("Participants scrape");
 
-$data = getall("SELECT id, title, intern FROM sce WHERE intern REGEXP 'spiller|player|participant|deltager|antal' AND players_min IS NULL");
+$data = getall("SELECT id, title, internal FROM game WHERE internal REGEXP 'spiller|player|participant|deltager|antal' AND players_min IS NULL");
 foreach($data AS $sce) {
-	$lines = explode("\n",$sce['intern']);
+	$lines = explode("\n",$sce['internal']);
 	$id = $sce['id'];
 	$p = 0;
 	print "<p>";

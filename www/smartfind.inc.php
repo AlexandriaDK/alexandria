@@ -12,32 +12,32 @@ function log_search($find, $found="") {
 
 function category_search ($find, $searchfield, $category) {
 	global $match, $id_data, $link_a, $link_b, $id_a, $id_b;
-	$categoryfind = ($category == 'conventwithyear' ? 'convent' : $category);
+	$categoryfind = ($category == 'conventionwithyear' ? 'convention' : $category);
 	$q = getall("SELECT id, $searchfield FROM $categoryfind");
 	foreach($q AS $row) $id_data[$category][$row[0]] = $row[1];
 	
 	switch($category) {
-		case 'aut':
+		case 'person':
 			$linkurl = URLAUT;
-			$getfunction = "getautidbyname";
+			$getfunction = "getpersonidbyname";
 			break;
 
-		case 'sce':
+		case 'game':
 			$linkurl = URLSCE;
-			$getfunction = "getsceidbytitle";
+			$getfunction = "getgameidbytitle";
 			break;
 
-		case 'sys':
+		case 'gamesystem':
 			$linkurl = URLSYS;
 			$getfunction = "getsysidbyname";
 			break;
 
-		case 'convent':
+		case 'convention':
 			$linkurl = URLCON;
 			$getfunction = "getconidbyname";
 			break;
 
-		case 'conventwithyear':
+		case 'conventionwithyear':
 			$linkurl = URLCON;
 			$getfunction = "getconidbynameandyear";
 			break;
@@ -49,7 +49,7 @@ function category_search ($find, $searchfield, $category) {
 	
 		default:
 			$linkurl = URLAUT;
-			$getfunction = "getautidbyname";
+			$getfunction = "getpersonidbyname";
 	}
 
 	list($a,$b,$c,$d) = $getfunction($find);
@@ -192,11 +192,11 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = ""
 	];
 }
 
-function getsceidbytitle($find) {
+function getgameidbytitle($find) {
 	return getalphaidbybeta ($find, "sce", "title");
 }
 
-function getautidbyname($find) {
+function getpersonidbyname($find) {
 	return getalphaidbybeta ($find, "aut", "CONCAT(firstname,' ',surname)");
 }
 
@@ -215,14 +215,14 @@ function getconidbynameandyear($find) {
 	$match = [];
 	$match['a'] = $match['b'] = $match['c'] = [];
 	$query = "
-		SELECT convent.id FROM convent
-		INNER JOIN conset ON convent.conset_id = conset.id
-		WHERE CONCAT(convent.name,' (',year,')') LIKE '$likeescapequery%'
-		OR CONCAT(convent.name,' ',year) LIKE '$likeescapequery%'
-		OR CONCAT(conset.name, ' ', convent.year) LIKE '$likeescapequery%'
+		SELECT c.id FROM convention c
+		INNER JOIN conset ON c.conset_id = conset.id
+		WHERE CONCAT(c.name,' (',year,')') LIKE '$likeescapequery%'
+		OR CONCAT(c.name,' ',year) LIKE '$likeescapequery%'
+		OR CONCAT(conset.name, ' ', c.year) LIKE '$likeescapequery%'
 		OR (
 			'$escapequery' REGEXP ' [0-9][0-9]$' AND
-			CONCAT(conset.name, ' ', RIGHT(convent.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
+			CONCAT(conset.name, ' ', RIGHT(c.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
 		)
 		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
 	";

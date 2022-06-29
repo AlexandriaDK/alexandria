@@ -249,21 +249,21 @@ if ($find) {
 	$match = $link_a = $link_b = [];
 	$id_data = [];
 
-	if (!$cat || $cat == "aut" ) {
-		category_search($find, "CONCAT(firstname,' ',surname)", "aut");
+	if (!$cat || $cat == "person" ) {
+		category_search($find, "CONCAT(firstname,' ',surname)", "person");
 	}
 
-	if (!$cat || $cat == "sce" ) {
-		category_search($find, "title", "sce");
+	if (!$cat || $cat == "game" ) {
+		category_search($find, "title", "game");
 	}
 
 	if (!$cat || $cat == "con" ) {
-		category_search($find, "CONCAT(name, ' (', year, ')') ", "convent");
-		category_search($find, "name", "conventwithyear");
+		category_search($find, "CONCAT(name, ' (', year, ')') ", "convention");
+		category_search($find, "name", "conventionwithyear");
 	}
 
 	if (!$cat || $cat == "sys" ) {
-		category_search($find, "name", "sys");
+		category_search($find, "name", "gamesystem");
 	}
 
 	if (!$cat || $cat == "magazine" ) {
@@ -298,21 +298,21 @@ if ($find) {
 } elseif ($_REQUEST['search_type'] == 'findspec') {
 	$where = [];
 	if ($search_title) { // pre-search for titles
-		category_search($search_title, "title", "sce");
+		category_search($search_title, "title", "game");
 	} else { // set titles
 		$id_data = [];
-		foreach(getall("SELECT id, title FROM sce") AS $row) {
-			$id_data['sce'][$row['id']] = $row['title'];
+		foreach(getall("SELECT id, title FROM game") AS $row) {
+			$id_data['game'][$row['id']] = $row['title'];
 		}
 	}
 	
 	if (!$search_title && !$search_description && !$search_system && !$search_genre && !$search_conset && !$search_download && ! $search_filelanguage && !$search_players && !$search_no_gm && !$search_boardgames) { // searched for nothing - blank results
-		$match['sce'] = [];
-	} elseif ($search_title && !($match['sce']) ) { // title searched, but no match
-		$match['sce'] = [];
+		$match['game'] = [];
+	} elseif ($search_title && !($match['game']) ) { // title searched, but no match
+		$match['game'] = [];
 	} else {
-		if ($match['sce']) { // found specific titles
-			$where[] = "id IN (".implode(",",$match['sce']).")";
+		if ($match['game']) { // found specific titles
+			$where[] = "id IN (".implode(",",$match['game']).")";
 		}
 		if ($search_system) {
 			$where[] = "sys_id = '".(int)$search_system."'";
@@ -329,60 +329,60 @@ if ($find) {
 		if ($search_boardgames) {
 			$where[] = "boardgame = 1";
 		}
-		$q = "SELECT id FROM sce";
+		$q = "SELECT id FROM game";
 		if ($where) $q .= " WHERE ".implode(" AND ",$where);
-		$match['sce'] = getcol($q);
+		$match['game'] = getcol($q);
 
 		// search found, check for description
-		if ($search_description && $match['sce']) {
+		if ($search_description && $match['game']) {
 			$q = "
-				SELECT sce.id
-				FROM sce
-				INNER JOIN game_description ON sce.id = game_description.game_id
+				SELECT game.id
+				FROM game
+				INNER JOIN game_description ON game.id = game_description.game_id
 				WHERE game_description.description LIKE '%".likeesc($search_description)."%'
-				AND sce.id IN (".implode(",",$match['sce']).")
-				GROUP BY sce.id
+				AND game.id IN (".implode(",",$match['game']).")
+				GROUP BY game.id
 			";
-			$match['sce'] = getcol($q);
+			$match['game'] = getcol($q);
 		}
 
 		// search found, check for conset
-		if ($search_conset && $match['sce']) {
+		if ($search_conset && $match['game']) {
 			$q = "
-				SELECT sce.id
-				FROM sce, csrel, convent
-				WHERE sce.id = csrel.sce_id
-				AND csrel.convent_id = convent.id
+				SELECT game.id
+				FROM game, cgrel, convent
+				WHERE game.id = cgrel.game_id
+				AND cgrel.convent_id = convent.id
 				AND convent.conset_id = '$search_conset'
-				AND sce.id IN (".implode(",",$match['sce']).")
-				GROUP BY sce.id
+				AND game.id IN (".implode(",",$match['game']).")
+				GROUP BY game.id
 			";
-			$match['sce'] = getcol($q);
+			$match['game'] = getcol($q);
 		}
 
 		// search found, check for genres
-		if ($search_genre && $match['sce']) {
+		if ($search_genre && $match['game']) {
 			$num_genre = count($search_genre);
 			$q = "
-				SELECT sce.id
-				FROM sce, gsrel
-				WHERE sce.id = gsrel.sce_id
-				AND gsrel.gen_id IN ('".implode("','",$search_genre)."')
-				AND sce.id IN (".implode(",",$match['sce']).")
-				GROUP BY sce.id
+				SELECT game.id
+				FROM game, ggrel
+				WHERE game.id = ggrel.game_id
+				AND ggrel.gen_id IN ('".implode("','",$search_genre)."')
+				AND game.id IN (".implode(",",$match['game']).")
+				GROUP BY game.id
 				HAVING COUNT(*) = $num_genre
 			";
-			$match['sce'] = getcol($q);
+			$match['game'] = getcol($q);
 		}
 
 		// search found, check for download
-		if ( ( $search_download || $search_filelanguage ) && $match['sce'] ) {
+		if ( ( $search_download || $search_filelanguage ) && $match['game'] ) {
 			$q = "
 				SELECT DISTINCT data_id
 				FROM files
-				WHERE category = 'sce'
+				WHERE category = 'game'
 				AND downloadable = 1
-				AND data_id IN (".implode(",",$match['sce']).")
+				AND data_id IN (".implode(",",$match['game']).")
 			";
 			if ( $search_filelanguage ) {
 				$languages = [];
@@ -392,41 +392,41 @@ if ($find) {
 				$q .= " AND language IN (" . implode(',', $languages) . ")";
 			}
 
-			$match['sce'] = getcol($q);
+			$match['game'] = getcol($q);
 		}
 
 	}
 
 } elseif ($search_tag) {
 	$q = "
-		SELECT DISTINCT sce_id
+		SELECT DISTINCT game_id
 		FROM tags
 		WHERE tag = '" . dbesc($search_tag) . "'
 	";
-	$match['sce'] = getcol($q);
+	$match['game'] = getcol($q);
 
 	$id_data = [];
 	foreach(getall("
-			SELECT sce.id, sce.title FROM sce INNER JOIN tags ON sce.id = tags.sce_id
+			SELECT game.id, game.title FROM game INNER JOIN tags ON game.id = tags.game_id
 			WHERE tag = '" . dbesc($search_tag) . "'
 		") AS $row) {
-		$id_data['sce'][$row['id']] = $row['title'];
+		$id_data['game'][$row['id']] = $row['title'];
 	}
 }
 
 $out = "";
 
 if ($debug) {
-	print "<h2>Klasse 1-links:</h2>".implode("<br>",$link_a);
-	print "<h2>Klasse 2-links:</h2>".implode("<br>",$link_b);
-	print "<h2>Alle links:</h2>".implode("<br>",$match['aut']);
+	print "<h2>Class 1 links:</h2>".implode("<br>",$link_a);
+	print "<h2>Class 2 links:</h2>".implode("<br>",$link_b);
+	print "<h2>All links:</h2>".implode("<br>",$match['person']);
 }
 
 // Smarty
-$t->assign('find_aut', display_result($match['aut'], "person", "person", "aut") );
-$t->assign('find_sce', display_result($match['sce'], "scenarie", "scenarie", "sce") );
-$t->assign('find_convent', display_result($match['convent'], "con", "con", "convent") );
-$t->assign('find_sys', display_result($match['sys'], "system", "system", "sys") );
+$t->assign('find_person', display_result($match['person'], "person", "person", "person") );
+$t->assign('find_game', display_result($match['game'], "scenarie", "scenarie", "game") );
+$t->assign('find_convention', display_result($match['convention'], "con", "con", "convention") );
+$t->assign('find_gamesystem', display_result($match['gamesystem'], "system", "system", "gamesystem") );
 $t->assign('find_magazines', display_result($match['magazine'], "magazine", "magazine", "magazine") );
 $t->assign('find_tags', $tagsearch ?? "" );
 $t->assign('find_files', $filesearch ?? "" );

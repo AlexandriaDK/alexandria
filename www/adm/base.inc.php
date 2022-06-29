@@ -10,6 +10,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 	switch ($cat) {
 	
 		case 'sce':
+		case 'game':
 		$value = "title";
 		$url = 'data?scenarie=';
 		$returl = 'game.php?game=';
@@ -22,12 +23,14 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		break;
 
 		case 'sys':
+		case 'gamesystem':
 		$value = "name";
 		$url = 'data?system=';
 		$returl = 'system.php?system=';
 		break;
 
 		case 'convent':
+		case 'convention':
 		$value = "CONCAT(name,' (',COALESCE(year,'?'),')')";
 		$url = 'data?con=';
 		$returl = 'convent.php?con=';
@@ -46,9 +49,10 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		break;
 
 		case 'aut':
+		case 'person':
 		default:
 		$value = "CONCAT(firstname,' ',surname)";
-		$cat = 'aut';
+		$cat = 'person';
 		$url = 'data?person=';
 		$returl = 'person.php?person=';
 	}
@@ -57,7 +61,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 	if (!$label) $label = $default;
 
 	if ($link == TRUE) {
-		$label = '<a href="../'.$url.$data_id.'">'.$label.'</a> <a href="'.$returl.$data_id.'">[ret]</a>';
+		$label = '<a href="../' . $url . $data_id . '">' . $label . '</a> <a href="' . $returl . $data_id . '">[ret]</a>';
 	}
 	return $label;
 }
@@ -94,7 +98,7 @@ function changelinks($data_id, $category) {
 }
 
 function changetags($data_id, $category) {
-	$tags = getcol("SELECT tag FROM tags WHERE sce_id = '$data_id'");
+	$tags = getcol("SELECT tag FROM tags WHERE game_id = '$data_id'");
 	$numtags = count($tags);
 	$html  = "<tr valign=top><td>Tags</td><td>\n";
 	$html .= sprintf("$numtags %s",($numtags == 1?"tag":"tags"));
@@ -136,29 +140,29 @@ function changealias($data_id, $category) {
 	return $html;
 }
 
-function changeorganizers ( $convent_id ) {
-	$numlinks = getone("SELECT COUNT(*) FROM acrel WHERE convent_id = '$convent_id'");
+function changeorganizers ( $convention_id ) {
+	$numlinks = getone("SELECT COUNT(*) FROM pcrel WHERE convention_id = '$convention_id'");
 	$html  = "<tr valign=top><td>Organizers</td><td>\n";
 	$html .= "$numlinks " . ($numlinks == 1?"organizer":"organizers");
-	$html .= " - <a href=\"organizers.php?category=convent&amp;data_id=$convent_id\" accesskey=\"r\">Edit organizers</a>";
+	$html .= " - <a href=\"organizers.php?category=convent&amp;data_id=$convention_id\" accesskey=\"r\">Edit organizers</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
 
-function changegenre($sce_id) {
-	$numgenres = getone("SELECT COUNT(*) FROM gsrel WHERE sce_id = '$sce_id'");
+function changegenre($game_id) {
+	$numgenres = getone("SELECT COUNT(*) FROM gsrel WHERE game_id = '$game_id'");
 	$html  = "<tr valign=top><td>Genres</td><td>\n";
 	$html .= sprintf("$numgenres %s",($numgenres == 1?"genre":"genres"));
-	$html .= " - <a href=\"genre.php?id=$sce_id\" accesskey=\"g\">Edit genres</a>";
+	$html .= " - <a href=\"genre.php?id=$game_id\" accesskey=\"g\">Edit genres</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
 
-function changerun($sce_id) {
-	$numruns = getone("SELECT COUNT(*) FROM scerun WHERE sce_id = '$sce_id'");
+function changerun($game_id) {
+	$numruns = getone("SELECT COUNT(*) FROM gamerun WHERE game_id = '$game_id'");
 	$html  = "<tr valign=top><td>Runs</td><td>\n";
 	$html .= sprintf("$numruns %s",($numruns == 1?"run":"runs"));
-	$html .= " - <a href=\"run.php?id=$sce_id\" accesskey=\"r\">Edit runs</a>";
+	$html .= " - <a href=\"run.php?id=$game_id\" accesskey=\"r\">Edit runs</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -177,11 +181,11 @@ function changefiles($data_id, $category) {
 	return $html;
 }
 
-function changeawards($convent_id) {
-	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convent_id = '$convent_id'");
+function changeawards($convention_id) {
+	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convention_id = '$convention_id'");
 	$html  = "<tr valign=top><td>Awards</td><td>\n";
 	$html .= sprintf("$numawards %s, $numnominees %s",($numawards == 1?"award":"awards"), ($numnominees == 1?"nominated":"nominated") );
-	$html .= " - <a href=\"awards.php?category=convent&amp;data_id=$convent_id\" accesskey=\"w\">Edit awards</a>";
+	$html .= " - <a href=\"awards.php?category=convent&amp;data_id=$convention_id\" accesskey=\"w\">Edit awards</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -258,9 +262,9 @@ function getCount ($table, $data_id, $requiresCategoryAndData = FALSE, $category
 }
 
 function autidextra ($person) { 
-	$aut_id = (int) $person;
-	$aut_extra = ($aut_id ? '' : trim($person) );
-	return ['id' => $aut_id, 'extra' => $aut_extra];
+	$person_id = (int) $person;
+	$aut_extra = ($person_id ? '' : trim($person) );
+	return ['id' => $person_id, 'extra' => $aut_extra];
 }
 
 function rexit($this_type, $dataset = [] ) {
@@ -283,12 +287,14 @@ function rexit($this_type, $dataset = [] ) {
 		case 'users':
 		case 'magazine':
 		case 'review':
-				$location = $this_type . '.php';
+		case 'person':
+			$location = $this_type . '.php';
 			break;
 		case 'sce':
 			$location = 'game.php';
 			break;
 		case 'sys':
+		case 'gamesystem':
 			$location = 'system.php';
 			break;
 		case 'aut':
@@ -443,19 +449,19 @@ function validatetoken( $token1 ) {
 }
 
 // Add data
-function get_create_person($name, $intern = "Autoimport") {
+function get_create_person($name, $internal = "Autoimport") {
 	$name = trim($name);
     preg_match('_(.*) (.*)_', $name, $names);
-    $person_id = getone("SELECT id FROM aut WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($name) . "'");
+    $person_id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($name) . "'");
     if (!$person_id) {
-        $sql = "INSERT INTO aut (firstname, surname, intern) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($intern) . "')";
+        $sql = "INSERT INTO person (firstname, surname, internal) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($internal) . "')";
         $person_id = doquery($sql);
         chlog($person_id, 'aut', 'Person created');
     }
     return $person_id;
 }
 
-function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $existing_game_id = FALSE) {
+function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $existing_game_id = FALSE) {
     $title = $game['title'];
 	$sys_id = $game['sys_id'] ?? NULL;
     $urls = $game['urls'] ?? [];
@@ -472,7 +478,7 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
     foreach($persons AS $person) {
 		if (trim($person['name'])) {
 			$person_ids[] = [
-				'pid' => get_create_person(trim($person['name']), $intern),
+				'pid' => get_create_person(trim($person['name']), $internal),
 				'role_id' => $person['role_id']
 			];
 		}
@@ -482,8 +488,8 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 	}
 
 	// insert game
-	$game_id_sql = "INSERT INTO sce (title, intern, sys_id, aut_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
-	               "VALUES ('" . dbesc($title) . "', '" . dbesc($intern) ."', $sys_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
+	$game_id_sql = "INSERT INTO game (title, internal, gamesystem_id, person_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
+	               "VALUES ('" . dbesc($title) . "', '" . dbesc($internal) ."', $sys_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
 	$game_id = doquery($game_id_sql);
 	if (! $game_id ) {
 		return false;
@@ -502,7 +508,7 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 
     if ($year) {
         $begin = $end = $year . '-00-00';
-        $run_sql = "INSERT INTO scerun (sce_id, begin, end, location, country) VALUES ($game_id, '$begin', '$end', '" . dbesc($location) . "', 'se')";
+        $run_sql = "INSERT INTO gamerun (game_id, begin, end, location, country) VALUES ($game_id, '$begin', '$end', '" . dbesc($location) . "', 'se')";
         doquery($run_sql);        
     }
 	*/
@@ -511,9 +517,9 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 		$pid = $person['pid'];
 		$role_id = $person['role_id'];
         if ( $multiple_runs || $existing_game_id ) {
-            $assql = "INSERT INTO asrel (aut_id, sce_id, tit_id, note) VALUES ($pid, $game_id, $role_id, '$year run')";
+            $assql = "INSERT INTO pgrel (person_id, game_id, tit_id, note) VALUES ($pid, $game_id, $role_id, '$year run')";
         } else {
-            $assql = "INSERT INTO asrel (aut_id, sce_id, tit_id) VALUES ($pid, $game_id, $role_id)";
+            $assql = "INSERT INTO pgrel (person_id, game_id, tit_id) VALUES ($pid, $game_id, $role_id)";
         }
         doquery($assql);
     }
@@ -524,15 +530,15 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 	}
 
     foreach ($genres AS $gid) {
-        if ( ! getone("SELECT 1 FROM gsrel WHERE gen_id = $gid AND sce_id = $game_id")) {
-            $gsql = "INSERT INTO gsrel (gen_id, sce_id) VALUES ($gid, $game_id)";
+        if ( ! getone("SELECT 1 FROM gsrel WHERE gen_id = $gid AND game_id = $game_id")) {
+            $gsql = "INSERT INTO gsrel (gen_id, game_id) VALUES ($gid, $game_id)";
             doquery($gsql);
         }
     }
 
 	foreach ($tags AS $tag) {
-        if ( $tag != '' && ! getone("SELECT 1 FROM tags WHERE sce_id = $game_id AND tag = '". dbesc($tag) . "'")) {
-            $gsql = "INSERT INTO tags (sce_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
+        if ( $tag != '' && ! getone("SELECT 1 FROM tags WHERE game_id = $game_id AND tag = '". dbesc($tag) . "'")) {
+            $gsql = "INSERT INTO tags (game_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
             doquery($gsql);
         }
     }
@@ -545,7 +551,7 @@ function create_game($game, $intern = "Autoimport", $multiple_runs = FALSE, $exi
 	}
 
 	foreach($cons AS $con_id) { // assuming premiere
-		$csql = "INSERT INTO csrel (convent_id, sce_id, pre_id) VALUES ($con_id, $game_id, 1)";
+		$csql = "INSERT INTO cgrel (convention_id, game_id, pre_id) VALUES ($con_id, $game_id, 1)";
 		doquery($csql);
 	}
 

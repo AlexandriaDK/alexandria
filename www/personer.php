@@ -51,9 +51,9 @@ if ( $b != '#' && ! in_array($b, $chars) ) {
 }
 
 if ( $b != '#') {
-	$persons = getall("SELECT id, firstname, surname FROM aut WHERE $orderfield LIKE '$b%' ORDER BY $orderby");
+	$persons = getall("SELECT id, firstname, surname FROM person WHERE $orderfield LIKE '$b%' ORDER BY $orderby");
 } else {
-	$persons = getall("SELECT id, firstname, surname FROM aut WHERE $orderfield NOT REGEXP '^[A-ZÆØÅ]' ORDER BY $orderby");
+	$persons = getall("SELECT id, firstname, surname FROM person WHERE $orderfield NOT REGEXP '^[A-ZÆØÅ]' ORDER BY $orderby");
 }
 $no = 0;
 $list = "";

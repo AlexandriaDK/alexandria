@@ -19,7 +19,7 @@ if (file_exists($fileondisk) ) {
 	}
 
 	if ($category == 'sce' && $_SESSION['user_author_id'] ) {
-		$is_author = getone("SELECT 1 FROM asrel WHERE sce_id = '$data_id' AND tit_id IN (1,4) AND aut_id = '" . $_SESSION['user_author_id'] . "'");
+		$is_author = getone("SELECT 1 FROM pgrel WHERE game_id = '$data_id' AND title_id IN (1,4) AND person_id = '" . $_SESSION['user_author_id'] . "'");
 		if ($is_author) {
 			award_achievement(85); // download own scenario
 		}

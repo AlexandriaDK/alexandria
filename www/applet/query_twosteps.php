@@ -9,10 +9,10 @@ $other_category = 'aut';
 if (!$dataid) $dataid = '1';
 
 $query = "
-          SELECT t1.aut_id, t2.aut_id
+          SELECT t1.person_id, t2.person_id
           FROM asrel AS t1, asrel AS t2
-          WHERE t1.aut_id = '$dataid' AND t1.sce_id = t2.sce_id AND t2.aut_id != '$dataid' AND t1.tit_id = 1 AND t2.tit_id = 1
-          GROUP BY t2.aut_id
+          WHERE t1.person_id = '$dataid' AND t1.game_id = t2.game_id AND t2.person_id != '$dataid' AND t1.tit_id = 1 AND t2.tit_id = 1
+          GROUP BY t2.person_id
 ";
 
 $main_id = $dataid;
@@ -31,12 +31,12 @@ while (list($first,$second) = mysql_fetch_row($result)) {
 if (count($firstfound) > 0) {
 	$datasetlist = join(",",$firstfound);
 	$query = "
-	          SELECT t1.aut_id, t2.aut_id
+	          SELECT t1.person_id, t2.person_id
 	          FROM asrel AS t1, asrel AS t2
-	          WHERE t1.aut_id IN ($datasetlist) AND t1.aut_id != t2.aut_id
-						AND t1.sce_id = t2.sce_id
+	          WHERE t1.person_id IN ($datasetlist) AND t1.person_id != t2.person_id
+						AND t1.game_id = t2.game_id
 						AND t1.tit_id = 1 AND t2.tit_id = 1
-	          GROUP BY t2.aut_id
+	          GROUP BY t2.person_id
 		";
 	$result = mysql_query($query) or die("ERROR: ".mysql_error() );
 	while (list($first,$second) = mysql_fetch_row($result)) {
@@ -68,12 +68,12 @@ print "</EDGESET>\n\n";
 
 print "<NODESET>\n";
 
-foreach($names AS $aut_id => $foo) {
-	$name = getentry('aut',$aut_id);
+foreach($names AS $person_id => $foo) {
+	$name = getentry('aut',$person_id);
 #	$current_hint = htmlspecialchars($datahint[$id]);
 #	$current_hint = str_replace("\n","<br>\n",$current_hint);
 	$current_hint = '';
-	print "<NODE nodeID=\"aut_$aut_id\">\n";
+	print "<NODE nodeID=\"aut_$person_id\">\n";
 	print "<NODE_LABEL label=\"".htmlspecialchars($name)."\"/>\n";
 	print "<NODE_HINT isHTML=\"true\" hint=\"".htmlspecialchars($current_hint)."\"/>\n";
 	print "</NODE>\n\n";

@@ -22,11 +22,11 @@ $langlock = $_COOKIE['langlock'] ?? LANG;
 if (!$descriptions) {
 	$descriptions = [1 => [ 'id' => 1, 'language' => $langlock, 'description' => '', 'note' => '' ] ];
 }
-$intern = $_REQUEST['intern'] ?? FALSE;
-$sys_id = (int) ($_REQUEST['sys_id'] ?? FALSE);
-$sys_ext = $_REQUEST['sys_ext'] ?? '';
+$internal = $_REQUEST['internal'] ?? FALSE;
+$gamesystem_id = (int) ($_REQUEST['gamesystem_id'] ?? FALSE);
+$gamesystem_extra = $_REQUEST['gamesystem_extra'] ?? '';
 $aut = $_REQUEST['aut'] ?? FALSE;
-$aut_extra = $_REQUEST['aut_extra'] ?? '';
+$person_extra = $_REQUEST['person_extra'] ?? '';
 $con = $_REQUEST['con'] ?? FALSE;
 $boardgame = (int) (bool) ($_REQUEST['boardgame'] ?? FALSE);
 $person = (array) ($_REQUEST['person'] ?? []);
@@ -41,17 +41,17 @@ $participants_extra = $_REQUEST['participants_extra'] ?? '';
 $this_id = $game;
 
 if (!$action && $game) {
-	$row = getrow("SELECT * FROM sce WHERE id = '$game'");
+	$row = getrow("SELECT * FROM game WHERE id = '$game'");
 	if ($row) {
 		$title = $row['title'];
 		$descriptions = getall("SELECT id, description, language, note FROM game_description WHERE game_id = $game ORDER BY priority, language");
 		if (!$descriptions) {
 			$descriptions = [1 => [ 'id' => 1, 'language' => $langlock, 'description' => '', 'note' => '' ] ];
 		}
-		$intern = $row['intern'];
-		$sys_id = $row['sys_id'];
-		$sys_ext = $row['sys_ext'];
-		$aut_extra = $row['aut_extra'];
+		$internal = $row['internal'];
+		$gamesystem_id = $row['gamesystem_id'];
+		$gamesystem_extra = $row['gamesystem_extra'];
+		$person_extra = $row['person_extra'];
 		$gms_min = $row['gms_min'];
 		$gms_max = $row['gms_max'];
 		$players_min = $row['players_min'];
@@ -73,12 +73,12 @@ if ($action == "update" && $game) {
 		$_SESSION['admin']['info'] = "You are missing a title!";
 	} else {
 		$title = trim($title);
-		$q = "UPDATE sce SET " .
+		$q = "UPDATE game SET " .
 		     "title = '".dbesc($title)."', " .
-		     "sys_id = " . sqlifnull($sys_id) . ", " .
-		     "sys_ext = '".dbesc($sys_ext)."', " .
-		     "aut_extra = '".dbesc($aut_extra)."', " .
-		     "intern = '".dbesc($intern)."', " .
+		     "gamesystem_id = " . sqlifnull($gamesystem_id) . ", " .
+		     "gamesystem_extra = '".dbesc($gamesystem_extra)."', " .
+		     "person_extra = '".dbesc($person_extra)."', " .
+		     "internal = '".dbesc($internal)."', " .
 		     "gms_min = " . strNullEscape($gms_min).", " .
 		     "gms_max = " . strNullEscape($gms_max).", " .
 		     "players_min = " . strNullEscape($players_min).", " .
@@ -100,16 +100,16 @@ if ($action == "update" && $game) {
 				$r = doquery($sql);
 			}
 
-			$q = "DELETE FROM asrel WHERE sce_id = '$game'";
+			$q = "DELETE FROM pgrel WHERE game_id = '$game'";
 			$r = doquery($q);
 			foreach( $person AS $autdata) {
 
-				$aut_id = (int) $autdata['name'];
+				$person_id = (int) $autdata['name'];
 				$tit_id = (int) $autdata['title'];
 				$note = trim( (string) $autdata['note']);
-				if ($tit_id && $aut_id) {
-					$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
-					     "VALUES ($game, $aut_id, $tit_id, '" . dbesc( $note ) ."')";
+				if ($tit_id && $person_id) {
+					$q = "INSERT INTO pgrel (game_id, person_id, tit_id, note) ".
+					     "VALUES ($game, $person_id, $tit_id, '" . dbesc( $note ) ."')";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -127,15 +127,15 @@ if ($action == "update" && $game) {
 	// Add person-game relations
 	// Add game-con relations
 	
-			$q = "DELETE FROM csrel WHERE sce_id = '$game'";
+			$q = "DELETE FROM cgrel WHERE game_id = '$game'";
 			$r = doquery($q);
 			foreach( (array) $con AS $condata) {
-				list($pre_id,$con_id) = explode("_",$condata);
-				$pre_id = (int) $pre_id;
+				list($presentation_id,$con_id) = explode("_",$condata);
+				$presentation_id = (int) $presentation_id;
 				$con_id = (int) $con_id;
-				if ($pre_id && $con_id) {
-					$q = "INSERT INTO csrel (sce_id, convent_id, pre_id) ".
-					     "VALUES ($game, $con_id, $pre_id)";
+				if ($presentation_id && $con_id) {
+					$q = "INSERT INTO cgrel (game_id, convention_id, presentation_id) ".
+					     "VALUES ($game, $con_id, $presentation_id)";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -151,10 +151,10 @@ if ($action == "update" && $game) {
 // Delete game
 if ($action == "Delete" && $game) { // should check if game exists
 	$error = [];
-	if (getCount('asrel', $this_id, FALSE, $this_type_old) ) $error[] = "person";
-	if (getCount('csrel', $this_id, FALSE, $this_type_old) ) $error[] = "con";
+	if (getCount('pgrel', $this_id, FALSE, $this_type_old) ) $error[] = "person";
+	if (getCount('cgrel', $this_id, FALSE, $this_type_old) ) $error[] = "con";
 	if (getCount('gsrel', $this_id, FALSE, $this_type_old) ) $error[] = "genre";
-	if (getCount('scerun', $this_id, FALSE, $this_type_old) ) $error[] = "run";
+	if (getCount('gamerun', $this_id, FALSE, $this_type_old) ) $error[] = "run";
 	if (getCount('trivia', $this_id, TRUE, $this_type_old) ) $error[] = "trivia";
 	if (getCount('links', $this_id, TRUE, $this_type_old) ) $error[] = "link";
 	if (getCount('alias', $this_id, TRUE, $this_type_old) ) $error[] = "alias";
@@ -166,10 +166,10 @@ if ($action == "Delete" && $game) { // should check if game exists
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['game' => $game] );
 	} else {
-		$title = getone("SELECT title FROM sce WHERE id = $game");
+		$title = getone("SELECT title FROM game WHERE id = $game");
 
 		doquery("DELETE FROM game_description WHERE game_id = $game");
-		$q = "DELETE FROM sce WHERE id = $game";
+		$q = "DELETE FROM game WHERE id = $game";
 		$r = doquery($q);
 
 		if ($r) {
@@ -186,8 +186,8 @@ if ($action == "create") {
 		$info = "Title is missing!";
 	} else {
 		$title = trim($title);
-		$q = "INSERT INTO sce (id, title, intern, sys_id, sys_ext, aut_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
-			 "VALUES (NULL, '".dbesc($title)."', '".dbesc($intern)."', ".sqlifnull($sys_id).", '".dbesc($sys_ext)."', '".dbesc($aut_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
+		$q = "INSERT INTO game (id, title, internal, gamesystem_id, gamesystem_extra, person_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
+			 "VALUES (NULL, '".dbesc($title)."', '".dbesc($internal)."', ".sqlifnull($gamesystem_id).", '".dbesc($gamesystem_extra)."', '".dbesc($person_extra)."', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
 		$r = doquery($q);
 		if ($r) {
 			$game = dbid();
@@ -210,12 +210,12 @@ if ($action == "create") {
 // Add person-game relations
 		foreach( $person AS $autdata) {
 
-			$aut_id = (int) $autdata['name'];
+			$person_id = (int) $autdata['name'];
 			$tit_id = (int) $autdata['title'];
 			$note = trim((string) $autdata['note']);
-			if ($tit_id && $aut_id) {
-				$q = "INSERT INTO asrel (sce_id, aut_id, tit_id, note) ".
-				     "VALUES ($game, $aut_id, $tit_id, '" . dbesc( $note ) ."')";
+			if ($tit_id && $person_id) {
+				$q = "INSERT INTO pgrel (game_id, person_id, tit_id, note) ".
+				     "VALUES ($game, $person_id, $tit_id, '" . dbesc( $note ) ."')";
 				$r = doquery($q);
 				print dberror();
 			}
@@ -226,11 +226,11 @@ if ($action == "create") {
 	
 	// Add game-con relations
 			foreach( (array) $con AS $condata) {
-				unset($pre_id,$con_id);
-				list($pre_id,$con_id) = explode("_",$condata);
-				if ($pre_id && $con_id) {
-					$q = "INSERT INTO csrel (sce_id, convent_id, pre_id) ".
-					     "VALUES ('$game', '$con_id', '$pre_id')";
+				unset($presentation_id,$con_id);
+				list($presentation_id,$con_id) = explode("_",$condata);
+				if ($presentation_id && $con_id) {
+					$q = "INSERT INTO cgrel (game_id, convention_id, presentation_id) ".
+					     "VALUES ('$game', '$con_id', '$presentation_id')";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -246,12 +246,12 @@ if ($action == "create") {
 
 if ($game) {
 	$qrel = getall("
-	SELECT asrel.id AS relid, aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.note, asrel.tit_id AS titid, title.title
-	FROM asrel
-	INNER JOIN aut ON asrel.aut_id = aut.id
-	LEFT JOIN title ON asrel.tit_id = title.id
-	WHERE asrel.sce_id = $game
-	ORDER BY title.priority, asrel.tit_id, aut.surname, aut.firstname
+	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.tit_id AS titid, title.title
+	FROM pgrel
+	INNER JOIN person p ON pgrel.person_id = p.id
+	LEFT JOIN title ON pgrel.tit_id = title.id
+	WHERE pgrel.game_id = $game
+	ORDER BY title.priority, pgrel.tit_id, p.surname, p.firstname
 ");
 	print dberror();
 }
@@ -261,39 +261,35 @@ if ($game) {
 if ($game) {
 	$qcrel = getall("
 		SELECT
-			csrel.id AS relid,
-			convent.id,
-			convent.name,
-			convent.year,
-			convent.begin,
-			convent.end,
-			pre.id AS preid,
-			pre.event,
+			cgrel.id AS relid,
+			c.id,
+			c.name,
+			c.year,
+			c.begin,
+			c.end,
+			p.id AS preid,
+			p.event,
 			conset.name AS setname
-		FROM
-			(csrel,
-			convent,
-			pre)
-		LEFT JOIN
-			conset ON convent.conset_id = conset.id
+		FROM cgrel
+		INNER JOIN convention c ON cgrel.convention_id = c.id
+		INNER JOIN presentation p ON cgrel.presentation_id = p.id
+		LEFT JOIN conset ON c.conset_id = conset.id
 		WHERE
-			csrel.sce_id='$game' AND
-			csrel.convent_id = convent.id AND
-			csrel.pre_id = pre.id
+			cgrel.game_id='$game'
 		ORDER BY
-			pre.id,
-			convent.year,
-			convent.begin,
-			convent.end,
+			p.id,
+			c.year,
+			c.begin,
+			c.end,
 			setname,
-			convent.name
+			c.name
 	");
 	print dberror();
 }
 
 // Get all cons
 $con = [];
-$q = getall("SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id ORDER BY setname, year, begin, end, name") OR die(dberror());
+$q = getall("SELECT c.id, c.name, year, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") OR die(dberror());
 foreach($q AS $r) {
 	$con[$r['id']] = $r['name']." (".$r['year'].")";
 }
@@ -322,7 +318,7 @@ foreach($q AS $r) {
 }
 
 $people = [];
-$r = getall("SELECT id, firstname, surname FROM aut ORDER BY firstname, surname");
+$r = getall("SELECT id, firstname, surname FROM person ORDER BY firstname, surname");
 foreach($r AS $row) {
 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
 }
@@ -572,7 +568,7 @@ print "<ul>" . $lihtml . "</ul>" . PHP_EOL;
 print $inputhtml;
 print "</div>";
 print "</td></tr>\n";
-print "<tr valign=top><td>Internal note</td><td style=\"width: 100%\"><textarea name=intern style=\"width: 100%\" rows=6>\n" . htmlspecialchars($intern) . "</textarea></td></tr>\n";
+print "<tr valign=top><td>Internal note</td><td style=\"width: 100%\"><textarea name=internal style=\"width: 100%\" rows=6>\n" . htmlspecialchars($internal) . "</textarea></td></tr>\n";
 
 
 ### Participants ###
@@ -599,15 +595,15 @@ print "</tr>\n\n";
 
 print "<tr><td>RPG System</td>";
 print "<td>\n";
-print "<select name=\"sys_id\" id=\"sys_id\">\n";
+print "<select name=\"gamesystem_id\" id=\"gamesystem_id\">\n";
 
 foreach ($sys AS $id => $name) {
-	$selected = ($id == $sys_id ? "selected" : "");
+	$selected = ($id == $gamesystem_id ? "selected" : "");
 	print "<option value=\"$id\" $selected>" . htmlspecialchars($name) . "</option>" . PHP_EOL;
 }
 print "</select>\n";
-print '(<span onclick="document.getElementById(\'sys_id\').value=73; return false;" title="Set system to LARP" style="text-decoration-line: underline; text-decoration-style: dashed; cursor: pointer;">← LARP</span>) ';
-print "- possible note: <input type=text name=sys_ext value=\"".htmlspecialchars($sys_ext)."\" size=30>";
+print '(<span onclick="document.getElementById(\'gamesystem_id\').value=73; return false;" title="Set system to LARP" style="text-decoration-line: underline; text-decoration-style: dashed; cursor: pointer;">← LARP</span>) ';
+print "- possible note: <input type=text name=gamesystem_extra value=\"".htmlspecialchars($gamesystem_extra)."\" size=30>";
 print "</td>";
 print "</tr>\n\n";
 
@@ -645,7 +641,7 @@ print '
 ';
 
 
-tr("Optional organizer","aut_extra",$aut_extra);
+tr("Optional organizer","person_extra",$person_extra);
 
 ### List of cons: ###
 
@@ -730,7 +726,7 @@ if ($game) {
 		FROM article a
 		INNER JOIN issue i ON a.issue_id = i.id
 		INNER JOIN magazine m ON i.magazine_id = m.id
-		WHERE a.sce_id = $game
+		WHERE a.game_id = $game
 		ORDER BY i.releasedate, a.id
 		
 	");

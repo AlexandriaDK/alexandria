@@ -19,6 +19,8 @@ ALTER TABLE pgrel CHANGE aut_id person_id int DEFAULT 0 NOT NULL;
 ALTER TABLE pgrel CHANGE sce_id game_id int DEFAULT 0 NOT NULL;
 ALTER TABLE pgrel CHANGE tit_id title_id int DEFAULT 1 NOT NULL;
 
+ALTER TABLE pcrel CHANGE aut_id person_id int NULL;
+ALTER TABLE pcrel CHANGE convent_id convention_id int DEFAULT 0 NOT NULL;
 ALTER TABLE pcrel CHANGE aut_extra person_extra tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci NULL;
 
 ALTER TABLE ggrel CHANGE gen_id genre_id int DEFAULT 0 NOT NULL;

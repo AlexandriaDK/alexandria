@@ -27,11 +27,11 @@ if ( $action ) {
 // Get id or text
 $role = trim((string) $_REQUEST['role']);
 $aut_text = trim((string) $_REQUEST['aut_text']);
-$aut_id = (int) $aut_text;
+$person_id = (int) $aut_text;
 $aut_extra = "";
-if (!$aut_id) {
+if (!$person_id) {
 	$aut_extra = $aut_text;
-	$aut_id = NULL;
+	$person_id = NULL;
 }
 
 if (getone("SELECT 1 FROM convent WHERE id = $convent") != 1) { // check if congress exists
@@ -40,15 +40,15 @@ if (getone("SELECT 1 FROM convent WHERE id = $convent") != 1) { // check if cong
 	exit;
 }
 
-if ($action == 'add' && ($aut_id || $aut_extra) ) {
+if ($action == 'add' && ($person_id || $aut_extra) ) {
 	$r = doquery("
-		INSERT INTO acrel (aut_id, convent_id, aut_extra, role, added_by_user_id)
-		VALUES (" . strNullEscape($aut_id) . ", $convent, '" . dbesc($aut_extra) . "', '" . dbesc($role) . "', $user_id)
+		INSERT INTO acrel (person_id, convent_id, aut_extra, role, added_by_user_id)
+		VALUES (" . strNullEscape($person_id) . ", $convent, '" . dbesc($aut_extra) . "', '" . dbesc($role) . "', $user_id)
 	");
 	if ($acrel_id = dbid($dblink) ) {
 		$_SESSION['can_edit_organizers'][$acrel_id] = TRUE;
 		award_achievement(91);
-		chlog($convent,'convent','Organizer added: ' . ( $aut_id ? $aut_id : $aut_extra ));
+		chlog($convent,'convent','Organizer added: ' . ( $person_id ? $person_id : $aut_extra ));
 	}
 } elseif ($action == 'delete') {
 	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$acrel_id] ) {

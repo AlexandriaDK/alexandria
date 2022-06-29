@@ -54,10 +54,10 @@ function getmysce ($user_id, $o = 0) {
 		case 4: $order = "played desc, title_translation, `read` desc, gmed desc"; break;
 		default: $order = "title_translation, `read` desc, gmed desc, played desc"; break;
 	}
-	$q = "SELECT sce.id, sce.title, sce.boardgame, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played, COALESCE(alias.label, sce.title) AS title_translation
+	$q = "SELECT g.id, g.title, g.boardgame, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played, COALESCE(alias.label, g.title) AS title_translation
 	     FROM userlog
-		 INNER JOIN sce ON userlog.data_id = sce.id
-		 LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		 INNER JOIN game g ON userlog.data_id = g.id
+		 LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	     WHERE userlog.user_id = '$user_id' AND userlog.category = 'sce'
 	     GROUP BY userlog.data_id
 	     ORDER BY $order";
@@ -67,12 +67,12 @@ function getmysce ($user_id, $o = 0) {
 
 function getmyconvent ($user_id, $o = 0) {
 	switch ($o) {
-		case 5: $order = "convent.name, convent.year, convent.begin, convent.end"; break;
-		case 6: $order = "convent.year, convent.begin, convent.end, convent.name"; break;
-		case 7: $order = "conset.name, convent.year, convent.begin, convent.end, convent.name"; break;
-		default: $order = "convent.year, convent.begin, convent.end, convent.name"; break;
+		case 5: $order = "convention.name, convention.year, convention.begin, convention.end"; break;
+		case 6: $order = "convention.year, convention.begin, convention.end, convention.name"; break;
+		case 7: $order = "conset.name, convention.year, convention.begin, convention.end, convention.name"; break;
+		default: $order = "convention.year, convention.begin, convention.end, convention.name"; break;
 	}
-	$q = "SELECT convent.id, convent.name, convent.year, conset.name AS conset_name FROM userlog, convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE userlog.user_id = '$user_id' AND userlog.category = 'convent' AND userlog.data_id = convent.id ORDER BY $order";
+	$q = "SELECT convention.id, convention.name, convention.year, conset.name AS conset_name FROM userlog, convention LEFT JOIN conset ON convention.conset_id = conset.id WHERE userlog.user_id = '$user_id' AND userlog.category = 'convent' AND userlog.data_id = convention.id ORDER BY $order";
 	$data = getall($q);
 	return $data;
 }

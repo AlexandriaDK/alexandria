@@ -23,21 +23,21 @@ if ( $action ) {
 $tag = trim( (string) $_REQUEST['tag'] );
 $tag_id = (int) $_REQUEST['tag_id'];
 
-$q = getone("SELECT 1 FROM sce WHERE id = $scenario");
+$q = getone("SELECT 1 FROM game WHERE id = $scenario");
 if ($q != 1) { // check if scenario exists - should probably redirect somewhere else
 	header("Location: ../data?scenarie=$scenario");
 	exit;
 }
 
 if ($action == 'add') {
-	$q = getone("SELECT 1 FROM tags WHERE sce_id = $scenario AND tag = '" . dbesc($tag) . "'");
+	$q = getone("SELECT 1 FROM tags WHERE game_id = $scenario AND tag = '" . dbesc($tag) . "'");
 	if ($q == 1) { // check if scenario already has tag
 		header("Location: ../data?scenarie=$scenario");
 		exit;
 	}
 
 	$q = ("
-		INSERT INTO tags (sce_id, tag, added_by_user_id)
+		INSERT INTO tags (game_id, tag, added_by_user_id)
 		VALUES ($scenario, '" . dbesc($tag) . "', $user_id)
 	");
 	$r = doquery($q);

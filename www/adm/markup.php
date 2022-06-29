@@ -31,11 +31,11 @@ function updatestuff ($table, $text, $id) {
 }
 
 function linkfix ($matches) {
-	if ($id = getone("SELECT id FROM sce WHERE title = '" . dbesc($matches[1]) . "'") ) {
+	if ($id = getone("SELECT id FROM game WHERE title = '" . dbesc($matches[1]) . "'") ) {
 		$code = '[[[s' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
-	if ($id = getone("SELECT id FROM aut WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'") ) {
+	if ($id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'") ) {
 		$code = '[[[p' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
@@ -51,7 +51,7 @@ $regexp_php = '_\\\[\\\[\\\[([^|]+)\\\]\\\]\\\]_';
 $sql = "select id, fact from trivia where fact regexp '$regexp_sql'";
 $trivias = getall("select id, fact, data_id, category from trivia where fact regexp '$regexp_sql'");
 $tags = getall("select id, tag, description from tag where description regexp '$regexp_sql'");
-$scenarios = getall("select id, title, description from sce where description regexp '$regexp_sql'");
+$scenarios = getall("select id, title, description from game where description regexp '$regexp_sql'");
 $cons = getall("select id, description from convent where description regexp '$regexp_sql'");
 $syss = getall("select id, description from sys where description regexp '$regexp_sql'");
 
@@ -108,7 +108,7 @@ print "</table>";
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Scenarios</th></tr>" . PHP_EOL;
 foreach($scenarios AS $scenario) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sce\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"game\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($scenario['description']) . "<br>";
@@ -130,7 +130,7 @@ print "</table>";
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Cons</th></tr>" . PHP_EOL;
 foreach($cons AS $con) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convent\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convention\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . nl2br(htmlspecialchars($con['description'])) . "<br>";
@@ -152,7 +152,7 @@ print "</table>";
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">RPG Systems</th></tr>" . PHP_EOL;
 foreach($syss AS $sys) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sys\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"gamesystem\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($sys['description']) . "<br>";

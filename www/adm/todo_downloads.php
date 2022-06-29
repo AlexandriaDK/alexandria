@@ -45,17 +45,17 @@ Prioriteret liste over forfattere, vi bør kontakte for scenarier, der ikke er o
 if ($action == "calculate") {
 	$authordata = [];
 	$authorscore = [];
-	$authors = getall("SELECT id, firstname, surname FROM aut ORDER BY id");
+	$authors = getall("SELECT id, firstname, surname FROM person ORDER BY id");
 	foreach ($authors AS $author) {
 		$aid = $author['id'];
-		$scenarios = getcol("SELECT sce_id FROM asrel LEFT JOIN files ON asrel.sce_id = files.data_id AND files.category = 'sce' WHERE files.id IS NULL AND asrel.tit_id = 1 AND asrel.aut_id = $aid");
+		$scenarios = getcol("SELECT game_id FROM pgrel LEFT JOIN files ON pgrel.game_id = files.data_id AND files.category = 'sce' WHERE files.id IS NULL AND pgrel.tit_id = 1 AND pgrel.person_id = $aid");
 		$count_scenarios = count($scenarios);
 		if ($count_scenarios) {
 			$in = implode(",", $scenarios);
-			$titles = getcol("SELECT title FROM sce WHERE id IN ($in)");
-			$runs = getone("SELECT COUNT(*) FROM csrel WHERE sce_id IN ($in)");
-			$award_nominees = getone("SELECT COUNT(*) FROM award_nominees WHERE sce_id IN ($in) AND winner = 0");
-			$award_winners = getone("SELECT COUNT(*) FROM award_nominees WHERE sce_id IN ($in) AND winner = 1");
+			$titles = getcol("SELECT title FROM game WHERE id IN ($in)");
+			$runs = getone("SELECT COUNT(*) FROM csrel WHERE game_id IN ($in)");
+			$award_nominees = getone("SELECT COUNT(*) FROM award_nominees WHERE game_id IN ($in) AND winner = 0");
+			$award_winners = getone("SELECT COUNT(*) FROM award_nominees WHERE game_id IN ($in) AND winner = 1");
 			$userlogs = getone("SELECT COUNT(*) FROM userlog WHERE category = 'sce' AND data_id IN ($in)");
 			$authordata[$aid] = [
 				'name' => $author['firstname'] . " " . $author['surname'],

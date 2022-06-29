@@ -21,19 +21,19 @@ $players = $_REQUEST['players'];
 list ($gms_min, $gms_max) = strSplitParticipants($gms);
 list ($players_min, $players_max) = strSplitParticipants($players);
 
-$q = getone("SELECT 1 FROM sce WHERE id = $scenarie");
+$q = getone("SELECT 1 FROM game WHERE id = $scenarie");
 if ($q != 1) { // check if scenario exists
 	header("Location: ../data?scenarie=$scenarie");
 	exit;
 }
-$q = getone("SELECT 1 FROM sce WHERE id = $scenarie AND gms_min IS NULL AND gms_max IS NULL AND players_min IS NULL AND players_max IS NULL");
+$q = getone("SELECT 1 FROM game WHERE id = $scenarie AND gms_min IS NULL AND gms_max IS NULL AND players_min IS NULL AND players_max IS NULL");
 
 if (!($_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_participant'][$scenarie] || $r) ) {
 	header("Location: ../data?scenarie=$scenarie");
 	exit;
 }
 
-doquery("UPDATE sce SET gms_min = " . strNullEscape($gms_min) . ", gms_max = " . strNullEscape($gms_max) . ", players_min = " . strNullEscape($players_min) . ", players_max = " . strNullEscape($players_max) . " WHERE id = $scenarie");
+doquery("UPDATE game SET gms_min = " . strNullEscape($gms_min) . ", gms_max = " . strNullEscape($gms_max) . ", players_min = " . strNullEscape($players_min) . ", players_max = " . strNullEscape($players_max) . " WHERE id = $scenarie");
 chlog($scenarie,'sce','Participants updated');
 award_achievement(82);
 

@@ -5,12 +5,12 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $date = date("Y-m-d");
-$scenarios = getone("SELECT COUNT(*) FROM sce WHERE boardgame = 0");
-$persons = getone("SELECT COUNT(*) FROM aut");
-$conventions = getone("SELECT COUNT(*) FROM convent");
-$rpgsystems = getone("SELECT COUNT(*) FROM sys");
+$scenarios = getone("SELECT COUNT(*) FROM game WHERE boardgame = 0");
+$persons = getone("SELECT COUNT(*) FROM person");
+$conventions = getone("SELECT COUNT(*) FROM convention");
+$rpgsystems = getone("SELECT COUNT(*) FROM gamesystem");
 $downloads = getone("SELECT COUNT(DISTINCT data_id) FROM files WHERE category = 'sce' AND downloadable = 1");
-$boardgames = getone("SELECT COUNT(*) FROM sce WHERE boardgame = 1");
+$boardgames = getone("SELECT COUNT(*) FROM game WHERE boardgame = 1");
 $conseries = getone("SELECT COUNT(*) FROM conset");
 $users = getone("SELECT COUNT(*) FROM users");
 $editors = getone("SELECT COUNT(*) FROM users WHERE editor = 1");

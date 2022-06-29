@@ -113,7 +113,7 @@ $(document).ready(function(){
 		<td>{if $scenarios.filescount}<a href="data?scenarie={$scenarios.id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
 		<td>{$scenarios.runsymbol}</td>
 		<td><a href="data?scenarie={$scenarios.id}" class="scenarie">{$scenarios.title|escape}</a></td>
-		<td style="padding-left: 10px">{$scenarios.authtml}{if $scenarios.autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.autextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$scenarios.personhtml}{if $scenarios.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.personextrahtml}{/if}</td>
 		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_translation}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
 	{/foreach}
 	{/if}
@@ -133,7 +133,7 @@ $(document).ready(function(){
 		<td>{if $boardgames.filescount}<a href="data?scenarie={$boardgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
 		<td>{$boardgames.runsymbol}</td>
 		<td><a href="data?scenarie={$boardgames.id}" class="scenarie">{$boardgames.title|escape}</a></td>
-		<td style="padding-left: 10px">{$boardgames.authtml}{if $boardgames.autextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardgames.autextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$boardgames.autextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$boardgames.personhtml}{if $boardgames.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardgames.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$boardgames.personextrahtml}{/if}</td>
 		<td style="padding-left: 10px">{$boardgames.systemhtml}</td>
 		</tr>
 	{/foreach}
@@ -161,8 +161,8 @@ $(document).ready(function(){
 		{$ol.role|escape}
 	</td>
 	<td>
-		{if $ol.aut_id}
-		<a href="data?person={$ol.aut_id}" class="person">{$ol.name|escape}</a>
+		{if $ol.person_id}
+		<a href="data?person={$ol.person_id}" class="person">{$ol.name|escape}</a>
 		{else}
 		{$ol.aut_extra|escape}
 		{/if}

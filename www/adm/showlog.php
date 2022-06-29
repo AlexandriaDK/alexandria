@@ -45,17 +45,17 @@ if ($data_id && $category) {
 	switch($category) {
 	case 'aut':
 		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
+		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 		$mainlink = "person.php?person=$data_id";
 		break;
 	case 'sce':
 		$cat = 'sce';
-		$q = "SELECT title FROM sce WHERE id = '$data_id'";
+		$q = "SELECT title FROM game WHERE id = '$data_id'";
 		$mainlink = "game.php?game=$data_id";
 		break;
 	case 'convent':
 		$cat = 'convent';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convent WHERE id = '$data_id'";
+		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 		$mainlink = "convent.php?con=$data_id";
 		break;
 	case 'conset':
@@ -65,7 +65,7 @@ if ($data_id && $category) {
 		break;
 	case 'sys':
 		$cat = 'sys';
-		$q = "SELECT name FROM sys WHERE id = '$data_id'";
+		$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
 		$mainlink = "system.php?system=$data_id";
 		break;
 	case 'tag':
@@ -90,7 +90,7 @@ if ($data_id && $category) {
 		break;
 	default:
 		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
+		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 		$mainlink = "person.php?person=$data_id";
 	}
 	$title = getone($q);
@@ -100,11 +100,11 @@ if ($data_id && $category) {
 
 } else {
 	$data = [
-		'aut' => getassoc("CONCAT(firstname,' ',surname)", "aut"),
-		'sce' => getassoc("title", "sce"),
-		'convent' => getassoc("CONCAT(name,' (',COALESCE(year,'?'),')')","convent"),
+		'aut' => getassoc("CONCAT(firstname,' ',surname)", "person"),
+		'sce' => getassoc("title", "game"),
+		'convent' => getassoc("CONCAT(name,' (',COALESCE(year,'?'),')')","convention"),
 		'conset' => getassoc("name","conset"),
-		'sys' => getassoc("name","sys"),
+		'sys' => getassoc("name","gamesystem"),
 		'tag' => getassoc("tag","tag"),
 		'review' => getassoc("title","reviews"),
 		'issue' => getassoc("title","issue"),

@@ -10,7 +10,7 @@ $this_type = 'rss';
 $action = (string) $_REQUEST['action'];
 $url = (string)  $_REQUEST['url'];
 $pageurl = (string)  $_REQUEST['pageurl'];
-$aut_id = (int) $_REQUEST['aut_id'];
+$person_id = (int) $_REQUEST['person_id'];
 $id = (int) $_REQUEST['id'];
 $owner = (string) $_REQUEST['owner'];
 $name = (string)  $_REQUEST['name'];
@@ -31,7 +31,7 @@ if ($action == "changelink" && $do != "Slet") {
 	     "pageurl = '$pageurl', " .
 	     "owner = '$owner', " .
 	     "name = '$name', " .
-	     "aut_id = " . sqlifnull($aut_id) . " " .
+	     "person_id = " . sqlifnull($person_id) . " " .
 		 "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
@@ -69,8 +69,8 @@ if ($action == "addlink") {
 	$name = trim($name);
 	$pageurl = trim($pageurl);
 	$q = "INSERT INTO feeds " .
-	     "(url, owner, name, pageurl, aut_id) VALUES ".
-	     "('$url', '$owner', '$name', '$pageurl', " . sqlifnull($aut_id) . ")";
+	     "(url, owner, name, pageurl, person_id) VALUES ".
+	     "('$url', '$owner', '$name', '$pageurl', " . sqlifnull($person_id) . ")";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -79,7 +79,7 @@ if ($action == "addlink") {
 	$info = "Feed created! " . dberror();
 }
 
-	$query = "SELECT a.id, a.url, a.owner, a.name, a.pageurl, a.aut_id, COUNT(b.id) AS count FROM feeds a LEFT JOIN feedcontent b ON a.id = b.feed_id GROUP BY a.id ORDER BY a.id";
+	$query = "SELECT a.id, a.url, a.owner, a.name, a.pageurl, a.person_id, COUNT(b.id) AS count FROM feeds a LEFT JOIN feedcontent b ON a.id = b.feed_id GROUP BY a.id ORDER BY a.id";
 	$result = getall($query);
 
 htmladmstart("Feeds");
@@ -107,7 +107,7 @@ foreach($result AS $row) {
 	      '<td style="text-align:right;">'.$row['id'].'</td>'.
 	      '<td>Page:<br />Feed:</td>'.
 	      '<td><input type="text" name="pageurl" value="'.htmlspecialchars($row['pageurl']).'" size=50 maxlength=100><br /><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=50 maxlength=100></td>'.
-	      '<td><input type="text" name="owner" value="'.htmlspecialchars($row['owner']).'" size=30 maxlength=100><br /><input type="text" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size=3 maxlength=10></td>'.
+	      '<td><input type="text" name="owner" value="'.htmlspecialchars($row['owner']).'" size=30 maxlength=100><br /><input type="text" name="person_id" value="'.htmlspecialchars($row['person_id']).'" size=3 maxlength=10></td>'.
       '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=20 maxlength=100></td>'.
 	      '<td>'.htmlspecialchars($row['count']).'</td>'.
 	      '<td><input type="submit" name="do" value="Update"></td>'.
@@ -124,7 +124,7 @@ print "<tr>\n".
       '<td style="text-align:right;">New</td>'.
       '<td>Page:<br />Feed:</td>'.
       '<td><input type="text" name="pageurl" value="" size=50 maxlength=100><br /><input type="text" name="url" value="" size=50 maxlength=100></td>'.
-      '<td><input type="text" name="owner" value="" size=20 maxlength=100><br /><input type="text" name="aut_id" value="" size=3 maxlength=10></td>'.
+      '<td><input type="text" name="owner" value="" size=20 maxlength=100><br /><input type="text" name="person_id" value="" size=3 maxlength=10></td>'.
       '<td><input type="text" name="name" value="" size=20 maxlength=100></td>'.
       '<td></td>'.
       '<td colspan=3><input type="submit" name="do" value="Create"></td>'.

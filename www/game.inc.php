@@ -7,12 +7,12 @@ if ($game) {
 $this_id = $scenarie;
 
 $r = getrow("
-	SELECT sce.id, title, sce.intern, sys_id, sys_ext, aut_extra, sce.ottowinner, sce.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, sys.name AS sysname, COALESCE(alias.label, sys.name) AS system_translation
-	FROM sce
-	LEFT JOIN sys ON sce.sys_id = sys.id
-	LEFT JOIN alias ON sce.sys_id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE sce.id = $scenarie
-	GROUP BY sce.id
+	SELECT g.id, title, g.internal, gamesystem_id, gamesystem_extra, person_extra, g.ottowinner, g.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, gs.name AS sysname, COALESCE(alias.label, gs.name) AS system_translation
+	FROM game g
+	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
+	LEFT JOIN alias ON g.gamesystem_id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	WHERE g.id = $scenarie
+	GROUP BY g.id
 ");
 $showtitle = $gametitle = $r['title'];
 
@@ -21,7 +21,7 @@ if ($scenarie == 161)      award_achievement(55); // De Professionelle
 if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
 if ($scenarie == 3827)     award_achievement(57); // Paninaro
 if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Bicycling
-if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner
+if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner  :TODO: - check using achievement table
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario
 
 if ($r['id'] == 0) {
@@ -39,7 +39,7 @@ foreach ($descriptions AS $d_id => $description) {
 		$descriptions[$d_id]['langname'] = getLanguageName( $language );
 	}
 }
-$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['intern'] : ""); // only set intern if editor
+$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['internal'] : ""); // only set internal if editor
 
 // Description of participants
 $participants = [];
@@ -91,12 +91,12 @@ $filelist = getfilelist($scenarie,$this_type);
 // List of authors, ...
 $forflist = $scenlist = "";
 $q = getall("
-	SELECT aut.id, CONCAT(aut.firstname,' ',aut.surname) AS name, asrel.tit_id, asrel.note, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol
-	FROM aut
-	INNER JOIN asrel ON aut.id = asrel.aut_id
-	LEFT JOIN title ON asrel.tit_id = title.id
-	WHERE asrel.sce_id = '$scenarie'
-	ORDER BY title.priority, title.id, asrel.note = '' DESC, asrel.note, aut.surname, aut.firstname, aut.id
+	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol
+	FROM person p
+	INNER JOIN pgrel ON p.id = pgrel.person_id
+	LEFT JOIN title ON pgrel.title_id = title.id
+	WHERE pgrel.game_id = '$scenarie'
+	ORDER BY title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 foreach($q AS $rs) {
 	$title = $t->getTemplateVars( "_" . $rs['title_label'] );
@@ -128,18 +128,25 @@ if ($forflist) {
 
 // System
 if ($r['system_translation']) {
-	$syspart = '<a href="data?system=' . $r['sys_id'] . '" class="system">' . htmlspecialchars( $r['system_translation'] ) . '</a>';
-	if ($r['sys_ext']) $syspart .= " ".htmlspecialchars($r['sys_ext']);
+	$syspart = '<a href="data?system=' . $r['gamesystem_id'] . '" class="system">' . htmlspecialchars( $r['system_translation'] ) . '</a>';
+	if ($r['gamesystem_extra']) $syspart .= " ".htmlspecialchars($r['gamesystem_extra']);
 	$sysstring = $syspart;
-} elseif ($r['sys_ext']) {
-	$sysstring = htmlspecialchars($r['sys_ext']);
+} elseif ($r['gamesystem_extra']) {
+	$sysstring = htmlspecialchars($r['gamesystem_extra']);
 } else {
 	$sysstring = "";
 }
 
 // List of cons, the game has been played at
 $conlist = "";
-$q = getall("SELECT convent.id, convent.name, convent.year, convent.begin, convent.end, convent.cancelled, pre.event, pre.event_label, pre.iconfile, pre.textsymbol FROM convent, csrel, pre WHERE convent.id = csrel.convent_id AND csrel.pre_id = pre.id AND csrel.sce_id = '$scenarie' ORDER BY convent.year, convent.begin, pre.id, convent.name");
+$q = getall("
+	SELECT c.id, c.name, c.year, c.begin, c.end, c.cancelled, p.event, p.event_label, p.iconfile, p.textsymbol
+	FROM convention c
+	INNER JOIN cgrel ON c.id = cgrel.convention_id
+	INNER JOIN presentation p ON cgrel.presentation_id = p.id
+	WHERE cgrel.game_id = '$scenarie'
+	ORDER BY c.year, c.begin, p.id, c.name
+");
 foreach($q AS $rs) {
 	$coninfo = nicedateset($rs['begin'],$rs['end']);
 	$conlist .= "<tr><td>";
@@ -158,7 +165,7 @@ foreach($q AS $rs) {
 
 // List of runs
 $runlist = "";
-$q = getall("SELECT begin, end, location, country, description, cancelled FROM scerun WHERE sce_id = '$scenarie' ORDER BY begin, end, id");
+$q = getall("SELECT begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$scenarie' ORDER BY begin, end, id");
 foreach($q AS $rs) {
 	$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
 	$runlist .= ucfirst(nicedateset($rs['begin'],$rs['end']));
@@ -190,7 +197,14 @@ foreach($q AS $rs) {
 
 // Awards
 $awarddata = [];
-$q = getall("SELECT a.id, a.nominationtext, a.winner, a.ranking, b.name, c.id AS convent_id, c.name AS convent_name, c.year, c.conset_id FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id INNER JOIN convent c ON b.convent_id = c.id WHERE a.sce_id = $scenarie ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC");
+$q = getall("
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.conset_id
+	FROM award_nominees a
+	INNER JOIN award_categories b ON a.award_category_id = b.id
+	INNER JOIN convention c ON b.convention_id = c.id
+	WHERE a.game_id = $scenarie
+	ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC
+");
 foreach($q AS $rs) {
 	$awardtext = ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner') ) : ucfirst($t->getTemplateVars('_award_nominated') ) ) . ", " . htmlspecialchars($rs['name']);
 	if ($rs['ranking']) {
@@ -203,20 +217,26 @@ foreach($q AS $rs) {
 
 	}
 
-	$awarddata[$rs['convent_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
-	$awarddata[$rs['convent_id']]['conset_id'] = $rs['conset_id'];
-	$awarddata[$rs['convent_id']]['text'][] = $awardtext;
+	$awarddata[$rs['convention_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
+	$awarddata[$rs['convention_id']]['conset_id'] = $rs['conset_id'];
+	$awarddata[$rs['convention_id']]['text'][] = $awardtext;
 }
 $awards = [];
 
-foreach($awarddata AS $convent_id => $data) {
-	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convent_id;
+foreach($awarddata AS $convention_id => $data) {
+	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
 	$awards[] = [ 'con_award_url' => $con_award_url, 'con_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text']) ];
 }
 
 // Genre
 $genre = [];
-$q = getall("SELECT gen.id, gen.name FROM gsrel, gen WHERE gen.id = gsrel.gen_id AND gsrel.sce_id = '$scenarie' ORDER BY gen.name");
+$q = getall("
+	SELECT g.id, g.name
+	FROM genre g
+	INNER JOIN ggrel ON g.id = ggrel.genre_id
+	WHERE ggrel.game_id = '$scenarie'
+	ORDER BY g.name
+");
 foreach($q AS $rs) {
 	$genre[] = '<a href="scenarier?g='.$rs['id'].'">'.htmlspecialchars($rs['name']).'</a>';
 }
@@ -263,9 +283,9 @@ $t->assign('filelist', $filelist);
 $t->assign('filedir', getcategorydir($this_type) );
 
 $t->assign('forflist',$forflist);
-$t->assign('aut_extra',$r['aut_extra']);
+$t->assign('person_extra',$r['person_extra']);
 $t->assign('descriptions',$descriptions);
-$t->assign('intern',$intern);
+$t->assign('internal',$internal);
 $t->assign('gms',$gms);
 $t->assign('players',$players);
 $t->assign('participants',$participants);

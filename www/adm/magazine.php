@@ -22,7 +22,7 @@ $article_id = (int) $_REQUEST['article_id'];
 $highlight_article_id = (int) $_SESSION['highlight_article_id'];
 $page = (int) $_REQUEST['page'];
 $articletype = trim((string) $_REQUEST['articletype']);
-$sce_id = (int) $_REQUEST['sce_id'];
+$game_id = (int) $_REQUEST['game_id'];
 $contributors = (array) $_REQUEST['contributors'];
 $references = (array) $_REQUEST['references'];
 $original_article_id = (int) $_REQUEST['original_article_id'];
@@ -49,7 +49,7 @@ function insertContributors($contributors, $article_id) {
 		}
 		$person = autidextra($contributor['person']);
 		doquery("
-			INSERT INTO contributor (aut_id, aut_extra, role, article_id)
+			INSERT INTO contributor (person_id, person_extra, role, article_id)
 			VALUES (" . sqlifnull($person['id']) . ", '" . dbesc($person['extra']) . "', '" . dbesc($role) . "', $article_id)
 		");
 	}
@@ -174,7 +174,7 @@ if ($action == "changearticle" && $do != "Delete") {
 	     "title = '" . dbesc($title) . "', " .
 	     "description = '" . dbesc($description) . "', " .
 	     "articletype = '" . dbesc($articletype) . "', " .
-	     "sce_id = " . sqlifnull($sce_id) . " " .
+	     "game_id = " . sqlifnull($game_id) . " " .
 	     "WHERE id = $article_id";
 	$r = doquery($q);
 	if ($r) {
@@ -219,7 +219,7 @@ if ($action == "addarticle") {
 		! $title &&
 		! $description &&
 		! $articletype &&
-		! $sce_id &&
+		! $game_id &&
 		! $contributor_count &&
 		! $reference_count
 	) {
@@ -227,8 +227,8 @@ if ($action == "addarticle") {
 		rexit($this_type, ['magazine_id' => $magazine_id, 'issue_id' => $issue_id ]);
 	}
 	$q = "INSERT INTO article " .
-	     "(issue_id, page, title, description, articletype, sce_id) VALUES ".
-	     "($issue_id, ".  sqlifnull($page) . ", '" . dbesc($title) . "', '" . dbesc($description) . "', '" . dbesc($articletype) . "', " . sqlifnull($sce_id) . ")";
+	     "(issue_id, page, title, description, articletype, game_id) VALUES ".
+	     "($issue_id, ".  sqlifnull($page) . ", '" . dbesc($title) . "', '" . dbesc($description) . "', '" . dbesc($articletype) . "', " . sqlifnull($game_id) . ")";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -242,10 +242,10 @@ if ($action == "addarticle") {
 }
 
 if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
-	$r = doquery("INSERT INTO article (issue_id, page, title, description, articletype, sce_id) SELECT $issue_id, page, title, description, articletype, sce_id FROM article WHERE id = $original_article_id");
+	$r = doquery("INSERT INTO article (issue_id, page, title, description, articletype, game_id) SELECT $issue_id, page, title, description, articletype, game_id FROM article WHERE id = $original_article_id");
 	if ($r) {
 		$new_article_id = dbid();
-		doquery("INSERT INTO contributor (article_id, aut_id, aut_extra, role) SELECT $new_article_id, aut_id, aut_extra, role FROM contributor WHERE article_id = $original_article_id");
+		doquery("INSERT INTO contributor (article_id, person_id, person_extra, role) SELECT $new_article_id, person_id, person_extra, role FROM contributor WHERE article_id = $original_article_id");
 		chlog($issue_id,'issue',"Article duplicated: $original_article_id => $new_article_id");
 	}
 	$_SESSION['admin']['info'] = "Article duplicated! " . dberror();
@@ -348,9 +348,9 @@ if ($magazine_id && $issue_id) {
 	$files = getone("SELECT COUNT(*) FROM files WHERE category = 'issue' AND data_id = $issue_id");
 
 	$articles = getall("
-		SELECT article.id, article.page, article.title, article.description, article.articletype, article.sce_id, sce.title AS scetitle
+		SELECT article.id, article.page, article.title, article.description, article.articletype, article.game_id, g.title AS gametitle
 		FROM article
-		LEFT JOIN sce ON article.sce_id = sce.id
+		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issue_id
 		ORDER BY article.page, article.title != '', article.id
 	");
@@ -367,7 +367,7 @@ if ($magazine_id && $issue_id) {
 		$references_html = "";
 		if ( ! $new) {
 			// Non-optimal contributor and reference lookup
-			$contributors = getall("SELECT c.aut_id, c.aut_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN aut a ON c.aut_id = a.id WHERE article_id = $article_id ORDER BY c.id");
+			$contributors = getall("SELECT c.person_id, c.person_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN game a ON c.person_id = a.id WHERE article_id = $article_id ORDER BY c.id");
 			$references = getall("SELECT category, data_id FROM article_reference ar WHERE article_id = $article_id ORDER BY ar.id");
 			foreach ($references AS $reference_id => $reference) {
 				$entry = getentry($reference['category'], $reference['data_id']);
@@ -387,8 +387,8 @@ if ($magazine_id && $issue_id) {
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
 				'<input type="hidden" name="issue_id" value="' . $issue_id . '">'.
 				'<input type="hidden" name="article_id" value="' . $article_id . '">';
-		$person = ($article['aut_id'] ? $article['aut_id'] . " - " . $article['personname'] : $article['aut_extra'] );
-		$game = ($article['sce_id'] ? $article['sce_id'] . " - " . $article['scetitle'] : '' );
+		$person = ($article['person_id'] ? $article['person_id'] . " - " . $article['personname'] : $article['person_extra'] );
+		$game = ($article['game_id'] ? $article['game_id'] . " - " . $article['gametitle'] : '' );
 		print "<table>";
 		print '<tr valign="top" style="white-space: nowrap">' .
 				'<td style="text-align:right; min-width: 2em;" ' . ($article['id'] && $highlight_article_id == $article['id'] ? 'class="highlightarticle"' : '') . '>' . ($article['id'] ?? 'New') . '</td>'.
@@ -398,7 +398,7 @@ if ($magazine_id && $issue_id) {
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
 			$pcount++;
-			$person = ($contributor['aut_id'] ? $contributor['aut_id'] . ' - ' . $contributor['name'] : $contributor['aut_extra'] );
+			$person = ($contributor['person_id'] ? $contributor['person_id'] . ' - ' . $contributor['name'] : $contributor['person_extra'] );
 			print '<input type="text" placeholder="Person" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
 			print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" class="peopleroles" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
 			if ($pcount == 1) {
@@ -425,7 +425,7 @@ if ($magazine_id && $issue_id) {
 			print '<br>';
 		}
 		print '</td>' .
-				'<td><input type="text" name="sce_id" value="'.htmlspecialchars($game).'" class="gametags" size=20 maxlength=150 placeholder="Copy of existing game"></td>' .
+				'<td><input type="text" name="game_id" value="'.htmlspecialchars($game).'" class="gametags" size=20 maxlength=150 placeholder="Copy of existing game"></td>' .
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
 				(! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove article?\');">' : '') . '</td>'.
 				"</tr>\n";

@@ -36,27 +36,31 @@ function antaltxt ($new, $rerun, $cancelled, $total, $type = 'sce') {
 if ($con == 26) award_achievement(79); // X-Con
 if ($con == 127 || $con == 743) award_achievement(80); // 1. Copenhagen Gamecon (Viking Con I) or Konvent '77 (GothCon I)
 
-$convent = getrow("SELECT convent.id, convent.name, convent.intern, convent.year, convent.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname, COALESCE(convent.country, conset.country) AS country FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE convent.id = $con");
-if (is_null($convent['id']) ) {
+$convention = getrow("SELECT c.id, c.name, c.internal, c.year, c.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname, COALESCE(c.country, conset.country) AS country
+	FROM convention c
+	LEFT JOIN conset ON c.conset_id = conset.id
+	WHERE c.id = $con
+");
+if (is_null($convention['id']) ) {
 	$t->assign('content', $t->getTemplateVars('_nomatch') );
 	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
 	$t->display('default.tpl');
 	exit;
 }
-$showtitle = $conventname = $convent['name'];
-$intern = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $convent['intern'] : ""); // only set intern if editor
+$showtitle = $conventname = $convention['name'];
+$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $convention['internal'] : ""); // only set internal if editor
 
 // List of files
 $filelist = getfilelist($con,$this_type);
 
 // Part of con series? Find previous and next.
-if ($convent['conset_id']) {
-	$cname = ($convent['conset_id'] == 40 ? $t->getTemplateVars('_cons_other') : $convent['cname']);
-	$partofhtml = "<a href=\"data?conset=" . $convent['conset_id'] . "\" class=\"con\">" . htmlspecialchars( $cname ) . "</a>";
+if ($convention['conset_id']) {
+	$cname = ($convention['conset_id'] == 40 ? $t->getTemplateVars('_cons_other') : $convention['cname']);
+	$partofhtml = "<a href=\"data?conset=" . $convention['conset_id'] . "\" class=\"con\">" . htmlspecialchars( $cname ) . "</a>";
 	$qq = getall("
 		SELECT id, name, year, begin, end
-		FROM convent 
-		WHERE conset_id = " . $convent['conset_id'] . "
+		FROM convention 
+		WHERE conset_id = " . $convention['conset_id'] . "
 		ORDER BY year, begin, name
 	");
 	unset($seriedata,$seriecount,$seriethis);
@@ -90,25 +94,25 @@ if ($convent['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT sce.id, sce.title, sce.boardgame, pre.id AS preid, pre.event, pre.event_label, pre.iconfile, pre.textsymbol, sce.sys_ext, sys.id AS sys_id, sys.name AS sys_name, COUNT(files.id) AS files, aut.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, sce.title) AS title_translation, COALESCE(a2.label, sys.name) AS system_translation
-	FROM csrel
-	INNER JOIN sce ON sce.id = csrel.sce_id
-	LEFT JOIN pre ON csrel.pre_id = pre.id 
-	LEFT JOIN sys ON sce.sys_id = sys.id
-	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-	LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id IN(1,4,5)
-	LEFT JOIN aut ON aut.id = asrel.aut_id
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	LEFT JOIN alias a2 ON sys.id = a2.data_id AND a2.category = 'sys' AND a2.language = '" . LANG . "' AND a2.visible = 1
-	WHERE csrel.convent_id = $con
-	GROUP BY sce.id, pre.id, aut.id
-	ORDER BY boardgame, title_translation, aut.surname, aut.firstname
+	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(files.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation
+	FROM cgrel
+	INNER JOIN game g ON g.id = cgrel.game_id
+	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
+	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
+	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5)
+	LEFT JOIN person p ON p.id = pgrel.person_id
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias a2 ON gs.id = a2.data_id AND a2.category = 'sys' AND a2.language = '" . LANG . "' AND a2.visible = 1
+	WHERE cgrel.convention_id = $con
+	GROUP BY g.id, pr.id, p.id
+	ORDER BY boardgame, title_translation, p.surname, p.firstname
 ");
 
 foreach ($q AS $r) {
 	$sid = $r['id'];
 	if ( ! isset($gamelist[$sid])) {
-		$gamelist[$sid] = ['game' => ['title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['aut_extra'], 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['sys_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['sys_ext'], 'pre_id' => $r['pre_id'], 'pre_event' => $r['pre_event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'] ], 'person' => [] ];
+		$gamelist[$sid] = ['game' => ['title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['person_extra'] ?? NULL, 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['gamesystem_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['gamesystem_extra'], 'presentation_id' => $r['presentation_id'] ?? NULL, 'pre_event' => $r['event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'] ], 'person' => [] ];
 	}
 	if ($r['person_id']) {
 		$gamelist[$sid]['person'][$r['person_id']] = $r['person_name'];
@@ -163,9 +167,9 @@ foreach($gamelist AS $game_id => $game) {
 		'filescount' => $game['game']['files'],
 		'runsymbol' => $runsymbol,
 		'title' => $game['game']['title_translation'],
-		'authtml' => $personhtml,
-		'autextracount' => count($personlistextra),
-		'autextrahtml' => $personextrahtml ?? '',
+		'personhtml' => $personhtml,
+		'personextracount' => count($personlistextra),
+		'personextrahtml' => $personextrahtml ?? '',
 		'systemhtml' => $sysstring ?? FALSE,
 		'system_id' => $game['game']['system_id'],
 		'system_name' => $game['game']['system_name'],
@@ -199,11 +203,11 @@ foreach($gamelist AS $game_id => $game) {
 
 // List of awards
 $award_nominees = getall("
-	SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.sce_id, b.id AS category_id, b.convent_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title, COALESCE(e.label,d.title) AS title_translation
+	SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.game_id, b.id AS category_id, b.convention_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title, COALESCE(e.label,d.title) AS title_translation
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	LEFT JOIN convent c ON b.convent_id = c.id
-	LEFT JOIN sce d ON a.sce_id = d.id
+	LEFT JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN game d ON a.game_id = d.id
 	LEFT JOIN alias e ON d.id = e.data_id AND e.category = 'sce' AND e.language = '" . LANG . "' AND e.visible = 1
 	WHERE c.id = $con
 	ORDER BY c.year DESC, a.winner DESC, a.id
@@ -214,13 +218,13 @@ $awardnominees = [];
 $html = "";
 foreach ($award_nominees AS $nominee) {
 	$cid = $nominee['conset_id'];
-	$con_id = $nominee['convent_id'];
+	$con_id = $nominee['convention_id'];
 	$cat_id = $nominee['category_id'];
 	if (!$cid) $cid = 0;
 	$awardnominees[$cid][$con_id]['name'] = $nominee['con_name'];
 	$awardnominees[$cid][$con_id]['year'] = $nominee['year'];
 	$awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
-	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'sce_id' => $nominee['sce_id'], 'title' => $nominee['title_translation'] ];
+	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation'] ];
 }
 
 if ($awardnominees) {
@@ -235,8 +239,8 @@ if ($awardnominees) {
 				$html .= "<div class=\"" . $class . "\">";
 				$html .= "<h5 class=\"" . $class . "\">";
 				$html .= "<span class=\"" . $class . "\">";
-				if ($nominee['sce_id']) {
-					$html .= getdatahtml('sce', $nominee['sce_id'], $nominee['title']);
+				if ($nominee['game_id']) {
+					$html .= getdatahtml('sce', $nominee['game_id'], $nominee['title']);
 				} else {
 					$html .= htmlspecialchars($nominee['name']);
 				}
@@ -296,8 +300,8 @@ $available_pic = hasthumbnailpic($con, $this_type);
 // Userdata
 $userlog = array();
 if ($_SESSION['user_id']) {
-	$userlog = getuserlog($_SESSION['user_id'],$this_type,$convent['id']);
-	$users_entries = getalluserentries('convent', $convent['id']);
+	$userlog = getuserlog($_SESSION['user_id'],$this_type,$convention['id']);
+	$users_entries = getalluserentries('convent', $convention['id']);
 }
 
 // Edit mode?
@@ -305,28 +309,28 @@ $editorganizers = ($edit == 'organizers');
 $editmode = ( isset($_SESSION['user_id']) && $editorganizers );
 $people = [];
 if ($editmode) {
-	$people = getcol("SELECT CONCAT(id, ' - ', firstname, ' ', surname) AS id_name FROM aut ORDER BY firstname, surname");	
+	$people = getcol("SELECT CONCAT(id, ' - ', firstname, ' ', surname) AS id_name FROM person ORDER BY firstname, surname");	
 }
 $json_people = json_encode($people);
 
 // Smarty
-$t->assign('pagetitle',$showtitle." (" . ( $convent['year'] ? yearname($convent['year']) : "?" ) . ")");
+$t->assign('pagetitle',$showtitle." (" . ( $convention['year'] ? yearname($convention['year']) : "?" ) . ")");
 $t->assign('type',$this_type);
 
 $t->assign('id',$con);
 $t->assign('name', $showtitle);
-$t->assign('year',($convent['year'] ? $convent['year'] : "?") );
+$t->assign('year',($convention['year'] ? $convention['year'] : "?") );
 $t->assign('arrowset',$arrows);
 $t->assign('pic',$available_pic);
 $t->assign('ogimage', getimageifexists($this_id, $this_type) );
-$t->assign('place',$convent['place']);
-$t->assign('countrycode',$convent['country']);
-$t->assign('dateset',nicedateset($convent['begin'],$convent['end']));
+$t->assign('place',$convention['place']);
+$t->assign('countrycode',$convention['country']);
+$t->assign('dateset',nicedateset($convention['begin'],$convention['end']));
 $t->assign('partof',$partofhtml);
-$t->assign('confirmed',$convent['confirmed']);
-$t->assign('cancelled',$convent['cancelled']);
-$t->assign('description',$convent['description']);
-$t->assign('intern',$intern);
+$t->assign('confirmed',$convention['confirmed']);
+$t->assign('cancelled',$convention['cancelled']);
+$t->assign('description',$convention['description']);
+$t->assign('internal',$internal);
 $t->assign('scenlistdata',$scenlistdata);
 $t->assign('boardlistdata',$boardlistdata);
 $t->assign('organizerlist',$organizerlist);
@@ -346,7 +350,7 @@ $t->assign('user_can_edit_organizers',$_SESSION['can_edit_organizers'] ?? FALSE 
 $t->assign('user_visited',in_array('visited',$userlog));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
-if ($con == 504 || $convent['conset_id'] == 117) { // Hardcoded: "Rollespil din Pride" + QueerCon cons
+if ($con == 504 || $convention['conset_id'] == 117) { // Hardcoded: "Rollespil din Pride" + QueerCon cons
 	$t->assign('lgbtmenu', TRUE);
 }
 

@@ -12,22 +12,22 @@ htmladmstart("Checkup");
 // Orphan, person<=>game
 $query = "
 	SELECT
-		asrel.id,
-		aut_id,
-		sce_id,
-		aut.id AS autid,
-		sce.id AS sceid,
+		pgrel.id,
+		person_id,
+		game_id,
+		p.id AS autid,
+		g.id AS gameid,
 		CONCAT(firstname,' ',surname) AS name,
-		sce.title
+		g.title
 	FROM
-		asrel
+		pgrel
 	LEFT JOIN
-		aut ON aut.id = aut_id
+		person p ON p.id = person_id
 	LEFT JOIN
-		sce ON sce.id = sce_id
+		game g ON g.id = game_id
 	WHERE
-		sce.id IS NULL OR
-		aut.id IS NULL
+		g.id IS NULL OR
+		p.id IS NULL
 	";
 
 $result = getall($query);
@@ -36,12 +36,12 @@ $htmlorpaut = "Check of orphans, person&lt;=&gt;game: ";
 
 if ($result) {
 	$htmlorpaut .=  "<table border=1 cellspacing=0 >";
-	$htmlorpaut .= "<tr><th>ID</th><th>aut_id</th><th>sce_id</th><th>aut</th><th>sce</th></tr>";
+	$htmlorpaut .= "<tr><th>ID</th><th>person_id</th><th>game_id</th><th>person</th><th>game</th></tr>";
 	foreach($result AS $row) {
 		$htmlorpaut .= "<tr>".
 		               "<td align=\"right\">{$row['id']}</td>".
-		               "<td align=\"right\">{$row['aut_id']}</td>".
-		               "<td align=\"right\">{$row['sce_id']}</td>".
+		               "<td align=\"right\">{$row['person_id']}</td>".
+		               "<td align=\"right\">{$row['game_id']}</td>".
 		               "<td align=\"right\">{$row['name']}</td>".
 		               "<td align=\"right\">{$row['title']}</td>".
 		               "</tr>";
@@ -55,22 +55,22 @@ if ($result) {
 // Orphan, game<=>con
 $query = "
 	SELECT
-		csrel.id,
-		csrel.convent_id,
-		sce_id,
-		convent.id AS conid,
-		sce.id AS sceid,
-		convent.name,
-		sce.title
+		cgrel.id,
+		cgrel.convention_id,
+		game_id,
+		c.id AS conid,
+		g.id AS gameid,
+		c.name,
+		g.title
 	FROM
-		csrel
+		cgrel
 	LEFT JOIN
-		convent ON convent.id = csrel.convent_id
+		convention c ON c.id = cgrel.convention_id
 	LEFT JOIN
-		sce ON sce.id = sce_id
+		sce ON g.id = game_id
 	WHERE
-		sce.id IS NULL OR
-		convent.id IS NULL
+		g.id IS NULL OR
+		c.id IS NULL
 	";
 
 $result = getall($query);
@@ -79,12 +79,12 @@ $htmlorpsce .= "Check of orphans, game&lt;=&gt;con: ";
 
 if ($result) {
 	$htmlorpsce .= "<table border=1 cellspacing=0 >";
-	$htmlorpsce .= "<tr><th>ID</th><th>convent_id</th><th>sce_id</th><th>convent</th><th>sce</th></tr>";
+	$htmlorpsce .= "<tr><th>ID</th><th>convention_id</th><th>game_id</th><th>convent</th><th>sce</th></tr>";
 	foreach($result AS $row) {
 		$htmlorpsce .= "<tr>".
 		               "<td align=\"right\">$row[id]</td>".
-		               "<td align=\"right\">$row[convent_id]</td>".
-		               "<td align=\"right\">$row[sce_id]</td>".
+		               "<td align=\"right\">$row[convention_id]</td>".
+		               "<td align=\"right\">$row[game_id]</td>".
 		               "<td align=\"right\">$row[name]</td>".
 		               "<td align=\"right\">$row[title]</td>".
 		               "</tr>";
@@ -98,27 +98,27 @@ if ($result) {
 // Orphan, game=>system
 $query = "
 	SELECT
-		sce.id,
+		g.id,
 		title,
-		sys_id
+		gamesystem_id
 	FROM
 		sce
 	LEFT JOIN
-		sys ON sce.sys_id = sys.id
+		sys ON g.gamesystem_id = sys.id
 	WHERE
-		sys_id > 0 AND
+		gamesystem_id > 0 AND
 		sys.id IS NULL
 	";
 $result = getall($query);
 $htmlorpscesys .= "Check of orphans, game=&gt;system: ";
 if ($result) {
 	$htmlorpscesys .= "<table border=1 cellspacing=0 >";
-	$htmlorpscesys .= "<tr><th>ID</th><th>title</th><th>sys_id</th></tr>";
+	$htmlorpscesys .= "<tr><th>ID</th><th>title</th><th>gamesystem_id</th></tr>";
 	foreach($result AS $row) {
 		$htmlorpscesys .= "<tr>".
 		               "<td align=\"right\">$row[id]</td>".
 		               "<td align=\"right\">$row[title]</td>".
-		               "<td align=\"right\">$row[sys_id]</td>".
+		               "<td align=\"right\">$row[gamesystem_id]</td>".
 		               "</tr>";
 	}
 
@@ -132,22 +132,26 @@ $languages = getall("SELECT data_id, category, language FROM files WHERE languag
 foreach ( $languages AS $language ) {
 	$htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">'.$language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
 }
-$gamedescriptions = getall("SELECT g.game_id, g.language, sce.title FROM game_description g INNER JOIN sce ON g.game_id = sce.id WHERE g.language REGEXP('^(dk|se|no)') OR g.language REGEXP '^..[a-z]'");
+$gamedescriptions = getall("SELECT g.game_id, g.language, g.title
+	FROM game_description gd
+	INNER JOIN game g ON gd.game_id = g.id
+	WHERE gd.language REGEXP('^(dk|se|no)') OR gd.language REGEXP '^..[a-z]'
+");
 foreach ( $gamedescriptions AS $gamedescription ) {
 	$htmlisocodes .= 'Game description for <a href="game.php?game=' . $gamedescription['game_id'] . '">' . htmlspecialchars($gamedescription['title']) . "</a> (" . htmlspecialchars($gamedescription['language']) . ")<br>";
 }
 $countries = getall("
 	SELECT * FROM (
-		SELECT id, country, 'convent' AS category FROM convent
+		SELECT id, country, 'convention' AS category FROM convention c
 		UNION ALL
 		SELECT id, country, 'conset' AS category FROM conset
 		UNION ALL
-		SELECT sce_id AS id, country, 'scerun' FROM scerun
+		SELECT game_id AS id, country, 'gamerun' FROM gamerun
 	) a
 	WHERE country IN('da','sv','nb','uk') OR country REGEXP '^..[a-z]'
 ");
 foreach ( $countries AS $country ) {
-	$htmlisocodes .= '<a href="' . ($country['category'] == 'scerun' ? 'run.php?id=' : ( $country['category'] == 'convent' ? 'convent.php?con=' : 'conset.php?conset=') ) . $country['id'] . '">';
+	$htmlisocodes .= '<a href="' . ($country['category'] == 'gamerun' ? 'run.php?id=' : ( $country['category'] == 'convention' ? 'c.php?con=' : 'conset.php?conset=') ) . $country['id'] . '">';
 	$htmlisocodes .= 'Dataset ' .$country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
 if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
@@ -157,17 +161,17 @@ if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
 $htmlorganizer = "<b>Organizers without ID:</b><br>\n";
 
 $query = "
-	SELECT aut_extra, convent.id, convent.name, convent.year
-	FROM acrel
-	INNER JOIN convent ON acrel.convent_id = convent.id
-	WHERE aut_extra != ''
-	ORDER BY convent.year DESC, convent.begin DESC, convent.name ASC
+	SELECT person_extra, c.id, c.name, c.year
+	FROM pcrel
+	INNER JOIN convention c ON pcrel.convention_id = c.id
+	WHERE person_extra != ''
+	ORDER BY c.year DESC, c.begin DESC, c.name ASC
 ";
 $result = getall($query);
 $nameid = 0;
 $persons = [];
 foreach($result AS $row) { // create tree
-	$persons[$row['aut_extra']][] = $row;
+	$persons[$row['person_extra']][] = $row;
 }
 array_multisort(array_map('count', $persons), SORT_DESC, $persons);
 foreach($persons AS $name => $data) {
@@ -187,12 +191,12 @@ foreach($persons AS $name => $data) {
 
 $htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
 
-$query = "SELECT COUNT(*) AS antal, GROUP_CONCAT(convent_id ORDER BY convent_id) AS convent_ids, aut_extra AS name, aut.id AS aut_id FROM acrel INNER JOIN aut ON acrel.aut_extra = CONCAT(aut.firstname, ' ', aut.surname) WHERE aut_extra != '' GROUP BY aut_extra ORDER BY antal DESC, name";
+$query = "SELECT COUNT(*) AS antal, GROUP_CONCAT(convention_id ORDER BY convention_id) AS convention_ids, person_extra AS name, p.id AS person_id FROM pcrel INNER JOIN person p ON pcrel.person_extra = CONCAT(p.firstname, ' ', p.surname) WHERE person_extra != '' GROUP BY person_extra ORDER BY antal DESC, name";
 $result = getall($query);
 foreach($result AS $row) {
-	$htmlorganizermatch .= "<a href=\"person.php?person={$row['aut_id']}\">{$row['name']}</a> ({$row['antal']})";
-	foreach(explode(",",$row['convent_ids']) AS $convent_id) {
-		$htmlorganizermatch .= " <a href=\"organizers.php?category=convent&data_id=$convent_id\">#$convent_id</a>";
+	$htmlorganizermatch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['antal']})";
+	foreach(explode(",",$row['convention_ids']) AS $convention_id) {
+		$htmlorganizermatch .= " <a href=\"organizers.php?category=convent&data_id=$convention_id\">#$convention_id</a>";
 	}
 
 	$htmlorganizermatch .= "<br>\n";
@@ -201,19 +205,19 @@ foreach($result AS $row) {
 $htmlmagazine = "<b>Magazine content providers without ID:</b><br>\n";
 
 $query = "
-	SELECT contributor.aut_extra, issue.title, magazine.name, issue.magazine_id, article.issue_id
+	SELECT contributor.person_extra, issue.title, magazine.name, issue.magazine_id, article.issue_id
 	FROM contributor
 	INNER JOIN article ON contributor.article_id = article.id
 	INNER JOIN issue ON article.issue_id = issue.id
 	INNER JOIN magazine ON issue.magazine_id = magazine.id
-	WHERE contributor.aut_extra != ''
+	WHERE contributor.person_extra != ''
 	ORDER BY issue.releasedate DESC, issue.id DESC
 ";
 $result = getall($query);
 $nameid = 0;
 $persons = [];
 foreach($result AS $row) { // create tree
-	$persons[$row['aut_extra']][] = $row;
+	$persons[$row['person_extra']][] = $row;
 }
 array_multisort(array_map('count', $persons), SORT_DESC, $persons);
 foreach($persons AS $name => $data) {
@@ -234,17 +238,17 @@ foreach($persons AS $name => $data) {
 $htmlmagazinematch = "<b>Magazine content providers without ID, perhaps existing?</b><br>\n";
 
 $query = "
-	SELECT COUNT(*) AS count, GROUP_CONCAT(DISTINCT issue_id ORDER BY issue_id) AS issue_ids, contributor.aut_extra AS name, aut.id AS aut_id
+	SELECT COUNT(*) AS count, GROUP_CONCAT(DISTINCT issue_id ORDER BY issue_id) AS issue_ids, contributor.person_extra AS name, p.id AS person_id
 	FROM contributor
-	INNER JOIN aut ON contributor.aut_extra = CONCAT(aut.firstname, ' ', aut.surname)
+	INNER JOIN person p ON contributor.person_extra = CONCAT(p.firstname, ' ', p.surname)
 	INNER JOIN article ON contributor.article_id = article.id
-	WHERE contributor.aut_extra != ''
-	GROUP BY contributor.aut_extra, aut.id
+	WHERE contributor.person_extra != ''
+	GROUP BY contributor.person_extra, p.id
 	ORDER BY count DESC, name
 ";
 $result = getall($query);
 foreach($result AS $row) {
-	$htmlmagazinematch .= "<a href=\"person.php?person={$row['aut_id']}\">{$row['name']}</a> ({$row['count']})";
+	$htmlmagazinematch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['count']})";
 	foreach(explode(",",$row['issue_ids']) AS $issue_id) {
 		$htmlmagazinematch .= " <a href=\"magazine.php?issue_id=$issue_id\">#$issue_id</a>";
 	}
@@ -256,10 +260,10 @@ foreach($result AS $row) {
 $htmlgamenotregistered = "<b>Most used non-registered systems:</b><br>\n";
 
 $minantal = 2;
-$query = "SELECT COUNT(*) AS antal, sys_ext FROM sce WHERE (sys_id IS NULL OR sys_id = 0) AND sys_ext != '' GROUP BY sys_ext HAVING antal >= $minantal ORDER BY antal DESC ";
+$query = "SELECT COUNT(*) AS antal, gamesystem_extra FROM game g WHERE (gamesystem_id IS NULL OR gamesystem_id = 0) AND gamesystem_extra != '' GROUP BY gamesystem_extra HAVING antal >= $minantal ORDER BY antal DESC ";
 $result = getall($query);
 foreach($result AS $row) {
-	$htmlgamenotregistered .= $row['sys_ext']." ($row[antal])<br>\n";
+	$htmlgamenotregistered .= $row['gamesystem_extra']." ($row[antal])<br>\n";
 }
 
 // PERSONS WITHOUT ANY RELATIONS
@@ -268,12 +272,12 @@ $htmlloneper = "<b>Persons without relation to game, organizer, award or magazin
 // Checking game, organizer, awards, magazines
 $query = "
 	SELECT id, CONCAT(firstname,' ',surname) AS name
-	FROM aut
-	WHERE NOT EXISTS (SELECT 1 FROM asrel WHERE aut.id = asrel.aut_id)
-	AND NOT EXISTS (SELECT 1 FROM acrel WHERE aut.id = acrel.aut_id)
-	AND NOT EXISTS (SELECT 1 FROM contributor WHERE aut.id = contributor.aut_id)
-	AND NOT EXISTS (SELECT 1 FROM article_reference WHERE aut.id = article_reference.data_id AND category = 'person')
-	AND NOT EXISTS (SELECT 1 FROM award_nominee_entities WHERE aut.id = award_nominee_entities.data_id AND category = 'aut')
+	FROM person p
+	WHERE NOT EXISTS (SELECT 1 FROM pgrel WHERE p.id = pgrel.person_id)
+	AND NOT EXISTS (SELECT 1 FROM pcrel WHERE p.id = pcrel.person_id)
+	AND NOT EXISTS (SELECT 1 FROM contributor WHERE p.id = contributor.person_id)
+	AND NOT EXISTS (SELECT 1 FROM article_reference WHERE p.id = article_reference.data_id AND category = 'person')
+	AND NOT EXISTS (SELECT 1 FROM award_nominee_entities WHERE p.id = award_nominee_entities.data_id AND category = 'aut')
 ";
 
 $result = getall($query);
@@ -284,22 +288,22 @@ foreach($result AS $row) {
 // CHECK CONS WITHOUT START DATE
 $htmlcondate = "<b>Conventions missing exact start date:</b><br>\n";
 
-$query = "SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE begin IS NULL OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
+$query = "SELECT c.id, c.name, year, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id WHERE begin IS NULL OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
 
 $result = getall($query);
 foreach($result AS $row) {
-	$htmlcondate .= "<a href=\"convent.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
+	$htmlcondate .= "<a href=\"c.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
 }
 
 // Authors with most non-downloadable scenarios
 $htmlnodownloadaut = "<b>Authors with most non-downloadable scenarios:</b><br>\n";
 $query = "
-	SELECT aut.id, firstname, surname, COUNT(*) as missing
-	FROM aut
-	INNER JOIN asrel ON aut.id = asrel.aut_id AND asrel.tit_id = 1
-	LEFT JOIN files ON asrel.sce_id = files.data_id AND files.category = 'sce'
+	SELECT p.id, firstname, surname, COUNT(*) as missing
+	FROM person p
+	INNER JOIN pgrel ON p.id = pgrel.person_id AND pgrel.title_id = 1
+	LEFT JOIN files ON pgrel.game_id = files.data_id AND files.category = 'sce'
 	WHERE files.id IS NULL
-	GROUP BY aut.id
+	GROUP BY p.id
 	ORDER BY missing DESC
 	LIMIT 40
 ";
@@ -310,7 +314,7 @@ foreach($result AS $row) {
 }
 
 // Same persons?
-$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM aut ORDER BY name");
+$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM person p ORDER BY name");
 $htmlnames = "<b>Possible duplicate authors (based on middle name):</b><br>\n";
 foreach ($names AS $id => $name) {
     $parts = explode(' ', $name);

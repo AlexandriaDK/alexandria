@@ -153,7 +153,7 @@ if ($type == 1) { // HTML scraper
             $fulldescription = $game[4];
             $description = html_entity_decode(strip_tags($fulldescription));
             $internal = '';
-            $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'");
+            $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'");
             print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
             print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset);
             print "<hr>";
@@ -209,7 +209,7 @@ if ($type == 1) { // HTML scraper
         $members = implode(', ', $team_members); // For internal note
         $internal = "Autoimport: Import Intercon\nIntercon ID: $intercon_id\nDuration: $length_hours hours\nGMs: $members\n\nEntry: " . json_encode($entry) . "\n\nForm: " . json_encode($form) . "\n";
 
-        $existing = getone("SELECT COUNT(*) FROM sce WHERE title = '" . dbesc($title) . "'");
+        $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'");
         print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing .' existing">⚠️</a>' : '' ) . "</p>";
         print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, '' );
         print "<hr>";

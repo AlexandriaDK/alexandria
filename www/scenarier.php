@@ -23,7 +23,7 @@ foreach($chars AS $char) {
 
 // fetch genres
 $genre = [];
-$genres = getcolid("SELECT gen.id, gen.name FROM gen ORDER BY gen.name");
+$genres = getcolid("SELECT g.id, g.name FROM genre g ORDER BY g.name");
 foreach($genres AS $gid => $gname) {
 	$genre[] = '<a href="scenarier?g='.$gid.'">'.htmlspecialchars($gname).'</a>';
 }
@@ -37,57 +37,55 @@ if ($b == "") {
 }
 
 if ($g) {
-	$wherepart = "LEFT JOIN gsrel ON sce.id = gsrel.sce_id WHERE gsrel.gen_id = $g";
+	$wherepart = "LEFT JOIN ggrel ON g.id = ggrel.game_id WHERE ggrel.genre_id = $g";
 } else {
 	if ($b == "1") {
 		$beginchar = "1";
-		$wherepart = "COALESCE(alias.label, sce.title) REGEXP '^[^a-zæøå]'";
+		$wherepart = "COALESCE(alias.label, g.title) REGEXP '^[^a-zæøå]'";
 	} elseif (in_array($b,$chars)) {
 		$beginchar = $b;
-		$wherepart = "COALESCE(alias.label, sce.title) LIKE '$b%'";
+		$wherepart = "COALESCE(alias.label, g.title) LIKE '$b%'";
 	} else {
 		$beginchar = "a";
-		$wherepart = "COALESCE(alias.label, sce.title) LIKE 'a%'";
+		$wherepart = "COALESCE(alias.label, g.title) LIKE 'a%'";
 	}
 	if ($wherepart) {
 		$wherepart = "WHERE ".$wherepart;
 	}
 }
 if ($wherepart) {
-	$wherepart .= " AND sce.boardgame = 0";
+	$wherepart .= " AND g.boardgame = 0";
 } else {
-	$wherepart = "WHERE sce.boardgame = 0";
+	$wherepart = "WHERE g.boardgame = 0";
 }
 
-// Find all games, including persons and cons - restrict to one premiere convent
+// Find all games, including persons and cons - restrict to one premiere convention
 $r = getall("
-	SELECT aut.id AS autid, CONCAT(aut.firstname,' ',aut.surname) AS autname, sce.id, sce.title, sce.boardgame, convent.id AS convent_id, convent.name AS convent_name, convent.year, convent.begin, convent.end, convent.cancelled, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
-	FROM sce
-	LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
-	LEFT JOIN convent ON csrel.convent_id = convent.id
-	LEFT JOIN asrel ON sce.id = asrel.sce_id AND asrel.tit_id = 1
-	LEFT JOIN aut ON asrel.aut_id = aut.id
-	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	SELECT p.id AS autid, CONCAT(p.firstname,' ',p.surname) AS autname, g.id, g.title, g.boardgame, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.end, c.cancelled, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
+	LEFT JOIN cgrel ON g.id = cgrel.game_id AND cgrel.presentation_id = 1
+	LEFT JOIN convention c ON cgrel.convention_id = c.id
+	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id = 1
+	LEFT JOIN person p ON pgrel.person_id = p.id
+	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	$wherepart
-	GROUP BY csrel.pre_id,csrel.sce_id,asrel.aut_id, sce.id, convent.id
-	ORDER BY title_translation, aut.surname, aut.firstname, convent.year, convent.begin, convent.end
+	GROUP BY cgrel.presentation_id,cgrel.game_id,pgrel.person_id, g.id, c.id
+	ORDER BY title_translation, p.surname, p.firstname, c.year, c.begin, c.end
 ");
 
-$last_sce_id = 0;
 $xscenlist = "";
 
-// byg scenarieliste på forhånd
+// Create preliminary scenario list 
 $scenarios = [];
 foreach ($r AS $row) {
-	$sce_id = $row['id'];
-	$scenarios[$sce_id]['title'] = $row['title_translation'];
-	$scenarios[$sce_id]['origtitle'] = $row['title'];
-	$scenarios[$sce_id]['boardgame'] = $row['boardgame'];
-	$scenarios[$sce_id]['aut'][$row['autid']] = [ 'name' => $row['autname'] ];
-#	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'name' => $row['convent_name'], 'year' => $row['year'] ];
-	$scenarios[$sce_id]['con'][$row['convent_id']] = [ 'id' => $row['convent_id'], 'name' => $row['convent_name'], 'year' => $row['year'], 'cancelled' => $row['cancelled'], 'begin' => $row['begin'], 'end' => $row['end'] ];
-	$scenarios[$sce_id]['downloadable'] = ($row['files'] > 0);
+	$game_id = $row['id'];
+	$scenarios[$game_id]['title'] = $row['title_translation'];
+	$scenarios[$game_id]['origtitle'] = $row['title'];
+	$scenarios[$game_id]['boardgame'] = $row['boardgame'];
+	$scenarios[$game_id]['aut'][$row['autid']] = [ 'name' => $row['autname'] ];
+	$scenarios[$game_id]['con'][$row['convention_id']] = [ 'id' => $row['convention_id'], 'name' => $row['convent_name'], 'year' => $row['year'], 'cancelled' => $row['cancelled'], 'begin' => $row['begin'], 'end' => $row['end'] ];
+	$scenarios[$game_id]['downloadable'] = ($row['files'] > 0);
 }
 
 foreach($scenarios AS $scenario_id => $scenario) {
@@ -117,18 +115,18 @@ foreach($scenarios AS $scenario_id => $scenario) {
 
 	// authors
 	$xscenlist .= "\t\t<td>";
-	foreach ($scenario['aut'] AS $aut_id => $person) {
-		if ($aut_id) {
-			$xscenlist .= "<a href=\"data?person=" . $aut_id . "\" class=\"person\">" . htmlspecialchars($person['name']) . "</a><br>\n";
+	foreach ($scenario['aut'] AS $person_id => $person) {
+		if ($person_id) {
+			$xscenlist .= "<a href=\"data?person=" . $person_id . "\" class=\"person\">" . htmlspecialchars($person['name']) . "</a><br>\n";
 		}
 	}
 	$xscenlist .= "</td>\n";
 	
 	// convents
 	$xscenlist .= "\t\t<td>";
-	foreach ($scenario['con'] AS $con_id => $convent) {
+	foreach ($scenario['con'] AS $con_id => $convention) {
 		if ($con_id) {
-			$xscenlist .= smarty_function_con( $convent ) . "<br>" ;
+			$xscenlist .= smarty_function_con( $convention ) . "<br>" ;
 		}
 	}
 	$xscenlist .= "</td>\n";

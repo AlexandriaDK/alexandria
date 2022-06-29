@@ -11,12 +11,12 @@ $category = 'convent';
 $action = $_REQUEST['action'];
 $do = $_REQUEST['do'];
 $role = trim((string) $_REQUEST['role']);
-$aut_text = trim((string) $_REQUEST['aut_text']);
-$aut_id = (int) $aut_text;
-$aut_extra = "";
-if (!$aut_id) {
-	$aut_extra = $aut_text;
-	$aut_id = NULL;
+$person_text = trim((string) $_REQUEST['person_text']);
+$person_id = (int) $person_text;
+$person_extra = "";
+if (!$person_id) {
+	$person_extra = $person_text;
+	$person_id = NULL;
 }
 
 $id = $_REQUEST['id'];
@@ -25,7 +25,7 @@ $data_id = (int) $_REQUEST['data_id'];
 $user_id = $_SESSION['user_id'];
 
 $people = [];
-$r = getall("SELECT id, firstname, surname FROM aut ORDER BY firstname, surname");
+$r = getall("SELECT id, firstname, surname FROM person ORDER BY firstname, surname");
 foreach($r AS $row) {
 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
 }
@@ -33,18 +33,18 @@ foreach($r AS $row) {
 // Update arrangør
 if ($action == "changeorganizer" && $do != "Delete") {
 
-	$q = "UPDATE acrel SET " .
-	     "aut_id = " . strNullEscape($aut_id) . ", " .
-	     "aut_extra = '" . dbesc($aut_extra) . "', " .
+	$q = "UPDATE pcrel SET " .
+	     "person_id = " . strNullEscape($person_id) . ", " .
+	     "person_extra = '" . dbesc($person_extra) . "', " .
 	     "role = '" . dbesc($role) . "', " .
 	     "added_by_user_id = $user_id " . 
 	     "WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		if ((int) $aut_id) {
-			chlog($data_id,$category,"Organizer updated: $aut_id");
+		if ((int) $person_id) {
+			chlog($data_id,$category,"Organizer updated: $person_id");
 		} else {
-			chlog($data_id,$category,"Organizer updated: $aut_extra");
+			chlog($data_id,$category,"Organizer updated: $person_extra");
 		}
 	}
 	$_SESSION['admin']['info'] = "Organizer updated! " . dberror();
@@ -53,7 +53,7 @@ if ($action == "changeorganizer" && $do != "Delete") {
 
 // Delete arrangør
 if ($action == "changeorganizer" && $do == "Delete") {
-	$q = "DELETE FROM acrel WHERE id = '$id'";
+	$q = "DELETE FROM pcrel WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
 		chlog($data_id,$category,"Organizer removed");
@@ -64,16 +64,16 @@ if ($action == "changeorganizer" && $do == "Delete") {
 
 // Tilføj arrangør
 if ($action == "addorganizer") {
-	$q = "INSERT INTO acrel " .
-	     "(aut_id, aut_extra, convent_id, role, added_by_user_id) VALUES ".
-	     "(" . strNullEscape($aut_id) . ", '" . dbesc($aut_extra) . "',  $data_id, '" . dbesc($role) . "', " . $_SESSION['user_id'] .")";
+	$q = "INSERT INTO pcrel " .
+	     "(person_id, person_extra, convent_id, role, added_by_user_id) VALUES ".
+	     "(" . strNullEscape($person_id) . ", '" . dbesc($person_extra) . "',  $data_id, '" . dbesc($role) . "', " . $_SESSION['user_id'] .")";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		if ((int) $aut_id) {
-			chlog($data_id,$category,"Organizer added: $aut_id");
+		if ((int) $person_id) {
+			chlog($data_id,$category,"Organizer added: $person_id");
 		} else {
-			chlog($data_id,$category,"Organizer added: $aut_extra");
+			chlog($data_id,$category,"Organizer added: $person_extra");
 		}
 	}
 	$_SESSION['admin']['info'] = "Organizer added! " . dberror();
@@ -88,8 +88,7 @@ if ($data_id) {
 
 	$title = getone($q);
 	
-#	$query = "SELECT id, aut_id, aut_extra, role FROM acrel WHERE convent_id = '$data_id' ORDER BY id";
-	$query = "SELECT a.id, a.aut_id, a.aut_extra, CONCAT(b.firstname, ' ', b.surname) AS fullname, a.role FROM acrel a LEFT JOIN aut b ON a.aut_id = b.id WHERE convent_id = $data_id ORDER BY id";
+	$query = "SELECT a.id, a.person_id, a.person_extra, CONCAT(b.firstname, ' ', b.surname) AS fullname, a.role FROM pcrel a LEFT JOIN person b ON a.person_id = b.id WHERE convent_id = $data_id ORDER BY id";
 	$result = getall($query);
 
 }
@@ -147,10 +146,10 @@ print "<table align=\"center\" border=0>".
 
 if ($result) {
 	foreach($result AS $row) {
-		$aut_text = "";
-		if ($row['aut_id']) $aut_text .= $row['aut_id'] . " - ";
-		if ($row['fullname']) $aut_text .= $row['fullname'];
-		if ($row['aut_extra']) $aut_text .= $row['aut_extra'];
+		$person_text = "";
+		if ($row['person_id']) $person_text .= $row['person_id'] . " - ";
+		if ($row['fullname']) $person_text .= $row['fullname'];
+		if ($row['person_extra']) $person_text .= $row['person_extra'];
 		print '<form action="organizers.php" method="post">'.
 		      '<input type="hidden" name="action" value="changeorganizer">'.
 		      '<input type="hidden" name="data_id" value="'.$data_id.'">'.
@@ -158,7 +157,7 @@ if ($result) {
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
 		      '<td><input type="text" name="role" value="'.htmlspecialchars($row['role']).'" size=40 maxlength=100></td>'.
-		      '<td><input type="text" name="aut_text" value="'.htmlspecialchars($aut_text).'" size=40 maxlength=100 class="tags"></td>'.
+		      '<td><input type="text" name="person_text" value="'.htmlspecialchars($person_text).'" size=40 maxlength=100 class="tags"></td>'.
 		      '<td><input type="submit" name="do" value="Update"></td>'.
 		      '<td><input type="submit" name="do" value="Delete"></td>'.
 		      "</tr>\n";
@@ -172,7 +171,7 @@ print '<form action="organizers.php" method="post">'.
 print "<tr>\n".
       '<td style="text-align:right;">New</td>'.
       '<td><input type="text" name="role" value="" size=40 maxlength=100 autofocus></td>'.
-      '<td><input type="text" name="aut_text" value="" size=40 maxlength=100 class="tags"></td>'.
+      '<td><input type="text" name="person_text" value="" size=40 maxlength=100 class="tags"></td>'.
       '<td colspan=2><input type="submit" name="do" value="Add"></td>'.
       "</tr>\n";
 print "</form>\n\n";

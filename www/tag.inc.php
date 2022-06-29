@@ -19,15 +19,15 @@ if (!$tag) {
 	$tag = $ttag;
 }
 $q = getall("
-	SELECT sce.id, title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, convent.cancelled, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
-	FROM sce
-	INNER JOIN tags ON sce.id = tags.sce_id
-	LEFT JOIN csrel ON csrel.sce_id = sce.id AND csrel.pre_id = 1
-	LEFT JOIN convent ON csrel.convent_id = convent.id
-	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
+	INNER JOIN tags ON g.id = tags.game_id
+	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.pre_id = 1
+	LEFT JOIN convention c ON cgrel.convention_id = c.id
+	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE tags.tag = '" . dbesc($tag). "'
-	GROUP BY sce.id, convent.id
+	GROUP BY g.id, c.id
 	ORDER BY title_translation
 ");
 
@@ -41,7 +41,7 @@ if (count($q) > 0) {
 				$slist[$sl][$type] = getdynamicscehtml($rs['id'],$type,$userlog[$rs['id']][$type] ?? FALSE);
 			}
 		}
-		$sce_id = (int) $rs['id'];
+		$game_id = (int) $rs['id'];
 		// query-i-løkke... skal optimeres!
 		$slist[$sl]['files'] = $rs['files'];
 		$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
@@ -52,9 +52,9 @@ if (count($q) > 0) {
 
 		$personlist = [];
 		$qq = getall("
-			SELECT aut.id, CONCAT(firstname,' ',surname) AS name
-			FROM aut, asrel
-			WHERE asrel.sce_id = $sce_id AND asrel.aut_id = aut.id AND asrel.tit_id IN(1,5)
+			SELECT p.id, CONCAT(firstname,' ',surname) AS name
+			FROM person p, pgrel
+			WHERE pgrel.game_id = $game_id AND pgrel.person_id = p.id AND pgrel.tit_id IN(1,5)
 			ORDER BY firstname, surname
 		");
 		foreach($qq AS $thisforfatter) {

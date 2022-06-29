@@ -8,7 +8,7 @@ require "base.inc.php";
 $this_type = 'users';
 
 $action = $_REQUEST['action'];
-$aut_id = (int) $_REQUEST['aut_id'];
+$person_id = (int) $_REQUEST['person_id'];
 $id = (int) $_REQUEST['id'];
 $name = $_REQUEST['name'];
 $do = $_REQUEST['do'];
@@ -51,10 +51,10 @@ if ($user_id && $asked) {
 
 // Ret achievement
 if ($action == "update") {
-	if (!$aut_id) $aut_id = 'NULL';
+	if (!$person_id) $person_id = 'NULL';
 	$q = "UPDATE users SET " .
 	     "name = '" . dbesc($name) . "', " .
-	     "aut_id = $aut_id, " .
+	     "person_id = $person_id, " .
 	     "editor = $editor " .
 	     "WHERE id = '$id'";
 	$r = doquery($q);
@@ -88,10 +88,10 @@ if ($order == 'lastlogin') {
 }
 
 if ($achievement_id) {
-	$query = "SELECT a.id, a.name, a.aut_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, SUM(b.achievement_id = 103) AS talk, COUNT(b.id) AS achievements FROM users a INNER JOIN user_achievements b ON a.id = b.user_id WHERE b.achievement_id = $achievement_id GROUP BY a.id ORDER BY $orderby";
+	$query = "SELECT a.id, a.name, a.person_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, SUM(b.achievement_id = 103) AS talk, COUNT(b.id) AS achievements FROM users a INNER JOIN user_achievements b ON a.id = b.user_id WHERE b.achievement_id = $achievement_id GROUP BY a.id ORDER BY $orderby";
 	$label = getone("SELECT label FROM achievements WHERE id = $achievement_id");
 } else {
-	$query = "SELECT a.id, a.name, a.aut_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, SUM(b.achievement_id = 103) AS talk, COUNT(b.id) AS achievements FROM users a LEFT JOIN user_achievements b ON a.id = b.user_id GROUP BY a.id ORDER BY $orderby";
+	$query = "SELECT a.id, a.name, a.person_id, a.editor, a.last_login, a.last_active, a.login_days_in_row, a.login_count, SUM(b.achievement_id = 72) AS asking, SUM(b.achievement_id = 75) AS beer, SUM(b.achievement_id = 93) AS elite, SUM(b.achievement_id = 94) AS brother, SUM(b.achievement_id = 103) AS talk, COUNT(b.id) AS achievements FROM users a LEFT JOIN user_achievements b ON a.id = b.user_id GROUP BY a.id ORDER BY $orderby";
 
 }
 $result = getall($query);
@@ -135,7 +135,7 @@ foreach($result AS $row) {
 	print "<tr" . ($accounts === 0 ? ' class="zerousermap" title="No login accounts are associated with this user"' : '') . ">\n".
 			'<td style="text-align:right;"><a href="fbgraph.php?user_id=' . $row['id'] . '">'.$row['id'].'</a></td>'.
 			'<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=50 maxlength=100></td>'.
-			'<td><input type="number" name="aut_id" value="'.htmlspecialchars($row['aut_id']).'" size="6"></td>'.
+			'<td><input type="number" name="person_id" value="'.htmlspecialchars($row['person_id']).'" size="6"></td>'.
 			'<td align="center"><input type="checkbox" name="editor" value="yes" ' . ($row['editor'] ? 'checked' : '' ) . '></td>'.
 			'<td align="right" class="accounts">' . $accounts . '</td>'.
 			'<td align="right" title="' . $row['login_days_in_row'] . '">' . $row['login_count'] . '</td>'.

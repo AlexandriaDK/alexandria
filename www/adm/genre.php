@@ -10,13 +10,13 @@ $id = (int) $_REQUEST['id'];
 $action = (string) $_REQUEST['action'];
 $genid = (array) $_REQUEST['genid'];
 
-$title = getone("SELECT title FROM sce WHERE id = '$id'");
+$title = getone("SELECT title FROM game WHERE id = '$id'");
 
 // Ret genre
 if ($action == "changegenre") {
-	doquery("DELETE FROM gsrel WHERE sce_id = '$id'");
+	doquery("DELETE FROM gsrel WHERE game_id = '$id'");
 	foreach ($genid AS $gid => $value) {
-		doquery("INSERT INTO gsrel (gen_id, sce_id) VALUES ('$gid','$id')");
+		doquery("INSERT INTO gsrel (genre_id, game_id) VALUES ('$gid','$id')");
 	}
 	$_SESSION['admin']['info'] = "Genres for game updated! " . dberror();
 	chlog($id,'sce',"Genres updated");
@@ -25,7 +25,7 @@ if ($action == "changegenre") {
 
 htmladmstart("Genre");
 
-$result = getall("SELECT gen.id, gen.name, gen.genre, gsrel.sce_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.gen_id AND sce_id = '$id' ORDER BY gen.genre DESC, gen.name");
+$result = getall("SELECT gen.id, gen.name, gen.genre, gsrel.game_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.genre_id AND game_id = '$id' ORDER BY gen.genre DESC, gen.name");
 
 if ($id) {
 	$genre = TRUE;
@@ -40,7 +40,7 @@ if ($id) {
 		}
 		print "<tr>";
 		print "<td><label for=\"gen_{$row['id']}\">".$row['name']."</label></td>";
-		print "<td><input id=\"gen_{$row['id']}\" type=\"checkbox\" name=\"genid[".$row['id']."]\" ".($row['sce_id']?'checked="checked"':'')." /></td>";
+		print "<td><input id=\"gen_{$row['id']}\" type=\"checkbox\" name=\"genid[".$row['id']."]\" ".($row['game_id']?'checked="checked"':'')." /></td>";
 		print "</tr>\n";
 	}
 

@@ -19,8 +19,8 @@
 				<a href="{$feedrow.link|escape}">{if $feedrow.title == ""}<i>({$_feeds_notitle})</i>{else}{$feedrow.title|truncate:55|escape}{/if}{if $feedrow.podcast} 🔊{/if}</a>
 			</td>
 			<td>
-				{if $feedrow.aut_id}
-					<a href="data?person={$feedrow.aut_id}" class="person">{$feedrow.owner|escape}</a>
+				{if $feedrow.person_id}
+					<a href="data?person={$feedrow.person_id}" class="person">{$feedrow.owner|escape}</a>
 				{else}
 					{$feedrow.owner|escape}
 				{/if}
