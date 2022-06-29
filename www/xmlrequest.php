@@ -3,7 +3,7 @@ require("./connect.php");
 require("./base.inc.php");
 $output = "";
 
-$likesearch = likeesc((string) $_REQUEST['q']);
+$likesearch = likeesc( (string) ($_REQUEST['q'] ?? ''));
 
 if ($_REQUEST['action'] == "lookup") {
 	if ($_REQUEST['q']) {

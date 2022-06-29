@@ -24,8 +24,8 @@ function getjostid ($name) {
 }
 
 // Hent personer, og prøv at slå dem op
-$from = (string) $_REQUEST['from'];
-$to = (string) $_REQUEST['to'];
+$from = (string) ($_REQUEST['from'] ?? '');
+$to = (string) ($_REQUEST['to'] ?? '');
 
 // Prepare for errors
 $from_error = $to_error = FALSE;
@@ -45,11 +45,11 @@ if (is_numeric($to)) {
 	if (!$to_id) $to_error = TRUE;
 }
 
-if ($from_id) $from = getentry('person',$from_id);
-if ($to_id)	$to = getentry('person',$to_id);
+if (isset($from_id)) $from = getentry('person',$from_id);
+if (isset($to_id))	$to = getentry('person',$to_id);
 
-$mainperson = $from_id;
-$subperson = $to_id;
+$mainperson = $from_id ?? 0;
+$subperson = $to_id ?? 0;
 
 $content = "";
 $intro = 0;
@@ -57,9 +57,7 @@ if (!$mainperson || !$subperson) {
 	$intro = 1;
 }
 
-unset($person);
-unset($check);
-unset($qnums);
+$qnums = 0;
 
 if ($mainperson && $subperson) {
 
@@ -72,7 +70,7 @@ if ($mainperson && $subperson) {
 	
 	if ($mainperson == $subperson) $error = "Vælg venligst to <b>forskellige</b> personer …\n";
 
-	if (!$error) {
+	if (!isset($error)) {
 		$check[1][] = $subperson;
 		$checked[] = $subperson;
 		$i = 1;
@@ -86,6 +84,40 @@ if ($mainperson && $subperson) {
 		
 			$inlist = join(",",$check[$i]);	
 			$notlist = join(",",$checked);
+
+			$query_nocon = "
+			SELECT
+				COUNT(*) AS antal,
+				t2.person_id AS link,
+				g.id AS gameid,
+				g.title,
+				COALESCE(alias.label, g.title) AS title_translation,
+				t2.title_id,
+				t1.person_id AS rlink,
+				t1.title_id AS rtitle_id
+			FROM person a1
+			INNER JOIN pgrel t1 ON t1.person_id = a1.id
+			INNER JOIN game g ON g.id = t1.game_id
+			INNER JOIN pgrel t2 ON t1.game_id = t2.game_id
+			INNER JOIN person a2 ON a2.id = t2.person_id
+			LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			WHERE
+				t1.person_id IN ($inlist) AND
+				t2.person_id NOT IN ($notlist) AND
+				t1.title_id IN (1,4,5) AND t2.title_id IN (1,4,5)
+			GROUP BY
+				link
+			ORDER BY
+				a1.firstname,
+				a1.surname,
+				a2.firstname,
+				a2.surname,
+				t1.title_id,
+				t2.title_id,
+				title_translation
+		";
+	
+
 
 			$query_con = "
 				SELECT
@@ -125,7 +157,7 @@ if ($mainperson && $subperson) {
 		
 			$query = $query_nocon;
 		
-			if ($showquery == TRUE) $content .= "<br>$query<br>\n";
+			if ($showquery ?? FALSE) $content .= "<br>$query<br>\n";
 			$q = getall($query);
 			print dberror();
 			$qnums++;
@@ -134,7 +166,7 @@ if ($mainperson && $subperson) {
 		#		$content .= "($qnums) ".$row['link'] . " => " . $row['rlink']."<br>";
 				$scenarie[$row['link']]['title'] = $row['title_translation'];
 				$scenarie[$row['link']]['origtitle'] = $row['title'];
-				$scenarie[$row['link']]['sceid'] = $row['sceid'];
+				$scenarie[$row['link']]['gameid'] = $row['gameid'];
 				$scenarie[$row['link']]['antal'] = $row['antal'];
 				if ($row['link'] == $mainperson) {
 					$found = TRUE;
@@ -169,7 +201,7 @@ if ($mainperson && $subperson) {
 			while ($find != $subperson && $i < 20) {
 				$i++;
 				$scen = $scenarie[$find]['title'];
-				$scenid = $scenarie[$find]['sceid'];
+				$scenid = $scenarie[$find]['gameid'];
 				$antal = $scenarie[$find]['antal'];
 				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $scenid, htmlspecialchars($scen), $kobling[$find], htmlspecialchars($person[$kobling[$find]]) ) );
 				// til graf

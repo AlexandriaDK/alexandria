@@ -10,8 +10,9 @@ header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næ
 
 // enable session for all pages.
 // :TODO: Only enable session when user logs in and if $_SESSION is set; otherwise try to be completely cookie free.
-session_start();
-
+if (!isset($_SESSION)) {
+    session_start();
+}
 // detect language
 #$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
 $alexlanguages = [ 'da', 'de', 'en', 'nb', 'sv' ];

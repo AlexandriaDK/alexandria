@@ -52,6 +52,7 @@ for ($i=1;$i<=$chainlen;$i=$i+0.5) {
 
 // names
 $i = 0;
+$type = 'game';
 foreach($dataset AS $id) {
 	$i++;
 	$type = ($type=='person'?'game':'person');
@@ -65,13 +66,11 @@ foreach($dataset AS $id) {
 	if (mb_strlen($label) > 20) $label = mb_substr($label,0,18)."...";
 
 	list(,,$txtw,,,$txth) = imagettfbbox($fontsize,0, $fontpath, fixttftext($label));
-	$txty = abs($txty);
 
 	$x = ($type=='person'?$leftmargin:($w-$leftmargin)) - ($txtw/2);
 	$y = ($i*$space*0.5) - ($txth/2);
 
-
-	imagettftext($im,$fontsize,0,$x,$y,$color, $fontpath, fixttftext($label));
+	imagettftext($im,$fontsize,0,intval($x),intval($y),$color, $fontpath, fixttftext($label));
 
 }
 

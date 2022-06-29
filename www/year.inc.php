@@ -51,7 +51,8 @@ $num_cons = count($q);
 $thismonth = -1;
 $timeinfo = "";
 foreach($q AS $row) {
-	$month = (int) substr($row['begin'],5,2);
+	$begin = $row['begin'] ?? '';
+	$month = (int) substr($begin,5,2);
 	if ($month > $thismonth) {
 		$printmonth = ucfirst( monthname( intval($month) ) );
 		if ($month == 0) $printmonth = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));

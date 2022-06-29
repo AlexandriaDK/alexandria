@@ -129,7 +129,7 @@ if ($magazineid) {
 $t->assign('magazineid',$magazineid);
 $t->assign('issueid',$issueid);
 $t->assign('id',$id);
-$t->assign('magazines',$magazines);
+$t->assign('magazines',$magazines ?? '');
 $t->assign('magazinename',$magazinename);
 $t->assign('magazinedescription',$magazinedescription);
 $t->assign('internal',$internal);

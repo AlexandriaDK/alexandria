@@ -312,7 +312,7 @@ foreach($q AS $r) {
 
 // Get all types of presentations
 $pre = [];
-$q = getall("SELECT id, event FROM pre ORDER BY id");
+$q = getall("SELECT id, event FROM presentation ORDER BY id");
 foreach($q AS $r) {
 	$pre[$r['id']] = $r['event'];
 }
