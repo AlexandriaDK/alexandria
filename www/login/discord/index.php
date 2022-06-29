@@ -1,4 +1,5 @@
 <?php
+session_start();
 chdir('../../');
 require_once('./connect.php');
 require_once('base.inc.php');

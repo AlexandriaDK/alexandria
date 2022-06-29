@@ -9,8 +9,8 @@ header("X-Achievement: https://alexandria.dk/myhistory?achievement=createaguiint
 header("X-Clacks-Overhead: GNU Torben Ussing, GNU Alex Uth, GNU Michael Erik Næsby");
 
 // enable session for all pages.
-// :TODO: Only enable session when user logs in and if $_SESSION is set; otherwise try to be completely cookie free.
-if (!isset($_SESSION)) {
+// Only enable session when user logs in and if $_SESSION is set; otherwise try to be completely cookie free.
+if (!isset($_SESSION) && isset($_COOKIE[session_name()])) {
     session_start();
 }
 // detect language
