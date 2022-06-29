@@ -14,6 +14,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		$value = "title";
 		$url = 'data?scenarie=';
 		$returl = 'game.php?game=';
+		$cat = 'game';
 		break;
 	
 		case 'conset':
@@ -27,6 +28,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		$value = "name";
 		$url = 'data?system=';
 		$returl = 'system.php?system=';
+		$cat = 'gamesystem';
 		break;
 
 		case 'convent':
@@ -34,6 +36,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 		$value = "CONCAT(name,' (',COALESCE(year,'?'),')')";
 		$url = 'data?con=';
 		$returl = 'convent.php?con=';
+		$cat = 'convention';
 		break;
 
 		case 'issue':

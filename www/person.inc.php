@@ -136,11 +136,11 @@ if (count($q) > 0) {
 				LIMIT 1
 			");
 			$rundescription = '';
-			$runinfo = nicedateset($qrun['begin'], $qrun['end']);
-			if ($qrun['location']) {
+			$runinfo = nicedateset($qrun['begin'] ?? NULL, $qrun['end'] ?? NULL);
+			if (isset($qrun['location'])) {
 				$rundescription = $qrun['location'];
 			}
-			if ($qrun['country']) {
+			if (isset($qrun['country'])) {
 				if ($rundescription !== '') {
 					$rundescription .= ', ';
 				}
@@ -149,7 +149,7 @@ if (count($q) > 0) {
 			if ($rundescription !== '') {
 				$rundescription .= ' ';
 			}
-			if ($qrun['year']) {
+			if (isset($qrun['year'])) {
 				$yearname = yearname($qrun['year']);
 				$rundescription .= '(' . $yearname . ')';
 			}

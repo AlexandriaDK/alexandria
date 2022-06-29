@@ -15,7 +15,6 @@ foreach($result AS $r) {
 }
 
 // Smarty
-$t->assign('list',$list);
 $t->assign('syslist',$syslist);
 $t->display('systems.tpl');
 ?>

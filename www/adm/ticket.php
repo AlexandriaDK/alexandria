@@ -5,11 +5,11 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$id = (int) $_REQUEST['id'];
-$display = (string) $_REQUEST['display'];
-$action = (string) $_REQUEST['action'];
-$internal = (string) $_REQUEST['internal'];
-$status = (string) $_REQUEST['status'];
+$id = (int) ($_REQUEST['id'] ?? 0);
+$display = (string) ($_REQUEST['display'] ?? '');
+$action = (string) ($_REQUEST['action'] ?? '');
+$internal = (string) ($_REQUEST['internal'] ?? '');
+$status = (string) ($_REQUEST['status'] ?? '');
 $display = ($display == 'all' ? 'all' : '');
 
 $options = ['open', 'in progress', 'closed'];

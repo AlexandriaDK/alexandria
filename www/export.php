@@ -10,7 +10,7 @@ $output = [];
 
 $exportqueries = [
 	'persons' => "SELECT id, firstname, surname FROM person ORDER BY id",
-	'games' => "SELECT id, title, boardgame, gamesystem_id AS system_id, gamesystem_extra AS system_extra, aut_extra AS person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM game ORDER BY id",
+	'games' => "SELECT id, title, boardgame, gamesystem_id AS system_id, gamesystem_extra AS system_extra, person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM game ORDER BY id",
 	'conventions' => "SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.confirmed, a.cancelled, a.country FROM convention a ORDER BY a.id",
 	'conventionsets' => "SELECT id, name, description, country FROM conset ORDER BY id",
 	'systems' => "SELECT id, name, description FROM gamesystem ORDER BY id",
@@ -33,12 +33,12 @@ $exportqueries = [
 	'award_nominee_entities' => "SELECT id, award_nominee_id, data_id, category, label FROM award_nominee_entities ORDER BY award_nominee_id, id",
 	'award_nominees' => "SELECT id, award_category_id, game_id, name, nominationtext, winner, ranking FROM award_nominees ORDER BY id",
 	'person_game_title_relations' => "SELECT id, person_id AS person_id, game_id, title_id, note FROM pgrel ORDER BY person_id, game_id, id",
-	'game_convention_presentation_relations' => "SELECT id, game_id, convention_id AS convention_id, presentation_id FROM cgrel ORDER BY convention_id, game_id, id",
-	'person_convention_relations' => "SELECT id, person_id AS person_id, convention_id AS convention_id, aut_extra AS person_extra, role FROM gcrel ORDER BY convention_id, person_id, id",
+	'game_convention_presentation_relations' => "SELECT id, game_id, convention_id, presentation_id FROM cgrel ORDER BY convention_id, game_id, id",
+	'person_convention_relations' => "SELECT id, person_id AS person_id, convention_id, person_extra, role FROM pcrel ORDER BY convention_id, person_id, id",
 	'magazines' => "SELECT id, name, description FROM magazine ORDER BY id",
 	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
 	'articles' => "SELECT id, issue_id, page, title, description, articletype, game_id FROM article ORDER BY issue_id, id",
-	'contributors' => "SELECT id, person_id AS person_id, aut_extra AS person_extra, role, article_id FROM contributor ORDER BY id",
+	'contributors' => "SELECT id, person_id AS person_id, person_extra, role, article_id FROM contributor ORDER BY id",
 	'article_reference' => "SELECT id, article_id, category, data_id FROM article_reference ORDER BY id"
 ];
 

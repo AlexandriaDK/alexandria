@@ -26,11 +26,11 @@ $q = getall("
 	FROM game g
 	LEFT JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id IN (1,5)
 	LEFT JOIN person p ON pgrel.person_id = p.id
-	LEFT JOIN cgrel ON cgrel.g.id = g.id
+	LEFT JOIN cgrel ON cgrel.game_id = g.id
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id
-	LEFT JOIN files ON g.id = files.data_id AND files.category = 'g. AND files.downloadable = 1
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'g. AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE gamesystem_id = '$system'
 	GROUP BY g.id, c.id, p.id
 	ORDER BY title_translation, c.year, c.begin, c.end, p.surname, p.firstname
@@ -40,7 +40,7 @@ $gamelist = [];
 
 if (count($q) > 0) {
 	foreach($q AS $rs) { // Put all together
-		$g.id = $rs['id'];
+#		$game_id = $rs['id'];
 		if ( ! isset($gamelist[$rs['id']]) ) {
 			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
 		}
@@ -55,7 +55,7 @@ if (count($q) > 0) {
 	if ($_SESSION['user_id']) {
 		foreach ($gamelist AS $id => $game) {
 			foreach( ['read','gmed','played'] AS $type) {
-				$gamelist[$id]['userdata']['html'][$type] = getdynamicg.tml($id,$type,$userlog[$id][$type] ?? FALSE );
+				$gamelist[$id]['userdata']['html'][$type] = getdynamicscehtml($id,$type,$userlog[$id][$type] ?? FALSE );
 			}
 		}
 	}
