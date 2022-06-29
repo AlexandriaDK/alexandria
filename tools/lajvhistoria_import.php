@@ -106,8 +106,8 @@ function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $e
         doquery($assql);
     }
     foreach ($genres AS $gid) {
-        if ( ! getone("SELECT 1 FROM ggrel WHERE gen_id = $gid AND game_id = $game_id")) {
-            $gsql = "INSERT INTO ggrel (gen_id, game_id) VALUES ($gid, $game_id)";
+        if ( ! getone("SELECT 1 FROM ggrel WHERE genre_Id = $gid AND game_id = $game_id")) {
+            $gsql = "INSERT INTO ggrel (genre_Id, game_id) VALUES ($gid, $game_id)";
             doquery($gsql);
         }
     }

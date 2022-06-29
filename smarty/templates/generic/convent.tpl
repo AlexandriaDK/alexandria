@@ -169,9 +169,9 @@ $(document).ready(function(){
 	</td>
 	{if $editmode}
 	<td style="text-align: center;">
-		{foreach $user_can_edit_organizers AS $acrel_id => $true}
-		{if $ol.id == $acrel_id}
-			<a href="adm/user_organizers.php?convent={$id}&amp;acrel_id={$acrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
+		{foreach $user_can_edit_organizers AS $pcrel_id => $true}
+		{if $ol.id == $pcrel_id}
+			<a href="adm/user_organizers.php?convent={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
 			{break}
 		{/if}
 		{/foreach}

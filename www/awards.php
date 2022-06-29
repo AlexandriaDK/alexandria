@@ -10,16 +10,16 @@ $ucid = $cid = (int) ($_GET['cid'] ?? 0);
 if ($ucid == 1) award_achievement(96); // Fastaval conset
 
 $awards = getall("SELECT a.id, a.name, a.conset_id, a.description, b.name AS conset_name FROM awards a LEFT JOIN conset b ON a.conset_id = b.id ORDER BY b.name, a.conset_id, a.id");
-// $award_categories = getall("SELECT a.id, a.name, a.convent_id, a.description, b.name AS con_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convent_id = b.id ORDER BY b.year DESC, a.id");
+// $award_categories = getall("SELECT a.id, a.name, a.convention_id, a.description, b.name AS con_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convention_id = b.id ORDER BY b.year DESC, a.id");
 if (!$cid) {
-	//$award_nominees = getall("SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.game_id, b.id AS category_id, b.convent_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id LEFT JOIN convention c ON b.convent_id = c.id LEFT JOIN sce d ON a.game_id = d.id ORDER BY c.year DESC, a.winner DESC, a.id");
+	//$award_nominees = getall("SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.game_id, b.id AS category_id, b.convention_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id LEFT JOIN convention c ON b.convention_id = c.id LEFT JOIN sce d ON a.game_id = d.id ORDER BY c.year DESC, a.winner DESC, a.id");
 	$award_nominees = [];
 } else {
 	$award_nominees = getall("
-	SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.game_id, b.id AS category_id, b.convent_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title, COALESCE(e.label,d.title) AS title_translation
+	SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.game_id, b.id AS category_id, b.convention_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title, COALESCE(e.label,d.title) AS title_translation
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	LEFT JOIN convention c ON b.convent_id = c.id
+	LEFT JOIN convention c ON b.convention_id = c.id
 	LEFT JOIN game d ON a.game_id = d.id
 	LEFT JOIN alias e ON d.id = e.data_id AND e.category = 'sce' AND e.language = '" . LANG . "' AND e.visible = 1
 	WHERE c.conset_id = $cid
@@ -37,7 +37,7 @@ foreach($awards AS $award) {
 // Kan slås sammen til én - og dermed fjerne ovenstående
 foreach ($award_nominees AS $nominee) {
 	$cid = $nominee['conset_id'];
-	$con_id = $nominee['convent_id'];
+	$con_id = $nominee['convention_id'];
 	$cat_id = $nominee['category_id'];
 	if (!$cid) $cid = 0;
 	$awardnominees[$cid][$con_id]['name'] = $nominee['con_name'];

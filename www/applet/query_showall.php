@@ -15,7 +15,7 @@ while ($person_id = array_shift($buffer)) {
 	          FROM asrel AS t1, asrel AS t2
 	          WHERE t1.person_id = '$person_id' AND t1.person_id != t2.person_id
 						AND t1.game_id = t2.game_id
-						AND t1.tit_id = 1 AND t2.tit_id = 1
+						AND t1.title_id = 1 AND t2.title_id = 1
 	          GROUP BY t2.person_id
 		";
 	$result = mysql_query($query) or die("ERROR: ".mysql_error() );

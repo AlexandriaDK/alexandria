@@ -22,7 +22,7 @@ $q = getall("
 	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	INNER JOIN tags ON g.id = tags.game_id
-	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.pre_id = 1
+	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.presentation_id = 1
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
 	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
 	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
@@ -54,7 +54,7 @@ if (count($q) > 0) {
 		$qq = getall("
 			SELECT p.id, CONCAT(firstname,' ',surname) AS name
 			FROM person p, pgrel
-			WHERE pgrel.game_id = $game_id AND pgrel.person_id = p.id AND pgrel.tit_id IN(1,5)
+			WHERE pgrel.game_id = $game_id AND pgrel.person_id = p.id AND pgrel.title_id IN(1,5)
 			ORDER BY firstname, surname
 		");
 		foreach($qq AS $thisforfatter) {

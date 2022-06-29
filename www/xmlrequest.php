@@ -42,7 +42,7 @@ if ($_REQUEST['action'] == "lookup") {
 		// achievements
 		if ($_REQUEST['category'] == 'sce') {
 			list($gamesystem_id, $boardgame) = getrow("SELECT gamesystem_id, boardgame FROM game WHERE id = " . (int) $_REQUEST['data_id'] );
-			$fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN pgrel ON userlog.data_id = pgrel.game_id AND pgrel.tit_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.person_id != pgrel.person_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY pgrel.person_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+			$fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN pgrel ON userlog.data_id = pgrel.game_id AND pgrel.title_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.category = 'sce' AND userlog.type = 'played' AND users.person_id != pgrel.person_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY pgrel.person_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
 			$polandsce = getcol("SELECT DISTINCT game_id FROM gamerun WHERE country = 'pl'");
 			if ($_REQUEST['type'] == 'read') {
 				award_achievement(3);

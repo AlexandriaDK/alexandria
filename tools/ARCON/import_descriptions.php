@@ -4,7 +4,7 @@ require("../../www/base.inc.php");
 
 $originalurl = 'https://www.spillfestival.no/arcon36/program.php';
 
-$convent_id = 995;
+$convention_id = 995;
 $convent_setname = "ARCON";
 
 $glob = 'tmp/turnering.php?*';
@@ -108,7 +108,7 @@ foreach( glob( $glob ) AS $file) {
 	$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($data['description']) . "', 'nb')";
 	doquery($desc_sql);
 
-	$cssql = "INSERT INTO cgrel (convention_id, game_id, presentation_id) VALUES ($convent_id, $game_id, 1)";
+	$cssql = "INSERT INTO cgrel (convention_id, game_id, presentation_id) VALUES ($convention_id, $game_id, 1)";
 	doquery($cssql);
 
 	if ($person_id) {

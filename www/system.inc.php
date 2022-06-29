@@ -22,7 +22,7 @@ if ($r['id'] == 0) {
 	exit;
 }
 $q = getall("
-	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, aut_extra, COUNT(files.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS pre_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
+	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, aut_extra, COUNT(files.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS presentation_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	LEFT JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id IN (1,5)
 	LEFT JOIN person p ON pgrel.person_id = p.id
@@ -48,7 +48,7 @@ if (count($q) > 0) {
 			$gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];
 		}
 		if ($rs['con_id']) {
-			$gamelist[$rs['id']]['convent'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'pre_id' => $rs['pre_id'] ];
+			$gamelist[$rs['id']]['convent'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id'] ];
 		}
 	}
 

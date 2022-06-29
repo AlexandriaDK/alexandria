@@ -65,7 +65,7 @@ if ($action == "changeorganizer" && $do == "Delete") {
 // Tilføj arrangør
 if ($action == "addorganizer") {
 	$q = "INSERT INTO pcrel " .
-	     "(person_id, person_extra, convent_id, role, added_by_user_id) VALUES ".
+	     "(person_id, person_extra, convention_id, role, added_by_user_id) VALUES ".
 	     "(" . strNullEscape($person_id) . ", '" . dbesc($person_extra) . "',  $data_id, '" . dbesc($role) . "', " . $_SESSION['user_id'] .")";
 	$r = doquery($q);
 	if ($r) {
@@ -88,7 +88,7 @@ if ($data_id) {
 
 	$title = getone($q);
 	
-	$query = "SELECT a.id, a.person_id, a.person_extra, CONCAT(b.firstname, ' ', b.surname) AS fullname, a.role FROM pcrel a LEFT JOIN person b ON a.person_id = b.id WHERE convent_id = $data_id ORDER BY id";
+	$query = "SELECT a.id, a.person_id, a.person_extra, CONCAT(b.firstname, ' ', b.surname) AS fullname, a.role FROM pcrel a LEFT JOIN person b ON a.person_id = b.id WHERE convention_id = $data_id ORDER BY id";
 	$result = getall($query);
 
 }

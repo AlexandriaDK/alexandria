@@ -268,7 +268,7 @@ $r = getall("
 		cgrel,
 		game g
 	WHERE
-		c.id = cgrel.convent_id AND
+		c.id = cgrel.convention_id AND
 		cgrel.game_id = g.id AND
 		cgrel.presentation_id IN (1,2,3,42) AND
 		g.boardgame = 0
@@ -316,7 +316,7 @@ $r = getall("
 		convent c
 	WHERE
 		cgrel.presentation_id = 1 AND
-		cgrel.convent_id = c.id
+		cgrel.convention_id = c.id
 	GROUP BY
 		c.year
 ");

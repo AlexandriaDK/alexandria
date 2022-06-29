@@ -105,11 +105,11 @@ if ($action == "update" && $game) {
 			foreach( $person AS $autdata) {
 
 				$person_id = (int) $autdata['name'];
-				$tit_id = (int) $autdata['title'];
+				$title_id = (int) $autdata['title'];
 				$note = trim( (string) $autdata['note']);
-				if ($tit_id && $person_id) {
-					$q = "INSERT INTO pgrel (game_id, person_id, tit_id, note) ".
-					     "VALUES ($game, $person_id, $tit_id, '" . dbesc( $note ) ."')";
+				if ($title_id && $person_id) {
+					$q = "INSERT INTO pgrel (game_id, person_id, title_id, note) ".
+					     "VALUES ($game, $person_id, $title_id, '" . dbesc( $note ) ."')";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -153,7 +153,7 @@ if ($action == "Delete" && $game) { // should check if game exists
 	$error = [];
 	if (getCount('pgrel', $this_id, FALSE, $this_type_old) ) $error[] = "person";
 	if (getCount('cgrel', $this_id, FALSE, $this_type_old) ) $error[] = "con";
-	if (getCount('gsrel', $this_id, FALSE, $this_type_old) ) $error[] = "genre";
+	if (getCount('ggrel', $this_id, FALSE, $this_type_old) ) $error[] = "genre";
 	if (getCount('gamerun', $this_id, FALSE, $this_type_old) ) $error[] = "run";
 	if (getCount('trivia', $this_id, TRUE, $this_type_old) ) $error[] = "trivia";
 	if (getCount('links', $this_id, TRUE, $this_type_old) ) $error[] = "link";
@@ -211,11 +211,11 @@ if ($action == "create") {
 		foreach( $person AS $autdata) {
 
 			$person_id = (int) $autdata['name'];
-			$tit_id = (int) $autdata['title'];
+			$title_id = (int) $autdata['title'];
 			$note = trim((string) $autdata['note']);
-			if ($tit_id && $person_id) {
-				$q = "INSERT INTO pgrel (game_id, person_id, tit_id, note) ".
-				     "VALUES ($game, $person_id, $tit_id, '" . dbesc( $note ) ."')";
+			if ($title_id && $person_id) {
+				$q = "INSERT INTO pgrel (game_id, person_id, title_id, note) ".
+				     "VALUES ($game, $person_id, $title_id, '" . dbesc( $note ) ."')";
 				$r = doquery($q);
 				print dberror();
 			}
@@ -246,12 +246,12 @@ if ($action == "create") {
 
 if ($game) {
 	$qrel = getall("
-	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.tit_id AS titid, title.title
+	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.title_id AS titid, title.title
 	FROM pgrel
 	INNER JOIN person p ON pgrel.person_id = p.id
-	LEFT JOIN title ON pgrel.tit_id = title.id
+	LEFT JOIN title ON pgrel.title_id = title.id
 	WHERE pgrel.game_id = $game
-	ORDER BY title.priority, pgrel.tit_id, p.surname, p.firstname
+	ORDER BY title.priority, pgrel.title_id, p.surname, p.firstname
 ");
 	print dberror();
 }

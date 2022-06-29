@@ -11,7 +11,7 @@ if (!$dataid) $dataid = '1';
 $query = "
           SELECT t1.person_id, t2.person_id
           FROM asrel AS t1, asrel AS t2
-          WHERE t1.person_id = '$dataid' AND t1.game_id = t2.game_id AND t2.person_id != '$dataid' AND t1.tit_id = 1 AND t2.tit_id = 1
+          WHERE t1.person_id = '$dataid' AND t1.game_id = t2.game_id AND t2.person_id != '$dataid' AND t1.title_id = 1 AND t2.title_id = 1
           GROUP BY t2.person_id
 ";
 
@@ -35,7 +35,7 @@ if (count($firstfound) > 0) {
 	          FROM asrel AS t1, asrel AS t2
 	          WHERE t1.person_id IN ($datasetlist) AND t1.person_id != t2.person_id
 						AND t1.game_id = t2.game_id
-						AND t1.tit_id = 1 AND t2.tit_id = 1
+						AND t1.title_id = 1 AND t2.title_id = 1
 	          GROUP BY t2.person_id
 		";
 	$result = mysql_query($query) or die("ERROR: ".mysql_error() );

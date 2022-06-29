@@ -352,7 +352,7 @@ if ($find) {
 				SELECT game.id
 				FROM game, cgrel, convent
 				WHERE game.id = cgrel.game_id
-				AND cgrel.convent_id = convent.id
+				AND cgrel.convention_id = convent.id
 				AND convent.conset_id = '$search_conset'
 				AND game.id IN (".implode(",",$match['game']).")
 				GROUP BY game.id
@@ -367,7 +367,7 @@ if ($find) {
 				SELECT game.id
 				FROM game, ggrel
 				WHERE game.id = ggrel.game_id
-				AND ggrel.gen_id IN ('".implode("','",$search_genre)."')
+				AND ggrel.genre_Id IN ('".implode("','",$search_genre)."')
 				AND game.id IN (".implode(",",$match['game']).")
 				GROUP BY game.id
 				HAVING COUNT(*) = $num_genre

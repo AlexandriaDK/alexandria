@@ -14,9 +14,9 @@ $title = getone("SELECT title FROM game WHERE id = '$id'");
 
 // Ret genre
 if ($action == "changegenre") {
-	doquery("DELETE FROM gsrel WHERE game_id = '$id'");
+	doquery("DELETE FROM ggrel WHERE game_id = '$id'");
 	foreach ($genid AS $gid => $value) {
-		doquery("INSERT INTO gsrel (genre_id, game_id) VALUES ('$gid','$id')");
+		doquery("INSERT INTO ggrel (genre_id, game_id) VALUES ('$gid','$id')");
 	}
 	$_SESSION['admin']['info'] = "Genres for game updated! " . dberror();
 	chlog($id,'sce',"Genres updated");
@@ -25,7 +25,7 @@ if ($action == "changegenre") {
 
 htmladmstart("Genre");
 
-$result = getall("SELECT gen.id, gen.name, gen.genre, gsrel.game_id FROM gen LEFT JOIN gsrel ON gen.id = gsrel.genre_id AND game_id = '$id' ORDER BY gen.genre DESC, gen.name");
+$result = getall("SELECT g.id, g.name, g.genre, ggrel.game_id FROM genre g LEFT JOIN ggrel ON g.id = ggrel.genre_id AND game_id = '$id' ORDER BY g.genre DESC, g.name");
 
 if ($id) {
 	$genre = TRUE;

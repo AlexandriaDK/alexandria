@@ -150,7 +150,7 @@ function changeorganizers ( $convention_id ) {
 }
 
 function changegenre($game_id) {
-	$numgenres = getone("SELECT COUNT(*) FROM gsrel WHERE game_id = '$game_id'");
+	$numgenres = getone("SELECT COUNT(*) FROM ggrel WHERE game_id = '$game_id'");
 	$html  = "<tr valign=top><td>Genres</td><td>\n";
 	$html .= sprintf("$numgenres %s",($numgenres == 1?"genre":"genres"));
 	$html .= " - <a href=\"genre.php?id=$game_id\" accesskey=\"g\">Edit genres</a>";
@@ -517,9 +517,9 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 		$pid = $person['pid'];
 		$role_id = $person['role_id'];
         if ( $multiple_runs || $existing_game_id ) {
-            $assql = "INSERT INTO pgrel (person_id, game_id, tit_id, note) VALUES ($pid, $game_id, $role_id, '$year run')";
+            $assql = "INSERT INTO pgrel (person_id, game_id, title_id, note) VALUES ($pid, $game_id, $role_id, '$year run')";
         } else {
-            $assql = "INSERT INTO pgrel (person_id, game_id, tit_id) VALUES ($pid, $game_id, $role_id)";
+            $assql = "INSERT INTO pgrel (person_id, game_id, title_id) VALUES ($pid, $game_id, $role_id)";
         }
         doquery($assql);
     }
@@ -530,8 +530,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	}
 
     foreach ($genres AS $gid) {
-        if ( ! getone("SELECT 1 FROM gsrel WHERE gen_id = $gid AND game_id = $game_id")) {
-            $gsql = "INSERT INTO gsrel (gen_id, game_id) VALUES ($gid, $game_id)";
+        if ( ! getone("SELECT 1 FROM ggrel WHERE genre_id = $gid AND game_id = $game_id")) {
+            $gsql = "INSERT INTO ggrel (genre_id, game_id) VALUES ($gid, $game_id)";
             doquery($gsql);
         }
     }
@@ -551,7 +551,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	}
 
 	foreach($cons AS $con_id) { // assuming premiere
-		$csql = "INSERT INTO cgrel (convention_id, game_id, pre_id) VALUES ($con_id, $game_id, 1)";
+		$csql = "INSERT INTO cgrel (convention_id, game_id, presentation_id) VALUES ($con_id, $game_id, 1)";
 		doquery($csql);
 	}
 

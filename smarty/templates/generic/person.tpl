@@ -73,10 +73,10 @@
 	{foreach from=$organizerlist item=$con}
 	<tr>
 	<td style="text-align: right;" {if $con.cancelled}class="cancelled"{/if}>
-		{con id=$con.convent_id name=$con.name begin=$con.begin end=$con.end }
+		{con id=$con.convention_id name=$con.name begin=$con.begin end=$con.end }
 	</td>
 	<td style="padding-right: 10px" {if $con.cancelled}class="cancelled"{/if}>
-		{con id=$con.convent_id year=$con.year }
+		{con id=$con.convention_id year=$con.year }
 	</td>
 	<td>
 		{$con.role|escape}
