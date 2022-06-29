@@ -315,7 +315,7 @@ if ($find) {
 			$where[] = "id IN (".implode(",",$match['game']).")";
 		}
 		if ($search_system) {
-			$where[] = "sys_id = '".(int)$search_system."'";
+			$where[] = "gamesystem_id = '".(int)$search_system."'";
 		}
 		if ($search_players) {
 			$where[] = "players_min <= " . $search_players ." AND players_max >= " . $search_players;

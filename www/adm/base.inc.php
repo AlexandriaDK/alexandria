@@ -463,7 +463,7 @@ function get_create_person($name, $internal = "Autoimport") {
 
 function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $existing_game_id = FALSE) {
     $title = $game['title'];
-	$sys_id = $game['sys_id'] ?? NULL;
+	$gamesystem_id = $game['gamesystem_id'] ?? NULL;
     $urls = $game['urls'] ?? [];
     $genres = $game['genres'] ?? [];
     $tags = $game['tags'] ?? [];
@@ -483,13 +483,13 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 			];
 		}
     }
-	if ($sys_id == NULL) { // insert text NULL into SQL
-		$sys_id = 'NULL';
+	if ($gamesystem_id == NULL) { // insert text NULL into SQL
+		$gamesystem_id = 'NULL';
 	}
 
 	// insert game
 	$game_id_sql = "INSERT INTO game (title, internal, gamesystem_id, person_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
-	               "VALUES ('" . dbesc($title) . "', '" . dbesc($internal) ."', $sys_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
+	               "VALUES ('" . dbesc($title) . "', '" . dbesc($internal) ."', $gamesystem_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
 	$game_id = doquery($game_id_sql);
 	if (! $game_id ) {
 		return false;

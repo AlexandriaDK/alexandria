@@ -10,7 +10,7 @@ $output = [];
 
 $exportqueries = [
 	'persons' => "SELECT id, firstname, surname FROM person ORDER BY id",
-	'games' => "SELECT id, title, boardgame, sys_id AS system_id, sys_ext AS system_extra, aut_extra AS person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM game ORDER BY id",
+	'games' => "SELECT id, title, boardgame, gamesystem_id AS system_id, gamesystem_extra AS system_extra, aut_extra AS person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM game ORDER BY id",
 	'conventions' => "SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.confirmed, a.cancelled, a.country FROM convention a ORDER BY a.id",
 	'conventionsets' => "SELECT id, name, description, country FROM conset ORDER BY id",
 	'systems' => "SELECT id, name, description FROM gamesystem ORDER BY id",

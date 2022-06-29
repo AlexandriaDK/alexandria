@@ -32,7 +32,7 @@ if ($action == 'creategame') {
         'persons' => $author_list,
         'participants_extra' => $participants_extra,
         'organizer' => $organizer,
-        'sys_id' => 73, // LARP, assuming games are LARPs
+        'gamesystem_id' => 73, // LARP, assuming games are LARPs
         'cons' => [ $con_id ],
         'descriptions' => ['en' => trim($description)],
         'urls' => [ $url ],

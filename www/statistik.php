@@ -235,7 +235,7 @@ $r = getall("SELECT COUNT(*) AS antal, g.id, g.title AS origtitle, COALESCE(alia
 	FROM game g
 	INNER JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id = 1
 	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE g.sys_id != '$larp_id'
+	WHERE g.gamesystem_id != '$larp_id'
 	GROUP BY pgrel.game_id
 	HAVING antal >= $mostauthors
 	ORDER BY antal DESC, title
