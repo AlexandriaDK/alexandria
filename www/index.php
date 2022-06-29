@@ -20,7 +20,7 @@ foreach(getnews(10) AS $data) {
 }
 
 // for admins
-$recentlog = [];
+$recentlog = $translations = [];
 #if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
 if ($_SESSION['user_editor'] ?? FALSE) {
 	$recentlog = getrecentlog(10);
@@ -30,12 +30,12 @@ if ($_SESSION['user_editor'] ?? FALSE) {
 // fetching latest scenarios for download
 $latest_downloads = [];
 $i = 0;
-$files = getall("SELECT sce.id, sce.title, COALESCE(alias.label, sce.title) AS title_translation
-	FROM sce
-	INNER JOIN files ON sce.id = files.data_id AND files.category = 'sce'
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE files.downloadable = 1 AND sce.boardgame != 1
-	GROUP BY sce.id
+$files = getall("SELECT g.id, g.title, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
+	INNER JOIN files ON g.id = files.data_id AND files.category = 'sce'
+	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	WHERE files.downloadable = 1 AND g.boardgame != 1
+	GROUP BY g.id
 	ORDER BY MIN(files.inserted) DESC
 	LIMIT 40
 ");

@@ -68,11 +68,11 @@ if ( ! defined('DBERROR') && ( getone("SHOW tables LIKE 'installation'") === NUL
 
 // variables used all over the place
 if (!defined('DBERROR') ) {
-	$t->assign('stat_all_aut',getone("SELECT COUNT(*) FROM aut"));
-	$t->assign('stat_all_sce',getone("SELECT COUNT(*) FROM sce WHERE boardgame = 0"));
-	$t->assign('stat_all_board',getone("SELECT COUNT(*) FROM sce WHERE boardgame = 1"));
-	$t->assign('stat_all_convent',getone("SELECT COUNT(*) FROM convent"));
-	$t->assign('stat_all_sys',getone("SELECT COUNT(*) FROM sys"));
+	$t->assign('stat_all_aut',getone("SELECT COUNT(*) FROM person"));
+	$t->assign('stat_all_sce',getone("SELECT COUNT(*) FROM game WHERE boardgame = 0"));
+	$t->assign('stat_all_board',getone("SELECT COUNT(*) FROM game WHERE boardgame = 1"));
+	$t->assign('stat_all_convent',getone("SELECT COUNT(*) FROM convention"));
+	$t->assign('stat_all_sys',getone("SELECT COUNT(*) FROM gamesystem"));
 	
 	if (isset($_SESSION['user_id']) ) {
 		$t->assign('user_id',$_SESSION['user_id']);
@@ -118,8 +118,8 @@ if (isset($_SESSION['user_id'])) { // set last active
 		WHERE id = " . $_SESSION['user_id']
 	);
 	if ($_SESSION['user_author_id'] ?? FALSE) {
-		$scenario_missing_participants = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) INNER JOIN csrel c ON a.id = c.sce_id AND c.pre_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
-		$scenario_missing_tags = getall("SELECT a.id, a.title FROM sce a INNER JOIN asrel b ON a.id = b.sce_id AND b.aut_id = " . $_SESSION['user_author_id'] . " AND b.tit_id IN (1,4) LEFT JOIN tags c ON a.id = c.sce_id AND c.tag != 'English' WHERE c.sce_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+		$scenario_missing_participants = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) INNER JOIN cgrel c ON a.id = c.game_id AND c.presentation_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+		$scenario_missing_tags = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) LEFT JOIN tags c ON a.id = c.game_id AND c.tag != 'English' WHERE c.game_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
 		if ($scenario_missing_participants && $scenario_missing_tags) {
 			// choose random set to display
 			if (rand(0,1) ) {
@@ -202,7 +202,7 @@ function do_fb_login ($siteuserid,$name) { // presume valid fbuserid!
 	$_SESSION['user_name'] = $name;
 	$_SESSION['user_site'] = 'Facebook';
 	$_SESSION['user_site_id'] = $siteuserid;
-	$_SESSION['user_author_id'] = (int) getone("SELECT aut_id FROM users WHERE id = '$user_id'");
+	$_SESSION['user_author_id'] = (int) getone("SELECT person_id FROM users WHERE id = '$user_id'");
 	$_SESSION['user_editor'] = (bool) getone("SELECT editor FROM users WHERE id = '$user_id'");
 	$_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
 	$_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
@@ -266,7 +266,7 @@ function do_sso_login ($siteuserid, $name, $site) { // presume valid siteuserid!
 	$_SESSION['user_name'] = $name;
 	$_SESSION['user_site'] = ucfirst($site);
 	$_SESSION['user_site_id'] = $siteuserid;
-	$_SESSION['user_author_id'] = (int) getone("SELECT aut_id FROM users WHERE id = '$user_id'");
+	$_SESSION['user_author_id'] = (int) getone("SELECT person_id FROM users WHERE id = '$user_id'");
 	$_SESSION['user_editor'] = (bool) getone("SELECT editor FROM users WHERE id = '$user_id'");
 	$_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
 	$_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
@@ -448,15 +448,15 @@ function getuserlogconvents($user_id) {
 	");
 }
 
-function getdynamicscehtml($sce_id,$type,$active) {
+function getdynamicscehtml($game_id,$type,$active) {
 	global $t;
 	$scenariotext = [
 		"read" => htmlspecialchars($t->getTemplateVars('_top_read_pt') ),
 		"gmed" => htmlspecialchars($t->getTemplateVars('_top_gmed_pt') ),
 		"played" => htmlspecialchars($t->getTemplateVars('_top_played_pt') ),
 	];
-	$jsurl = getdynamicjavascripturl( $sce_id, 'sce', $type, $active);
-	$span_id = "sce_" . $sce_id . "_" . $type;
+	$jsurl = getdynamicjavascripturl( $game_id, 'sce', $type, $active);
+	$span_id = "sce_" . $game_id . "_" . $type;
 	$ap = ($active ? 'active' : 'passive');
 	$html = 
 		'<span id="' . $span_id . '">' .
@@ -468,11 +468,11 @@ function getdynamicscehtml($sce_id,$type,$active) {
 	return $html;
 }
 
-function getdynamicconventhtml($convent_id,$type,$active) {
+function getdynamicconventhtml($convention_id,$type,$active) {
 	global $t;
 	$conventtext = [ "visited" => htmlspecialchars( $t->getTemplateVars('_top_visited_pt') ) ];
-	$jsurl = getdynamicjavascripturl( $convent_id, 'convent', $type, $active);
-	$span_id = "convent_" . $convent_id . "_" . $type;
+	$jsurl = getdynamicjavascripturl( $convention_id, 'convent', $type, $active);
+	$span_id = "convent_" . $convention_id . "_" . $type;
 	$ap = ($active ? 'active' : 'passive');
 	$html = 
 		'<span id="' . $span_id . '">' .
@@ -1060,7 +1060,7 @@ function getlinklist ($data_id, $cat) {
 
 function gettaglist ($data_id, $cat) {
 	$data_id = (int) $data_id;
-	$tags = getcolid("SELECT tags.id, tags.tag, c.count FROM tags INNER JOIN (SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag) c ON tags.tag = c.tag WHERE tags.sce_id = $data_id ORDER BY c.count DESC");
+	$tags = getcolid("SELECT tags.id, tags.tag, c.count FROM tags INNER JOIN (SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag) c ON tags.tag = c.tag WHERE tags.game_id = $data_id ORDER BY c.count DESC");
 	return $tags;
 }
 
@@ -1077,26 +1077,26 @@ function getarticles ($data_id, $category) {
 	$data_id = (int) $data_id;
 	if ($category == 'aut') {
 		$articles = getall("
-			SELECT article.issue_id, contributor.role, article.title, article.page, article.sce_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			SELECT article.issue_id, contributor.role, article.title, article.page, article.game_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM contributor
 			INNER JOIN article ON contributor.article_id = article.id
 			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
-			WHERE contributor.aut_id = $data_id
+			WHERE contributor.person_id = $data_id
 			ORDER BY issue.releasedate, issue.id, article.page, article.id, contributor.id
 		");
 	} elseif ($category == 'sce' || $category == 'game') {
 		$articles = getall("
-			SELECT article.issue_id, article.title, article.page, article.sce_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			SELECT article.issue_id, article.title, article.page, article.game_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM article
 			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
-			WHERE article.sce_id = $data_id
+			WHERE article.game_id = $data_id
 			ORDER BY issue.releasedate, issue.id, article.page, article.id
 		");
-	} else { // Get references instead; person for aut
+	} else { // Get references instead; person for person
 		$articles = getall("
-			SELECT article.issue_id, article.title, article.page, article.sce_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
+			SELECT article.issue_id, article.title, article.page, article.game_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM article
 			INNER JOIN issue ON article.issue_id = issue.id
 			INNER JOIN magazine ON issue.magazine_id = magazine.id
@@ -1127,9 +1127,9 @@ function getorganizerlist ($data_id, $category, $order = FALSE) {
 	}
 	$organizerlist = [];
 	if ($category == 'convent') {
-		$organizerlist = getall("SELECT a.id, CONCAT(b.firstname, ' ', b.surname) AS name, a.aut_id, a.aut_extra, a.role FROM acrel a LEFT JOIN aut b ON a.aut_id = b.id WHERE a.convent_id = '$data_id' ORDER BY $order");
+		$organizerlist = getall("SELECT a.id, CONCAT(b.firstname, ' ', b.surname) AS name, a.person_id, a.person_extra, a.role FROM pcrel a LEFT JOIN person b ON a.person_id = b.id WHERE a.convention_id = '$data_id' ORDER BY $order");
 	} elseif ($category == 'aut') {
-		$organizerlist = getall("SELECT a.id, a.convent_id, a.role, b.name, b.begin, b.end, b.year, b.cancelled FROM acrel a INNER JOIN convent b ON a.convent_id = b.id WHERE a.aut_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
+		$organizerlist = getall("SELECT a.id, a.convention_id, a.role, b.name, b.begin, b.end, b.year, b.cancelled FROM pcrel a INNER JOIN convention b ON a.convention_id = b.id WHERE a.person_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
 
 	}
 	return $organizerlist;
@@ -1142,24 +1142,24 @@ function getnews(int $limit = 1000) {
 
 function getnexteventstable () { // both cons and scenarios
 	// All cons that haven't ended (or begun) yet - manual CURDATE due to querycache
-	// $r = getall("SELECT id, name, year, begin, end FROM convent WHERE end >= '".date("Y-m-d")."' ORDER BY begin, end, name");
+	// $r = getall("SELECT id, name, year, begin, end FROM convention WHERE end >= '".date("Y-m-d")."' ORDER BY begin, end, name");
 
 	// :TODO: Currently three queries are performed for "all", "only cons" and "only scenarios". This could be optimized into a single query.
 
 	$r = getall("
 		(
-			SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname, cancelled, convent.name AS origname
-			FROM convent
-			LEFT JOIN conset ON convent.conset_id = conset.id
+			SELECT 'convention' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled, c.name AS origname
+			FROM convention c
+			LEFT JOIN conset ON c.conset_id = conset.id
 			WHERE end >= '" . date("Y-m-d") . "'
 		)
 		UNION
 		(
-			SELECT 'sce' AS type, sce.id, COALESCE(alias.label, sce.title) AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname, scerun.cancelled, sce.title AS origname
-			FROM scerun
-			INNER JOIN sce ON scerun.sce_id = sce.id
-			LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-			WHERE scerun.end >= '" . date("Y-m-d") . "'
+			SELECT 'game' AS type, g.id, COALESCE(alias.label, g.title) AS name, YEAR(gr.begin) AS year, g.description, gr.begin, gr.end, gr.location, g.id AS conset_id, g.title AS cname, gr.cancelled, g.title AS origname
+			FROM gamerun gr
+			INNER JOIN game g ON gr.game_id = g.id
+			LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			WHERE gr.end >= '" . date("Y-m-d") . "'
 		)
 		ORDER BY begin, end, name
 	");
@@ -1167,14 +1167,19 @@ function getnexteventstable () { // both cons and scenarios
 	$calout = '<table class="tableoverview" id="eventsall">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
 	$r = getall("
-		(SELECT 'convent' AS type, convent.id, convent.name, convent.year, convent.description, begin, end, place, conset_id, conset.name AS cname, cancelled FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "')
+		SELECT 'convent' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled
+		FROM convention c
+		LEFT JOIN conset ON c.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "'
 		ORDER BY begin, end, name
 	");
 
 	$calout .= '<table class="tableoverview" id="eventsconvent" style="display: none;">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
 	$r = getall("
-		(SELECT 'sce' AS type, sce.id, sce.title AS name, YEAR(scerun.begin) AS year, sce.description, scerun.begin, scerun.end, scerun.location, sce.id AS conset_id, sce.title AS cname, cancelled FROM scerun INNER JOIN sce ON scerun.sce_id = sce.id WHERE scerun.end >= '" . date("Y-m-d") . "')
+		SELECT 'game' AS type, g.id, g.title AS name, YEAR(gr.begin) AS year, g.description, gr.begin, gr.end, gr.location, g.id AS conset_id, g.title AS cname, cancelled
+		from gamerun gr
+		INNER JOIN game g ON gr.game_id = g.id
+		WHERE gr.end >= '" . date("Y-m-d") . "'
 		ORDER BY begin, end, name
 	");
 
@@ -1348,7 +1353,7 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 		");
 	}
 	if ( $cat == 'convent' ) {
-		$year = getone( "SELECT year FROM convent WHERE id = $data_id" );
+		$year = getone( "SELECT year FROM convention WHERE id = $data_id" );
 		if ( $year ) {
 			$label .= " (" . yearname( $year ) . ")";
 		} else {
