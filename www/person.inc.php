@@ -184,7 +184,7 @@ $q = getall("
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	INNER JOIN convention c ON b.convention_id = c.id
-	INNER JOIN award_nominee_entities d ON a.id = d.award_nominee_id AND category = 'aut' AND data_id = $person
+	INNER JOIN award_nominee_entities d ON a.id = d.award_nominee_id AND d.person_id = $person
 	)
 	ORDER BY year ASC, begin ASC, convention_id ASC, winner DESC, id ASC
 ");

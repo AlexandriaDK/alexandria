@@ -57,13 +57,14 @@ ALTER TABLE award_nominees CHANGE sce_id game_id int NULL;
 ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 
 -- Change `category`, `data_id` to explicit fields for every data type for the purpose of foreign keys
--- Done: Links, Trivia, Files
--- Todo: Filedownloads, Alias, article_reference, award_nominee_entities, log, review, reviews, updates, userlog, ...
+-- Done: Links, Trivia, Files, Alias, Article_reference, award_nominee_entities
+-- Todo: Filedownloads, log, review, reviews, updates, userlog, ...
 
 -- Cleanup; orphans
 DELETE FROM trivia WHERE id = 99;
 DELETE FROM links WHERE id IN (174, 519);
 DELETE FROM article_reference WHERE id = 1749;
+DELETE FROM award_nominee_entities where id = 249; -- Nickolaj Storgaard Oksen, Forum 2020
 
 -- Trivia
 ALTER TABLE trivia ADD person_id int NULL;
@@ -140,6 +141,8 @@ ALTER TABLE files ADD CONSTRAINT files_FK_3 FOREIGN KEY (conset_id) REFERENCES c
 ALTER TABLE files ADD CONSTRAINT files_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE files ADD CONSTRAINT files_FK_5 FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+ALTER TABLE files DROP COLUMN data_id;
+ALTER TABLE files DROP COLUMN category;
 
 -- Alias
 ALTER TABLE alias ADD person_id int NULL;
@@ -196,7 +199,23 @@ ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_7 FOREIGN KEY 
 ALTER TABLE article_reference DROP COLUMN data_id;
 ALTER TABLE article_reference DROP COLUMN category;
 
+-- award_nominee_entities
+ALTER TABLE award_nominee_entities ADD person_id int NULL;
+ALTER TABLE award_nominee_entities ADD game_id int NULL;
+
+UPDATE award_nominee_entities SET
+person_id = IF(category = 'aut', data_id, NULL),
+game_id = IF(category = 'sce', data_id, NULL);
+
+ALTER TABLE award_nominee_entities ADD CONSTRAINT award_nominee_entities_FK FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE award_nominee_entities ADD CONSTRAINT award_nominee_entities_FK_1 FOREIGN KEY (game_id) REFERENCES game(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE award_nominee_entities DROP COLUMN data_id;
+ALTER TABLE award_nominee_entities DROP COLUMN category;
+
 -- SELECT * FROM links WHERE convention_id NOT IN (SELECT id FROM convention)
 
 -- getCount for mange admin-sider - sæt til FALSE for tabeller, der brugte data_id
 -- Mangler vist kun article_reference her
+
+-- Fix export.php !!!

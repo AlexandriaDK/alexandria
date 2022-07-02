@@ -245,7 +245,7 @@ function getmagazineidbyname($find) {
 
 // And aliases...
 function getidbyalias ($find, $category) {
-	$data_field = getFieldFromCategory($category);
+	$data_field = getFieldFromCategory($category, 'alias');
 	if ($data_field == '') { // no alias for issue
 		return [[],[],[],[]];
 	}

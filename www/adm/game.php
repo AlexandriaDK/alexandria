@@ -577,7 +577,7 @@ print "<tr valign=top><td>Participants</td>";
 print "<td>\n";
 print "GMs: <input type=\"text\" name=\"gms\" value=\"" . $gms . "\" size=\"2\" \> - ";
 print "Players: <input type=\"text\" name=\"players\" value=\"" . $players . "\" size=\"2\" \> - ";
-print "possible more details: <input type=text name=\"participants_extra\" value=\"".htmlspecialchars($participants_extra)."\" size=30>\n";
+print "possible more details: <input type=text name=\"participants_extra\" value=\"".htmlspecialchars($participants_extra ?? '')."\" size=30>\n";
 print "<br /><span style=\"font-size: 0.8em;\">You can enter a range of players. E.g. type <i>4-6</i> for 4 to 6 players</span>\n";
 print "</td>";
 print "</tr>\n\n";

@@ -1372,6 +1372,7 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 
 		case 'sys':
 		case 'system':
+		case 'gamesystem':
 		$value = "name";
 		$fullcat = "System";
 		$cat = 'gamesystem';

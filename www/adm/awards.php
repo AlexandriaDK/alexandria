@@ -7,39 +7,39 @@ require "base.inc.php";
 
 $this_type = 'awards';
 
-$category = (string) $_REQUEST['category'];
-$action = (string) $_REQUEST['action'];
-$do = (string) $_REQUEST['do'];
-$name = (string) $_REQUEST['name'];
-$description = (string) $_REQUEST['description'];
-$nominationtext = (string) $_REQUEST['nominationtext'];
-$id = (int) $_REQUEST['id'];
-$game_id = (int) $_REQUEST['game_id'];
+$category = (string) ($_REQUEST['category'] ?? FALSE);
+$action = (string) ($_REQUEST['action'] ?? FALSE);
+$do = (string) ($_REQUEST['do'] ?? FALSE);
+$name = (string) ($_REQUEST['name'] ?? FALSE);
+$description = (string) ($_REQUEST['description'] ?? FALSE);
+$nominationtext = (string) ($_REQUEST['nominationtext'] ?? FALSE);
+$id = (int) ($_REQUEST['id'] ?? FALSE);
+$game_id = (int) ($_REQUEST['game_id'] ?? FALSE);
 if (!$game_id) {
 	$game_id = NULL;
 }
-$award_nominee_entity = (int) $_REQUEST['award_nominee_entity'];
-$award_nominee_entity_extra = $_REQUEST['award_nominee_entity'];
-$data_id = (int) $_REQUEST['data_id'];
-$convention_id = (int) $_REQUEST['convention_id'];
+$award_nominee_entity = (int) ($_REQUEST['award_nominee_entity'] ?? '');
+$award_nominee_entity_extra = $_REQUEST['award_nominee_entity'] ?? '';
+$data_id = (int) ($_REQUEST['data_id'] ?? FALSE);
+$convention_id = (int) ($_REQUEST['convention_id'] ?? FALSE);
 $winner = (int) isset($_REQUEST['winner']);
-$ranking = (string) $_REQUEST['ranking'];
+$ranking = (string) ($_REQUEST['ranking'] ?? '');
 
 $user_id = $_SESSION['user_id'];
 
 
-$people = [];
+// $people = [];
 
-$result = getall("SELECT id, firstname, surname FROM person ORDER BY firstname, surname");
-foreach($result AS $row) {
-	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
-}
+// $result = getall("SELECT id, firstname, surname FROM person ORDER BY firstname, surname");
+// foreach($result AS $row) {
+// 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
+// }
 
-$scenarios = [];
-$result = getall("SELECT id, title FROM game ORDER BY title");
-foreach($result AS $row) {
-	$scenarios[] = $row['id'] . " - " . $row['title'];
-}
+// $scenarios = [];
+// $result = getall("SELECT id, title FROM game ORDER BY title");
+// foreach($result AS $row) {
+// 	$scenarios[] = $row['id'] . " - " . $row['title'];
+// }
 
 // Edit kategori
 if ($action == "changecategory" && $do != "Delete") {
@@ -100,7 +100,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	     "ranking = '" . dbesc($ranking) . "' " .
 	     "WHERE id = '$id'";
 	if ($award_nominee_entity) { // assuming person
-	     doquery("INSERT INTO award_nominee_entities (award_nominee_id, data_id, category) VALUES ($id, $award_nominee_entity, 'aut')");
+	    doquery("INSERT INTO award_nominee_entities (award_nominee_id, person_id) VALUES ($id, $award_nominee_entity)");
 	} elseif ($award_nominee_entity_extra) { // Label
 		doquery("INSERT INTO award_nominee_entities (award_nominee_id, label) VALUES ($id, '" . dbesc($award_nominee_entity_extra) . "')");
 	}
@@ -169,17 +169,17 @@ if ($action == 'deletenomineeentity') {
 <script src="adm.js"></script>
 <script type="text/javascript">
 	$(function() {
-		var availablePeople = <?php print json_encode($people); ?>;
 		$( ".peopletags" ).autocomplete({
-			source: availablePeople,
+			source: 'lookup.php?type=person',
 			autoFocus: true,
-			delay: 10
+			delay: 50,
+			minLength: 3
 		});
-		var availableScenarios= <?php print json_encode($scenarios); ?>;
-		$( ".scenariotags" ).autocomplete({
-			source: availableScenarios,
+		$( ".gametags" ).autocomplete({
+			source: 'lookup.php?type=game',
 			autoFocus: true,
-			delay: 10
+			delay: 50,
+			minLength: 3
 		});
 	});
 </script>
@@ -220,7 +220,7 @@ if ($category == 'convent') {
 			print "<tr valign=\"top\">\n".
 			      '<td style="text-align:right;">'.$row['id'].'</td>'.
 			      '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=40 maxlength=150><br><a href="awards.php?category=awardcategory&amp;data_id=' . $row['id'] . '">' . ($row['winners'] == 1 ? "1 winner" : (int) $row['winners'] . " winners") . " / " . ($row['nominees'] == 1 ? "1 nominee" : $row['nominees'] . " nominees") . '</a></td>'.
-			      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($row['description']).'</textarea></td>'.
+			      '<td><textarea name="description" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($row['description'] ?? '').'</textarea></td>'.
 			      '<td><input type="submit" name="do" value="Update"> '.
 			      ($row['nominees'] == 0 ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove award?\');">' : '') . '</td>'.
 			      "</tr>\n";
@@ -244,14 +244,14 @@ if ($category == 'convent') {
 
 } elseif ($category == "awardcategory" && $data_id) {
 	// get category
-	list($category_id, $name, $convention_id, $convent_name, $year) = getrow("SELECT a.id, a.name, a.convention_id, b.name AS convent_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convention_id = b.id WHERE a.id = $data_id");
+	list($category_id, $name, $convention_id, $convention_name, $year) = getrow("SELECT a.id, a.name, a.convention_id, b.name AS convention_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convention_id = b.id WHERE a.id = $data_id");
 	if (!$category_id) {
 		die("Unknown award category");
 	}
 	$nominees = getall("SELECT a.id, a.game_id, a.name, a.nominationtext, a.winner, a.ranking, b.title, COUNT(c.id) AS count_entity FROM award_nominees a LEFT JOIN game b ON a.game_id = b.id LEFT JOIN award_nominee_entities c ON a.id = c.award_nominee_id WHERE award_category_id = $data_id GROUP BY a.id ORDER BY winner DESC, a.id");
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convent&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convent_name) . " ($year)</a>".
+	      "<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convent&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convention_name) . " ($year)</a>".
 	      "</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
@@ -272,7 +272,7 @@ if ($category == 'convent') {
 		$html_entity .= ($nominee['count_entity'] == 1 ? '1 connection' : $nominee['count_entity'] . " connections");
 		$html_entity .= ' <a href="#" onclick="this.nextSibling.style.display=\'block\'; this.nextSibling.focus(); this.style.display=\'none\'; return false;">[+]</a>';
 		$html_entity .= '<input name="award_nominee_entity" style="font-size: 0.7em; display: none;" class="peopletags" placeholder="Name of individual nominee">';
-		$entities = getall("SELECT id, data_id,category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
+		$entities = getall("SELECT id, COALESCE(person_id, game_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' END AS category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
 		$html_entity .= '<br>';
 		foreach($entities AS $entity) {
 			$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
@@ -299,7 +299,7 @@ if ($category == 'convent') {
 		      '<td><input type="text" name="name" value="'.htmlspecialchars($nominee['name']).'" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)"><br>' .
 		      $html_entity . 
 		      '</td>'.
-		      '<td><input type="text" name="game_id" value="'.htmlspecialchars($game_id).'" size=30 maxlength=150 class="scenariotags"></td>'.
+		      '<td><input type="text" name="game_id" value="'.htmlspecialchars($game_id).'" size=30 maxlength=150 class="gametags"></td>'.
 		      '<td><textarea name="nominationtext" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;" >'.htmlspecialchars($nominee['nominationtext']).'</textarea></td>'.
 		      '<td style="text-align: center;"><input type="checkbox" name="winner" value="yes" ' . ($nominee['winner'] ? 'checked' : '' ) . '></td>'.
 		      '<td><input type="text" name="ranking" value="'.htmlspecialchars($nominee['ranking']).'" size=10 maxlength=150><br>' .
@@ -317,7 +317,7 @@ if ($category == 'convent') {
 	print "<tr valign=\"top\">\n".
 	      '<td style="text-align:right;">New</td>'.
 	      '<td><input type="text" name="name" value="" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)" autofocus></td>'.
-	      '<td><input type="text" name="game_id" value="" size=30 maxlength=150 class="scenariotags"></td>'.
+	      '<td><input type="text" name="game_id" value="" size=30 maxlength=150 class="gametags"></td>'.
 	      '<td><textarea name="nominationtext" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;" ></textarea></td>'.
 	      '<td style="text-align: center;"><input type="checkbox" name="winner" value="yes" ' . (count($nominees) == 0 ? 'checked' : '' ) . '></td>'.
 	      '<td><input type="text" name="ranking" value="" size=10 maxlength=150></td>'.
