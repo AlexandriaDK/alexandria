@@ -27,9 +27,9 @@ if (!$action && $tag_id) {
 
 if ($action == "Remove" && $tag_id) {
 	$error = [];
-	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
-	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
-	if (getCount('files', $this_id, TRUE, $this_type) ) $error[] = "files";
+	if (getCount('trivia', $this_id, FALSE, $this_type) ) $error[] = "trivia";
+	if (getCount('links', $this_id, FALSE, $this_type) ) $error[] = "link";
+	if (getCount('files', $this_id, FALSE, $this_type) ) $error[] = "files";
 	if (getCount('article_reference', $this_id, TRUE, $this_type) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);

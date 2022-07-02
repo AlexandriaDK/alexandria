@@ -28,10 +28,6 @@ if ( $action ) {
 if ($action == "changelink" && $do != "Remove") {
 	$url = trim($url);
 	$description = trim($description);
-	if ($rid = rlyehlink($url)) {
-		$url = "http://rlyeh.alexandria.dk/pub/scenarier/game.php3?id=".$rid;
-		$description = "Scenariet til download på Projekt R\\'lyeh";
-	}
 	$q = "UPDATE links SET " .
 	     "url = '" . dbesc($url) . "', " .
 	     "description = '" . dbesc($description) . "' " .

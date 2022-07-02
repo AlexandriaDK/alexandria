@@ -989,7 +989,7 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 	return $value;
 }
 
-function getFieldFromCategory($cat) {
+function getFieldFromCategory($cat, $table = '') {
 	$categories = [
 		'aut' => 'person_id',
 		'person' => 'person_id',
@@ -1003,6 +1003,9 @@ function getFieldFromCategory($cat) {
 		'tag' => 'tag_id',
 		'issue' => 'issue_id'
 	];
+	if ($table == 'alias') {
+		unset($categories['issue']);
+	}
 	$field = $categories[$cat] ?? '';
 	return $field;	
 }
@@ -1208,7 +1211,7 @@ function getnexteventstable () { // both cons and scenarios
 	");
 
 	$calout = '<table class="tableoverview" id="eventsall">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
-
+/*
 	$r = getall("
 		SELECT 'convent' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled
 		FROM convention c
@@ -1225,7 +1228,7 @@ function getnexteventstable () { // both cons and scenarios
 		WHERE gr.end >= '" . date("Y-m-d") . "'
 		ORDER BY begin, end, name
 	");
-
+*/
 	$calout .= '<table class="tableoverview" id="eventsscenario" style="display: none;">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
 	return $calout;
@@ -1252,9 +1255,9 @@ function parseupcomingevents($eventset) {
 			$daypart = specificdate( $begin ) . "-" . specificdate( $end);
 		}
 		$calout .= "<tr " . ($cancelled ? "class=\"cancelled\"" : "") . ">\n<td>$daypart</td>\n";
-		if ($type == 'convent') {
+		if ($type == 'convention') {
 			$calout .= "<td><a href=\"data?con=$id\" title=\"$coninfo\" class=\"con\">$name</a></td>\n";
-		} elseif ($type == 'sce') {
+		} elseif ($type == 'game') {
 			$calout .= "<td><a href=\"data?scenarie=$id\" title=\"$coninfo\" class=\"scenarie\">$name</a></td>\n";
 		}
 		$calout .= "</tr>\n";
@@ -1388,13 +1391,22 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 	}
 
 	if ($value) {
-		$data_field = getFieldFromCategory($cat);
-		$label = getone("
-			SELECT COALESCE(alias.label, $value) AS label_translation
-			FROM $cat AS tbl
-			LEFT JOIN alias ON tbl.id = `alias`.`$data_field` AND alias.language = '" . LANG . "' AND alias.visible = 1
-			WHERE tbl.id = $data_id
-		");
+		$data_field = getFieldFromCategory($cat, 'alias');
+		if ($data_field != '') 
+		{
+			$label = getone("
+				SELECT COALESCE(alias.label, $value) AS label_translation
+				FROM $cat AS tbl
+				LEFT JOIN alias ON tbl.id = `alias`.`$data_field` AND alias.language = '" . LANG . "' AND alias.visible = 1
+				WHERE tbl.id = $data_id
+			");
+		} else {
+			$label = getone("
+				SELECT $value AS label_translation
+				FROM $cat AS tbl
+				WHERE tbl.id = $data_id
+			");
+		}
 	}
 	if ( $cat == 'convent' ) {
 		$year = getone( "SELECT year FROM convention WHERE id = $data_id" );

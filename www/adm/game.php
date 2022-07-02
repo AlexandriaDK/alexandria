@@ -151,16 +151,16 @@ if ($action == "update" && $game) {
 // Delete game
 if ($action == "Delete" && $game) { // should check if game exists
 	$error = [];
-	if (getCount('pgrel', $this_id, FALSE, $this_type_old) ) $error[] = "person";
-	if (getCount('cgrel', $this_id, FALSE, $this_type_old) ) $error[] = "con";
-	if (getCount('ggrel', $this_id, FALSE, $this_type_old) ) $error[] = "genre";
-	if (getCount('gamerun', $this_id, FALSE, $this_type_old) ) $error[] = "run";
-	if (getCount('trivia', $this_id, TRUE, $this_type_old) ) $error[] = "trivia";
-	if (getCount('links', $this_id, TRUE, $this_type_old) ) $error[] = "link";
-	if (getCount('alias', $this_id, TRUE, $this_type_old) ) $error[] = "alias";
-	if (getCount('files', $this_id, TRUE, $this_type_old) ) $error[] = "file";
-	if (getCount('tags', $this_id, FALSE, $this_type_old) ) $error[] = "tags";
-	if (getCount('article', $this_id, FALSE, $this_type_old) ) $error[] = "article";
+	if (getCount('pgrel', $this_id, FALSE, $this_type) ) $error[] = "person";
+	if (getCount('cgrel', $this_id, FALSE, $this_type) ) $error[] = "con";
+	if (getCount('ggrel', $this_id, FALSE, $this_type) ) $error[] = "genre";
+	if (getCount('gamerun', $this_id, FALSE, $this_type) ) $error[] = "run";
+	if (getCount('trivia', $this_id, FALSE, $this_type) ) $error[] = "trivia";
+	if (getCount('links', $this_id, FALSE, $this_type) ) $error[] = "link";
+	if (getCount('files', $this_id, FALSE, $this_type) ) $error[] = "file";
+	if (getCount('alias', $this_id, FALSE, $this_type) ) $error[] = "alias";
+	if (getCount('tags', $this_id, FALSE, $this_type) ) $error[] = "tags";
+	if (getCount('article', $this_id, FALSE, $this_type) ) $error[] = "article";
 	if (getCount('userlog', $this_id, TRUE, $this_type_old) ) $error[] = "user log (requires admin)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);

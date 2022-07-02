@@ -40,13 +40,14 @@ foreach($files AS $file) {
 }
 
 $scenarios_downloadable = getone("SELECT COUNT(DISTINCT game_id) FROM files WHERE downloadable = 1");
+$nextevents = getnexteventstable();
 
 $t->assign('type', 'front');
 $t->assign('recentlog', $recentlog);
 $t->assign('translations', $translations);
 $t->assign('newslist', $newslist);
 $t->assign('scenarios_downloadable', $scenarios_downloadable);
-$t->assign('html_nextevents', getnexteventstable() );
+$t->assign('html_nextevents', $nextevents);
 $t->assign('latest_downloads', $latest_downloads);
 
 ob_start();

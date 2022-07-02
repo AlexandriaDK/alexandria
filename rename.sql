@@ -182,6 +182,5 @@ ALTER TABLE alias DROP COLUMN category;
 
 -- SELECT * FROM links WHERE convention_id NOT IN (SELECT id FROM convention)
 
--- smartfind.inc.php - nederste linje, alias
-
 -- getCount for mange admin-sider - sæt til FALSE for tabeller, der brugte data_id
+-- Mangler vist kun article_reference her

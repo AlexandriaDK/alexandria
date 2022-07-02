@@ -60,7 +60,7 @@ if ($action == "Delete" && $person) { // Should check if $person id exists
 	if (getCount('links', $this_id, FALSE, $this_type_new) ) $error[] = "link";
 	if (getCount('alias', $this_id, FALSE, $this_type_new) ) $error[] = "alias";
 	if (getCount('users', $this_id, FALSE, $this_type) ) $error[] = "user";
-	if (getCount('contributor', $this_id, FALSE, $this_type) ) $error[] = "article (magazine)";
+	if (getCount('contributor', $this_id, FALSE, $this_type_new) ) $error[] = "article (magazine)";
 	if (getCount('article_reference', $this_id, TRUE, 'person') ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ",$error);

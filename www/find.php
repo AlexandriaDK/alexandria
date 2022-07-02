@@ -176,7 +176,7 @@ function display_result ($match,$linkpart,$class,$short) {
 
 // samler data sammen og sorterer alfabetisk
 		foreach($match AS $m_id) {
-			$list[$m_id] = $id_data[$short][$m_id];
+			$list[$m_id] = $id_data[$short][$m_id] ?? '';
 		}
 		asort($list);
 		foreach($list AS $key => $value) {
@@ -260,7 +260,7 @@ if ($find) {
 
 	if (!$cat || $cat == "con" ) {
 		category_search($find, "CONCAT(name, ' (', year, ')') ", "convention");
-		category_search($find, "name", "conventionwithyear");
+		// category_search($find, "name", "conventionwithyear");
 	}
 
 	if (!$cat || $cat == "sys" ) {
@@ -418,7 +418,6 @@ $out = "";
 if ($debug) {
 	print "<h2>Class 1 links:</h2>".implode("<br>",$link_a);
 	print "<h2>Class 2 links:</h2>".implode("<br>",$link_b);
-	print "<h2>All links:</h2>".implode("<br>",$match['person']);
 }
 
 // Smarty

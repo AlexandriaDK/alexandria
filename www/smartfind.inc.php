@@ -98,16 +98,16 @@ function array_larger ($array, $fixedvalue) {
 // $match['b'] are good matches,
 // $match['c'] are mediocre matches
 // $match_all is a unique list of all three matches
-function getalphaidbybeta ($find, $table, $string, $idfield = "id", $dataid = "") {
+function getalphaidbybeta ($find, $table, $string, $idfield = "id", $search_alias = FALSE) {
 	$match = [];
 	$match['a'] = $match['b'] = $match['c'] = [];
 	$listetegn = $listeprocent = [];
 	$whereextend = $whereextendshort = "";
 	
 // Due to aliases
-	if ($dataid) {
-		$whereextend = " AND category = '$dataid'";
-		$whereextendshort = " WHERE category = '$dataid'";
+	if ($search_alias) {
+		$whereextend = " AND $idfield IS NOT NULL";
+		$whereextendshort = " WHERE $idfield IS NOT NULL";
 	}
 
 // Let's try a direct match ("a" match)
@@ -245,6 +245,22 @@ function getmagazineidbyname($find) {
 
 // And aliases...
 function getidbyalias ($find, $category) {
-	return getalphaidbybeta ($find, "alias", "label","data_id",$category);
+	/*
+		$sql = "
+		SELECT a.id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, a.description, a.language, b.label, b.archivefile, GROUP_CONCAT(b.label ORDER BY b.id SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
+		FROM files a
+		INNER JOIN filedata b ON a.id = b.files_id
+		WHERE MATCH(content) AGAINST ('\"".dbesc($find)."\"' IN BOOLEAN MODE)
+		$where_category
+		GROUP BY a.id, b.archivefile
+		ORDER BY category, data_id, a.id, b.archivefile
+	";
+	*/
+	// return [[],[],[],[]];
+	$data_field = getFieldFromCategory($category);
+	if ($data_field == '') { // no alias for issue
+		return [[],[],[],[]];
+	}
+	return getalphaidbybeta($find, "alias", "label", $data_field, TRUE);
 }
 ?>
