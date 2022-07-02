@@ -62,9 +62,10 @@ function insertReferences($references, $article_id) {
 		if (! preg_match($match, $reference, $matches)) {
 			continue;
 		}
+		$data_field = getFieldFromCategory(getCategoryFromShort($matches[1]));
 		doquery("
-			INSERT INTO article_reference (article_id, category, data_id)
-			VALUES ($article_id, '" . dbesc(getCategoryFromShort($matches[1])) . "', " . (int) $matches[2] . ")
+			INSERT INTO article_reference (article_id, `$data_field`)
+			VALUES ($article_id, " . (int) $matches[2] . ")
 		");
 	}
 }
@@ -368,7 +369,12 @@ if ($magazine_id && $issue_id) {
 		if ( ! $new) {
 			// Non-optimal contributor and reference lookup
 			$contributors = getall("SELECT c.person_id, c.person_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN person a ON c.person_id = a.id WHERE article_id = $article_id ORDER BY c.id");
-			$references = getall("SELECT category, data_id FROM article_reference ar WHERE article_id = $article_id ORDER BY ar.id");
+			$references = getall("SELECT 
+			COALESCE(person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(magazine_id) THEN 'magazine' WHEN !ISNULL(issue_id) THEN 'issue' END AS category 
+			FROM article_reference ar
+			WHERE article_id = $article_id
+			ORDER BY ar.id
+			");
 			foreach ($references AS $reference_id => $reference) {
 				$entry = getentry($reference['category'], $reference['data_id']);
 				$references[$reference_id]['label'] = $entry;

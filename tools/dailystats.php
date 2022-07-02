@@ -9,7 +9,7 @@ $scenarios = getone("SELECT COUNT(*) FROM game WHERE boardgame = 0");
 $persons = getone("SELECT COUNT(*) FROM person");
 $conventions = getone("SELECT COUNT(*) FROM convention");
 $rpgsystems = getone("SELECT COUNT(*) FROM gamesystem");
-$downloads = getone("SELECT COUNT(DISTINCT data_id) FROM files WHERE category = 'sce' AND downloadable = 1");
+$downloads = getone("SELECT COUNT(DISTINCT game_id) FROM files WHERE downloadable = 1");
 $boardgames = getone("SELECT COUNT(*) FROM game WHERE boardgame = 1");
 $conseries = getone("SELECT COUNT(*) FROM conset");
 $users = getone("SELECT COUNT(*) FROM users");

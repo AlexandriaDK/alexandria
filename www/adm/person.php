@@ -61,7 +61,7 @@ if ($action == "Delete" && $person) { // Should check if $person id exists
 	if (getCount('alias', $this_id, FALSE, $this_type_new) ) $error[] = "alias";
 	if (getCount('users', $this_id, FALSE, $this_type_new) ) $error[] = "user";
 	if (getCount('contributor', $this_id, FALSE, $this_type_new) ) $error[] = "article (magazine)";
-	if (getCount('article_reference', $this_id, TRUE, 'person') ) $error[] = "article reference";
+	if (getCount('article_reference', $this_id, FALSE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ",$error);
 		rexit($this_type, ['person' => $person] );
@@ -152,7 +152,7 @@ if ($person) {
 	$q = getall("SELECT c.id, c.name, c.year, pcrel.role FROM pcrel INNER JOIN convention c ON pcrel.convention_id = c.id WHERE pcrel.person_id = '$person' ORDER BY c.year, c.begin, c.end, c.id");
 	print "<tr valign=top><td>Organizer</td><td>\n";
         foreach($q AS list($id, $name, $year, $role) ) {
-		print "<a href=\"c.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
+		print "<a href=\"convent.php?con=$id\">" . htmlspecialchars("$name ($year)") . "</a> (" . htmlspecialchars($role) . ")<br>";
 	}
 	print "</td></tr>\n";
 	$q = getall("SELECT COUNT(*), issue.id, issue.title, magazine.name FROM contributor INNER JOIN article ON contributor.article_id = article.id INNER JOIN issue ON article.issue_id = issue.id INNER JOIN magazine ON issue.magazine_id = magazine.id WHERE contributor.person_id = '$person' GROUP BY issue.id, magazine.id, issue.title, magazine.name ORDER BY issue.releasedate, issue.id");

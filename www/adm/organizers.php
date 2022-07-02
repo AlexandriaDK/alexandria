@@ -8,19 +8,19 @@ require "base.inc.php";
 $this_type = 'organizers';
 $category = 'convent';
 
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$role = trim((string) $_REQUEST['role']);
-$person_text = trim((string) $_REQUEST['person_text']);
-$person_id = (int) $person_text;
+$action = $_REQUEST['action'] ?? FALSE;
+$do = $_REQUEST['do'] ?? FALSE;
+$role = trim((string) ($_REQUEST['role'] ?? ''));
+$person_text = trim((string) ($_REQUEST['person_text'] ?? ''));
+$person_id = (int) ($person_text ?? FALSE);
 $person_extra = "";
 if (!$person_id) {
 	$person_extra = $person_text;
 	$person_id = NULL;
 }
 
-$id = $_REQUEST['id'];
-$data_id = (int) $_REQUEST['data_id'];
+$id = $_REQUEST['id'] ?? FALSE;
+$data_id = (int) ($_REQUEST['data_id'] ?? '');
 
 $user_id = $_SESSION['user_id'];
 

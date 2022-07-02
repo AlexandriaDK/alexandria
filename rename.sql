@@ -9,10 +9,10 @@ RENAME TABLE convent TO convention;
 RENAME TABLE sys TO gamesystem;
 RENAME TABLE pre TO presentation;
 
-RENAME TABLE asrel AS pgrel;
-RENAME TABLE acrel AS pcrel;
-RENAME TABLE csrel AS cgrel;
-RENAME TABLE gsrel AS ggrel;
+RENAME TABLE asrel TO pgrel;
+RENAME TABLE acrel TO pcrel;
+RENAME TABLE csrel TO cgrel;
+RENAME TABLE gsrel TO ggrel;
 
 ALTER TABLE cgrel CHANGE convent_id convention_id int DEFAULT 0 NOT NULL;
 ALTER TABLE cgrel CHANGE sce_id game_id int DEFAULT 0 NOT NULL;
@@ -63,6 +63,7 @@ ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 -- Cleanup; orphans
 DELETE FROM trivia WHERE id = 99;
 DELETE FROM links WHERE id IN (174, 519);
+DELETE FROM article_reference WHERE id = 1749;
 
 -- Trivia
 ALTER TABLE trivia ADD person_id int NULL;
@@ -182,6 +183,47 @@ CREATE INDEX alias_gamesystem_id_IDX USING BTREE ON trivia (gamesystem_id);
 
 ALTER TABLE alias DROP COLUMN data_id;
 ALTER TABLE alias DROP COLUMN category;
+
+-- Article_reference
+ALTER TABLE article_reference ADD person_id int NULL;
+ALTER TABLE article_reference ADD game_id int NULL;
+ALTER TABLE article_reference ADD convention_id int NULL;
+ALTER TABLE article_reference ADD conset_id int NULL;
+ALTER TABLE article_reference ADD gamesystem_id int NULL;
+ALTER TABLE article_reference ADD tag_id int unsigned NULL;
+ALTER TABLE article_reference ADD magazine_id int NULL;
+ALTER TABLE article_reference ADD issue_id int NULL;
+
+UPDATE article_reference SET
+person_id = IF(category = 'person', data_id, NULL),
+game_id = IF(category = 'game', data_id, NULL),
+convention_id = IF(category = 'convention', data_id, NULL),
+conset_id = IF(category = 'conset', data_id, NULL),
+gamesystem_id = IF(category = 'system', data_id, NULL),
+tag_id = IF(category = 'tag', data_id, NULL),
+magazine_id = IF(category = 'magazine', data_id, NULL),
+issue_id = IF(category = 'issue', data_id, NULL);
+
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_1 FOREIGN KEY (game_id) REFERENCES game(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_2 FOREIGN KEY (convention_id) REFERENCES convention(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_3 FOREIGN KEY (conset_id) REFERENCES conset(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_5 FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_6 FOREIGN KEY (magazine_id) REFERENCES magazine(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_7 FOREIGN KEY (issue_id) REFERENCES issue(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+CREATE INDEX article_reference_person_id_IDX USING BTREE ON article_reference (person_id);
+CREATE INDEX article_reference_game_id_IDX USING BTREE ON article_reference (game_id);
+CREATE INDEX article_reference_convention_id_IDX USING BTREE ON article_reference (convention_id);
+CREATE INDEX article_reference_conset_id_IDX USING BTREE ON article_reference (conset_id);
+CREATE INDEX article_reference_gamesystem_id_IDX USING BTREE ON article_reference (gamesystem_id);
+CREATE INDEX article_reference_tag_id_IDX USING BTREE ON article_reference (tag_id);
+CREATE INDEX article_reference_magazine_id_IDX USING BTREE ON article_reference (magazine_id);
+CREATE INDEX article_reference_issue_id_IDX USING BTREE ON article_reference (issue_id);
+
+ALTER TABLE article_reference DROP COLUMN data_id;
+ALTER TABLE article_reference DROP COLUMN category;
 
 -- SELECT * FROM links WHERE convention_id NOT IN (SELECT id FROM convention)
 

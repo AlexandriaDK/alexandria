@@ -276,7 +276,7 @@ $query = "
 	WHERE NOT EXISTS (SELECT 1 FROM pgrel WHERE p.id = pgrel.person_id)
 	AND NOT EXISTS (SELECT 1 FROM pcrel WHERE p.id = pcrel.person_id)
 	AND NOT EXISTS (SELECT 1 FROM contributor WHERE p.id = contributor.person_id)
-	AND NOT EXISTS (SELECT 1 FROM article_reference WHERE p.id = article_reference.data_id AND category = 'person')
+	AND NOT EXISTS (SELECT 1 FROM article_reference WHERE p.id = article_reference.person_id)
 	AND NOT EXISTS (SELECT 1 FROM award_nominee_entities WHERE p.id = award_nominee_entities.data_id AND category = 'aut')
 ";
 

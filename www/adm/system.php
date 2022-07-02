@@ -68,7 +68,7 @@ if ($action == "create") {
 if ($action == "Delete" && $system) {
 	$error = [];
 	if (getCount('game', $this_id, FALSE, $this_type_new) ) $error[] = "game";
-	if (getCount('article_reference', $this_id, TRUE, $this_type_new) ) $error[] = "article reference";
+	if (getCount('article_reference', $this_id, FALSE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ",$error);
 		rexit($this_type, ['system' => $system] );

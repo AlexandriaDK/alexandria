@@ -113,7 +113,7 @@ if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	if (getCount('alias', $this_id, FALSE, $this_type_new) ) $error[] = "alias";
 	if (getCount('files', $this_id, FALSE, $this_type_new) ) $error[] = "files";
 	if (getCount('userlog', $this_id, TRUE, $this_type_new) ) $error[] = "user log (requires admin access)";
-	if (getCount('article_reference', $this_id, TRUE, $this_type_new) ) $error[] = "article reference";
+	if (getCount('article_reference', $this_id, FALSE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ",$error);
 		rexit($this_type, ['con' => $con] );
