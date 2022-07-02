@@ -63,7 +63,7 @@ $q = getall("
 		LEFT JOIN files f ON
 			g.id = f.game_id AND f.downloadable = 1
 		LEFT JOIN alias ON
-			g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 		WHERE
 			g.id = pgrel.game_id AND
 			pgrel.title_id = title.id AND
@@ -176,7 +176,7 @@ $q = getall("
 	INNER JOIN convention c ON b.convention_id = c.id
 	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person
 	INNER JOIN game e ON a.game_id = e.id
-	LEFT JOIN alias f ON e.id = f.data_id AND f.category = 'sce' AND f.language = '" . LANG . "' AND f.visible = 1
+	LEFT JOIN alias f ON e.id = f.game_id AND f.language = '" . LANG . "' AND f.visible = 1
 	)
 	UNION ALL
 	(

@@ -68,7 +68,7 @@ $r = getall("
 	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id = 1
 	LEFT JOIN person p ON pgrel.person_id = p.id
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	$wherepart
 	GROUP BY cgrel.presentation_id,cgrel.game_id,pgrel.person_id, g.id, c.id
 	ORDER BY title_translation, p.surname, p.firstname, c.year, c.begin, c.end

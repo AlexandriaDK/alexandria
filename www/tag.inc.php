@@ -25,7 +25,7 @@ $q = getall("
 	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.presentation_id = 1
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE tags.tag = '" . dbesc($tag). "'
 	GROUP BY g.id, c.id
 	ORDER BY title_translation

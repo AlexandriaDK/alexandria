@@ -46,9 +46,9 @@ if ($action == "changetrivia" && $do == "Delete") {
 if ($action == "addtrivia") {
 	$fact = trim($fact);
 	$hidden = trim($hidden);
-	$field = getFieldFromCategory($category);
+	$data_field = getFieldFromCategory($category);
 	$q = "INSERT INTO trivia " .
-	     "($field, fact, hidden) VALUES ".
+	     "($data_field, fact, hidden) VALUES ".
 	     "('$data_id', '" . dbesc($fact) . "', '" . dbesc($hidden) . "')";
 	$r = doquery($q);
 	if ($r) {
@@ -59,13 +59,12 @@ if ($action == "addtrivia") {
 	rexit( $this_type, ['category' => $category, 'data_id' => $data_id] );
 }
 
-
 if ($data_id && $category) {
 	$data_id = intval($data_id);
-	$field = getFieldFromCategory($category);
+	$data_field = getFieldFromCategory($category);
 	$linktitle = getlabel($category, $data_id, TRUE);
 	
-	$query = "SELECT id, fact, hidden FROM trivia WHERE $field = '$data_id' ORDER BY id";
+	$query = "SELECT id, fact, hidden FROM trivia WHERE `$data_field` = '$data_id' ORDER BY id";
 	$result = getall($query);
 }
 htmladmstart("Trivia");

@@ -10,11 +10,7 @@
 	</div>
 {/if}
 
-{if $alias != ""}
-	<p class="indata">
-		({$_aka}: {$alias})
-	</p>
-{/if}
+{include file="alias.tpl"}
 
 {if $description != ""}
 	

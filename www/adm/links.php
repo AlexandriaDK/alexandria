@@ -59,9 +59,9 @@ if ($action == "changelink" && $do == "Remove") {
 if ($action == "addlink") {
 	$url = trim($url);
 	$description = trim($description);
-	$field = getFieldFromCategory($category);
+	$data_field = getFieldFromCategory($category);
 	$q = "INSERT INTO links " .
-	     "($field, url, description) VALUES ".
+	     "($data_field, url, description) VALUES ".
 	     "('$data_id', '" . dbesc($url) . "', '" . dbesc($description) . "')";
 	$r = doquery($q);
 	if ($r) {
@@ -75,10 +75,10 @@ if ($action == "addlink") {
 
 if ($data_id && $category) {
 	$data_id = intval($data_id);
-	$field = getFieldFromCategory($category);
+	$data_field = getFieldFromCategory($category);
 	$linktitle = getlabel($category, $data_id, TRUE);
 	
-	$query = "SELECT id, url, description FROM links WHERE $field = '$data_id' ORDER BY id";
+	$query = "SELECT id, url, description FROM links WHERE `$data_field` = '$data_id' ORDER BY id";
 	$result = getall($query);
 }
 

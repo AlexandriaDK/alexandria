@@ -21,7 +21,7 @@ if (!$cid) {
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	LEFT JOIN convention c ON b.convention_id = c.id
 	LEFT JOIN game d ON a.game_id = d.id
-	LEFT JOIN alias e ON d.id = e.data_id AND e.category = 'sce' AND e.language = '" . LANG . "' AND e.visible = 1
+	LEFT JOIN alias e ON d.id = e.game_id AND e.language = '" . LANG . "' AND e.visible = 1
 	WHERE c.conset_id = $cid
 	ORDER BY c.year DESC, a.winner DESC, a.id
 ");

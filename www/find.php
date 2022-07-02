@@ -60,18 +60,19 @@ function search_articles($find) {
 
 function search_files ($find, $category = '') {
 	global $t;
-	$where_category = ($category ? "AND a.category = '$category'" : "");
+	$data_field = getFieldFromCategory($category);
+	$where_category = ($category ? "AND a.$data_field IS NOT NULL" : "");
 	$preview_length = 30;
 	$output = "";
 
 	$sql = "
-		SELECT a.id, a.category, a.data_id, a.description, a.language, b.label, b.archivefile, GROUP_CONCAT(b.label ORDER BY b.id SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
+		SELECT a.id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, a.description, a.language, b.label, b.archivefile, GROUP_CONCAT(b.label ORDER BY b.id SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('".dbesc($find)."',content)-".$preview_length.", LENGTH('".dbesc($find)."')+".($preview_length*2).") AS preview, b.content
 		FROM files a
 		INNER JOIN filedata b ON a.id = b.files_id
 		WHERE MATCH(content) AGAINST ('\"".dbesc($find)."\"' IN BOOLEAN MODE)
 		$where_category
 		GROUP BY a.id, b.archivefile
-		ORDER BY a.category, a.data_id, a.id, b.archivefile
+		ORDER BY category, data_id, a.id, b.archivefile
 	";
 	$result = getall($sql);
 	if (!$result) return false;

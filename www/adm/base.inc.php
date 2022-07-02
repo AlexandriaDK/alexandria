@@ -70,7 +70,7 @@ function getlabel ($cat, $data_id, $link = FALSE, $default = "") {
 }
 
 function tr($tekst, $name, $def="", $opt="", $placeholder = "", $type="text", $autofocus = FALSE) {
-	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"".htmlspecialchars($def)."\" placeholder=\"" . htmlspecialchars($placeholder) . "\" size=50" . ($autofocus ? " autofocus" : "") . "></td><td>$opt</td></tr>\n";
+	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"".htmlspecialchars($def ?? '')."\" placeholder=\"" . htmlspecialchars($placeholder ?? '') . "\" size=50" . ($autofocus ? " autofocus" : "") . "></td><td>$opt</td></tr>\n";
 }
 
 function tt($tekst, $name, $content = "") {
@@ -92,7 +92,8 @@ function chlog($data_id, $category, $note="") {
 }
 
 function changelinks($data_id, $category) {
-	$numlinks = getone("SELECT COUNT(*) FROM links WHERE data_id = '$data_id' AND category = '$category'");
+	$data_field = getFieldFromCategory($category);
+	$numlinks = getone("SELECT COUNT(*) FROM links WHERE `$data_field` = '$data_id'");
 	$html  = "<tr valign=top><td>Links</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"link":"links"));
 	$html .= " - <a href=\"links.php?category=$category&amp;data_id=$data_id\" accesskey=\"l\">Edit links</a>";
@@ -126,7 +127,8 @@ function changetags($data_id, $category) {
 }
 
 function changetrivia($data_id, $category) {
-	$numlinks = getone("SELECT COUNT(*) FROM trivia WHERE data_id = '$data_id' AND category = '$category'");
+	$data_field = getFieldFromCategory($category);
+	$numlinks = getone("SELECT COUNT(*) FROM trivia WHERE `$data_field` = '$data_id'");
 	$html  = "<tr valign=top><td>Trivia</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"trivia fact":"trivia facts"));
 	$html .= " - <a href=\"trivia.php?category=$category&amp;data_id=$data_id\" accesskey=\"t\">Edit trivia</a>";
@@ -135,7 +137,8 @@ function changetrivia($data_id, $category) {
 }
 
 function changealias($data_id, $category) {
-	$numlinks = getone("SELECT COUNT(*) FROM alias WHERE data_id = '$data_id' AND category = '$category'");
+	$data_field = getFieldFromCategory($category);
+	$numlinks = getone("SELECT COUNT(*) FROM alias WHERE `$data_field` = '$data_id'");
 	$html  = "<tr valign=top><td>Alias</td><td>\n";
 	$html .= sprintf("$numlinks %s",($numlinks == 1?"alias":"aliases"));
 	$html .= " - <a href=\"alias.php?category=$category&amp;data_id=$data_id\" accesskey=\"a\">Edit aliases</a>";
@@ -171,7 +174,8 @@ function changerun($game_id) {
 }
 
 function changefiles($data_id, $category) {
-	$dbfiles = getone("SELECT COUNT(*) FROM files WHERE data_id = '$data_id' AND category = '$category'");
+	$data_field = getFieldFromCategory($category);
+	$dbfiles = getone("SELECT COUNT(*) FROM files WHERE `$data_field` = '$data_id'");
 	$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*"));
 	$textfiles = "0 files";
 	if ($dirfiles || $dbfiles) {

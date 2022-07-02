@@ -6,15 +6,15 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'alias';
 
-$action = (string) $_REQUEST['action'];
-$do = (string) $_REQUEST['do'];
-$label = trim((string) $_REQUEST['label']);
-$language = trim((string) $_REQUEST['language']);
-$visible = (string) $_REQUEST['visible'];
+$action = (string) ($_REQUEST['action'] ?? '');
+$do = (string) ($_REQUEST['do'] ?? '');
+$label = trim((string) ($_REQUEST['label'] ?? ''));
+$language = trim((string) ($_REQUEST['language'] ?? ''));
+$visible = (string) ($_REQUEST['visible'] ?? '');
 $visible = ($visible == "on" ? 1 : 0);
-$id = (int) $_REQUEST['id'];
-$data_id = (int) $_REQUEST['data_id'];
-$category = (string) $_REQUEST['category'];
+$id = (int) ($_REQUEST['id'] ?? '');
+$data_id = (int) ($_REQUEST['data_id'] ?? '');
+$category = (string) ($_REQUEST['category'] ?? '');
 if ($category == 'game') $category = 'sce';
 
 // Edit alias
@@ -45,9 +45,10 @@ if ($action == "changealias" && $do == "Delete") {
 
 // Tilføj alias
 if ($action == "addalias") {
+	$data_field = getFieldFromCategory($category);
 	$q = "INSERT INTO alias " .
-	     "(data_id, category, label, language, visible) VALUES ".
-	     "('$data_id', '$category', '" . dbesc($label) ."', '" . dbesc( $language ) . "', '$visible')";
+	     "(`$data_field`, label, language, visible) VALUES ".
+	     "('$data_id', '" . dbesc($label) ."', '" . dbesc( $language ) . "', '$visible')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -59,44 +60,10 @@ if ($action == "addalias") {
 
 if ($data_id && $category) {
 	$data_id = intval($data_id);
-	switch($category) {
-	case 'aut':
-	case 'person':
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-		break;
-	case 'sce':
-	case 'game':
-		$cat = 'sce';
-		$q = "SELECT title FROM game WHERE id = '$data_id'";
-		$mainlink = "game.php?game=$data_id";
-		break;
-	case 'convent':
-	case 'convention':
-		$cat = 'convent';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
-		$mainlink = "convent.php?con=$data_id";
-		break;
-	case 'conset':
-		$cat = 'conset';
-		$q = "SELECT name FROM conset WHERE id = '$data_id'";
-		$mainlink = "conset.php?conset=$data_id";
-		break;
-	case 'sys':
-	case 'gamesystem':
-		$cat = 'sys';
-		$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
-		$mainlink = "system.php?system=$data_id";
-		break;
-	default:
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-	}
-	$title = getone($q);
+	$data_field = getFieldFromCategory($category);
+	$linktitle = getlabel($category, $data_id, TRUE);
 	
-	$query = "SELECT id, label, language, visible FROM alias WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
+	$query = "SELECT id, label, language, visible FROM alias WHERE `$data_field` = '$data_id' ORDER BY id";
 	$result = getall($query);
 }
 
@@ -105,7 +72,7 @@ htmladmstart("Alias");
 if ($data_id && $category) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Edit aliases for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit aliases for: $linktitle</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Alias</th>".

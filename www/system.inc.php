@@ -30,7 +30,7 @@ $q = getall("
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE g.gamesystem_id = '$system'
 	GROUP BY g.id, c.id, p.id
 	ORDER BY title_translation, c.year, c.begin, c.end, p.surname, p.firstname
@@ -62,7 +62,7 @@ if (count($q) > 0) {
 }
 
 // List of aliases, alternative title?
-$alttitle = getcol("SELECT label FROM alias WHERE data_id = $system AND category = '$this_type' AND language = '$lang' AND visible = 1");
+$alttitle = getcol("SELECT label FROM alias WHERE gamesystem_id = $system AND language = '$lang' AND visible = 1");
 if ( count( $alttitle ) == 1 ) {
 	$showname = $alttitle[0];
 	$aliaslist = getaliaslist($system, $this_type, $showname);

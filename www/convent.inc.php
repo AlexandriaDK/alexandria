@@ -94,7 +94,7 @@ if ($convention['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation
+	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation
 	FROM cgrel
 	INNER JOIN game g ON g.id = cgrel.game_id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
@@ -102,8 +102,8 @@ $q = getall("
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5)
 	LEFT JOIN person p ON p.id = pgrel.person_id
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	LEFT JOIN alias a2 ON gs.id = a2.data_id AND a2.category = 'sys' AND a2.language = '" . LANG . "' AND a2.visible = 1
+	LEFT JOIN alias a ON g.id = a.game_id AND a.language = '" . LANG . "' AND a.visible = 1
+	LEFT JOIN alias a2 ON gs.id = a2.gamesystem_id AND a2.language = '" . LANG . "' AND a2.visible = 1
 	WHERE cgrel.convention_id = $con
 	GROUP BY g.id, pr.id, p.id
 	ORDER BY boardgame, title_translation, p.surname, p.firstname
@@ -208,7 +208,7 @@ $award_nominees = getall("
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	LEFT JOIN convention c ON b.convention_id = c.id
 	LEFT JOIN game d ON a.game_id = d.id
-	LEFT JOIN alias e ON d.id = e.data_id AND e.category = 'sce' AND e.language = '" . LANG . "' AND e.visible = 1
+	LEFT JOIN alias e ON d.id = e.game_id AND e.language = '" . LANG . "' AND e.visible = 1
 	WHERE c.id = $con
 	ORDER BY c.year DESC, a.winner DESC, a.id
 ");
@@ -276,7 +276,7 @@ if ($oo == 'id') { // oo = organizer order
 }
 
 // List of aliases, alternative title?
-$alttitle = getcol("SELECT label FROM alias WHERE data_id = '$con' AND category = '$this_type' AND language = '$lang' AND visible = 1");
+$alttitle = getcol("SELECT label FROM alias WHERE convention_id = '$con' AND language = '$lang' AND visible = 1");
 if ( count( $alttitle ) == 1 ) {
 	$showtitle = $alttitle[0];
 	$aliaslist = getaliaslist($con, $this_type, $showtitle);

@@ -5,7 +5,7 @@ require("base.inc.php");
 $result = getall("
 	SELECT gamesystem.id, name, COALESCE(alias.label, gamesystem.name) AS translation_name
 	FROM gamesystem
-	LEFT JOIN alias ON gamesystem.id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON gamesystem.id = alias.gamesystem_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	GROUP BY gamesystem.id
 	ORDER BY translation_name, gamesystem.id
 ");

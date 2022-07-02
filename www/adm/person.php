@@ -5,14 +5,15 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'aut';
+$this_type_new = 'person';
 
-$action = $_REQUEST['action'];
-$person = $_REQUEST['person'];
-$firstname = $_REQUEST['firstname'];
-$surname = $_REQUEST['surname'];
-$birth = $_REQUEST['birth'];
-$death = $_REQUEST['death'];
-$internal = $_REQUEST['internal'];
+$action = $_REQUEST['action'] ?? '';
+$person = $_REQUEST['person'] ?? '';
+$firstname = $_REQUEST['firstname'] ?? '';
+$surname = $_REQUEST['surname'] ?? '';
+$birth = $_REQUEST['birth'] ?? '';
+$death = $_REQUEST['death'] ?? '';
+$internal = $_REQUEST['internal'] ?? '';
 
 $this_id = $person;
 
@@ -53,11 +54,11 @@ if ($action == "ret" && $person) {
 // Delete person
 if ($action == "Delete" && $person) { // Should check if $person id exists
 	$error = [];
-	if (getCount('pgrel', $this_id, FALSE, $this_type) ) $error[] = "scenario";
-	if (getCount('pcrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer roles)";
-	if (getCount('trivia', $this_id, TRUE, $this_type) ) $error[] = "trivia";
-	if (getCount('links', $this_id, TRUE, $this_type) ) $error[] = "link";
-	if (getCount('alias', $this_id, TRUE, $this_type) ) $error[] = "alias";
+	if (getCount('pgrel', $this_id, FALSE, $this_type_new) ) $error[] = "scenario";
+	if (getCount('pcrel', $this_id, FALSE, $this_type_new) ) $error[] = "con (organizer roles)";
+	if (getCount('trivia', $this_id, FALSE, $this_type_new) ) $error[] = "trivia";
+	if (getCount('links', $this_id, FALSE, $this_type_new) ) $error[] = "link";
+	if (getCount('alias', $this_id, FALSE, $this_type_new) ) $error[] = "alias";
 	if (getCount('users', $this_id, FALSE, $this_type) ) $error[] = "user";
 	if (getCount('contributor', $this_id, FALSE, $this_type) ) $error[] = "article (magazine)";
 	if (getCount('article_reference', $this_id, TRUE, 'person') ) $error[] = "article reference";

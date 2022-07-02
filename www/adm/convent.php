@@ -103,10 +103,10 @@ if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
 	if (getCount('cgrel', $this_id, FALSE, $this_type) ) $error[] = "game";
 	if (getCount('pcrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer)";
-	if (getCount('trivia', $this_id, TRUE, $this_type_new) ) $error[] = "trivia";
-	if (getCount('links', $this_id, TRUE, $this_type_new) ) $error[] = "link";
-	if (getCount('alias', $this_id, TRUE, $this_type_new) ) $error[] = "alias";
-	if (getCount('files', $this_id, TRUE, $this_type_new) ) $error[] = "files";
+	if (getCount('trivia', $this_id, FALSE, $this_type_new) ) $error[] = "trivia";
+	if (getCount('links', $this_id, FALSE, $this_type_new) ) $error[] = "link";
+	if (getCount('alias', $this_id, FALSE, $this_type_new) ) $error[] = "alias";
+	if (getCount('files', $this_id, FALSE, $this_type_new) ) $error[] = "files";
 	if (getCount('userlog', $this_id, TRUE, $this_type_new) ) $error[] = "user log (requires admin access)";
 	if (getCount('article_reference', $this_id, TRUE, $this_type_new) ) $error[] = "article reference";
 	if ($error) {

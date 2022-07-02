@@ -57,7 +57,7 @@ function getmysce ($user_id, $o = 0) {
 	$q = "SELECT g.id, g.title, g.boardgame, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played, COALESCE(alias.label, g.title) AS title_translation
 	     FROM userlog
 		 INNER JOIN game g ON userlog.data_id = g.id
-		 LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		 LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	     WHERE userlog.user_id = '$user_id' AND userlog.category = 'sce'
 	     GROUP BY userlog.data_id
 	     ORDER BY $order";

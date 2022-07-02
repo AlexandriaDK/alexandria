@@ -33,7 +33,7 @@ $languages = ['da','en']
 $aliases = getall("
 	SELECT g.id, g.title, alias.id AS aliasid, alias.label, alias.language
 	FROM game g
-	INNER JOIN alias ON g.id = alias.data_id AND alias.category = 'sce'
+	INNER JOIN alias ON g.id = alias.game_id
 	WHERE alias.visible = 1
 ");
 

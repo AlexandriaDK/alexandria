@@ -7,10 +7,10 @@ if ($game) {
 $this_id = $scenarie;
 
 $r = getrow("
-	SELECT g.id, title, g.internal, gamesystem_id, gamesystem_extra, person_extra, g.ottowinner, g.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, gs.name AS sysname, COALESCE(alias.label, gs.name) AS system_translation
+	SELECT g.id, g.title, g.internal, g.gamesystem_id, g.gamesystem_extra, g.person_extra, g.ottowinner, g.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, gs.name AS sysname, COALESCE(alias.label, gs.name) AS system_translation
 	FROM game g
 	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
-	LEFT JOIN alias ON g.gamesystem_id = alias.data_id AND alias.category = 'sys' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.gamesystem_id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE g.id = $scenarie
 	GROUP BY g.id
 ");
@@ -20,9 +20,9 @@ $showtitle = $gametitle = $r['title'];
 if ($scenarie == 161)      award_achievement(55); // De Professionelle
 if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
 if ($scenarie == 3827)     award_achievement(57); // Paninaro
-if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Bicycling
+if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Bicycling  :TODO: - Use tag instead
 if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner  :TODO: - check using achievement table
-if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario
+if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario  :TODO: - use tag instead
 
 if ($r['id'] == 0) {
 	header( "HTTP/1.1 404 Not Found ");
@@ -72,7 +72,7 @@ if ($r['participants_extra']) {
 $participants = implode(', ',$participants);
 
 // List of aliases, alternative title?
-$alttitle = getcol("SELECT label FROM alias WHERE data_id = '$scenarie' AND category = '$this_type' AND language = '$lang' AND visible = 1");
+$alttitle = getcol("SELECT label FROM alias WHERE game_id = '$scenarie' AND language = '$lang' AND visible = 1");
 if ( count( $alttitle ) == 1 ) {
 	$showtitle = $alttitle[0];
 	$aliaslist = getaliaslist($scenarie, $this_type, $showtitle);

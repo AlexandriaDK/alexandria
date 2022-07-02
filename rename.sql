@@ -150,4 +150,38 @@ ALTER TABLE files ADD CONSTRAINT files_FK_3 FOREIGN KEY (conset_id) REFERENCES c
 ALTER TABLE files ADD CONSTRAINT files_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE files ADD CONSTRAINT files_FK_5 FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+
+-- Alias
+ALTER TABLE alias ADD person_id int NULL;
+ALTER TABLE alias ADD game_id int NULL;
+ALTER TABLE alias ADD convention_id int NULL;
+ALTER TABLE alias ADD conset_id int NULL;
+ALTER TABLE alias ADD gamesystem_id int NULL;
+
+UPDATE alias SET
+person_id = IF(category = 'aut', data_id, NULL),
+game_id = IF(category = 'sce', data_id, NULL),
+convention_id = IF(category = 'convent', data_id, NULL),
+conset_id = IF(category = 'conset', data_id, NULL),
+gamesystem_id = IF(category = 'sys', data_id, NULL);
+
+ALTER TABLE alias ADD CONSTRAINT alias_FK FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE alias ADD CONSTRAINT alias_FK_1 FOREIGN KEY (game_id) REFERENCES game(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE alias ADD CONSTRAINT alias_FK_2 FOREIGN KEY (convention_id) REFERENCES convention(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE alias ADD CONSTRAINT alias_FK_3 FOREIGN KEY (conset_id) REFERENCES conset(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE alias ADD CONSTRAINT alias_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+CREATE INDEX alias_person_id_IDX USING BTREE ON trivia (person_id);
+CREATE INDEX alias_game_id_IDX USING BTREE ON trivia (game_id);
+CREATE INDEX alias_convention_id_IDX USING BTREE ON trivia (convention_id);
+CREATE INDEX alias_conset_id_IDX USING BTREE ON trivia (conset_id);
+CREATE INDEX alias_gamesystem_id_IDX USING BTREE ON trivia (gamesystem_id);
+
+ALTER TABLE alias DROP COLUMN data_id;
+ALTER TABLE alias DROP COLUMN category;
+
 -- SELECT * FROM links WHERE convention_id NOT IN (SELECT id FROM convention)
+
+-- smartfind.inc.php - nederste linje, alias
+
+-- getCount for mange admin-sider - sæt til FALSE for tabeller, der brugte data_id

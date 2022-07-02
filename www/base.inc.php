@@ -1008,8 +1008,9 @@ function getFieldFromCategory($cat) {
 }
 
 function getaliaslist ($data_id, $cat, $ignore_title = "") {
-	$aliases = array();
-	$q = getall("SELECT label, language FROM alias WHERE data_id = '$data_id' AND category = '$cat' AND visible = 1");
+	$aliases = [];
+	$data_field = getFieldFromCategory($cat);
+	$q = getall("SELECT label, language FROM alias WHERE `$data_field` = '$data_id' AND visible = 1");
 	foreach($q AS $row) {
 		$languagecode = $languagename = "";
 		if ( $row['label'] == $ignore_title ) {
@@ -1066,8 +1067,8 @@ function getfilelist ($data_id, $cat) {
 
 function gettrivialist ($data_id, $cat) {
 	$trivialist = "";
-	$field = getFieldFromCategory($cat);
-	$q = getall("SELECT fact FROM trivia WHERE $field = '$data_id' ORDER BY id");
+	$data_field = getFieldFromCategory($cat);
+	$q = getall("SELECT fact FROM trivia WHERE `$data_field` = '$data_id' ORDER BY id");
 	foreach($q AS $rs) {
 		$trivialist .= triviabullet($rs['fact']);
 	}
@@ -1076,8 +1077,8 @@ function gettrivialist ($data_id, $cat) {
 
 function getlinklist ($data_id, $cat) {
 	$linklist = "";
-	$field = getFieldFromCategory($cat);
-	$q = getall("SELECT url, description FROM links WHERE $field = '$data_id' ORDER BY id");
+	$data_field = getFieldFromCategory($cat);
+	$q = getall("SELECT url, description FROM links WHERE `$data_field` = '$data_id' ORDER BY id");
 	foreach($q AS $rs) {
 		$template_url = $rs['url'];
 		$template_description = parseTemplate( $rs['description'] );
@@ -1167,7 +1168,7 @@ function getlatestfiles($limit = 10) {
 	$files = getall("SELECT g.id, g.title, COALESCE(alias.label, g.title) AS title_translation
 		FROM game g
 		INNER JOIN files f ON g.id = f.game_id
-		LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 		WHERE f.downloadable = 1 AND g.boardgame != 1
 		GROUP BY g.id
 		ORDER BY MIN(f.inserted) DESC
@@ -1200,7 +1201,7 @@ function getnexteventstable () { // both cons and scenarios
 			SELECT 'game' AS type, g.id, COALESCE(alias.label, g.title) AS name, YEAR(gr.begin) AS year, g.description, gr.begin, gr.end, gr.location, g.id AS conset_id, g.title AS cname, gr.cancelled, g.title AS origname
 			FROM gamerun gr
 			INNER JOIN game g ON gr.game_id = g.id
-			LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 			WHERE gr.end >= '" . date("Y-m-d") . "'
 		)
 		ORDER BY begin, end, name
@@ -1387,10 +1388,11 @@ function getentry ($cat, $data_id, $with_category = FALSE, $with_magazine = FALS
 	}
 
 	if ($value) {
+		$data_field = getFieldFromCategory($cat);
 		$label = getone("
 			SELECT COALESCE(alias.label, $value) AS label_translation
 			FROM $cat AS tbl
-			LEFT JOIN alias ON tbl.id = alias.data_id AND alias.category = '$cat' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			LEFT JOIN alias ON tbl.id = `alias`.`$data_field` AND alias.language = '" . LANG . "' AND alias.visible = 1
 			WHERE tbl.id = $data_id
 		");
 	}

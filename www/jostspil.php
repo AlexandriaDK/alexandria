@@ -100,7 +100,7 @@ if ($mainperson && $subperson) {
 			INNER JOIN game g ON g.id = t1.game_id
 			INNER JOIN pgrel t2 ON t1.game_id = t2.game_id
 			INNER JOIN person a2 ON a2.id = t2.person_id
-			LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+			LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 			WHERE
 				t1.person_id IN ($inlist) AND
 				t2.person_id NOT IN ($notlist) AND

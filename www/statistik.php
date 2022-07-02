@@ -201,7 +201,7 @@ $r = getall("
 	FROM
 		game g
 	INNER JOIN cgrel ON g.id = cgrel.game_id
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE
 		cgrel.presentation_id IN (1,2,3,42)
 	GROUP BY
@@ -228,7 +228,7 @@ $stat_game_auts = '
 $r = getall("SELECT COUNT(*) AS antal, g.id, g.title AS origtitle, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	INNER JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id = 1
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE g.gamesystem_id != '$larp_id'
 	GROUP BY pgrel.game_id
 	HAVING antal >= $mostauthors

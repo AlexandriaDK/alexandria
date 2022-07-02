@@ -41,7 +41,7 @@ foreach($q AS $rs) {
 }
 
 // List of aliases, alternative title?
-$alttitle = getcol("SELECT label FROM alias WHERE data_id = '$conset' AND category = '$this_type' AND language = '$lang' AND visible = 1");
+$alttitle = getcol("SELECT label FROM alias WHERE conset_id = '$conset' AND language = '$lang' AND visible = 1");
 if ( count( $alttitle ) == 1 ) {
 	$showtitle = $alttitle[0];
 	$aliaslist = getaliaslist($conset, $this_type, $showtitle);

@@ -42,7 +42,7 @@ $q = getall("
 		SELECT 'sce' AS type, g.id, COALESCE(alias.label, g.title) AS name, YEAR(gr.begin) AS year, g.description, gr.begin, gr.end, gr.location, g.id AS conset_id, g.title AS cname, gr.cancelled, g.title AS origname
 		FROM gamerun gr
 		INNER JOIN game g ON gr.game_id = g.id
-		LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 		WHERE gr.begin BETWEEN '$year-00-00' AND '$year-12-31'
 	)
 	ORDER BY begin, end, name

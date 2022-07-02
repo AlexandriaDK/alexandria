@@ -16,11 +16,7 @@ $( function() {
 	</div>
 {/if}
 
-{if $alias != ""}
-	<p class="indata">
-		({$_aka}: {$alias})
-	</p>
-{/if}
+{include file="alias.tpl"}
 
 {if $sysstring != "" || $genre != "" || $participants != "" || $tags || $user_id}
 	<form action="adm/user_tags.php" method="post">
