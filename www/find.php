@@ -311,7 +311,7 @@ if ($find) {
 	} elseif ($search_title && !($match['game']) ) { // title searched, but no match
 		$match['game'] = [];
 	} else {
-		if ($match['game']) { // found specific titles
+		if ($match['game'] ?? FALSE) { // found specific titles
 			$where[] = "id IN (".implode(",",$match['game']).")";
 		}
 		if ($search_system) {
@@ -378,11 +378,10 @@ if ($find) {
 		// search found, check for download
 		if ( ( $search_download || $search_filelanguage ) && $match['game'] ) {
 			$q = "
-				SELECT DISTINCT data_id
+				SELECT DISTINCT game_id
 				FROM files
-				WHERE category = 'game'
-				AND downloadable = 1
-				AND data_id IN (".implode(",",$match['game']).")
+				WHERE downloadable = 1
+				AND game_id IN (".implode(",",$match['game']).")
 			";
 			if ( $search_filelanguage ) {
 				$languages = [];
@@ -391,7 +390,6 @@ if ($find) {
 				}
 				$q .= " AND language IN (" . implode(',', $languages) . ")";
 			}
-
 			$match['game'] = getcol($q);
 		}
 
@@ -423,11 +421,11 @@ if ($debug) {
 }
 
 // Smarty
-$t->assign('find_person', display_result($match['person'], "person", "person", "person") );
-$t->assign('find_game', display_result($match['game'], "scenarie", "scenarie", "game") );
-$t->assign('find_convention', display_result($match['convention'], "con", "con", "convention") );
-$t->assign('find_gamesystem', display_result($match['gamesystem'], "system", "system", "gamesystem") );
-$t->assign('find_magazines', display_result($match['magazine'], "magazine", "magazine", "magazine") );
+$t->assign('find_person', display_result($match['person'] ?? FALSE, "person", "person", "person") );
+$t->assign('find_game', display_result($match['game'] ?? FALSE, "scenarie", "scenarie", "game") );
+$t->assign('find_convention', display_result($match['convention'] ?? FALSE, "con", "con", "convention") );
+$t->assign('find_gamesystem', display_result($match['gamesystem'] ?? FALSE, "system", "system", "gamesystem") );
+$t->assign('find_magazines', display_result($match['magazine'] ?? FALSE, "magazine", "magazine", "magazine") );
 $t->assign('find_tags', $tagsearch ?? "" );
 $t->assign('find_files', $filesearch ?? "" );
 $t->assign('find_articles', $articlesearch ?? "" );

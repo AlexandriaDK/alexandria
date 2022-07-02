@@ -989,6 +989,24 @@ function getdatalink ($cat, $data_id, $admin = FALSE) {
 	return $value;
 }
 
+function getFieldFromCategory($cat) {
+	$categories = [
+		'aut' => 'person_id',
+		'person' => 'person_id',
+		'sce' => 'game_id',
+		'game' => 'game_id',
+		'convent' => 'convention_id',
+		'convention' => 'convention_id',
+		'conset' => 'conset_id',
+		'sys' => 'gamesystem_id',
+		'gamesystem' => 'gamesystem_id',
+		'tag' => 'tag_id',
+		'issue' => 'issue_id'
+	];
+	$field = $categories[$cat] ?? '';
+	return $field;	
+}
+
 function getaliaslist ($data_id, $cat, $ignore_title = "") {
 	$aliases = array();
 	$q = getall("SELECT label, language FROM alias WHERE data_id = '$data_id' AND category = '$cat' AND visible = 1");
@@ -1020,8 +1038,9 @@ function getaliaslist ($data_id, $cat, $ignore_title = "") {
 }
 
 function getfilelist ($data_id, $cat) {
-	global $t;
-	$files = getall("SELECT filename, description, language FROM files WHERE data_id = '$data_id' AND category = '$cat' AND downloadable = 1 ORDER BY id");
+//	global $t;
+	$data_field = getFieldFromCategory($cat);
+	$files = getall("SELECT filename, description, language FROM files WHERE $data_field = '$data_id' AND downloadable = 1 ORDER BY id");
 	$fmt = new NumberFormatter( Locale::getDefault(), NumberFormatter::DECIMAL );
 	foreach($files AS $id => $file) {
 		$template_description = parseTemplate( $file['description'] );
@@ -1047,7 +1066,8 @@ function getfilelist ($data_id, $cat) {
 
 function gettrivialist ($data_id, $cat) {
 	$trivialist = "";
-	$q = getall("SELECT fact FROM trivia WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id");
+	$field = getFieldFromCategory($cat);
+	$q = getall("SELECT fact FROM trivia WHERE $field = '$data_id' ORDER BY id");
 	foreach($q AS $rs) {
 		$trivialist .= triviabullet($rs['fact']);
 	}
@@ -1056,7 +1076,8 @@ function gettrivialist ($data_id, $cat) {
 
 function getlinklist ($data_id, $cat) {
 	$linklist = "";
-	$q = getall("SELECT url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id");
+	$field = getFieldFromCategory($cat);
+	$q = getall("SELECT url, description FROM links WHERE $field = '$data_id' ORDER BY id");
 	foreach($q AS $rs) {
 		$template_url = $rs['url'];
 		$template_description = parseTemplate( $rs['description'] );
@@ -1140,6 +1161,20 @@ function getorganizerlist ($data_id, $category, $order = FALSE) {
 
 	}
 	return $organizerlist;
+}
+
+function getlatestfiles($limit = 10) {
+	$files = getall("SELECT g.id, g.title, COALESCE(alias.label, g.title) AS title_translation
+		FROM game g
+		INNER JOIN files f ON g.id = f.game_id
+		LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
+		WHERE f.downloadable = 1 AND g.boardgame != 1
+		GROUP BY g.id
+		ORDER BY MIN(f.inserted) DESC
+		LIMIT $limit
+	");
+	return $files;
+
 }
 
 function getnews(int $limit = 1000) {

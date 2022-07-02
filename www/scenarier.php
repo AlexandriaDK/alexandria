@@ -61,13 +61,13 @@ if ($wherepart) {
 
 // Find all games, including persons and cons - restrict to one premiere convention
 $r = getall("
-	SELECT p.id AS autid, CONCAT(p.firstname,' ',p.surname) AS autname, g.id, g.title, g.boardgame, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.end, c.cancelled, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
+	SELECT p.id AS autid, CONCAT(p.firstname,' ',p.surname) AS autname, g.id, g.title, g.boardgame, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.end, c.cancelled, COUNT(f.id) AS files, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	LEFT JOIN cgrel ON g.id = cgrel.game_id AND cgrel.presentation_id = 1
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
 	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id = 1
 	LEFT JOIN person p ON pgrel.person_id = p.id
-	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	$wherepart
 	GROUP BY cgrel.presentation_id,cgrel.game_id,pgrel.person_id, g.id, c.id

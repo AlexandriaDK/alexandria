@@ -19,12 +19,12 @@ if (!$tag) {
 	$tag = $ttag;
 }
 $q = getall("
-	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, person_extra, COUNT(files.id) AS files, COALESCE(alias.label, g.title) AS title_translation
+	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, person_extra, COUNT(f.id) AS files, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	INNER JOIN tags ON g.id = tags.game_id
 	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.presentation_id = 1
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
-	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE tags.tag = '" . dbesc($tag). "'
 	GROUP BY g.id, c.id

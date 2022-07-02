@@ -30,15 +30,7 @@ if ($_SESSION['user_editor'] ?? FALSE) {
 // fetching latest scenarios for download
 $latest_downloads = [];
 $i = 0;
-$files = getall("SELECT g.id, g.title, COALESCE(alias.label, g.title) AS title_translation
-	FROM game g
-	INNER JOIN files ON g.id = files.data_id AND files.category = 'sce'
-	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE files.downloadable = 1 AND g.boardgame != 1
-	GROUP BY g.id
-	ORDER BY MIN(files.inserted) DESC
-	LIMIT 40
-");
+$files = getLatestFiles(40);
 
 foreach($files AS $file) {
 	$latest_downloads[$i]['id'] = $file['id'];
@@ -47,7 +39,7 @@ foreach($files AS $file) {
 	$i++;
 }
 
-$scenarios_downloadable = getone("SELECT COUNT(DISTINCT data_id) FROM files WHERE category = 'sce' AND downloadable = 1");
+$scenarios_downloadable = getone("SELECT COUNT(DISTINCT game_id) FROM files WHERE downloadable = 1");
 
 $t->assign('type', 'front');
 $t->assign('recentlog', $recentlog);

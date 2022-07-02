@@ -6,14 +6,14 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'trivia';
 
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$fact = $_REQUEST['fact'];
-$hidden = $_REQUEST['hidden'];
-$id = (int) $_REQUEST['id'];
-$data_id = $_REQUEST['data_id'];
-$category = $_REQUEST['category'];
-if ($category == 'game') $category = 'sce';
+$action = $_REQUEST['action'] ?? '';
+$do = $_REQUEST['do'] ?? '';
+$fact = $_REQUEST['fact'] ?? '';
+$hidden = $_REQUEST['hidden'] ?? '';
+$id = (int) ($_REQUEST['id'] ?? 0);
+$data_id = $_REQUEST['data_id'] ?? '';
+$category = $_REQUEST['category'] ?? '';
+if ($category == 'sce') $category = 'game';
 
 // Ret trivia
 if ($action == "changetrivia" && $do != "Delete") {
@@ -46,9 +46,10 @@ if ($action == "changetrivia" && $do == "Delete") {
 if ($action == "addtrivia") {
 	$fact = trim($fact);
 	$hidden = trim($hidden);
+	$field = getFieldFromCategory($category);
 	$q = "INSERT INTO trivia " .
-	     "(data_id, category, fact, hidden) VALUES ".
-	     "('$data_id', '$category', '" . dbesc($fact) . "', '" . dbesc($hidden) . "')";
+	     "($field, fact, hidden) VALUES ".
+	     "('$data_id', '" . dbesc($fact) . "', '" . dbesc($hidden) . "')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -61,45 +62,10 @@ if ($action == "addtrivia") {
 
 if ($data_id && $category) {
 	$data_id = intval($data_id);
-	switch($category) {
-	case 'aut':
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-		break;
-	case 'sce':
-		$cat = 'sce';
-		$q = "SELECT title FROM game WHERE id = '$data_id'";
-		$mainlink = "game.php?game=$data_id";
-		break;
-	case 'convent':
-		$cat = 'convent';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
-		$mainlink = "convent.php?con=$data_id";
-		break;
-	case 'conset':
-		$cat = 'conset';
-		$q = "SELECT name FROM conset WHERE id = '$data_id'";
-		$mainlink = "conset.php?conset=$data_id";
-		break;
-	case 'sys':
-		$cat = 'sys';
-		$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
-		$mainlink = "system.php?system=$data_id";
-		break;
-	case 'tag':
-		$cat = 'tag';
-		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
-		$mainlink = "tag.php?tag_id=$data_id";
-		break;
-	default:
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-	}
-	$title = getone($q);
+	$field = getFieldFromCategory($category);
+	$linktitle = getlabel($category, $data_id, TRUE);
 	
-	$query = "SELECT id, fact, hidden FROM trivia WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
+	$query = "SELECT id, fact, hidden FROM trivia WHERE $field = '$data_id' ORDER BY id";
 	$result = getall($query);
 }
 htmladmstart("Trivia");
@@ -107,7 +73,7 @@ htmladmstart("Trivia");
 if ($data_id && $category) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Edit trivia for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit trivia for: $linktitle</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Trivia</th>".

@@ -48,7 +48,7 @@ $q = getall("
 			title.iconwidth,
 			title.iconheight,
 			title.textsymbol,
-			COUNT(files.id) AS files,
+			COUNT(f.id) AS files,
 			COALESCE(alias.label, g.title) AS title_translation
 		FROM
 			pgrel,
@@ -60,8 +60,8 @@ $q = getall("
 			cgrel.convention_id = c.id
 		LEFT JOIN gamerun ON
 			g.id = gamerun.game_id 
-		LEFT JOIN files ON
-			g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+		LEFT JOIN files f ON
+			g.id = f.game_id AND f.downloadable = 1
 		LEFT JOIN alias ON
 			g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
 		WHERE

@@ -22,16 +22,16 @@ if ($r['id'] == 0) {
 	exit;
 }
 $q = getall("
-	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, person_extra, COUNT(files.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS presentation_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
+	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, person_extra, COUNT(f.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS presentation_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
 	LEFT JOIN pgrel ON pgrel.game_id = g.id AND pgrel.title_id IN (1,5)
 	LEFT JOIN person p ON pgrel.person_id = p.id
 	LEFT JOIN cgrel ON cgrel.game_id = g.id
 	LEFT JOIN convention c ON cgrel.convention_id = c.id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id
-	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE gamesystem_id = '$system'
+	WHERE g.gamesystem_id = '$system'
 	GROUP BY g.id, c.id, p.id
 	ORDER BY title_translation, c.year, c.begin, c.end, p.surname, p.firstname
 ");

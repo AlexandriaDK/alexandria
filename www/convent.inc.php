@@ -94,12 +94,12 @@ if ($convention['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(files.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation
+	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, alias.label, COALESCE(alias.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation
 	FROM cgrel
 	INNER JOIN game g ON g.id = cgrel.game_id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
 	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
-	LEFT JOIN files ON g.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
+	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5)
 	LEFT JOIN person p ON p.id = pgrel.person_id
 	LEFT JOIN alias ON g.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
