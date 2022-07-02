@@ -7,126 +7,6 @@ require "base.inc.php";
 
 htmladmstart("Checkup");
 
-// Check of orphans isn't necessary anymore after using InnoDB and foreign keys
-
-// Orphan, person<=>game
-$query = "
-	SELECT
-		pgrel.id,
-		person_id,
-		game_id,
-		p.id AS autid,
-		g.id AS gameid,
-		CONCAT(firstname,' ',surname) AS name,
-		g.title
-	FROM
-		pgrel
-	LEFT JOIN
-		person p ON p.id = person_id
-	LEFT JOIN
-		game g ON g.id = game_id
-	WHERE
-		g.id IS NULL OR
-		p.id IS NULL
-	";
-
-$result = getall($query);
-
-$htmlorpaut = "Check of orphans, person&lt;=&gt;game: ";
-
-if ($result) {
-	$htmlorpaut .=  "<table border=1 cellspacing=0 >";
-	$htmlorpaut .= "<tr><th>ID</th><th>person_id</th><th>game_id</th><th>person</th><th>game</th></tr>";
-	foreach($result AS $row) {
-		$htmlorpaut .= "<tr>".
-		               "<td align=\"right\">{$row['id']}</td>".
-		               "<td align=\"right\">{$row['person_id']}</td>".
-		               "<td align=\"right\">{$row['game_id']}</td>".
-		               "<td align=\"right\">{$row['name']}</td>".
-		               "<td align=\"right\">{$row['title']}</td>".
-		               "</tr>";
-	}
-
-	$htmlorpaut .= "</table>";
-} else {
-	$htmlorpaut .= "<br><b>All good!</b>";
-}
-
-// Orphan, game<=>con
-$query = "
-	SELECT
-		cgrel.id,
-		cgrel.convention_id,
-		game_id,
-		c.id AS conid,
-		g.id AS gameid,
-		c.name,
-		g.title
-	FROM
-		cgrel
-	LEFT JOIN
-		convention c ON c.id = cgrel.convention_id
-	LEFT JOIN
-		game g ON g.id = game_id
-	WHERE
-		g.id IS NULL OR
-		c.id IS NULL
-	";
-
-$result = getall($query);
-
-$htmlorpsce = "Check of orphans, game&lt;=&gt;con: ";
-
-if ($result) {
-	$htmlorpsce .= "<table border=1 cellspacing=0 >";
-	$htmlorpsce .= "<tr><th>ID</th><th>convention_id</th><th>game_id</th><th>convention</th><th>sce</th></tr>";
-	foreach($result AS $row) {
-		$htmlorpsce .= "<tr>".
-		               "<td align=\"right\">$row[id]</td>".
-		               "<td align=\"right\">$row[convention_id]</td>".
-		               "<td align=\"right\">$row[game_id]</td>".
-		               "<td align=\"right\">$row[name]</td>".
-		               "<td align=\"right\">$row[title]</td>".
-		               "</tr>";
-	}
-
-	$htmlorpsce .= "</table>";
-} else {
-	$htmlorpsce .= "<br><b>All good!</b>";
-}
-
-// Orphan, game=>system
-$query = "
-	SELECT
-		g.id,
-		title,
-		gamesystem_id
-	FROM
-		game g
-	LEFT JOIN
-		gamesystem ON g.gamesystem_id = gamesystem.id
-	WHERE
-		gamesystem_id > 0 AND
-		gamesystem.id IS NULL
-	";
-$result = getall($query);
-$htmlorpscesys = "Check of orphans, game=&gt;system: ";
-if ($result) {
-	$htmlorpscesys .= "<table border=1 cellspacing=0 >";
-	$htmlorpscesys .= "<tr><th>ID</th><th>title</th><th>gamesystem_id</th></tr>";
-	foreach($result AS $row) {
-		$htmlorpscesys .= "<tr>".
-		               "<td align=\"right\">$row[id]</td>".
-		               "<td align=\"right\">$row[title]</td>".
-		               "<td align=\"right\">$row[gamesystem_id]</td>".
-		               "</tr>";
-	}
-
-	$htmlorpscesys .= "</table>";
-} else {
-	$htmlorpscesys .= "<br><b>All good!</b>";
-}
-
 $htmlisocodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
 $languages = getall("SELECT COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
 foreach ( $languages AS $language ) {
@@ -331,10 +211,6 @@ foreach ($names AS $id => $name) {
 print "<p>\n";
 print "<table cellspacing=3 cellpadding=4>".
       "<tr valign=\"top\">".
-      "<td>$htmlorpaut</td>".
-      "<td>$htmlorpsce</td>".
-      "<td>$htmlorpscesys</td>".
-      "</tr><tr valign=\"top\">".
       "<td>$htmlloneper</td>".
       "<td>$htmlorganizer<br><br>$htmlorganizermatch<br><br>$htmlisocodes</td>".
       "<td>$htmlmagazine<br><br>$htmlmagazinematch</td>".

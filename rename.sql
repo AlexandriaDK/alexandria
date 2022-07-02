@@ -88,13 +88,6 @@ ALTER TABLE trivia ADD CONSTRAINT trivia_FK_3 FOREIGN KEY (conset_id) REFERENCES
 ALTER TABLE trivia ADD CONSTRAINT trivia_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE trivia ADD CONSTRAINT trivia_FK_5 FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-CREATE INDEX trivia_person_id_IDX USING BTREE ON trivia (person_id);
-CREATE INDEX trivia_game_id_IDX USING BTREE ON trivia (game_id);
-CREATE INDEX trivia_convention_id_IDX USING BTREE ON trivia (convention_id);
-CREATE INDEX trivia_conset_id_IDX USING BTREE ON trivia (conset_id);
-CREATE INDEX trivia_gamesystem_id_IDX USING BTREE ON trivia (gamesystem_id);
-CREATE INDEX trivia_tag_id_IDX USING BTREE ON trivia (tag_id);
-
 ALTER TABLE trivia DROP COLUMN data_id;
 ALTER TABLE trivia DROP COLUMN category;
 
@@ -120,13 +113,6 @@ ALTER TABLE links ADD CONSTRAINT links_FK_2 FOREIGN KEY (convention_id) REFERENC
 ALTER TABLE links ADD CONSTRAINT links_FK_3 FOREIGN KEY (conset_id) REFERENCES conset(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE links ADD CONSTRAINT links_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE links ADD CONSTRAINT links_FK_5 FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-CREATE INDEX links_person_id_IDX USING BTREE ON trivia (person_id);
-CREATE INDEX links_game_id_IDX USING BTREE ON trivia (game_id);
-CREATE INDEX links_convention_id_IDX USING BTREE ON trivia (convention_id);
-CREATE INDEX links_conset_id_IDX USING BTREE ON trivia (conset_id);
-CREATE INDEX links_gamesystem_id_IDX USING BTREE ON trivia (gamesystem_id);
-CREATE INDEX links_tag_id_IDX USING BTREE ON trivia (tag_id);
 
 ALTER TABLE links DROP COLUMN data_id;
 ALTER TABLE links DROP COLUMN category;
@@ -175,12 +161,6 @@ ALTER TABLE alias ADD CONSTRAINT alias_FK_2 FOREIGN KEY (convention_id) REFERENC
 ALTER TABLE alias ADD CONSTRAINT alias_FK_3 FOREIGN KEY (conset_id) REFERENCES conset(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE alias ADD CONSTRAINT alias_FK_4 FOREIGN KEY (gamesystem_id) REFERENCES gamesystem(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-CREATE INDEX alias_person_id_IDX USING BTREE ON trivia (person_id);
-CREATE INDEX alias_game_id_IDX USING BTREE ON trivia (game_id);
-CREATE INDEX alias_convention_id_IDX USING BTREE ON trivia (convention_id);
-CREATE INDEX alias_conset_id_IDX USING BTREE ON trivia (conset_id);
-CREATE INDEX alias_gamesystem_id_IDX USING BTREE ON trivia (gamesystem_id);
-
 ALTER TABLE alias DROP COLUMN data_id;
 ALTER TABLE alias DROP COLUMN category;
 
@@ -212,15 +192,6 @@ ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_4 FOREIGN KEY 
 ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_5 FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_6 FOREIGN KEY (magazine_id) REFERENCES magazine(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE article_reference ADD CONSTRAINT article_reference_FK_7 FOREIGN KEY (issue_id) REFERENCES issue(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-CREATE INDEX article_reference_person_id_IDX USING BTREE ON article_reference (person_id);
-CREATE INDEX article_reference_game_id_IDX USING BTREE ON article_reference (game_id);
-CREATE INDEX article_reference_convention_id_IDX USING BTREE ON article_reference (convention_id);
-CREATE INDEX article_reference_conset_id_IDX USING BTREE ON article_reference (conset_id);
-CREATE INDEX article_reference_gamesystem_id_IDX USING BTREE ON article_reference (gamesystem_id);
-CREATE INDEX article_reference_tag_id_IDX USING BTREE ON article_reference (tag_id);
-CREATE INDEX article_reference_magazine_id_IDX USING BTREE ON article_reference (magazine_id);
-CREATE INDEX article_reference_issue_id_IDX USING BTREE ON article_reference (issue_id);
 
 ALTER TABLE article_reference DROP COLUMN data_id;
 ALTER TABLE article_reference DROP COLUMN category;
