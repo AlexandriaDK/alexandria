@@ -6,10 +6,10 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$action = (string) $_REQUEST['action'];
-$id = (int) $_REQUEST['id'];
-$table = (string) $_REQUEST['table'];
-$text = (string) $_REQUEST['text'];
+$action = (string) ($_REQUEST['action'] ?? FALSE);
+$id = (int) ($_REQUEST['id'] ?? FALSE);
+$table = (string) ($_REQUEST['table'] ?? FALSE);
+$text = (string) ($_REQUEST['text'] ?? FALSE);
 
 if ( $action ) {
 	validatetoken( $token );
@@ -48,10 +48,10 @@ print "<h1>Markup fixes</h1>" . PHP_EOL;
 
 $regexp_sql = '\\\[\\\[\\\[[^|]+\\\]\\\]\\\]';
 $regexp_php = '_\\\[\\\[\\\[([^|]+)\\\]\\\]\\\]_';
-$sql = "select id, fact from trivia where fact regexp '$regexp_sql'";
-$trivias = getall("select id, fact, data_id, category from trivia where fact regexp '$regexp_sql'");
+
+$trivias = getall("select id, fact, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' END AS category from trivia where fact regexp '$regexp_sql'");
 $tags = getall("select id, tag, description from tag where description regexp '$regexp_sql'");
-$scenarios = getall("select id, title, description from game where description regexp '$regexp_sql'");
+$scenarios = getall("select gd.id, gd.game_id, g.title, gd.description from game_description gd inner join game g ON gd.game_id = g.id where gd.description regexp '$regexp_sql'");
 $cons = getall("select id, description from convention where description regexp '$regexp_sql'");
 $syss = getall("select id, description from gamesystem where description regexp '$regexp_sql'");
 
@@ -108,11 +108,11 @@ print "</table>";
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Scenarios</th></tr>" . PHP_EOL;
 foreach($scenarios AS $scenario) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"game\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"game_description\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($scenario['description']) . "<br>";
-	print "<a href=\"game.php?game=" . $scenario['id'] . "\">[scenario]</a>";
+	print "<a href=\"game.php?game=" . $scenario['game_id'] . "\">[scenario]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
