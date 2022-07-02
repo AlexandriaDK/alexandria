@@ -88,7 +88,7 @@ print "<b>Found results:</b><br>";
 
 print "Scenarios:<br>";
 
-unset($antal);
+$antal = 0;
 foreach($r1 AS list($id, $name, $alias) ) {
 	print "&nbsp;&nbsp;<a href=\"game.php?game=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
 	$antal++;
@@ -98,7 +98,7 @@ print "<br>\n\n";
 
 print "People:<br>\n";
 
-unset($antal);
+$antal = 0;
 
 foreach($r2 AS list($id, $name, $alias) ) {
 	print "&nbsp;&nbsp;<a href=\"person.php?person=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";

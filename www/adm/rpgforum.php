@@ -5,12 +5,12 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$postid = (int) $_GET['postid'];
-$search = trim((string) $_GET['search']);
-$author = trim((string) $_GET['author']);
-$order = (string) $_GET['order'];
+$postid = (int) ($_GET['postid'] ?? FALSE);
+$search = trim((string) ($_GET['search'] ?? '') );
+$author = trim((string) ($_GET['author'] ?? '') );
+$order = (string) ($_GET['order'] ?? '');
 $orderlist = ['score','title','timestamp'];
-$limit = (int) $_GET['limit'];
+$limit = (int) ($_GET['limit'] ?? 0);
 if ($limit < 1) {
     $limit = 1000;
 }

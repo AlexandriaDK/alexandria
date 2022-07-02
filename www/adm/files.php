@@ -5,22 +5,21 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'files';
-unset($result);
 
 ini_set("user_agent", "Alexandria.dk Dungeon Looter Agent");
 
-$category = (string) $_REQUEST['category'];
+$category = (string) ($_REQUEST['category'] ?? '');
 if ($category == 'game') $category = 'sce';
-$id = (int) $_REQUEST['id'];
-$data_id = (int) $_REQUEST['data_id'];
-$action = (string) $_REQUEST['action'];
+$id = (int) ($_REQUEST['id'] ?? '');
+$data_id = (int) ($_REQUEST['data_id'] ?? '');
+$action = (string) ($_REQUEST['action'] ?? '');
 $section = (string) ($_REQUEST['section'] ?? '');
-$do = (string) $_REQUEST['do'];
-$ocr = (string) $_REQUEST['ocr'];
-$description = trim((string) $_REQUEST['description']);
-$downloadable = (string) $_REQUEST['downloadable'];
-$language = trim((string) $_REQUEST['language']);
-$remoteurl = (string) $_REQUEST['remoteurl'];
+$do = (string) ($_REQUEST['do'] ?? '');
+$ocr = (string) ($_REQUEST['ocr'] ?? '');
+$description = trim((string) ($_REQUEST['description'] ?? ''));
+$downloadable = (string) ($_REQUEST['downloadable'] ?? '');
+$language = trim((string) ($_REQUEST['language'] ?? ''));
+$remoteurl = (string) ($_REQUEST['remoteurl'] ?? '');
 $pages = (string) ($_REQUEST['pages'] ?? '');
 $allowed_extensions = ["pdf","txt","doc","docx","zip","rar","mp3","pps","jpg","png","gif","webp"];
 $allowed_schemes = [ 'http', 'https', 'ftp', 'ftps' ];
@@ -173,9 +172,9 @@ if ( $action == 'uploadfile' &&
 }
 
 // Add file
-$path = $_REQUEST['path'];
-$description = $_REQUEST['description'];
-$downloadable = $_REQUEST['downloadable'];
+$path = $_REQUEST['path'] ?? '';
+$description = $_REQUEST['description'] ?? '';
+$downloadable = $_REQUEST['downloadable'] ?? '';
 
 if ($action == "addfile") {
 	$path = trim($path);
@@ -187,12 +186,15 @@ if ($action == "addfile") {
 	$description = trim($description);
 	$downloadable = ($downloadable?1:0);
 	$extension = strtolower(substr(strrchr($path, "."), 1));
+	$data_field = getFieldFromCategory($category);
 	if (!file_exists($path)) {
 		$_SESSION['admin']['info'] = "Error: The files does not exist: $path";
 	} elseif (!in_array($extension, $allowed_extensions)) {
 		$_SESSION['admin']['info'] = "Error: Not a vaild file type: $path";
+	} elseif (!$data_field) {
+		$_SESSION['admin']['info'] = "Error: Unknown category";
 	} else {
-		doquery("INSERT INTO files (data_id, category, filename, description, downloadable, language, inserted) VALUES ('$data_id','$category','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
+		doquery("INSERT INTO files (`$data_field`, filename, description, downloadable, language, inserted) VALUES ('$data_id','" . dbesc($filename) . "','" . dbesc($description) ."','$downloadable','" . dbesc($language) . "', NOW() )");
 		$_SESSION['admin']['info'] = "The file has been created." . dberror();
 		chlog($data_id,$category,"File created: " . $filename);
 	}
@@ -290,54 +292,14 @@ if ($action == "addfile") {
 
 if ($data_id && $category) {
 	$data_id = intval($data_id);
-	switch($category) {
-	case 'aut':
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-		break;
-	case 'sce':
-		$cat = 'sce';
-		$q = "SELECT title FROM game WHERE id = '$data_id'";
-		$mainlink = "game.php?game=$data_id";
-		break;
-	case 'convent':
-		$cat = 'convent';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
-		$mainlink = "convent.php?con=$data_id";
-		break;
-	case 'conset':
-		$cat = 'conset';
-		$q = "SELECT name FROM conset WHERE id = '$data_id'";
-		$mainlink = "conset.php?conset=$data_id";
-		break;
-	case 'sys':
-		$cat = 'sys';
-		$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
-		$mainlink = "system.php?system=$data_id";
-		break;
-	case 'tag':
-		$cat = 'tag';
-		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
-		$mainlink = "tag.php?tag_id=$data_id";
-		break;
-	case 'issue':
-		$cat = 'issue';
-		$q = "SELECT title FROM issue WHERE id = '$data_id'";
-		$mainlink = "magazine.php?issue_id=$data_id";
-		break;
-	default:
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-	}
-	$title = getone($q);
+	$data_field = getFieldFromCategory($category);
+	$linktitle = getlabel($category, $data_id, TRUE);
 	
 	$query = "
 		SELECT COUNT(fd.id) AS pages, f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
 		FROM files f
 		LEFT JOIN filedata fd ON f.id = fd.files_id
-		WHERE f.data_id = '$data_id' AND f.category = '$category'
+		WHERE f.`$data_field` = '$data_id' 
 		GROUP BY f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
 		ORDER BY f.id
 	";
@@ -350,7 +312,7 @@ if ($data_id && $category) {
 	print "<div align=\"center\" style=\"margin: auto; padding: auto;\">\n";
 
 	print "<table align=\"center\" border=\"0\">".
-	      "<tr><th colspan=5>Edit files for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit files for: $linktitle</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>Filename</th>".
@@ -496,7 +458,7 @@ if ($data_id && $category) {
 			FROM magazine m
 			INNER JOIN issue i ON m.id = i.magazine_id
 			INNER JOIN article a ON i.id = a.issue_id 
-			INNER JOIN files f ON i.id = f.data_id AND f.category = 'issue'
+			INNER JOIN files f ON i.id = f.issue_id
 			WHERE a.game_id = $data_id
 		");
 		// https://localhost/en/adm/files.php?category=issue&data_id=1&action=splitpdf&filename=no7web.pdf&pages=2-3,6

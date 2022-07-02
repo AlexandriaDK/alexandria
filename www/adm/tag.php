@@ -6,10 +6,10 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'tag';
 
-$tag_id = (int) $_REQUEST['tag_id'];
-$action = (string) $_REQUEST['action'];
-$tag = trim((string) $_REQUEST['tag'] ?? '');
-$description = (string) $_REQUEST['description'];
+$tag_id = (int) ($_REQUEST['tag_id'] ?? '');
+$action = (string) ($_REQUEST['action'] ?? '');
+$tag = trim((string) ($_REQUEST['tag'] ?? '') );
+$description = trim((string) ($_REQUEST['description'] ?? ''));
 
 $this_id = $tag_id;
 

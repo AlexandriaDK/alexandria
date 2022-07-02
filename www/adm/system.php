@@ -7,10 +7,10 @@ require "base.inc.php";
 $this_type = 'sys';
 $this_type_new = 'system';
 
-$system = (int) $_REQUEST['system'];
-$action = (string) $_REQUEST['action'];
-$name = (string) $_REQUEST['name'];
-$description = (string) $_REQUEST['description'];
+$system = (int) ($_REQUEST['system'] ?? '');
+$action = (string) ($_REQUEST['action'] ?? '');
+$name = (string) ($_REQUEST['name'] ?? '');
+$description = (string) ($_REQUEST['description'] ?? '');
 
 $this_id = $system;
 

@@ -67,7 +67,7 @@ $query = "
 	LEFT JOIN
 		convention c ON c.id = cgrel.convention_id
 	LEFT JOIN
-		sce ON g.id = game_id
+		game g ON g.id = game_id
 	WHERE
 		g.id IS NULL OR
 		c.id IS NULL
@@ -75,7 +75,7 @@ $query = "
 
 $result = getall($query);
 
-$htmlorpsce .= "Check of orphans, game&lt;=&gt;con: ";
+$htmlorpsce = "Check of orphans, game&lt;=&gt;con: ";
 
 if ($result) {
 	$htmlorpsce .= "<table border=1 cellspacing=0 >";
@@ -102,7 +102,7 @@ $query = "
 		title,
 		gamesystem_id
 	FROM
-		sce
+		game g
 	LEFT JOIN
 		gamesystem ON g.gamesystem_id = gamesystem.id
 	WHERE
@@ -110,7 +110,7 @@ $query = "
 		gamesystem.id IS NULL
 	";
 $result = getall($query);
-$htmlorpscesys .= "Check of orphans, game=&gt;system: ";
+$htmlorpscesys = "Check of orphans, game=&gt;system: ";
 if ($result) {
 	$htmlorpscesys .= "<table border=1 cellspacing=0 >";
 	$htmlorpscesys .= "<tr><th>ID</th><th>title</th><th>gamesystem_id</th></tr>";
@@ -128,11 +128,11 @@ if ($result) {
 }
 
 $htmlisocodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
-$languages = getall("SELECT data_id, category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
+$languages = getall("SELECT COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
 foreach ( $languages AS $language ) {
 	$htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">'.$language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
 }
-$gamedescriptions = getall("SELECT g.game_id, g.language, g.title
+$gamedescriptions = getall("SELECT gd.game_id, gd.language, g.title
 	FROM game_description gd
 	INNER JOIN game g ON gd.game_id = g.id
 	WHERE gd.language REGEXP('^(dk|se|no)') OR gd.language REGEXP '^..[a-z]'
@@ -301,7 +301,7 @@ $query = "
 	SELECT p.id, firstname, surname, COUNT(*) as missing
 	FROM person p
 	INNER JOIN pgrel ON p.id = pgrel.person_id AND pgrel.title_id = 1
-	LEFT JOIN files ON pgrel.game_id = files.data_id AND files.category = 'sce'
+	LEFT JOIN files ON pgrel.game_id = files.game_id
 	WHERE files.id IS NULL
 	GROUP BY p.id
 	ORDER BY missing DESC

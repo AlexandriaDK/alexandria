@@ -63,7 +63,7 @@ if (!$action && $game) {
 		$players = ($players_max != $players_min ? $players_min . "-" . $players_max : $players_min);
 		
 	} else {
-		unset($game);
+		$game = FALSE;
 	}
 }
 
@@ -741,7 +741,7 @@ if ($game) {
 	print "</td></tr>";
 
 	print "<tr><td>Reviews:</td><td>";
-	if ( $reviews ) {
+	if ( $reviews ?? FALSE ) {
 		foreach ($reviews AS $rid => $title ) {
 			print '<a href="review.php?review_id=' . $rid . '">' . ( $title !== "" ? htmlspecialchars( $title ) : "(unknown)" ) . '</a><br>';
 		}

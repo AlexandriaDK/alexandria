@@ -6,12 +6,12 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'tags';
 
-$action = (string) $_REQUEST['action'];
-$do = (string) $_REQUEST['do'];
-$tag = (string) $_REQUEST['tag'];
-$id = (int) $_REQUEST['id'];
-$category = (string) $_REQUEST['category'];
-$data_id = (int) $_REQUEST['data_id'];
+$action = (string) ($_REQUEST['action'] ?? '');
+$do = (string) ($_REQUEST['do'] ?? '');
+$tag = trim((string) ($_REQUEST['tag'] ?? ''));
+$id = (int) ($_REQUEST['id'] ?? '');
+$category = (string) ($_REQUEST['category'] ?? '');
+$data_id = (int) ($_REQUEST['data_id'] ?? '');
 if ($category == 'game') $category = 'sce';
 
 // Update tag

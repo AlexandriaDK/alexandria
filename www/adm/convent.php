@@ -8,19 +8,19 @@ require "base.inc.php";
 $this_type = 'convent';
 $this_type_new = 'convention';
 
-$con = (int) $_REQUEST['con'];
-$action = $_REQUEST['action'];
-$name = trim( (string) $_REQUEST['name'] );
-$year = $_REQUEST['year'];
-$begin = $_REQUEST['begin'];
-$end = $_REQUEST['end'];
-$place = trim( (string) $_REQUEST['place'] );
-$conset_id = $_REQUEST['conset_id'];
-$description = ltrim( (string) $_REQUEST['description']);
-$internal = $_REQUEST['internal'];
-$confirmed = $_REQUEST['confirmed'];
-$country = trim( (string) $_REQUEST['country'] );
-$cancelled = (int) (bool) $_REQUEST['cancelled'];
+$con = (int) ($_REQUEST['con'] ?? '');
+$action = $_REQUEST['action'] ?? '';
+$name = trim( (string) ($_REQUEST['name'] ?? ''));
+$year = $_REQUEST['year'] ?? '';
+$begin = $_REQUEST['begin'] ?? '';
+$end = $_REQUEST['end'] ?? '';
+$place = trim( (string) ($_REQUEST['place'] ?? '') );
+$conset_id = $_REQUEST['conset_id'] ?? '';
+$description = ltrim( (string) ($_REQUEST['description'] ?? ''));
+$internal = $_REQUEST['internal'] ?? '';
+$confirmed = $_REQUEST['confirmed'] ?? '';
+$country = trim( (string) ($_REQUEST['country'] ?? '') );
+$cancelled = (int) (bool) ($_REQUEST['cancelled'] ?? '');
 
 $this_id = $con;
 
@@ -29,7 +29,11 @@ if ( $action ) {
 }
 
 if (!$action && $con) {
-	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.internal, a.confirmed, a.country, b.country AS cscountry, a.cancelled FROM convent a LEFT JOIN conset b ON a.conset_id = b.id WHERE a.id = $con");
+	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.internal, a.confirmed, a.country, b.country AS cscountry, a.cancelled
+	FROM convention a
+	LEFT JOIN conset b ON a.conset_id = b.id
+	WHERE a.id = $con
+	");
 	if ($row) {
 		$name = $row['name'];
 		$year = $row['year'];
@@ -45,11 +49,12 @@ if (!$action && $con) {
 		$cancelled = $row['cancelled'];
 		$qq = getall("
 			SELECT id, name, year, begin, end
-			FROM convent 
+			FROM convention 
 			WHERE conset_id = '$conset_id'
 			ORDER BY year, begin, name
 		");
 		$seriedata = [];
+		$seriecount = 0;
 		foreach($qq AS $row) {
 			$seriecount++;
 			$seriedata['id'][$seriecount] = $row['id'];
@@ -59,10 +64,10 @@ if (!$action && $con) {
 			$seriedata['end'][$seriecount] = $row['end'];
 			if ($row['id'] == $con) $seriethis = $seriecount;
 		}
-		$con_prev = $seriedata['id'][($seriethis-1)];
-		$con_next = $seriedata['id'][($seriethis+1)];
+		$con_prev = $seriedata['id'][($seriethis-1)] ?? '';
+		$con_next = $seriedata['id'][($seriethis+1)] ?? '';
 	} else {
-		unset($con);
+		$con = FALSE;
 	}
 }
 
@@ -72,7 +77,7 @@ if ($action == "edit" && $con) {
 	} else {
 		$year = intval($year);
 		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
-		$q = "UPDATE convent SET " .
+		$q = "UPDATE convention SET " .
 		     "name = '".dbesc($name)."', " .
 		     "year = $year, " .
 		     "begin = " . sqlifnull($begin) . ", " .
@@ -101,8 +106,8 @@ if ($action == "edit" && $con) {
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
-	if (getCount('cgrel', $this_id, FALSE, $this_type) ) $error[] = "game";
-	if (getCount('pcrel', $this_id, FALSE, $this_type) ) $error[] = "con (organizer)";
+	if (getCount('cgrel', $this_id, FALSE, $this_type_new) ) $error[] = "game";
+	if (getCount('pcrel', $this_id, FALSE, $this_type_new) ) $error[] = "con (organizer)";
 	if (getCount('trivia', $this_id, FALSE, $this_type_new) ) $error[] = "trivia";
 	if (getCount('links', $this_id, FALSE, $this_type_new) ) $error[] = "link";
 	if (getCount('alias', $this_id, FALSE, $this_type_new) ) $error[] = "alias";
@@ -113,9 +118,9 @@ if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ",$error);
 		rexit($this_type, ['con' => $con] );
 	} else {
-		$name = getone("SELECT CONCAT(name, ' ', year) FROM convent WHERE id = $con");
+		$name = getone("SELECT CONCAT(name, ' ', year) FROM convention WHERE id = $con");
 
-		$q = "DELETE FROM convent WHERE id = $con";
+		$q = "DELETE FROM convention WHERE id = $con";
 		$r = doquery($q);
 
 		if ($r) {
@@ -133,7 +138,7 @@ if ($action == "create") {
 	} else {
 		$year = intval($year);
 		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
-		$q = "INSERT INTO convent (id, name, year, begin, end, place, conset_id, description, internal, confirmed, cancelled, country) " .
+		$q = "INSERT INTO convention (id, name, year, begin, end, place, conset_id, description, internal, confirmed, cancelled, country) " .
 		     "VALUES (NULL, ".
 			 "'".dbesc($name)."', ".
 			 "$year, ".
@@ -212,13 +217,13 @@ if ($end && $end != "0000-00-00") {
 	$optb = "(" . fulldate($end) . " = " . customdateformat(LANG, 'cccc', $end) . ")";
 }
 
-$countryname = getCountryName( ($country ? $country : $cscountry) );
+$countryname = getCountryName( ($country ? $country : $cscountry ?? '') );
 
-tr("Start date","begin",$begin,$opta, "YYYY-MM-DD","date");
-tr("End date","end",$end,$optb, "YYYY-MM-DD","date");
+tr("Start date","begin",$begin,$opta ?? '', "YYYY-MM-DD","date");
+tr("End date","end",$end,$optb ?? '', "YYYY-MM-DD","date");
 
 tr("Location","place",$place);
-print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ) . '" placeholder="Two letter ISO code, e.g.: se" size="50"></td><td id="countrynote">' . htmlspecialchars($cscountry ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
+print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars( $country ?? '' ) . '" placeholder="Two letter ISO code, e.g.: se" size="50"></td><td id="countrynote">' . htmlspecialchars(isset($cscountry) ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=internal cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
@@ -313,7 +318,11 @@ if ($con) {
 <select name=con>
 
 <?php
-$q = getall("SELECT convent.id, convent.name, year, conset.name AS setname FROM convent LEFT JOIN conset ON convent.conset_id = conset.id ORDER BY setname, year, begin, name");
+$q = getall("SELECT c.id, c.name, year, conset.name AS setname
+	FROM convention c
+	LEFT JOIN conset ON c.conset_id = conset.id
+	ORDER BY setname, year, begin, name
+");
 
 foreach($q AS $r) {
 	print "<option value=$r[id]";

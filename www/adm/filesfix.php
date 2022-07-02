@@ -33,7 +33,7 @@ $languages = ['da','en']
 $files = getall("
 	SELECT g.id, g.title, files.id AS filesid, files.filename, files.description, files.language
 	FROM game g
-	INNER JOIN files ON g.id = files.data_id AND files.category = 'sce'
+	INNER JOIN files ON g.id = files.game_id
 	WHERE files.downloadable = 1
 ");
 

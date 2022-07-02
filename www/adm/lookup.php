@@ -7,8 +7,8 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$type = (string) $_REQUEST['type'];
-$label = trim( (string) $_REQUEST['label'] );
+$type = (string) ($_REQUEST['type'] ?? '');
+$label = trim( (string) ($_REQUEST['label'] ?? '') );
 $id = (int) ($_REQUEST['currentid'] ?? 0);
 $term = (string) ($_REQUEST['term'] ?? '');
 

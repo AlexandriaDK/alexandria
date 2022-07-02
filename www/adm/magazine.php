@@ -7,25 +7,25 @@ require "base.inc.php";
 
 $this_type = 'magazine';
 
-$action = (string) $_REQUEST['action'];
-$do = (string) $_REQUEST['do'];
-$description = trim((string) $_REQUEST['description']);
-$internal = (string) $_REQUEST['internal'];
-$name = trim((string) $_REQUEST['name']);
-$title = trim((string) $_REQUEST['title']);
-$releasedate = (string) $_REQUEST['releasedate'];
-$releasetext = (string) $_REQUEST['releasetext'];
-$status = (int) $_REQUEST['status'];
-$magazine_id = (int) $_REQUEST['magazine_id'];
-$issue_id = (int) $_REQUEST['issue_id'];
-$article_id = (int) $_REQUEST['article_id'];
-$highlight_article_id = (int) $_SESSION['highlight_article_id'];
-$page = (int) $_REQUEST['page'];
-$articletype = trim((string) $_REQUEST['articletype']);
-$game_id = (int) $_REQUEST['game_id'];
-$contributors = (array) $_REQUEST['contributors'];
-$references = (array) $_REQUEST['references'];
-$original_article_id = (int) $_REQUEST['original_article_id'];
+$action = (string) ($_REQUEST['action'] ?? '');
+$do = (string) ($_REQUEST['do'] ?? '');
+$description = trim((string) ($_REQUEST['description'] ?? '') );
+$internal = (string) ($_REQUEST['internal'] ?? '');
+$name = trim((string) ($_REQUEST['name'] ?? '') );
+$title = trim((string) ($_REQUEST['title'] ?? '') );
+$releasedate = (string) ($_REQUEST['releasedate'] ?? '');
+$releasetext = (string) ($_REQUEST['releasetext'] ?? '');
+$status = (int) ($_REQUEST['status'] ?? '');
+$magazine_id = (int) ($_REQUEST['magazine_id'] ?? '');
+$issue_id = (int) ($_REQUEST['issue_id'] ?? '');
+$article_id = (int) ($_REQUEST['article_id'] ?? '');
+$highlight_article_id = (int) ($_SESSION['highlight_article_id'] ?? '');
+$page = (int) ($_REQUEST['page'] ?? '');
+$articletype = trim((string) ($_REQUEST['articletype'] ?? '') );
+$game_id = (int) ($_REQUEST['game_id'] ?? '');
+$contributors = (array) ($_REQUEST['contributors'] ?? []);
+$references = (array) ($_REQUEST['references'] ?? []);
+$original_article_id = (int) ($_REQUEST['original_article_id'] ?? '');
 unset($_SESSION['highlight_article_id']);
 
 $statuslist = [
@@ -345,7 +345,7 @@ if ($magazine_id && $issue_id) {
 	$mainlink = "magazine.php?magazine_id=" . $magazine_id;
 	$publiclink = "../magazines?issue=" . $issue_id;
 	list($magazine_name, $issue_title, $issue_releasename) = getrow("SELECT m.name, i.title, i.releasetext FROM issue i INNER JOIN magazine m ON i.magazine_id = m.id WHERE i.id = $issue_id");
-	$files = getone("SELECT COUNT(*) FROM files WHERE category = 'issue' AND data_id = $issue_id");
+	$files = getone("SELECT COUNT(*) FROM files WHERE issue_id = $issue_id");
 
 	$articles = getall("
 		SELECT article.id, article.page, article.title, article.description, article.articletype, article.game_id, g.title AS gametitle
@@ -361,13 +361,13 @@ if ($magazine_id && $issue_id) {
 	print '<table>';
 
 	foreach ($articles AS $article) {
-		$article_id = $article['id'];
-		$new = ! isset($article_id);
+		$article_id = $article['id'] ?? FALSE;
+		$new = ! (bool) $article_id;
 		$contributors = $references = [];
 		$references_html = "";
 		if ( ! $new) {
 			// Non-optimal contributor and reference lookup
-			$contributors = getall("SELECT c.person_id, c.person_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN game a ON c.person_id = a.id WHERE article_id = $article_id ORDER BY c.id");
+			$contributors = getall("SELECT c.person_id, c.person_extra, c.role, CONCAT(a.firstname, ' ', a.surname) AS name FROM contributor c LEFT JOIN person a ON c.person_id = a.id WHERE article_id = $article_id ORDER BY c.id");
 			$references = getall("SELECT category, data_id FROM article_reference ar WHERE article_id = $article_id ORDER BY ar.id");
 			foreach ($references AS $reference_id => $reference) {
 				$entry = getentry($reference['category'], $reference['data_id']);
@@ -387,20 +387,20 @@ if ($magazine_id && $issue_id) {
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
 				'<input type="hidden" name="issue_id" value="' . $issue_id . '">'.
 				'<input type="hidden" name="article_id" value="' . $article_id . '">';
-		$person = ($article['person_id'] ? $article['person_id'] . " - " . $article['personname'] : $article['person_extra'] );
-		$game = ($article['game_id'] ? $article['game_id'] . " - " . $article['gametitle'] : '' );
+		$person = (($article['person_id'] ?? FALSE) ? $article['person_id'] . " - " . $article['personname'] : $article['person_extra'] ?? '' );
+		$game = (($article['game_id'] ?? FALSE) ? $article['game_id'] . " - " . $article['gametitle'] : '' );
 		print "<table>";
 		print '<tr valign="top" style="white-space: nowrap">' .
-				'<td style="text-align:right; min-width: 2em;" ' . ($article['id'] && $highlight_article_id == $article['id'] ? 'class="highlightarticle"' : '') . '>' . ($article['id'] ?? 'New') . '</td>'.
-				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title']).'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
-				'<td><input placeholder="Page" type="number" min="1" name="page" value="'.htmlspecialchars($article['page']).'" style="width: 4em;"></td>';
+				'<td style="text-align:right; min-width: 2em;" ' . (($article['id'] ?? FALSE)  && $highlight_article_id == $article['id'] ? 'class="highlightarticle"' : '') . '>' . ($article['id'] ?? 'New') . '</td>'.
+				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title'] ?? '').'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
+				'<td><input placeholder="Page" type="number" min="1" name="page" value="'.htmlspecialchars($article['page'] ?? '').'" style="width: 4em;"></td>';
 		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
 			$pcount++;
-			$person = ($contributor['person_id'] ? $contributor['person_id'] . ' - ' . $contributor['name'] : $contributor['person_extra'] );
-			print '<input type="text" placeholder="Person" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person) . '">';
-			print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" class="peopleroles" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role']) . '">';
+			$person = (($contributor['person_id'] ?? FALSE) ? $contributor['person_id'] . ' - ' . $contributor['name'] : $contributor['person_extra'] ?? '' );
+			print '<input type="text" placeholder="Person" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person ?? '') . '">';
+			print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" class="peopleroles" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role'] ?? '') . '">';
 			if ($pcount == 1) {
 				print '<span class="addnext atoggle">➕</span>';
 			}
@@ -408,8 +408,8 @@ if ($magazine_id && $issue_id) {
 		}
 
 		print '</td>' .
-				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.style.height=\'10em\'" onblur="this.style.height=\'1em\'" style="height: 1em;">'.htmlspecialchars($article['description']).'</textarea></td>'.
-				'<td><input placeholder="Article type" type="text" name="articletype" value="'.htmlspecialchars($article['articletype']).'" size=15 maxlength=150></td>' .
+				'<td><textarea placeholder="Description" name="description" cols="30" rows="1" onfocus="this.style.height=\'10em\'" onblur="this.style.height=\'1em\'" style="height: 1em;">'.htmlspecialchars($article['description'] ?? '').'</textarea></td>'.
+				'<td><input placeholder="Article type" type="text" name="articletype" value="'.htmlspecialchars($article['articletype'] ?? '').'" size=15 maxlength=150></td>' .
 				'<td>';
 		$rcount = 0;
 		foreach ($references AS $reference) {
@@ -450,7 +450,7 @@ if ($magazine_id && $issue_id) {
 		SELECT i.id, i.title, i.releasedate, i.releasetext, i.internal, i.status, COUNT(a.id) AS entries, COUNT(f.id) AS files
 		FROM issue i
 		LEFT JOIN article a ON i.id = a.issue_id
-		LEFT JOIN files f ON i.id = f.data_id AND f.category = 'issue'
+		LEFT JOIN files f ON i.id = f.issue_id
 		WHERE i.magazine_id = $magazine_id
 		GROUP BY i.id, i.title, i.releasedate, i.releasetext
 		ORDER BY i.releasedate, i.id
@@ -470,25 +470,25 @@ if ($magazine_id && $issue_id) {
 	foreach($issues AS $issue) {
 		$statushtml = '<div class="issuestatus">';
 		foreach($statuslist AS $statusid => $status) {
-			$radioid = 'radio' . $status['label'] . '_' . (int) $issue['id'];
-			$statushtml .= '<input type="radio" name="status" value="' . $statusid . '" id="' . $radioid . '" ' . ($statusid == $issue['status'] ? 'checked' : '') . '>';
+			$radioid = 'radio' . $status['label'] . '_' . (int) ($issue['id'] ?? 0);
+			$statushtml .= '<input type="radio" name="status" value="' . $statusid . '" id="' . $radioid . '" ' . ($statusid == ($issue['status'] ?? FALSE) ? 'checked' : '') . '>';
 			$statushtml .= '<label for="' . $radioid . '" title="' . htmlspecialchars($status['text']) . '" class="' . htmlspecialchars($status['label']) . '" >' . htmlspecialchars($status['short']) . '</label>' . PHP_EOL;
 		}
 		$statushtml .= '</div>';
 		$new = ! isset($issue['id']);
-		$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . $issue['id'] . "/*"));
+		$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . ($issue['id'] ?? '') . "/*"));
 		print '<form action="magazine.php" method="post">'.
 				'<input type="hidden" name="action" value="' . ($new ? 'addissue' : 'changeissue') . '">'.
 				'<input type="hidden" name="magazine_id" value="' . $magazine_id . '">'.
-				'<input type="hidden" name="issue_id" value="' . $issue['id'] . '">';
+				'<input type="hidden" name="issue_id" value="' . ($issue['id'] ?? '') . '">';
 		print "<tr valign=\"top\">\n".
 				'<td style="text-align:right;">' . ($issue['id'] ?? 'New') . '</td>'.
-				'<td><input type="text" name="title" value="'.htmlspecialchars($issue['title']).'" size=40 maxlength=150>'.
-				'<td><input type="date" name="releasedate" value="'.htmlspecialchars($issue['releasedate']).'"></td>' .
-				'<td><input type="text" name="releasetext" value="'.htmlspecialchars($issue['releasetext']).'" size=40 maxlength=150></td>' .
-				'<td rowspan="2"><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($issue['internal']).'</textarea></td>'.
+				'<td><input type="text" name="title" value="'.htmlspecialchars($issue['title'] ?? '') .'" size=40 maxlength=150>'.
+				'<td><input type="date" name="releasedate" value="'.htmlspecialchars($issue['releasedate'] ?? '').'"></td>' .
+				'<td><input type="text" name="releasetext" value="'.htmlspecialchars($issue['releasetext'] ?? '').'" size=40 maxlength=150></td>' .
+				'<td rowspan="2"><textarea name="internal" cols="40" rows="2" onfocus="this.rows=10;" onblur="this.rows=2;">'.htmlspecialchars($issue['internal'] ?? '').'</textarea></td>'.
 				'<td><input type="submit" name="do" value="' . ($new ? 'Create' : 'Update') . '"> '.
-				($issue['entries'] == 0 && ! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove issue?\');">' : '') . '</td>'.
+				(($issue['entries'] ?? 0) == 0 && ! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove issue?\');">' : '') . '</td>'.
 				"</tr>\n";
 		if ( ! $new ) {
 			print '<tr><td></td><td colspan="3">' . 

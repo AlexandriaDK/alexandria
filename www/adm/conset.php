@@ -6,12 +6,12 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'conset';
 
-$conset = (int) $_REQUEST['conset'];
-$action = (string) $_REQUEST['action'];
-$name = (string) $_REQUEST['name'];
-$description = (string) $_REQUEST['description'];
-$internal = (string) $_REQUEST['internal'];
-$country = (string) $_REQUEST['country'];
+$conset = (int) ($_REQUEST['conset'] ?? '');
+$action = (string) ($_REQUEST['action'] ?? '');
+$name = (string) ($_REQUEST['name'] ?? '');
+$description = (string) ($_REQUEST['description'] ?? '');
+$internal = (string) ($_REQUEST['internal'] ?? '');
+$country = (string) ($_REQUEST['country'] ?? '');
 $countryname = getCountryName( $country );
 
 if ( $action ) {
@@ -26,7 +26,7 @@ if (!$action && $conset) {
 		$internal = $row['internal'];
 		$country = $row['country'];
 	} else {
-		unset($conset);
+		$conset = FALSE;
 	}
 }
 

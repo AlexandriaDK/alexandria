@@ -46,7 +46,7 @@ Locale::setDefault($locale);
 define('ALEXFILES','/home/penguin/web/loot.alexandria.dk/files/');
 
 // Smarty 
-define('SMARTY_DIR', __DIR__ . '/../smarty-3.1.34/libs/');
+define('SMARTY_DIR', __DIR__ . '/../smarty-4.1.1/libs/');
 require_once(SMARTY_DIR . 'Smarty.class.php');
 
 $t = new Smarty;

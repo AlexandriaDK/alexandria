@@ -1,3 +1,6 @@
+-- Large rename update
+-- Remember new version of Smarty 4.1.1
+
 RENAME TABLE aut TO person;
 RENAME TABLE sce TO game;
 RENAME TABLE scerun TO gamerun;

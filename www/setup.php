@@ -7,7 +7,7 @@ $errors = [];
 $required_include_files = [ 'db.auth.php' ];
 $required_php_extensions = [ 'mysqli', 'mbstring', 'intl', 'gd', 'zip' ];
 $required_apache_modules = [ 'mod_rewrite' ];
-$required_smarty = 'smarty-3.1.34/libs/';
+$required_smarty = 'smarty-4.1.1/libs/';
 $required_writable_path = __DIR__ . '/../smarty/templates_c';
 
 // Rquired files
