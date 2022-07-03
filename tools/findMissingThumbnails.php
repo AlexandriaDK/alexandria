@@ -1,4 +1,6 @@
 <?php
+die("Not updated to new data structure");
+
 // Find scenarios that have "Thumbnail added" in the log but doesn't have a thumbnail file even though the corresponding file exists.
 // This helps finding missing thumbnails from the server crash in 2020.
 header("Content-Type: text/plain");

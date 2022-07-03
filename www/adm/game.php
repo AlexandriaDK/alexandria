@@ -161,6 +161,7 @@ if ($action == "Delete" && $game) { // should check if game exists
 	if (getCount('alias', $this_id, FALSE, $this_type) ) $error[] = "alias";
 	if (getCount('tags', $this_id, FALSE, $this_type) ) $error[] = "tags";
 	if (getCount('article', $this_id, FALSE, $this_type) ) $error[] = "article";
+	if (getCount('article_reference', $this_id, FALSE, $this_type) ) $error[] = "article reference";
 	if (getCount('userlog', $this_id, TRUE, $this_type_old) ) $error[] = "user log (requires admin)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ",$error);

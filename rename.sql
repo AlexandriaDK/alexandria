@@ -67,6 +67,11 @@ DELETE FROM article_reference WHERE id = 1749;
 DELETE FROM award_nominee_entities where id = 249; -- Nickolaj Storgaard Oksen, Forum 2020
 
 -- Trivia
+ALTER TABLE trivia DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+ALTER TABLE trivia CHANGE hidden internal text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci NULL;
+ALTER TABLE trivia MODIFY COLUMN internal text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci NULL;
+ALTER TABLE trivia MODIFY COLUMN fact text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci NULL;
+
 ALTER TABLE trivia ADD person_id int NULL;
 ALTER TABLE trivia ADD game_id int NULL;
 ALTER TABLE trivia ADD convention_id int NULL;
@@ -214,8 +219,5 @@ ALTER TABLE award_nominee_entities DROP COLUMN data_id;
 ALTER TABLE award_nominee_entities DROP COLUMN category;
 
 -- SELECT * FROM links WHERE convention_id NOT IN (SELECT id FROM convention)
-
--- getCount for mange admin-sider - sæt til FALSE for tabeller, der brugte data_id
--- Mangler vist kun article_reference her
 
 -- Fix export.php !!!

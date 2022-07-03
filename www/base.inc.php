@@ -579,7 +579,7 @@ function pubdateprint($datetime) {
 
 function _textlink ($string, $absolute_url = 0) {
 	$urlpart = "/find";
-	if (preg_match("/^(c|cx|s|p|cs|sys|t|tag|i|m)(\d*)\|(.*)$/i",$string,$regs)) {
+	if (preg_match("/^(c|cx|g|s|p|cs|sys|t|tag|i|m)(\d*)\|(.*)$/i",$string,$regs)) {
 		$pref = $regs[1];
 		$data_id = $regs[2];
 		$text = $regs[3];
@@ -587,8 +587,8 @@ function _textlink ($string, $absolute_url = 0) {
 			case "c": $cat = "convention"; $class = "con"; $search = "con"; break;
 			case "cx": $cat = "convention"; $class = "con cancelled"; $search = "con"; break;
 			case "g":
-			case "s": $cat = "game"; $class = "scenarie"; $search = "sce"; break;
-			case "p": $cat = "person"; $class = "person"; $search = "aut"; break;
+			case "s": $cat = "game"; $class = "scenarie"; $search = "game"; break;
+			case "p": $cat = "person"; $class = "person"; $search = "person"; break;
 			case "cs": $cat = "conset"; $class = "con"; $search = "conset"; break;
 			case "sys": $cat = "sys"; $class = "system"; $search = "sys"; break;
 			case "t": 
@@ -613,7 +613,7 @@ function _textlink ($string, $absolute_url = 0) {
 			$html = '<a href="data?tag=' . rawurlencode( $taglink ) . '" class="tag">' . htmlspecialchars( $text ) . '</a>';
 			return $html;
 		}
-		$html = '<a href="/find?find='.rawurlencode( $text ).'&amp;cat=$search" class="' . $class . '">' . htmlspecialchars( $text ) . '</a>';
+		$html = '<a href="/find?find='.rawurlencode( $text ).'&amp;cat=' . $search . '" class="' . $class . '">' . htmlspecialchars( $text ) . '</a>';
 		return $html;
 	}
 	$text = "<a href=\"$urlpart?find=".rawurlencode($string)."\">$string</a>";

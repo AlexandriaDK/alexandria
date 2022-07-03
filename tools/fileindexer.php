@@ -136,7 +136,7 @@ function OCRFile($file) {
 }
 
 // OCR queue
-$files = getall("SELECT id, data_id, category, filename, language FROM files WHERE indexed = 11 LIMIT $limit");
+$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename, language FROM files WHERE indexed = 11 LIMIT $limit");
 if ( $files ) {
 	$ids = [];
 	foreach ($files AS $file) {
@@ -150,7 +150,7 @@ if ( $files ) {
 	exit; // Don't OCR and index in the same run
 }
 
-$files = getall("SELECT id, data_id, category, filename FROM files WHERE indexed IN(0,20) AND downloadable = 1 LIMIT $limit");
+$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename FROM files WHERE indexed IN(0,20) AND downloadable = 1 LIMIT $limit");
 if ( ! $files) {
 	exit;
 }

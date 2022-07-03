@@ -15,7 +15,7 @@ $exportqueries = [
 	'conventionsets' => "SELECT id, name, description, country FROM conset ORDER BY id",
 	'systems' => "SELECT id, name, description FROM gamesystem ORDER BY id",
 	'genres' => "SELECT id, name, genre FROM genre ORDER BY id",
-	'genre_game_relations' => "SELECT id, genre_id , game_id FROM ggrel ORDER BY game_id, genre_id, id",
+	'genre_game_relations' => "SELECT id, genre_id, game_id FROM ggrel ORDER BY game_id, genre_id, id",
 	'tags' => "SELECT id, tag, description FROM tag ORDER BY id",
 	'gametags' => "SELECT id, game_id, tag FROM tags ORDER BY id",
 	'gameruns' => "SELECT id, game_id, begin, end, location, description, cancelled, country FROM gamerun ORDER BY id",
@@ -23,7 +23,7 @@ $exportqueries = [
 	'titles' => "SELECT id, title, title_label, priority, iconfile, iconwidth, iconheight, textsymbol FROM title ORDER BY id",
 	'presentations' => "SELECT id, event, event_label, iconfile, textsymbol FROM presentation ORDER BY id",
 	'feeds' => "SELECT id, url, owner, person_id AS person_id, name, pageurl, lastchecked, podcast, pauseupdate FROM feeds ORDER BY id",
-	'trivia' => "SELECT id, data_id, category, fact FROM trivia ORDER BY id",
+	'trivia' => "SELECT id, fact, '' AS internal, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, fact FROM trivia ORDER BY id",
 	'links' => "SELECT id, data_id, category, url, description FROM links ORDER BY id",
 	'aliases' => "SELECT id, data_id, category, label, visible FROM alias WHERE visible = 1 ORDER BY category, data_id, id", // Don't expose hidden aliases yet
 	'files' => "SELECT id, data_id, category, filename, description, downloadable, inserted, language, indexed FROM files WHERE downloadable = 1 ORDER BY category, data_id, id",
