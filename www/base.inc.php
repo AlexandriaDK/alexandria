@@ -515,9 +515,12 @@ function compare_token_error( $usertoken, $sessiontoken ) {
 function getcategorydir($category) {
 	$paths = [
 		"sce" => "scenario",
+		"game" => "scenario",
 		"convent" => "convent",
+		"convention" => "convent",
 		"conset" => "conset",
 		"sys" => "system",
+		"gamesystem" => "system",
 		"tag" => "tag",
 		"issue" => "issue",
 	];
@@ -527,10 +530,14 @@ function getcategorydir($category) {
 function getcategorythumbdir($category) {
 	$thumbpaths = [
 		"aut" => "person",
+		"person" => "person",
 		"sce" => "scenarie",
+		"game" => "scenarie",
 		"convent" => "convent",
+		"convention" => "convent",
 		"conset" => "conset",
 		"sys" => "system",
+		"gamesystem" => "system",
 		"tag" => "tag",
 		"issue" => "issue",
 	];
