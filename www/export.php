@@ -22,24 +22,24 @@ $exportqueries = [
 	'gamedescriptions' => "SELECT id, game_id, description, language, note FROM game_description ORDER BY game_id, language, id",
 	'titles' => "SELECT id, title, title_label, priority, iconfile, iconwidth, iconheight, textsymbol FROM title ORDER BY id",
 	'presentations' => "SELECT id, event, event_label, iconfile, textsymbol FROM presentation ORDER BY id",
-	'feeds' => "SELECT id, url, owner, person_id AS person_id, name, pageurl, lastchecked, podcast, pauseupdate FROM feeds ORDER BY id",
+	'feeds' => "SELECT id, url, owner, person_id, name, pageurl, lastchecked, podcast, pauseupdate FROM feeds ORDER BY id",
 	'trivia' => "SELECT id, fact, '' AS internal, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, fact FROM trivia ORDER BY id",
-	'links' => "SELECT id, data_id, category, url, description FROM links ORDER BY id",
-	'aliases' => "SELECT id, data_id, category, label, visible FROM alias WHERE visible = 1 ORDER BY category, data_id, id", // Don't expose hidden aliases yet
-	'files' => "SELECT id, data_id, category, filename, description, downloadable, inserted, language, indexed FROM files WHERE downloadable = 1 ORDER BY category, data_id, id",
+	'links' => "SELECT id, url, description, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id FROM links ORDER BY id",
+	'aliases' => "SELECT id, label, visible, language, person_id, game_id, convention_id, conset_id, gamesystem_id FROM alias WHERE visible = 1 ORDER BY id", // Don't expose hidden aliases yet
+	'files' => "SELECT id, filename, description, downloadable, inserted, language, indexed, game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id FROM files WHERE downloadable = 1 ORDER BY id",
 	'sitetexts' => "SELECT id, label, text, language, lastupdated FROM weblanguages ORDER BY language, id",
 	'awards' => "SELECT id, name, conset_id, description, label FROM awards ORDER BY id",
 	'award_categories' => "SELECT id, name, convention_id, description, award_id FROM award_categories ORDER BY id",
-	'award_nominee_entities' => "SELECT id, award_nominee_id, data_id, category, label FROM award_nominee_entities ORDER BY award_nominee_id, id",
+	'award_nominee_entities' => "SELECT id, award_nominee_id, label, person_id, game_id FROM award_nominee_entities ORDER BY award_nominee_id, id",
 	'award_nominees' => "SELECT id, award_category_id, game_id, name, nominationtext, winner, ranking FROM award_nominees ORDER BY id",
-	'person_game_title_relations' => "SELECT id, person_id AS person_id, game_id, title_id, note FROM pgrel ORDER BY person_id, game_id, id",
+	'person_game_title_relations' => "SELECT id, person_id, game_id, title_id, note FROM pgrel ORDER BY person_id, game_id, id",
 	'game_convention_presentation_relations' => "SELECT id, game_id, convention_id, presentation_id FROM cgrel ORDER BY convention_id, game_id, id",
-	'person_convention_relations' => "SELECT id, person_id AS person_id, convention_id, person_extra, role FROM pcrel ORDER BY convention_id, person_id, id",
+	'person_convention_relations' => "SELECT id, person_id, convention_id, person_extra, role FROM pcrel ORDER BY convention_id, person_id, id",
 	'magazines' => "SELECT id, name, description FROM magazine ORDER BY id",
 	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
 	'articles' => "SELECT id, issue_id, page, title, description, articletype, game_id FROM article ORDER BY issue_id, id",
-	'contributors' => "SELECT id, person_id AS person_id, person_extra, role, article_id FROM contributor ORDER BY id",
-	'article_reference' => "SELECT id, article_id, category, data_id FROM article_reference ORDER BY id"
+	'contributors' => "SELECT id, person_id, person_extra, role, article_id FROM contributor ORDER BY id",
+	'article_reference' => "SELECT id, article_id, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id FROM article_reference ORDER BY id"
 ];
 
 if ( $dataset ) {
