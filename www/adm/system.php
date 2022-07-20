@@ -5,7 +5,7 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'sys';
-$this_type_new = 'system';
+$this_type_new = 'gamesystem';
 
 $system = (int) ($_REQUEST['system'] ?? '');
 $action = (string) ($_REQUEST['action'] ?? '');

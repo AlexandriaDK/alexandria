@@ -1006,6 +1006,7 @@ function getFieldFromCategory($cat, $table = '') {
 		'convention' => 'convention_id',
 		'conset' => 'conset_id',
 		'sys' => 'gamesystem_id',
+		'system' => 'gamesystem_id',
 		'gamesystem' => 'gamesystem_id',
 		'tag' => 'tag_id',
 		'magazine' => 'magazine_id',

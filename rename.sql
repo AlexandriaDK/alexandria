@@ -58,7 +58,7 @@ ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 
 -- Change `category`, `data_id` to explicit fields for every data type for the purpose of foreign keys
 -- Done: Links, Trivia, Files, Alias, Article_reference, award_nominee_entities
--- Todo: Filedownloads, log, review, reviews, updates, userlog, ...
+-- Todo: log, review, reviews, updates, userlog, ...
 
 -- Cleanup; orphans
 DELETE FROM trivia WHERE id = 99;
@@ -218,6 +218,7 @@ ALTER TABLE award_nominee_entities ADD CONSTRAINT award_nominee_entities_FK_1 FO
 ALTER TABLE award_nominee_entities DROP COLUMN data_id;
 ALTER TABLE award_nominee_entities DROP COLUMN category;
 
--- SELECT * FROM links WHERE convention_id NOT IN (SELECT id FROM convention)
-
--- Fix export.php !!!
+-- filedownloads
+-- No index/key as we would like to preserve log even if entry is deleted lateron
+-- Change category to TINYTEXT as we are currently missing out on issues and tags
+ALTER TABLE filedownloads CHANGE category category TINYTEXT NOT NULL;
