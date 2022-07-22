@@ -21,7 +21,7 @@ if (strlen($term) >= 2) {
 		UNION ALL
 			SELECT gamesystem.id, name AS label, 'gamesystem' AS type, 'system' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(game.title ORDER BY game.popularity DESC SEPARATOR '$separator'), '') AS note FROM gamesystem LEFT JOIN game ON gamesystem.id = game.gamesystem_id WHERE name LIKE '$likeescapequery%' GROUP BY gamesystem.id
 		UNION ALL
-			SELECT convention.id, CONCAT(convention.name,' (',convention.year,')') AS label, 'convention' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convention
+			SELECT convention.id, CONCAT(convention.name,' (',COALESCE(convention.year,'?'),')') AS label, 'convention' AS type, 'con' AS linkpart, 'convent' AS filepath, '' AS note FROM convention
 			INNER JOIN conset ON convention.conset_id = conset.id
 			WHERE convention.name LIKE '$likeescapequery%'
 			OR CONCAT(convention.name,' (',year,')') LIKE '$likeescapequery%'
