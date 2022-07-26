@@ -100,7 +100,7 @@ if (!$ucid) {
 				$html .= "<h5 class=\"" . $class . "\">";
 				$html .= "<span class=\"" . $class . "\">";
 				if ($nominee['game_id']) {
-					$html .= getdatahtml('sce', $nominee['game_id'], $nominee['title']);
+					$html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
 				} else {
 					$html .= htmlspecialchars($nominee['name']);
 				}
@@ -137,5 +137,3 @@ $t->assign('cid', $ucid);
 $t->assign('csname', $csname ?? "");
 $t->assign('ogimage', 'gfx/fastaval_otto_original.jpg');
 $t->display('awards.tpl');
-
-?>

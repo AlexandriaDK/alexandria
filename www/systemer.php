@@ -16,5 +16,4 @@ foreach($result AS $r) {
 
 // Smarty
 $t->assign('syslist',$syslist);
-$t->display('systems.tpl');
-?>
+$t->display('gamesystems.tpl');

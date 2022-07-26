@@ -57,6 +57,4 @@ $countries = array_keys( $countries );
 $t->assign('cons',$cons);
 $t->assign('countries',$countries);
 
-$t->display('convents.tpl');
-
-?>
+$t->display('conventions.tpl');

@@ -7,6 +7,4 @@ if ($con = intval($_REQUEST['con'])) {
 }
 
 
-header("Location: convent.php?con=$con");
-
-?>
+header("Location: convention.php?con=$con");

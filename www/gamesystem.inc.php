@@ -1,6 +1,5 @@
 <?php
-$this_type = 'sys';
-$this_type_new = 'system';
+$this_type = 'gamesystem';
 $this_id = $system;
 
 if ($_SESSION['user_id']) {
@@ -16,8 +15,8 @@ $r = getrow("SELECT id, name, description FROM gamesystem WHERE id = '$system'")
 $showname = $sysname = $r['name'];
 
 if ($r['id'] == 0) {
-	$t->assign('content', $t->getTemplateVars('_nomatch') );
-	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
+	$t->assign('content', $t->getTemplateVars('_nomatch'));
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
 	$t->display('default.tpl');
 	exit;
 }
@@ -39,23 +38,23 @@ $q = getall("
 $gamelist = [];
 
 if (count($q) > 0) {
-	foreach($q AS $rs) { // Put all together
-#		$game_id = $rs['id'];
-		if ( ! isset($gamelist[$rs['id']]) ) {
-			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files'] ], 'person' => [], 'convent' => [] ];
+	foreach ($q as $rs) { // Put all together
+		#		$game_id = $rs['id'];
+		if (!isset($gamelist[$rs['id']])) {
+			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files']], 'person' => [], 'convent' => []];
 		}
 		if ($rs['person_id']) {
 			$gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];
 		}
 		if ($rs['con_id']) {
-			$gamelist[$rs['id']]['convent'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id'] ];
+			$gamelist[$rs['id']]['convent'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id']];
 		}
 	}
 
 	if ($_SESSION['user_id']) {
-		foreach ($gamelist AS $id => $game) {
-			foreach( ['read','gmed','played'] AS $type) {
-				$gamelist[$id]['userdata']['html'][$type] = getdynamicscehtml($id,$type,$userlog[$id][$type] ?? FALSE );
+		foreach ($gamelist as $id => $game) {
+			foreach (['read', 'gmed', 'played'] as $type) {
+				$gamelist[$id]['userdata']['html'][$type] = getdynamicscehtml($id, $type, $userlog[$id][$type] ?? FALSE);
 			}
 		}
 	}
@@ -63,45 +62,44 @@ if (count($q) > 0) {
 
 // List of aliases, alternative title?
 $alttitle = getcol("SELECT label FROM alias WHERE gamesystem_id = $system AND language = '$lang' AND visible = 1");
-if ( count( $alttitle ) == 1 ) {
+if (count($alttitle) == 1) {
 	$showname = $alttitle[0];
 	$aliaslist = getaliaslist($system, $this_type, $showname);
-	if ( $aliaslist ) {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_g.original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>, " . $aliaslist;
+	if ($aliaslist) {
+		$aliaslist = "<b title=\"" . $t->getTemplateVars("_g.original_title") . "\">" . htmlspecialchars($sysname) . "</b>, " . $aliaslist;
 	} else {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_g.original_title" ) . "\">" . htmlspecialchars( $sysname ) . "</b>";
+		$aliaslist = "<b title=\"" . $t->getTemplateVars("_g.original_title") . "\">" . htmlspecialchars($sysname) . "</b>";
 	}
 } else {
 	$aliaslist = getaliaslist($system, $this_type);
 }
 
 // List of files
-$filelist = getfilelist($this_id,$this_type);
+$filelist = getfilelist($this_id, $this_type);
 
 // Trivia, links and articles
-$trivialist = gettrivialist($this_id,$this_type);
-$linklist = getlinklist($this_id,$this_type);
-$articles = getarticlereferences($this_id,$this_type_new);
+$trivialist = gettrivialist($this_id, $this_type);
+$linklist = getlinklist($this_id, $this_type);
+$articles = getarticlereferences($this_id, $this_type);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($system, $this_type);
 
 // Smarty
 $t->assign('pagetitle', $showname);
-$t->assign('type',$this_type);
+$t->assign('type', $this_type);
 
-$t->assign('id',$system);
-$t->assign('name',$showname);
-$t->assign('pic',$available_pic);
-$t->assign('ogimage', getimageifexists($this_id, $this_type_new) );
-$t->assign('alias',$aliaslist);
-$t->assign('description',$r['description']);
-$t->assign('gamelist',$gamelist);
-$t->assign('trivia',$trivialist);
-$t->assign('link',$linklist);
-$t->assign('articles',$articles);
-$t->assign('filelist',$filelist);
-$t->assign('filedir', getcategorydir($this_type) );
+$t->assign('id', $system);
+$t->assign('name', $showname);
+$t->assign('pic', $available_pic);
+$t->assign('ogimage', getimageifexists($this_id, $this_type));
+$t->assign('alias', $aliaslist);
+$t->assign('description', $r['description']);
+$t->assign('gamelist', $gamelist);
+$t->assign('trivia', $trivialist);
+$t->assign('link', $linklist);
+$t->assign('articles', $articles);
+$t->assign('filelist', $filelist);
+$t->assign('filedir', getcategorydir($this_type));
 
 $t->display('data.tpl');
-?>

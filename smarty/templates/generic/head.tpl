@@ -2,7 +2,7 @@
 <html lang="{$LANG|escape}">
 	<head>
 		<title>
-			{if isset($typename) }{$typename|escape} - {/if}{if $pagetitle != ""}{$pagetitle|escape} - {/if}Alexandria
+			{if $pagetitle != ""}{$pagetitle|escape} - {/if}Alexandria
 		</title>
 <meta name="viewport" content="width=1024">
 		<meta name="robots" content="index, follow" />
@@ -31,13 +31,12 @@
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			  crossorigin="anonymous"></script>
 		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-		<script src="/quicksearch.js"></script>
-		{if isset($json_alltags) }
+		<script src="/helper.js"></script>
+		{if isset($json_tags) }
 		<script>
-		var availableTags = {$json_alltags};
 		$(function() {
 			$( ".newtag" ).autocomplete({
-				source: availableTags,
+				source: 'ajax.php?type=tag',
 				autoFocus: true,
 				delay: 10
 			});
@@ -55,12 +54,24 @@
 		</script>
 		{/if}
 
-		{if isset($editmode) || isset($type) && $type == 'jostgame' }
+		{if isset($editmode)}
 		<script>
 		$(function() {
-			var availableNames = {$json_people};
-			$( ".tags" ).autocomplete({
-				source: availableNames,
+			$( ".peopletags" ).autocomplete({
+				source: 'ajax.php?type=person&with_id=1',
+				autoFocus: true,
+				delay: 10,
+				minLength: 3
+			});
+		});
+		</script>
+		{/if}
+
+		{if isset($type) && $type == 'jostgame' }
+		<script>
+		$(function() {
+			$( ".peopletags" ).autocomplete({
+				source: 'ajax.php?type=person',
 				autoFocus: true,
 				delay: 10,
 				minLength: 3
@@ -94,9 +105,9 @@
 				<a href="privacy">{$_top_privacy}</a><br>
 			</div>
 
-{if not isset($dberror) && not isset($installation) }
+{if ! isset($dberror) && ! isset($installation) }
 			<div class="leftmenucontent">
-{if not $user_id}
+{if ! isset($user_id)}
 				<span class="menulogin">
 				{$_top_login}:
 				</span>
@@ -113,14 +124,14 @@
 				<br>
 				<div class="mylinks">
 				<a href="myhistory">{$_top_myoverview}</a><br>
-	{if $user_editor}
+	{if isset($user_editor)}
 				<a href="profile">{$_top_profile}</a><br>
 	{/if}
 				<a href="logout">{$_top_logout}</a><br>
-	{if $user_admin}
+	{if isset($user_admin)}
 				<br>
 				<a href="adm/" accesskey="a">{$_top_admin}</a><br>
-	{elseif $user_editor}
+	{elseif isset($user_editor)}
 				<br>
 				<a href="adm/" accesskey="a">{$_top_editor}</a><br>
 	{/if}
@@ -129,7 +140,7 @@
 			</div>
 
 
-{if $user_id}
+{if isset($user_id)}
 
 	{if isset($type) && $type eq "sce"}
 			<div class="leftmenucontent">

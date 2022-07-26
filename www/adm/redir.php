@@ -22,12 +22,14 @@ switch ($cat) {
 
 	case 'sys':
 	case 'system':
-		$returl = 'system.php?system=';
+	case 'gamesystem':
+		$returl = 'gamesystem.php?system=';
 		break;
 
 	case 'con':
 	case 'convent':
-		$returl = 'convent.php?con=';
+	case 'convention':
+		$returl = 'convention.php?con=';
 		break;
 
 	case 'review':
@@ -41,19 +43,19 @@ switch ($cat) {
 	case 'magazine':
 		$returl = 'magazine.php?magazine_id=';
 		break;
-	
+
 	case 'tag':
-	if ( ctype_digit( $id ) ) {
-		$returl = 'tag.php?tag_id=';
-	} else {
-		$returl = 'tag.php?tag=';
-	}
-	break;
+		if (ctype_digit($id)) {
+			$returl = 'tag.php?tag_id=';
+		} else {
+			$returl = 'tag.php?tag=';
+		}
+		break;
 
 	case 'aut':
+	case 'person':
 	default:
-	$returl = 'person.php?person=';
+		$returl = 'person.php?person=';
 }
 
-header("Location: " . $returl . rawurlencode($id) );
-?>
+header("Location: " . $returl . rawurlencode($id));

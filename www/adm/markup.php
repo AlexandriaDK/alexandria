@@ -11,15 +11,16 @@ $id = (int) ($_REQUEST['id'] ?? FALSE);
 $table = (string) ($_REQUEST['table'] ?? FALSE);
 $text = (string) ($_REQUEST['text'] ?? FALSE);
 
-if ( $action ) {
-	validatetoken( $token );
+if ($action) {
+	validatetoken($token);
 }
 
 if ($action == 'fix') {
 	updatestuff($table, $text, $id);
 }
 
-function updatestuff ($table, $text, $id) {
+function updatestuff($table, $text, $id)
+{
 	$field = 'description';
 	if ($table == 'trivia') {
 		$field = 'fact';
@@ -30,12 +31,13 @@ function updatestuff ($table, $text, $id) {
 	exit;
 }
 
-function linkfix ($matches) {
-	if ($id = getone("SELECT id FROM game WHERE title = '" . dbesc($matches[1]) . "'") ) {
+function linkfix($matches)
+{
+	if ($id = getone("SELECT id FROM game WHERE title = '" . dbesc($matches[1]) . "'")) {
 		$code = '[[[s' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
-	if ($id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'") ) {
+	if ($id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'")) {
 		$code = '[[[p' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
@@ -60,7 +62,7 @@ print dberror();
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Trivia</th></tr>" . PHP_EOL;
-foreach($trivias AS $trivia) {
+foreach ($trivias as $trivia) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"trivia\"><input type=\"hidden\" name=\"id\" value=\"" . $trivia['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
@@ -78,13 +80,12 @@ foreach($trivias AS $trivia) {
 	print "</tr>";
 	print "</form>";
 	print PHP_EOL;
-
 }
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Tags</th></tr>" . PHP_EOL;
-foreach($tags AS $tag) {
+foreach ($tags as $tag) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"tag\"><input type=\"hidden\" name=\"id\" value=\"" . $tag['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
@@ -101,13 +102,12 @@ foreach($tags AS $tag) {
 	print "</tr>";
 	print "</form>";
 	print PHP_EOL;
-
 }
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Scenarios</th></tr>" . PHP_EOL;
-foreach($scenarios AS $scenario) {
+foreach ($scenarios as $scenario) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"game_description\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
@@ -129,12 +129,12 @@ print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Cons</th></tr>" . PHP_EOL;
-foreach($cons AS $con) {
+foreach ($cons as $con) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convention\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . nl2br(htmlspecialchars($con['description'])) . "<br>";
-	print "<a href=\"convent.php?con=" . $con['id'] . "\">[convention]</a>";
+	print "<a href=\"convention.php?con=" . $con['id'] . "\">[convention]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -151,12 +151,12 @@ print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">RPG Systems</th></tr>" . PHP_EOL;
-foreach($syss AS $sys) {
+foreach ($syss as $sys) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"gamesystem\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($sys['description']) . "<br>";
-	print "<a href=\"system.php?system=" . $sys['id'] . "\">[RPG system]</a>";
+	print "<a href=\"gamesystem.php?system=" . $sys['id'] . "\">[RPG system]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -176,5 +176,3 @@ if ($total == 0) {
 }
 
 print "</body>\n</html>\n";
-
-?>

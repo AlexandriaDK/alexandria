@@ -1,6 +1,5 @@
 <?php
-$this_type = 'sce';
-$this_type_new = 'game';
+$this_type = 'game';
 if ($game) {
 	$scenarie = $game;
 }
@@ -20,26 +19,26 @@ $showtitle = $gametitle = $r['title'];
 if ($scenarie == 161)      award_achievement(55); // De Professionelle
 if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
 if ($scenarie == 3827)     award_achievement(57); // Paninaro
-if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461] ) ) award_achievement(98); // Bicycling  :TODO: - Use tag instead
+if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461])) award_achievement(98); // Bicycling  :TODO: - Use tag instead
 if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner  :TODO: - check using achievement table
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario  :TODO: - use tag instead
 
 if ($r['id'] == 0) {
-	header( "HTTP/1.1 404 Not Found ");
-	$t->assign('content', $t->getTemplateVars('_sce_nomatch') );
-	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
+	header("HTTP/1.1 404 Not Found ");
+	$t->assign('content', $t->getTemplateVars('_sce_nomatch'));
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
 	$t->display('default.tpl');
 	exit;
 }
 $descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY (LEFT(language, 2) = '" . LANG . "') DESC, LENGTH(language), priority, language");
-foreach ($descriptions AS $d_id => $description) {
-	list($language) = explode( " ", $description['language'] );
-	if (preg_match('/^[a-z]{2}$/', $language) ) {
+foreach ($descriptions as $d_id => $description) {
+	list($language) = explode(" ", $description['language']);
+	if (preg_match('/^[a-z]{2}$/', $language)) {
 		$descriptions[$d_id]['langcode'] = $language;
-		$descriptions[$d_id]['langname'] = getLanguageName( $language );
+		$descriptions[$d_id]['langname'] = getLanguageName($language);
 	}
 }
-$internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['internal'] : ""); // only set internal if editor
+$internal = (($_SESSION['user_editor'] ?? FALSE) ? $r['internal'] : ""); // only set internal if editor
 
 // Description of participants
 $participants = [];
@@ -52,7 +51,7 @@ if ($r['gms_min'] !== NULL) {
 		if ($r['gms_max'] != $r['gms_min']) {
 			$gms_text .= "-" . $r['gms_max'];
 		}
-		$gms_text .= " " . ($r['gms_min'] == 1 && $r['gms_max'] == 1 ? $t->getTemplateVars('_sce_gm') : $t->getTemplateVars('_sce_gms') );
+		$gms_text .= " " . ($r['gms_min'] == 1 && $r['gms_max'] == 1 ? $t->getTemplateVars('_sce_gm') : $t->getTemplateVars('_sce_gms'));
 	}
 	$participants[] = $gms_text;
 	$gms = ($r['gms_max'] != $r['gms_min'] ? $r['gms_min'] . "-" . $r['gms_max'] : $r['gms_min']);
@@ -62,31 +61,31 @@ if ($r['players_min'] !== NULL) {
 	if ($r['players_max'] != $r['players_min']) {
 		$players_text .= "-" . $r['players_max'];
 	}
-	$players_text .= " " . ($r['players_min'] == 1 && $r['players_max'] == 1 ? $t->getTemplateVars('_sce_player') : $t->getTemplateVars('_sce_players') );
+	$players_text .= " " . ($r['players_min'] == 1 && $r['players_max'] == 1 ? $t->getTemplateVars('_sce_player') : $t->getTemplateVars('_sce_players'));
 	$participants[] = $players_text;
 	$players = ($r['players_max'] != $r['players_min'] ? $r['players_min'] . "-" . $r['players_max'] : $r['players_min']);
 }
 if ($r['participants_extra']) {
 	$participants[] = $r['participants_extra'];
 }
-$participants = implode(', ',$participants);
+$participants = implode(', ', $participants);
 
 // List of aliases, alternative title?
 $alttitle = getcol("SELECT label FROM alias WHERE game_id = '$scenarie' AND language = '$lang' AND visible = 1");
-if ( count( $alttitle ) == 1 ) {
+if (count($alttitle) == 1) {
 	$showtitle = $alttitle[0];
 	$aliaslist = getaliaslist($scenarie, $this_type, $showtitle);
-	if ( $aliaslist ) {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $gametitle ) . "</b>, " . $aliaslist;
+	if ($aliaslist) {
+		$aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>, " . $aliaslist;
 	} else {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars( "_sce_original_title" ) . "\">" . htmlspecialchars( $gametitle ) . "</b>";
+		$aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>";
 	}
 } else {
 	$aliaslist = getaliaslist($scenarie, $this_type);
 }
 
 // List of files
-$filelist = getfilelist($scenarie,$this_type);
+$filelist = getfilelist($scenarie, $this_type);
 
 // List of authors, ...
 $forflist = $scenlist = "";
@@ -98,26 +97,26 @@ $q = getall("
 	WHERE pgrel.game_id = '$scenarie'
 	ORDER BY title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
-foreach($q AS $rs) {
-	$title = $t->getTemplateVars( "_" . $rs['title_label'] );
+foreach ($q as $rs) {
+	$title = $t->getTemplateVars("_" . $rs['title_label']);
 	$htmlnote = "";
-	if ( $rs['note'] ) {
-		$htmlnote = " (" . textlinks( htmlspecialchars( $rs['note'] ) ) . ")";
+	if ($rs['note']) {
+		$htmlnote = " (" . textlinks(htmlspecialchars($rs['note'])) . ")";
 	}
-	if ( isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id'] ) {
+	if (isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id']) {
 		$_SESSION['can_edit_participant'][$scenarie] = TRUE;
 	}
 	$forflist .= '<tr><td style="text-align: center">';
 	if ($rs['textsymbol']) { // unicode-ikoner
-		$forflist .= '<span class="titicon" title="' . htmlspecialchars( ucfirst( $title ) ) . '">' . $rs['textsymbol'] . '</span>';
+		$forflist .= '<span class="titicon" title="' . htmlspecialchars(ucfirst($title)) . '">' . $rs['textsymbol'] . '</span>';
 	} elseif ($rs['iconfile']) {
-		$forflist .= '<img src="/gfx/' . rawurlencode( $rs['iconfile'] ) . '" alt="' . htmlspecialchars( ucfirst( $title ) ) . '" title="' . htmlspecialchars( ucfirst( $title ) ) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
+		$forflist .= '<img src="/gfx/' . rawurlencode($rs['iconfile']) . '" alt="' . htmlspecialchars(ucfirst($title)) . '" title="' . htmlspecialchars(ucfirst($title)) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
 	} else {
 		$forflist .= ' ';
 	}
 	$forflist .= "</td>";
-	$scenlist .= '<td><a href="data?scenarie=' . $rs['id'] . '" class="scenarie">' . htmlspecialchars( $rs['title'] ) . '</a></td>';
-	$forflist .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' .htmlspecialchars( $rs['name'] ) . '</a>' . $htmlnote . '</td>';
+	$scenlist .= '<td><a href="data?scenarie=' . $rs['id'] . '" class="scenarie">' . htmlspecialchars($rs['title']) . '</a></td>';
+	$forflist .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' . htmlspecialchars($rs['name']) . '</a>' . $htmlnote . '</td>';
 	$forflist .= "</tr>" . PHP_EOL;
 }
 
@@ -128,8 +127,8 @@ if ($forflist) {
 
 // System
 if ($r['system_translation']) {
-	$syspart = '<a href="data?system=' . $r['gamesystem_id'] . '" class="system">' . htmlspecialchars( $r['system_translation'] ) . '</a>';
-	if ($r['gamesystem_extra']) $syspart .= " ".htmlspecialchars($r['gamesystem_extra']);
+	$syspart = '<a href="data?system=' . $r['gamesystem_id'] . '" class="system">' . htmlspecialchars($r['system_translation']) . '</a>';
+	if ($r['gamesystem_extra']) $syspart .= " " . htmlspecialchars($r['gamesystem_extra']);
 	$sysstring = $syspart;
 } elseif ($r['gamesystem_extra']) {
 	$sysstring = htmlspecialchars($r['gamesystem_extra']);
@@ -147,41 +146,41 @@ $q = getall("
 	WHERE cgrel.game_id = '$scenarie'
 	ORDER BY c.year, c.begin, p.id, c.name
 ");
-foreach($q AS $rs) {
-	$coninfo = nicedateset($rs['begin'],$rs['end']);
+foreach ($q as $rs) {
+	$coninfo = nicedateset($rs['begin'], $rs['end']);
 	$conlist .= "<tr><td>";
-// Add rerun/cancelled/test icons
+	// Add rerun/cancelled/test icons
 	if ($rs['textsymbol']) { // unicode-ikoner
-		$conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\">{$rs['textsymbol']}</span>";
+		$conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\">{$rs['textsymbol']}</span>";
 	} elseif ($rs['iconfile']) {
-		$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label'] ) ) ) ."\" width=\"15\" height=\"15\" /> ";
+		$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" width=\"15\" height=\"15\" /> ";
 	} else {
 		$conlist .= " ";
 	}
 	$conlist .= "</td><td>";
-	$conlist .= smarty_function_con( [ 'dataset' => $rs ] );
+	$conlist .= smarty_function_con(['dataset' => $rs]);
 	$conlist .= "</td></tr>" . PHP_EOL;
 }
 
 // List of runs
 $runlist = "";
 $q = getall("SELECT begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$scenarie' ORDER BY begin, end, id");
-foreach($q AS $rs) {
+foreach ($q as $rs) {
 	$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
-	$runlist .= ucfirst(nicedateset($rs['begin'],$rs['end']));
-	if ( $rs['location'] || $rs['description'] || $rs['country'] ) {
-		if ( nicedateset($rs['begin'],$rs['end']) ) {
+	$runlist .= ucfirst(nicedateset($rs['begin'], $rs['end']));
+	if ($rs['location'] || $rs['description'] || $rs['country']) {
+		if (nicedateset($rs['begin'], $rs['end'])) {
 			$runlist .= ", ";
 		}
 		$runlist .= htmlspecialchars($rs['location']);
-		if ( $rs['country'] ) {
-			if ( $rs['location'] ) {
+		if ($rs['country']) {
+			if ($rs['location']) {
 				$runlist .= ", ";
 			}
-			$runlist .= getCountryName( $rs['country'] );
+			$runlist .= getCountryName($rs['country']);
 		}
 	}
-	if ( ( $rs['location'] || $rs['country'] ) && $rs['description'] ) {
+	if (($rs['location'] || $rs['country']) && $rs['description']) {
 		$runlist .= ": ";
 	}
 	if ($rs['description']) {
@@ -205,16 +204,15 @@ $q = getall("
 	WHERE a.game_id = $scenarie
 	ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC
 ");
-foreach($q AS $rs) {
-	$awardtext = ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner') ) : ucfirst($t->getTemplateVars('_award_nominated') ) ) . ", " . htmlspecialchars($rs['name']);
+foreach ($q as $rs) {
+	$awardtext = ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner')) : ucfirst($t->getTemplateVars('_award_nominated'))) . ", " . htmlspecialchars($rs['name']);
 	if ($rs['ranking']) {
 		$awardtext .= " (" . htmlspecialchars($rs['ranking']) . ")";
 	}
 	if ($rs['nominationtext']) {
 		$nt_id = "nominee_text_" . $rs['id'];
-		$awardtext .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" style=\"font-weight: bold;\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) . "\">[+]</span>";
+		$awardtext .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" style=\"font-weight: bold;\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext')) . "\">[+]</span>";
 		$awardtext .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
-
 	}
 
 	$awarddata[$rs['convention_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
@@ -223,9 +221,9 @@ foreach($q AS $rs) {
 }
 $awards = [];
 
-foreach($awarddata AS $convention_id => $data) {
+foreach ($awarddata as $convention_id => $data) {
 	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
-	$awards[] = [ 'con_award_url' => $con_award_url, 'con_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text']) ];
+	$awards[] = ['con_award_url' => $con_award_url, 'con_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
 }
 
 // Genre
@@ -237,34 +235,32 @@ $q = getall("
 	WHERE ggrel.game_id = '$scenarie'
 	ORDER BY g.name
 ");
-foreach($q AS $rs) {
-	$genre[] = '<a href="scenarier?g='.$rs['id'].'">'.htmlspecialchars($rs['name']).'</a>';
+foreach ($q as $rs) {
+	$genre[] = '<a href="scenarier?g=' . $rs['id'] . '">' . htmlspecialchars($rs['name']) . '</a>';
 }
-$genre = join(", ",$genre);
+$genre = join(", ", $genre);
 
 // Links, trivia, tags
-$linklist = getlinklist($this_id,$this_type);
-$trivialist = gettrivialist($this_id,$this_type);
-$taglist = gettaglist($this_id,$this_type);
+$linklist = getlinklist($this_id, $this_type);
+$trivialist = gettrivialist($this_id, $this_type);
+$taglist = gettaglist($this_id, $this_type);
 if ($_SESSION['can_edit_participant'][$scenarie] ?? FALSE) {
-	foreach($taglist AS $tag_id => $tag) {
+	foreach ($taglist as $tag_id => $tag) {
 		$_SESSION['can_edit_tag'][$tag_id] = TRUE;
 	}
 }
-$alltags = getalltags();
-$json_alltags = json_encode($alltags);
 
 // Articles
 $articlesfrom = getarticles($this_id, $this_type);
-$articles = getarticlereferences($this_id, $this_type_new);
+$articles = getarticlereferences($this_id, $this_type);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($scenarie, $this_type);
 
 // Userdata, entries from all users
 $userlog = [];
-if ($_SESSION['user_id']) {
-	$userlog = getuserlog($_SESSION['user_id'],$this_type,$r['id']);
+if (isset($_SESSION['user_id'])) {
+	$userlog = getuserlog($_SESSION['user_id'], $this_type, $r['id']);
 	$users_entries = getalluserentries('sce', $r['id']);
 }
 
@@ -276,44 +272,43 @@ $t->assign('type2', 'game');
 $t->assign('id', $scenarie);
 $t->assign('title', $showtitle);
 $t->assign('pic', $available_pic);
-$t->assign('ogimage', getimageifexists($scenarie, 'scenarie') );
+$t->assign('ogimage', getimageifexists($scenarie, 'scenarie'));
 $t->assign('sysstring', $sysstring);
 $t->assign('alias', $aliaslist);
 $t->assign('filelist', $filelist);
-$t->assign('filedir', getcategorydir($this_type) );
+$t->assign('filedir', getcategorydir($this_type));
 
-$t->assign('forflist',$forflist);
-$t->assign('person_extra',$r['person_extra']);
-$t->assign('descriptions',$descriptions);
-$t->assign('internal',$internal);
-$t->assign('gms',$gms);
-$t->assign('players',$players);
-$t->assign('participants',$participants);
-$t->assign('boardgame',$r['boardgame']);
-$t->assign('user_can_edit_participants',$_SESSION['can_edit_participant'][$scenarie] ?? FALSE);
-$t->assign('conlist',$conlist);
-$t->assign('runlist',$runlist);
-$t->assign('awards',$awards);
-$t->assign('genre',$genre);
-$t->assign('articlesfrom',$articlesfrom);
-$t->assign('articles',$articles);
-$t->assign('trivia',$trivialist);
-$t->assign('link',$linklist);
-$t->assign('tags',$taglist);
-$t->assign('json_alltags',$json_alltags);
-$t->assign('user_can_edit_tag',$_SESSION['can_edit_tag'] ?? FALSE );
+$t->assign('forflist', $forflist);
+$t->assign('person_extra', $r['person_extra']);
+$t->assign('descriptions', $descriptions);
+$t->assign('internal', $internal);
+$t->assign('gms', $gms);
+$t->assign('players', $players);
+$t->assign('participants', $participants);
+$t->assign('boardgame', $r['boardgame']);
+$t->assign('user_can_edit_participants', $_SESSION['can_edit_participant'][$scenarie] ?? FALSE);
+$t->assign('conlist', $conlist);
+$t->assign('runlist', $runlist);
+$t->assign('awards', $awards);
+$t->assign('genre', $genre);
+$t->assign('articlesfrom', $articlesfrom);
+$t->assign('articles', $articles);
+$t->assign('trivia', $trivialist);
+$t->assign('link', $linklist);
+$t->assign('tags', $taglist);
+$t->assign('json_tags', TRUE);
+$t->assign('user_can_edit_tag', $_SESSION['can_edit_tag'] ?? FALSE);
 
-$t->assign('user_read',in_array('read',$userlog));
-$t->assign('user_read_html',getdynamicscehtml($scenarie,'read',in_array('read',$userlog)));
-$t->assign('user_gmed',in_array('gmed',$userlog));
-$t->assign('user_gmed_html',getdynamicscehtml($scenarie,'gmed',in_array('gmed',$userlog)));
-$t->assign('user_played',in_array('played',$userlog));
-$t->assign('user_played_html',getdynamicscehtml($scenarie,'played',in_array('played',$userlog)));
+$t->assign('user_read', in_array('read', $userlog));
+$t->assign('user_read_html', getdynamicscehtml($scenarie, 'read', in_array('read', $userlog)));
+$t->assign('user_gmed', in_array('gmed', $userlog));
+$t->assign('user_gmed_html', getdynamicscehtml($scenarie, 'gmed', in_array('gmed', $userlog)));
+$t->assign('user_played', in_array('played', $userlog));
+$t->assign('user_played_html', getdynamicscehtml($scenarie, 'played', in_array('played', $userlog)));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
-if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist) ) {
+if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist)) {
 	$t->assign('lgbtmenu', TRUE);
 }
 
 $t->display('data.tpl');
-?>

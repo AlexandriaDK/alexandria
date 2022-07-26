@@ -21,7 +21,7 @@ if ($data_id && $category) {
 	case 'convent':
 		$cat = 'convent';
 		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
-		$mainlink = "convent.php?con=$data_id";
+		$mainlink = "convention.php?con=$data_id";
 		break;
 	default:
 	}
@@ -64,5 +64,3 @@ foreach($dataset AS $user) {
 
 print "</table>\n";
 print "</body>\n</html>\n";
-
-?>

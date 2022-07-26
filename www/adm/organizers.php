@@ -84,7 +84,7 @@ if ($action == "addorganizer") {
 if ($data_id) {
 	$cat = 'convent';
 	$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
-	$mainlink = "convent.php?con=$data_id";
+	$mainlink = "convention.php?con=$data_id";
 
 	$title = getone($q);
 

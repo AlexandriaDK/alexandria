@@ -12,7 +12,7 @@ $internal = "Autoimport from table live_arrangoer /pb";
 
 if ($title) {
     $person_list = [];
-    foreach(explode(",",$persons) AS $person) {
+    foreach (explode(",", $persons) as $person) {
         $person_list[] = ['name' => $person, 'role_id' => 4];
     }
     $game = ['title' => $title, 'persons' => $person_list, 'gamesystem_id' => 73];
@@ -33,13 +33,13 @@ print '
 </thead>
 <tbody>
 ';
-foreach($lives AS $live) {
+foreach ($lives as $live) {
     $titel = $live['titel'];
     $names = $live['names'];
     $saveurl = 'import_livearrangoer.php?title=' . rawurlencode($titel) . '&persons=' . rawurlencode($names);
     $searchurl = '/en/find?search_title=' . rawurlencode($titel) . '&search_type=findspec';
     print '<tr>' .
-        '<td><a href="'. $saveurl . '">[Save]</a>' .
+        '<td><a href="' . $saveurl . '">[Save]</a>' .
         '<td><a href="' . $searchurl . '">' . htmlspecialchars($titel) . '</a></td>' .
         '<td>' . htmlspecialchars($names) . '</td>' .
         '</tr>';
@@ -49,4 +49,5 @@ print '</tbody></table>';
 ?>
 
 </body>
+
 </html>
