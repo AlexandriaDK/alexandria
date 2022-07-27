@@ -5,10 +5,10 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'log';
-$data_id = $_REQUEST['data_id'];
-$category = $_REQUEST['category'];
-$listlimit = (int) $_REQUEST['listlimit'];
-$user_id = (int) $_REQUEST['user_id'];
+$data_id = (int) ($_REQUEST['data_id'] ?? 0);
+$category = (string) ($_REQUEST['category'] ?? '');
+$listlimit = (int) ($_REQUEST['listlimit'] ?? 0);
+$user_id = (int) ($_REQUEST['user_id'] ?? 0);
 if ($category == 'game') $category = 'sce';
 
 if ($listlimit <= 0) {
@@ -121,7 +121,7 @@ if ($data_id && $category) {
 }
 htmladmstart("Log");
 
-if ($result) {
+if (isset($result)) {
 	print "<table align=\"center\" border=0>" .
 		"<tr><th colspan=5>Log for: <a href=\"$mainlink\" accesskey=\"q\">" . ($title != "" ? htmlspecialchars($title) : '(unknown)') . "</a></th></tr>\n" .
 		"<tr>\n" .
@@ -140,7 +140,7 @@ if ($result) {
 	print "</table>\n";
 } else {
 	print "<table align=\"center\" border=0>" .
-		"<tr><th colspan=5>$listlimit most recent edits" . ($user_name ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n" .
+		"<tr><th colspan=5>$listlimit most recent edits" . ($user_name ?? FALSE ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n" .
 		"<tr>\n" .
 		"<th>Entity</th>" .
 		"<th>Edited by</th>" .
@@ -148,7 +148,7 @@ if ($result) {
 		"<th>Description</th>" .
 		"</tr>\n";
 	foreach ($listresult as $row) {
-		if ($data[$row['category']][$row['data_id']]) {
+		if (isset($data[$row['category']][$row['data_id']])) {
 			$subject = $data[$row['category']][$row['data_id']];
 			$link = admLink($row['category'], $row['data_id']);
 		} else {

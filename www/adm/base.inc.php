@@ -84,10 +84,11 @@ function chlog($data_id, $category, $note = "")
 {
 	global $authuser;
 	if ($category == 'game') $category = 'sce';
+	if ($category == 'convention') $category = 'convent';
 	$authuser = $_SESSION['user_name'];
 	$authuserid = $_SESSION['user_id'];
-	$user = addslashes($authuser);
-	$note = addslashes($note);
+	$user = dbesc($authuser);
+	$note = dbesc($note);
 	$data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
 	$query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
 		"VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
@@ -212,8 +213,9 @@ function changeawards($convention_id)
 
 function changeuserlog($data_id, $category)
 {
-	$numusers = getone("SELECT COUNT(DISTINCT user_id) FROM userlog WHERE data_id = '$data_id' AND category = '$category'");
-	$html  = "<tr valign=top><td>" . ($category == "convent" ? "Visitors" : "Users") . "</td><td>\n";
+	$data_field = getFieldFromCategory($category);
+	$numusers = getone("SELECT COUNT(DISTINCT user_id) FROM userlog WHERE `$data_field` = '$data_id'");
+	$html  = "<tr valign=top><td>" . ($category == "convention" ? "Visitors" : "Users") . "</td><td>\n";
 	$html .= sprintf("$numusers %s", ($numusers == 1 ? "person" : "persons"));
 	$html .= " - <a href=\"userlog.php?category=$category&amp;data_id=$data_id\">Show</a>";
 	$html .= "</td></tr>\n\n";
@@ -275,7 +277,7 @@ function strNullEscape($str)
 function getCount($table, $data_id, $requiresCategoryAndData = FALSE, $category = "")
 {
 	if (!$category) {
-		$category = "sce";
+		$category = "game";
 	}
 	$field = $category . "_id";
 	if (!$requiresCategoryAndData) {
@@ -589,8 +591,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	}
 
 	foreach ($urls as $url) {
-		if ($url != '' && !getone("SELECT 1 FROM links WHERE category = 'sce' AND data_id = $game_id AND url = '" . dbesc($url) . "'")) {
-			$lsql = "INSERT INTO links (category, data_id, url, description) VALUES ('sce', $game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
+		if ($url != '' && !getone("SELECT 1 FROM links WHERE game_id = $game_id AND url = '" . dbesc($url) . "'")) {
+			$lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
 			doquery($lsql);
 		}
 	}

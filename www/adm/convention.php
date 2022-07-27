@@ -5,8 +5,8 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$this_type = 'convent';
-$this_type_new = 'convention';
+$this_type = 'convention';
+$this_type_old = 'convent';
 
 $con = (int) ($_REQUEST['con'] ?? '');
 $action = $_REQUEST['action'] ?? '';
@@ -93,10 +93,10 @@ if ($action == "edit" && $con) {
 		$r = doquery($q);
 		print dberror();
 		if ($r) {
-			chlog($con, $this_type, "Con edited");
+			chlog($con, $this_type_old, "Con edited");
 		}
 		$_SESSION['admin']['info'] = "Con edited! " . dberror();
-		rexit($this_type_new, ['con' => $con]);
+		rexit($this_type, ['con' => $con]);
 	}
 }
 
@@ -106,17 +106,17 @@ if ($action == "edit" && $con) {
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 	$error = [];
-	if (getCount('cgrel', $this_id, FALSE, $this_type_new)) $error[] = "game";
-	if (getCount('pcrel', $this_id, FALSE, $this_type_new)) $error[] = "con (organizer)";
-	if (getCount('trivia', $this_id, FALSE, $this_type_new)) $error[] = "trivia";
-	if (getCount('links', $this_id, FALSE, $this_type_new)) $error[] = "link";
-	if (getCount('alias', $this_id, FALSE, $this_type_new)) $error[] = "alias";
-	if (getCount('files', $this_id, FALSE, $this_type_new)) $error[] = "files";
-	if (getCount('userlog', $this_id, TRUE, $this_type_new)) $error[] = "user log (requires admin access)";
-	if (getCount('article_reference', $this_id, FALSE, $this_type_new)) $error[] = "article reference";
+	if (getCount('cgrel', $this_id, FALSE, $this_type)) $error[] = "game";
+	if (getCount('pcrel', $this_id, FALSE, $this_type)) $error[] = "con (organizer)";
+	if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
+	if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
+	if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
+	if (getCount('files', $this_id, FALSE, $this_type)) $error[] = "files";
+	if (getCount('userlog', $this_id, TRUE, $this_type)) $error[] = "user log (requires admin access)";
+	if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ", $error);
-		rexit($this_type_new, ['con' => $con]);
+		rexit($this_type, ['con' => $con]);
 	} else {
 		$name = getone("SELECT CONCAT(name, ' ', year) FROM convention WHERE id = $con");
 
@@ -124,10 +124,10 @@ if ($action == "Delete" && $con) { // burde tjekke om kongres findes
 		$r = doquery($q);
 
 		if ($r) {
-			chlog($con, $this_type, "Con deleted: $name");
+			chlog($con, $this_type_old, "Con deleted: $name");
 		}
 		$_SESSION['admin']['info'] = "Con deleted! " . dberror();
-		rexit($this_type_new, ['con' => $con]);
+		rexit($this_type, ['con' => $con]);
 	}
 }
 
@@ -155,10 +155,10 @@ if ($action == "create") {
 		$r = doquery($q);
 		if ($r) {
 			$con = dbid();
-			chlog($con, $this_type, "Con created");
+			chlog($con, $this_type_old, "Con created");
 		}
 		$_SESSION['admin']['info'] = "Con created " . dberror();
-		rexit($this_type_new, ['con' => $con]);
+		rexit($this_type, ['con' => $con]);
 	}
 }
 

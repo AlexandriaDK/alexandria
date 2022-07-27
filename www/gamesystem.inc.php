@@ -54,7 +54,7 @@ if (count($q) > 0) {
 	if ($_SESSION['user_id']) {
 		foreach ($gamelist as $id => $game) {
 			foreach (['read', 'gmed', 'played'] as $type) {
-				$gamelist[$id]['userdata']['html'][$type] = getdynamicscehtml($id, $type, $userlog[$id][$type] ?? FALSE);
+				$gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? FALSE);
 			}
 		}
 	}

@@ -6,7 +6,6 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $this_type = 'game';
-$this_type_old = 'sce';
 
 $action = $_REQUEST['action'] ?? FALSE;
 $jsenabled = $_REQUEST['jsenabled'] ?? FALSE;
@@ -160,7 +159,7 @@ if ($action == "Delete" && $game) { // should check if game exists
 	if (getCount('tags', $this_id, FALSE, $this_type)) $error[] = "tags";
 	if (getCount('article', $this_id, FALSE, $this_type)) $error[] = "article";
 	if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
-	if (getCount('userlog', $this_id, TRUE, $this_type_old)) $error[] = "user log (requires admin)";
+	if (getCount('userlog', $this_id, TRUE, $this_type)) $error[] = "user log (requires admin)";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ", $error);
 		rexit($this_type, ['game' => $game]);
@@ -706,7 +705,6 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 	print '<tr><td>&nbsp;</td><td><input type="submit" value="' . ($game ? "Update" : "Create") . ' game">' . ($game ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete game?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>';
 
-	$this_type = $this_type_old;
 	if ($game) {
 		print changetags($game, $this_type);
 		print changelinks($game, $this_type);

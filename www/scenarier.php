@@ -100,7 +100,7 @@ foreach($scenarios AS $scenario_id => $scenario) {
 		foreach( $options AS $type) {
 			$xscenlist .= "<td>";
 			if ($type != NULL) {
-				$xscenlist .= getdynamicscehtml($scenario_id,$type,$userlog[$scenario_id][$type] ?? FALSE);
+				$xscenlist .= getdynamicgamehtml($scenario_id,$type,$userlog[$scenario_id][$type] ?? FALSE);
 			}
 			$xscenlist .= "</td>";
 		}
@@ -142,4 +142,3 @@ $t->assign('genre',$genre);
 $t->assign('scenlist',$xscenlist);
 $t->assign('beginchar',$beginchar);
 $t->display('games.tpl');
-?>

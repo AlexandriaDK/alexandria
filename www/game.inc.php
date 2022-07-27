@@ -261,7 +261,7 @@ $available_pic = hasthumbnailpic($scenarie, $this_type);
 $userlog = [];
 if (isset($_SESSION['user_id'])) {
 	$userlog = getuserlog($_SESSION['user_id'], $this_type, $r['id']);
-	$users_entries = getalluserentries('sce', $r['id']);
+	$users_entries = getalluserentries('game', $r['id']);
 }
 
 // Smarty
@@ -300,11 +300,11 @@ $t->assign('json_tags', TRUE);
 $t->assign('user_can_edit_tag', $_SESSION['can_edit_tag'] ?? FALSE);
 
 $t->assign('user_read', in_array('read', $userlog));
-$t->assign('user_read_html', getdynamicscehtml($scenarie, 'read', in_array('read', $userlog)));
+$t->assign('user_read_html', getdynamicgamehtml($scenarie, 'read', in_array('read', $userlog)));
 $t->assign('user_gmed', in_array('gmed', $userlog));
-$t->assign('user_gmed_html', getdynamicscehtml($scenarie, 'gmed', in_array('gmed', $userlog)));
+$t->assign('user_gmed_html', getdynamicgamehtml($scenarie, 'gmed', in_array('gmed', $userlog)));
 $t->assign('user_played', in_array('played', $userlog));
-$t->assign('user_played_html', getdynamicscehtml($scenarie, 'played', in_array('played', $userlog)));
+$t->assign('user_played_html', getdynamicgamehtml($scenarie, 'played', in_array('played', $userlog)));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
 if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist)) {

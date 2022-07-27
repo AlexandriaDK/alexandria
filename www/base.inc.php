@@ -435,29 +435,32 @@ function getsitesalt($site)
 
 function getuserlog($user_id, $category, $data_id)
 {
-	return getcol("SELECT type FROM userlog WHERE user_id = '$user_id' AND category = '$category' AND data_id = '$data_id'");
+	$data_field = getFieldFromCategory($category);
+	return getcol("SELECT type FROM userlog WHERE user_id = '$user_id' AND $data_field = '$data_id'");
 }
 
 function adduserlog($user_id, $category, $data_id, $type)
 {
-	if (!getone("SELECT 1 FROM userlog WHERE user_id = '$user_id' AND category = '$category' AND data_id = '$data_id' AND type = '$type'")) {
-		doquery("INSERT INTO userlog (user_id, category, data_id, type, added) VALUES ('$user_id','$category','$data_id','$type', NOW())");
+	$data_field = getFieldFromCategory($category);
+	if (!getone("SELECT 1 FROM userlog WHERE user_id = '$user_id' AND `$data_field` = '$data_id' AND type = '$type'")) {
+		doquery("INSERT INTO userlog (user_id, $data_field, type, added) VALUES ('$user_id','$data_id','$type', NOW())");
 	}
 }
 
 function removeuserlog($user_id, $category, $data_id, $type)
 {
-	doquery("DELETE FROM userlog WHERE user_id = '$user_id' AND category = '$category' AND data_id = '$data_id' AND type = '$type'");
+	$data_field = getFieldFromCategory($category);
+	doquery("DELETE FROM userlog WHERE user_id = '$user_id' AND $data_field = '$data_id' AND type = '$type'");
 }
 
 function getuserloggames($user_id)
 {
 	return getallid("
-		SELECT data_id, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played
+		SELECT game_id, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played
 		FROM userlog
-		WHERE userlog.user_id = '$user_id' AND userlog.category = 'sce'
-		GROUP BY data_id
-		ORDER BY data_id
+		WHERE userlog.user_id = '$user_id' AND userlog.game_id IS NOT NULL
+		GROUP BY game_id
+		ORDER BY game_id
 	");
 }
 
@@ -466,13 +469,13 @@ function getuserlogconvents($user_id)
 	return getcol("
 		SELECT data_id
 		FROM userlog
-		WHERE userlog.user_id = '$user_id' AND userlog.category = 'convent'
+		WHERE userlog.user_id = '$user_id' AND userlog.convention_id IS NOT NULL
 		GROUP BY data_id
 		ORDER BY data_id
 	");
 }
 
-function getdynamicscehtml($game_id, $type, $active)
+function getdynamicgamehtml($game_id, $type, $active)
 {
 	global $t;
 	$scenariotext = [
@@ -480,8 +483,8 @@ function getdynamicscehtml($game_id, $type, $active)
 		"gmed" => htmlspecialchars($t->getTemplateVars('_top_gmed_pt')),
 		"played" => htmlspecialchars($t->getTemplateVars('_top_played_pt')),
 	];
-	$jsurl = getdynamicjavascripturl($game_id, 'sce', $type, $active);
-	$span_id = "sce_" . $game_id . "_" . $type;
+	$jsurl = getdynamicjavascripturl($game_id, 'game', $type, $active);
+	$span_id = "game_" . $game_id . "_" . $type;
 	$ap = ($active ? 'active' : 'passive');
 	$html =
 		'<span id="' . $span_id . '">' .
@@ -492,12 +495,12 @@ function getdynamicscehtml($game_id, $type, $active)
 	return $html;
 }
 
-function getdynamicconventhtml($convention_id, $type, $active)
+function getdynamicconventionhtml($convention_id, $type, $active)
 {
 	global $t;
 	$conventtext = ["visited" => htmlspecialchars($t->getTemplateVars('_top_visited_pt'))];
-	$jsurl = getdynamicjavascripturl($convention_id, 'convent', $type, $active);
-	$span_id = "convent_" . $convention_id . "_" . $type;
+	$jsurl = getdynamicjavascripturl($convention_id, 'convention', $type, $active);
+	$span_id = "convention_" . $convention_id . "_" . $type;
 	$ap = ($active ? 'active' : 'passive');
 	$html =
 		'<span id="' . $span_id . '">' .
@@ -952,11 +955,12 @@ function getuserlogoptions($type)
 
 function getalluserentries($category, $data_id)
 {
+	$data_id = (int) $data_id;
 	$result = [];
-	if ($category == 'sce') {
-		$result = getrow("SELECT SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played FROM userlog WHERE category = 'sce' AND data_id = " . (int) $data_id);
-	} elseif ($category == 'convent') {
-		$result = getrow("SELECT SUM(type = 'visited') AS `visited` FROM userlog WHERE category = 'convent' AND data_id = " . (int) $data_id);
+	if ($category == 'game') {
+		$result = getrow("SELECT SUM(type = 'read') AS `read`, SUM(type = 'gmed') AS gmed, SUM(type = 'played') AS played FROM userlog WHERE game_id = " . $data_id);
+	} elseif ($category == 'convention') {
+		$result = getrow("SELECT SUM(type = 'visited') AS `visited` FROM userlog WHERE convention_id = " . $data_id);
 	}
 	return $result;
 }

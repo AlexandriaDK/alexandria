@@ -38,7 +38,7 @@ if (count($q) > 0) {
 	foreach($q AS $rs) {
 		if ($_SESSION['user_id']) {
 			foreach(array('read','gmed','played') AS $type) {
-				$slist[$sl][$type] = getdynamicscehtml($rs['id'],$type,$userlog[$rs['id']][$type] ?? FALSE);
+				$slist[$sl][$type] = getdynamicgamehtml($rs['id'],$type,$userlog[$rs['id']][$type] ?? FALSE);
 			}
 		}
 		$game_id = (int) $rs['id'];
@@ -110,4 +110,3 @@ if (in_array(strtolower($tag), ['lgbtq', 'queer', 'queerness'] ) ) {
 }
 
 $t->display('data.tpl');
-?>

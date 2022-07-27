@@ -91,7 +91,7 @@ if (count($q) > 0) {
 			}
 			foreach ($options as $type) {
 				if ($type) {
-					$slist[$sl][$type] = getdynamicscehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? FALSE);
+					$slist[$sl][$type] = getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? FALSE);
 				} else {
 					$slist[$sl][] = " ";
 				}

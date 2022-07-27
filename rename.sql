@@ -57,7 +57,9 @@ ALTER TABLE award_nominees CHANGE sce_id game_id int NULL;
 ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 
 -- Change `category`, `data_id` to explicit fields for every data type for the purpose of foreign keys
+-- Skip some as we would like to preserve log even if entry is deleted later on
 -- Done: Links, Trivia, Files, Alias, Article_reference, award_nominee_entities
+-- Skip: filedownloads, updates
 -- Todo: log, review, reviews, updates, userlog, ...
 
 -- Cleanup; orphans
@@ -65,6 +67,7 @@ DELETE FROM trivia WHERE id = 99;
 DELETE FROM links WHERE id IN (174, 519);
 DELETE FROM article_reference WHERE id = 1749;
 DELETE FROM award_nominee_entities where id = 249; -- Nickolaj Storgaard Oksen, Forum 2020
+DELETE FROM userlog WHERE id IN (7638, 7651, 8484, 8657, 12842, 12843, 15532, 15799, 17645);
 
 -- Trivia
 ALTER TABLE trivia DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
@@ -222,3 +225,42 @@ ALTER TABLE award_nominee_entities DROP COLUMN category;
 -- No index/key as we would like to preserve log even if entry is deleted lateron
 -- Change category to TINYTEXT as we are currently missing out on issues and tags
 ALTER TABLE filedownloads CHANGE category category TINYTEXT NOT NULL;
+UPDATE filedownloads SET category =
+CASE category
+	WHEN 'sce' THEN 'game'
+	WHEN 'convent' THEN 'convention'
+	ELSE category
+END;
+
+-- updates
+-- No index/key as we would like to preserve log even if entry is deleted lateron
+-- Change category to TINYTEXT
+ALTER TABLE updates CHANGE category category TINYTEXT NOT NULL;
+UPDATE updates SET category =
+CASE category
+	WHEN 'aut' THEN 'person'
+	WHEN 'sce' THEN 'game'
+	WHEN 'convent' THEN 'convention'
+	WHEN 'sys' THEN 'gamesystem'
+	ELSE category
+END
+
+-- userlog
+ALTER TABLE userlog ADD game_id int NULL;
+ALTER TABLE userlog ADD convention_id int NULL;
+
+UPDATE userlog SET
+game_id = IF(category = 'sce', data_id, NULL),
+convention_id = IF(category = 'convent', data_id, NULL);
+
+ALTER TABLE userlog DROP FOREIGN KEY userlog_FK;
+ALTER TABLE userlog DROP INDEX category;
+ALTER TABLE userlog DROP INDEX user_id;
+ALTER TABLE userlog DROP INDEX user_id_2;
+
+ALTER TABLE userlog ADD CONSTRAINT userlog_FK FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE userlog ADD CONSTRAINT userlog_FK_1 FOREIGN KEY (game_id) REFERENCES game(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE userlog ADD CONSTRAINT userlog_FK_2 FOREIGN KEY (convention_id) REFERENCES convention(id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE userlog DROP COLUMN data_id;
+ALTER TABLE userlog DROP COLUMN category;

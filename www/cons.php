@@ -22,10 +22,10 @@ $list = "";
 $cons = [];
 $countries = [];
 
-foreach( $result AS $c ) {
+foreach ($result as $c) {
 	$setid = $c['setid'];
 	$conid = $c['id'];
-	if ( ! isset( $cons[$setid] ) ) {
+	if (!isset($cons[$setid])) {
 		$cons[$setid] = [
 			'setname' => $c['setname'],
 			'countries' => [],
@@ -33,28 +33,28 @@ foreach( $result AS $c ) {
 		];
 	}
 	if ($userlog) {
-		$c['userloghtml'] = getdynamicconventhtml($conid, 'visited', in_array($conid, $userlog) );
+		$c['userloghtml'] = getdynamicconventionhtml($conid, 'visited', in_array($conid, $userlog));
 	}
 	$cons[$setid]['cons'][$conid] = $c;
 	$cons[$setid]['countries'][$c['country']] = TRUE;
-	if ( $c['country'] ) {
-		if ( ! isset( $countries[$c['country']] ) ) {
+	if ($c['country']) {
+		if (!isset($countries[$c['country']])) {
 			$countries[$c['country']] = 0;
 		}
 		$countries[$c['country']]++;
 	}
 }
 // PHP 8.0 Smarty workaround, as implode now requires separator string as first argument
-foreach($cons AS $id => $con) {
+foreach ($cons as $id => $con) {
 	$cons[$id]['countrieslist'] = array_keys($cons[$id]['countries']);
 }
-arsort( $countries, SORT_NUMERIC );
-$countries = array_keys( $countries );
+arsort($countries, SORT_NUMERIC);
+$countries = array_keys($countries);
 
 
 
 // Smarty
-$t->assign('cons',$cons);
-$t->assign('countries',$countries);
+$t->assign('cons', $cons);
+$t->assign('countries', $countries);
 
 $t->display('conventions.tpl');

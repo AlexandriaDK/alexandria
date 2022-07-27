@@ -29,7 +29,7 @@ foreach($q AS $rs) {
 	$condata[] = [
 		'id' => $rs['id'],
 		'dateset' => $coninfo,
-		'userdyn' => ( $_SESSION['user_id'] ? getdynamicconventhtml($rs['id'],'visited', in_array($rs['id'], $userlog) ) : '' ),
+		'userdyn' => ( $_SESSION['user_id'] ? getdynamicconventionhtml($rs['id'],'visited', in_array($rs['id'], $userlog) ) : '' ),
 		'name' => $rs['name'],
 		'year' => $rs['year'],
 		'begin' => $rs['begin'],
@@ -85,4 +85,3 @@ if ($conset == 117) { // Hardcoded: QueerCon
 }
 
 $t->display('data.tpl');
-?>

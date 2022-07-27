@@ -3,7 +3,7 @@ $this_type = 'convention';
 $this_id = $con;
 
 if (isset($_SESSION['user_id'])) {
-	$userlog = getuserloggames($_SESSION['user_id']);
+	$userloggames = getuserloggames($_SESSION['user_id']);
 }
 
 $persons_limit = 4;
@@ -131,7 +131,7 @@ foreach ($gamelist as $game_id => $game) {
 		}
 		foreach ($options as $type) {
 			if ($type != NULL) {
-				$useroptions[$type] = getdynamicscehtml($game_id, $type, $userlog[$game_id][$type] ?? FALSE);
+				$useroptions[$type] = getdynamicgamehtml($game_id, $type, $userloggames[$game_id][$type] ?? FALSE);
 			}
 		}
 	}
@@ -297,20 +297,16 @@ $articles = getarticlereferences($this_id, $this_type);
 // Thumbnail
 $available_pic = hasthumbnailpic($con, $this_type);
 
-// Userdata
-$userlog = array();
+// Userdata, entries from all users
+$userlog = [];
 if (isset($_SESSION['user_id'])) {
 	$userlog = getuserlog($_SESSION['user_id'], $this_type, $convention['id']);
-	$users_entries = getalluserentries('convent', $convention['id']);
+	$users_entries = getalluserentries('convention', $convention['id']);
 }
 
 // Edit mode?
 $editorganizers = ($edit == 'organizers');
 $editmode = (isset($_SESSION['user_id']) && $editorganizers);
-$people = [];
-if ($editmode) {
-	$people = getcol("SELECT CONCAT(id, ' - ', firstname, ' ', surname) AS id_name FROM person ORDER BY firstname, surname");
-}
 
 // Smarty
 $t->assign('pagetitle', $showtitle . " (" . ($convention['year'] ? yearname($convention['year']) : "?") . ")");
