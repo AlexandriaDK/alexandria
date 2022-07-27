@@ -282,10 +282,10 @@ function showConvention(data) {
     var nom = con.name + ' (' + con.year + ')';
     var datetext = niceDateSet(con.begin, con.end)
     var country = (con.country || a.conventionsets[con.conset_id].country)
-    var files = a.files.filter(rel => rel.convention_id);
+    var files = a.files.filter(rel => rel.convention_id == id);
     var organizers = a.person_convention_relations.filter(rel => rel.convention_id == id);
-    var links = a.links.filter(rel => rel.convention_id);
-    var trivia = a.trivia.filter(rel => rel.convention_id);
+    var links = a.links.filter(rel => rel.convention_id == id);
+    var trivia = a.trivia.filter(rel => rel.convention_id == id);
     var games = a.game_convention_presentation_relations.filter(rel => rel.convention_id == id);
     var scenarios = games.filter(rel => a.games[rel.game_id].boardgame == 0);
     var boardgames = games.filter(rel => a.games[rel.game_id].boardgame == 1);
@@ -347,8 +347,8 @@ function showPerson(data) {
     var games = a.person_game_title_relations.filter(rel => rel.person_id == id);
     // awards :TODO:
     var organizers = a.person_convention_relations.filter(rel => rel.person_id == id);
-    var links = a.links.filter(rel => rel.person_id);
-    var trivia = a.trivia.filter(rel => rel.person_id);
+    var links = a.links.filter(rel => rel.person_id == id);
+    var trivia = a.trivia.filter(rel => rel.person_id == id);
     var html = '<h2>' + esc(nom) + '</h2>';
     if (games.length > 0) {
         html += '<h3>Games</h3>';
@@ -511,7 +511,7 @@ function showTag(data) {
         var id = tag.id;
     } else {
         var tag = [];
-        var id = null;
+        var id = 0;
     }
     var files = a.files.filter(rel => rel.tag_id == id);
     var links = a.links.filter(rel => rel.tag_id == id);
@@ -654,9 +654,9 @@ function showIssue(data) {
             for (var contributor of contributors) {
                 var pid = contributor.person_id;
                 if (pid) {
-                    html += makeLink('person', 'person', pid, a.persons[pid].firstname + ' ' + a.persons[pid].surname, '(' + contributor.role + ')', false);
+                    html += makeLink('person', 'person', pid, a.persons[pid].firstname + ' ' + a.persons[pid].surname, (contributor.role != '' ? ' (' + contributor.role + ')' : ''), false);
                 } else {
-                    html += esc(contributor.person_extra) + ' (' + contributor.role + ')';
+                    html += esc(contributor.person_extra) + (contributor.role != '' ? ' (' + contributor.role + ')' : '');
                 }
                 html += '<br>';
             }
@@ -755,7 +755,7 @@ function getAwards(category, id) {
         awards = ota('award_nominees').filter(rel => rel.game_id == id);
         for (award_id in awards) {
             var award_category = a.award_categories[awards[award_id].award_category_id];
-            var convention_id = award_category.convent_id;
+            var convention_id = award_category.convention_id;
             var convention = a.conventions[convention_id];
             var convention_name = convention.name + ' (' + convention.year + ')';
             awards[award_id].category_name = award_category.name;
@@ -1182,9 +1182,17 @@ function getCountryName(code) {
     return new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
 }
 
-function getLanguageName(code) {
+function getLanguageName(codestring) { // can contain more languages, e.g. 'da,en'
+    var languages = [];
+    var codes = codestring.split(/\s*,\s*/);
+    codes.forEach((code) => languages.push(getSingleLanguageName(code)));
+    return languages.join(', ');
+}
+
+function getSingleLanguageName(code) {
     if (code.length < 2) {
         return code;
     }
     return new Intl.DisplayNames(['en'], { type: 'language' }).of(code.substring(0, 2)) + code.substring(2);
+
 }
