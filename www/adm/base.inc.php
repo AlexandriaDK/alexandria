@@ -9,8 +9,6 @@ define("DOWNLOAD_PATH", "/home/penguin/web/loot.alexandria.dk/files/");
 function getlabel($cat, $data_id, $link = FALSE, $default = "")
 {
 	switch ($cat) {
-
-		case 'sce':
 		case 'game':
 			$value = "title";
 			$url = 'data?scenarie=';
@@ -24,15 +22,13 @@ function getlabel($cat, $data_id, $link = FALSE, $default = "")
 			$returl = 'conset.php?conset=';
 			break;
 
-		case 'sys':
 		case 'gamesystem':
 			$value = "name";
 			$url = 'data?system=';
-			$returl = 'system.php?system=';
+			$returl = 'gamesystem.php?gamesystem=';
 			$cat = 'gamesystem';
 			break;
 
-		case 'convent':
 		case 'convention':
 			$value = "CONCAT(name,' (',COALESCE(year,'?'),')')";
 			$url = 'data?con=';
@@ -52,7 +48,6 @@ function getlabel($cat, $data_id, $link = FALSE, $default = "")
 			$returl = 'magazine.php?magazine_id=';
 			break;
 
-		case 'aut':
 		case 'person':
 		default:
 			$value = "CONCAT(firstname,' ',surname)";
@@ -83,8 +78,6 @@ function tt($tekst, $name, $content = "")
 function chlog($data_id, $category, $note = "")
 {
 	global $authuser;
-	if ($category == 'game') $category = 'sce';
-	if ($category == 'convention') $category = 'convent';
 	$authuser = $_SESSION['user_name'];
 	$authuserid = $_SESSION['user_id'];
 	$user = dbesc($authuser);
@@ -160,7 +153,7 @@ function changeorganizers($convention_id)
 	$numlinks = getone("SELECT COUNT(*) FROM pcrel WHERE convention_id = '$convention_id'");
 	$html  = "<tr valign=top><td>Organizers</td><td>\n";
 	$html .= "$numlinks " . ($numlinks == 1 ? "organizer" : "organizers");
-	$html .= " - <a href=\"organizers.php?category=convent&amp;data_id=$convention_id\" accesskey=\"r\">Edit organizers</a>";
+	$html .= " - <a href=\"organizers.php?category=convention&amp;data_id=$convention_id\" accesskey=\"r\">Edit organizers</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -206,7 +199,7 @@ function changeawards($convention_id)
 	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convention_id = '$convention_id'");
 	$html  = "<tr valign=top><td>Awards</td><td>\n";
 	$html .= sprintf("$numawards %s, $numnominees %s", ($numawards == 1 ? "award" : "awards"), ($numnominees == 1 ? "nominated" : "nominated"));
-	$html .= " - <a href=\"awards.php?category=convent&amp;data_id=$convention_id\" accesskey=\"w\">Edit awards</a>";
+	$html .= " - <a href=\"awards.php?category=convention&amp;data_id=$convention_id\" accesskey=\"w\">Edit awards</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }
@@ -318,20 +311,8 @@ function rexit($this_type, $dataset = [])
 		case 'magazine':
 		case 'review':
 		case 'person':
-			$location = $this_type . '.php';
-			break;
-		case 'sce':
-			$location = 'game.php';
-			break;
-		case 'sys':
 		case 'gamesystem':
-			$location = 'system.php';
-			break;
-		case 'aut':
-			$location = 'person.php';
-			break;
-		case 'convent':
-			$location = 'convention.php';
+			$location = $this_type . '.php';
 			break;
 		default:
 			$location = './';
@@ -428,12 +409,9 @@ function getShortFromCategory($category)
 {
 	$categorymap = [
 		'convention' => 'c',
-		'convent' => 'c',
 		'conset' => 'cs',
 		'tag' => 'tag',
 		'gamesystem' => 'sys',
-		'system' => 'sys',
-		'sys' => 'sys',
 		'person' => 'p',
 		'magazine' => 'm',
 		'issue' => 'i',
@@ -502,7 +480,7 @@ function get_create_person($name, $internal = "Autoimport")
 	if (!$person_id) {
 		$sql = "INSERT INTO person (firstname, surname, internal) VALUES ('" . dbesc($names[1]) . "', '" . dbesc($names[2]) . "', '" . dbesc($internal) . "')";
 		$person_id = doquery($sql);
-		chlog($person_id, 'aut', 'Person created');
+		chlog($person_id, 'person', 'Person created');
 	}
 	return $person_id;
 }
@@ -541,7 +519,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	if (!$game_id) {
 		return false;
 	}
-	chlog($game_id, 'sce', 'Game created');
+	chlog($game_id, 'game', 'Game created');
 
 	/*
     if ($description) {
@@ -559,6 +537,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
         doquery($run_sql);        
     }
 	*/
+	$year = '';
 
 	foreach ($person_ids as $person) {
 		$pid = $person['pid'];

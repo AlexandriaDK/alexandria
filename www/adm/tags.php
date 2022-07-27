@@ -12,7 +12,6 @@ $tag = trim((string) ($_REQUEST['tag'] ?? ''));
 $id = (int) ($_REQUEST['id'] ?? '');
 $category = (string) ($_REQUEST['category'] ?? '');
 $data_id = (int) ($_REQUEST['data_id'] ?? '');
-if ($category == 'game') $category = 'sce';
 
 // Update tag
 if ($action == "changetag" && $do != "Remove") {
@@ -60,34 +59,27 @@ if ($action == "addtag" && $tag != "") {
 if ($data_id && $category) { // Does this make sense? Tags are only for games.
 	$data_id = intval($data_id);
 	switch ($category) {
-		case 'aut':
-			$cat = 'aut';
+		case 'person':
 			$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 			$mainlink = "person.php?person=$data_id";
 			break;
-		case 'sce':
-			$cat = 'sce';
+		case 'game':
 			$q = "SELECT title FROM game WHERE id = '$data_id'";
 			$mainlink = "game.php?game=$data_id";
 			break;
-		case 'convent':
-			$cat = 'convent';
+		case 'convention':
 			$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 			$mainlink = "convention.php?con=$data_id";
 			break;
 		case 'conset':
-			$cat = 'conset';
 			$q = "SELECT name FROM conset WHERE id = '$data_id'";
 			$mainlink = "conset.php?conset=$data_id";
 			break;
-		case 'sys':
 		case 'gamesystem':
-			$cat = 'sys';
 			$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
-			$mainlink = "gamesystem.php?system=$data_id";
+			$mainlink = "gamesystem.php?gamesystem=$data_id";
 			break;
 		default:
-			$cat = 'aut';
 			$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 			$mainlink = "person.php?person=$data_id";
 	}

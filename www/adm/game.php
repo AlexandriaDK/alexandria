@@ -24,9 +24,8 @@ if (!$descriptions) {
 $internal = $_REQUEST['internal'] ?? FALSE;
 $gamesystem_id = (int) ($_REQUEST['gamesystem_id'] ?? FALSE);
 $gamesystem_extra = $_REQUEST['gamesystem_extra'] ?? '';
-$aut = $_REQUEST['aut'] ?? FALSE;
 $person_extra = $_REQUEST['person_extra'] ?? '';
-$con = $_REQUEST['con'] ?? FALSE;
+//$con = $_REQUEST['con'] ?? FALSE;
 $boardgame = (int) (bool) ($_REQUEST['boardgame'] ?? FALSE);
 $person = (array) ($_REQUEST['person'] ?? []);
 
@@ -762,7 +761,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 		$("#title").change(function() {
 			$.get("lookup.php", {
-				type: 'sce',
+				type: 'game',
 				label: $("#title").val()
 			}, function(data) {
 				if (data > 0) {

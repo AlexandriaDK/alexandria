@@ -59,7 +59,7 @@
 {if $confirmed == 0}
 	<p class="indata needhelp">
 		{$_con_noinfo|nl2br}
-		<a href="rettelser?cat=convent&amp;data_id={$id}">{$_con_sendcorrection}</a>.
+		<a href="rettelser?cat=convention&amp;data_id={$id}">{$_con_sendcorrection}</a>.
 	</p>
 {elseif $confirmed == 1}
 	<p class="indata needhelp">
@@ -160,7 +160,7 @@ $(document).ready(function(){
 		<td style="text-align: center;">
 			{foreach $user_can_edit_organizers AS $pcrel_id => $true}
 			{if $ol.id == $pcrel_id}
-				<a href="adm/user_organizers.php?convent={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
+				<a href="adm/user_organizers.php?convention={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
 				{break}
 			{/if}
 			{/foreach}

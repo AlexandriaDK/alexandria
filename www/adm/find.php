@@ -21,7 +21,7 @@ if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i", $find, $regs)) {
 			break;
 
 		case "sys":
-			$url = "gamesystem.php?system=" . $id;
+			$url = "gamesystem.php?gamesystem=" . $id;
 			break;
 
 		case "i":

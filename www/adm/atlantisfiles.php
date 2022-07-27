@@ -23,19 +23,19 @@ $map = [
 
 $result = [];
 
-$filelist = glob( $path . '*' );
-foreach ( $filelist AS $file ) {
+$filelist = glob($path . '*');
+foreach ($filelist as $file) {
 	$sid = NULL;
 	$auts = $files = [];
-	$scenario = pathinfo( $file )['filename'];
-	$basename = pathinfo( $file )['basename'];
+	$scenario = pathinfo($file)['filename'];
+	$basename = pathinfo($file)['basename'];
 	if ($map[$scenario]) {
 		$scenario = $map[$scenario];
 	}
-	$sid = getone( "SELECT id FROM game WHERE title = '" . dbesc( $scenario ) . "'" );
-	if ( $sid ) {
-		$auts = getcol( "SELECT CONCAT(firstname, ' ', surname) FROM person p INNER JOIN pgrel ON p.id = pgrel.person_id WHERE pgrel.game_id = $sid AND pgrel.title_id = 1" );
-		$files = getcol( "SELECT filename FROM files WHERE category = 'sce' AND data_id = $sid AND downloadable = 1" );
+	$sid = getone("SELECT id FROM game WHERE title = '" . dbesc($scenario) . "'");
+	if ($sid) {
+		$auts = getcol("SELECT CONCAT(firstname, ' ', surname) FROM person p INNER JOIN pgrel ON p.id = pgrel.person_id WHERE pgrel.game_id = $sid AND pgrel.title_id = 1");
+		$files = getcol("SELECT filename FROM files WHERE game_id = $sid AND downloadable = 1");
 	}
 	$result[] = [
 		'basename' => $basename,
@@ -52,26 +52,26 @@ $htmla  = '<!DOCTYPE html><html><head><title>Atlantis to Alexandria PDFs</title>
 $htmla .= '<ul><li>Files:<ul><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/">Scenariedatabasen</a><ul><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Artikler/">Artikler</a></li><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Scenarier/">Scenarier</a></li><li><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Fixes/">Fixes</a> (repaired and rotated PDF files)</li></ul></li></ul></li></ul>' . PHP_EOL;
 $html .= '<table style="vertical-align: top"><thead><tr><th>Atlantis file</th><th>Title</th><th>Authors</th><th>Files</th></tr></thead>';
 $html .= '<tbody>';
-foreach ( $result AS $row ) {
+foreach ($result as $row) {
 	$color = "white";
-	if (! $row['id'] ) {
+	if (!$row['id']) {
 		$color = "#c33";
-	} elseif (! $row['files'] ) { // candidate
+	} elseif (!$row['files']) { // candidate
 		$color = "#3c3";
 		$candidates++;
-		foreach ( $row['auts'] AS $aut ) {
+		foreach ($row['auts'] as $aut) {
 			$authorscore[$aut]++;
 		}
-	} elseif ( strpos( implode(" ", $row['files']), '.pdf') === FALSE ) {
+	} elseif (strpos(implode(" ", $row['files']), '.pdf') === FALSE) {
 		$color = "#c90";
 		$filecandidates++;
 	}
 	$html .= '<tr style="background-color: ' . $color . ';">';
-	$html .= '<td><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Scenarier/' . rawurlencode( $row['basename'] ) . '">[download]</a></td>';
-	$html .= '<td>' . ($row['id'] ? '<a href="../data?scenarie=' . $row['id'] .'">' . $row['title'] . '</a>' : $row['title'] ) . '</td>';
-	$html .= '<td>' . implode(', ', $row['auts'] ) . '</td>';
+	$html .= '<td><a href="https://loot.alexandria.dk/files/Scenariedatabasen/Scenarier/' . rawurlencode($row['basename']) . '">[download]</a></td>';
+	$html .= '<td>' . ($row['id'] ? '<a href="../data?scenarie=' . $row['id'] . '">' . $row['title'] . '</a>' : $row['title']) . '</td>';
+	$html .= '<td>' . implode(', ', $row['auts']) . '</td>';
 	$html .= '<td>';
-	foreach($row['files'] AS $file) {
+	foreach ($row['files'] as $file) {
 		$html .= '<a href="https://alexandria.dk/download/scenario/' . $row['id'] . '/' . rawurlencode($file) . '">' . htmlspecialchars($file) . '</a><br>';
 	}
 	$html .= '</td>';
@@ -89,12 +89,9 @@ print $html;
 
 print "<p>Authors, sorted by number of scenario candidates (green background):</p>";
 print "<ul>";
-foreach($authorscore AS $author => $num) {
+foreach ($authorscore as $author => $num) {
 	print "<li>" . $num . " - " . $author . "</li>";
 }
 print "</ul>";
 
 print '</body></html>';
-
-
-?>

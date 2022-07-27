@@ -542,10 +542,8 @@ function getcategorydir($category)
 	$paths = [
 		"sce" => "scenario",
 		"game" => "scenario",
-		"convent" => "convent",
 		"convention" => "convent",
 		"conset" => "conset",
-		"sys" => "system",
 		"gamesystem" => "system",
 		"tag" => "tag",
 		"issue" => "issue",
@@ -975,12 +973,10 @@ function getdatahtml($cat, $data_id, $text, $admin = FALSE)
 	$link = getdatalink($cat, $data_id, $admin);
 
 	switch ($cat) {
-		case 'aut':
 		case 'person':
 			$css = "person";
 			break;
 
-		case 'sce':
 		case 'game':
 			$css = "scenarie";
 			break;
@@ -989,12 +985,10 @@ function getdatahtml($cat, $data_id, $text, $admin = FALSE)
 			$css = "con";
 			break;
 
-		case 'sys':
-		case 'system':
+		case 'gamesystem':
 			$css = "system";
 			break;
 
-		case 'convent':
 		case 'convention':
 			$css = "con";
 			break;
@@ -1037,45 +1031,32 @@ function getrecentlog($limit = 10)
 
 function getdatalink($cat, $data_id, $admin = FALSE)
 {
-
 	switch ($cat) {
-		case 'aut':
 		case 'person':
 			$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
 			break;
-
-		case 'sce':
 		case 'game':
 			$value = ($admin ? "/adm/game.php?game=$data_id" : "data?scenarie=$data_id");
 			break;
-
 		case 'conset':
 			$value = ($admin ? "/adm/conset.php?conset=$data_id" : "data?conset=$data_id");
 			break;
-
-		case 'sys':
-		case 'system':
-			$value = ($admin ? "/adm/gamesystem.php?system=$data_id" : "data?system=$data_id");
+		case 'gamesystem':
+			$value = ($admin ? "/adm/gamesystem.php?gamesystem=$data_id" : "data?system=$data_id");
 			break;
-
-		case 'convent':
 		case 'convention':
 			$value = ($admin ? "/adm/convention.php?con=$data_id" : "data?con=$data_id");
 			break;
-
 		case 'tag':
 			$tag = getone("SELECT tag FROM tag WHERE id = $data_id");
 			$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "data?tag=" . rawurlencode($tag));
 			break;
-
 		case 'issue':
 			$value = ($admin ? "/adm/magazine.php?issue_id=$data_id" : "magazines?issue=$data_id");
 			break;
-
 		case 'magazine':
 			$value = ($admin ? "/adm/magazine.php?magazine_id=$data_id" : "magazines?id=$data_id");
 			break;
-
 		default:
 			$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
 			break;
@@ -1087,15 +1068,10 @@ function getdatalink($cat, $data_id, $admin = FALSE)
 function getFieldFromCategory($cat, $table = '')
 {
 	$categories = [
-		'aut' => 'person_id',
 		'person' => 'person_id',
-		'sce' => 'game_id',
 		'game' => 'game_id',
-		'convent' => 'convention_id',
 		'convention' => 'convention_id',
 		'conset' => 'conset_id',
-		'sys' => 'gamesystem_id',
-		'system' => 'gamesystem_id',
 		'gamesystem' => 'gamesystem_id',
 		'tag' => 'tag_id',
 		'magazine' => 'magazine_id',
@@ -1214,7 +1190,7 @@ function getalltags($count = FALSE)
 function getarticles($data_id, $category)
 {
 	$data_id = (int) $data_id;
-	if ($category == 'aut') {
+	if ($category == 'person') {
 		$articles = getall("
 			SELECT article.issue_id, contributor.role, article.title, article.page, article.game_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM contributor
@@ -1224,7 +1200,7 @@ function getarticles($data_id, $category)
 			WHERE contributor.person_id = $data_id
 			ORDER BY issue.releasedate, issue.id, article.page, article.id, contributor.id
 		");
-	} elseif ($category == 'sce' || $category == 'game') {
+	} elseif ($category == 'game') {
 		$articles = getall("
 			SELECT article.issue_id, article.title, article.page, article.game_id, issue.magazine_id, issue.title AS issuetitle, issue.releasetext, magazine.name AS magazinename
 			FROM article
@@ -1325,7 +1301,7 @@ function getnexteventstable()
 	$calout = '<table class="tableoverview" id="eventsall">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 	/*
 	$r = getall("
-		SELECT 'convent' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled
+		SELECT 'convention' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled
 		FROM convention c
 		LEFT JOIN conset ON c.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "'
 		ORDER BY begin, end, name
@@ -1457,55 +1433,42 @@ function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE
 	$data_id = (int) $data_id;
 
 	switch ($cat) {
-		case 'aut':
 		case 'person':
 			$value = "CONCAT(firstname,' ',surname)";
 			$fullcat = "Person";
 			$cat = 'person';
 			break;
-
-		case 'sce':
 		case 'game':
 			$value = "title";
 			$fullcat = "Scenarie";
 			$cat = 'game';
 			break;
-
-		case 'convent':
 		case 'convention':
 			$value = "name";
 			$fullcat = "Con";
 			$cat = 'convention';
 			break;
-
 		case 'conset':
 			$value = "name";
 			$fullcat = "Con-serie";
 			break;
-
-		case 'sys':
-		case 'system':
 		case 'gamesystem':
 			$value = "name";
 			$fullcat = "System";
 			$cat = 'gamesystem';
 			break;
-
 		case 'tag':
 			$value = "tag";
 			$fullcat = "Tag";
 			break;
-
 		case 'issue':
 			$value = "title";
 			$fullcat = "Issue";
 			break;
-
 		case 'magazine':
 			$value = "name";
 			$fullcat = "Magazine";
 			break;
-
 		default:
 	}
 
@@ -1526,7 +1489,7 @@ function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE
 			");
 		}
 	}
-	if ($cat == 'convent') {
+	if ($cat == 'convention') {
 		$year = getone("SELECT year FROM convention WHERE id = $data_id");
 		if ($year) {
 			$label .= " (" . yearname($year) . ")";

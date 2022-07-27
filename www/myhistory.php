@@ -112,13 +112,13 @@ if ($conventions) {
 
 	#	$content_myconvents .= "<table><tr><td></td><td><a href=\"myhistory?o=5\">Navn</a></td><td><a href=\"myhistory?o=7\">Serie</a></td><td><a href=\"myhistory?o=6\">År</a></td></tr>";
 	$str_visited = $t->getTemplateVars('_top_visited_pt');
-	foreach ($conventions as $convent) {
-		$spanid = "convent_" . $convent['id'] . "_visited";
+	foreach ($conventions as $convention) {
+		$spanid = "convent_" . $convention['id'] . "_visited";
 		$content_myconvents .= "<tr>";
-		$content_myconvents .= "<td>" . getdynamicconventionhtml($convent['id'], 'visited', TRUE) . "</td>";
-		$content_myconvents .= "<td>" . getdatahtml('convent', $convent['id'], $convent['name']) . "</td>";
-		$content_myconvents .= "<td style=\"text-align: left\">" . $convent['conset_name'] . "</td>";
-		$content_myconvents .= "<td style=\"text-align: right\">" . yearname($convent['year']) . "</td>";
+		$content_myconvents .= "<td>" . getdynamicconventionhtml($convention['id'], 'visited', TRUE) . "</td>";
+		$content_myconvents .= "<td>" . getdatahtml('convention', $convention['id'], $convention['name']) . "</td>";
+		$content_myconvents .= "<td style=\"text-align: left\">" . $convention['conset_name'] . "</td>";
+		$content_myconvents .= "<td style=\"text-align: right\">" . yearname($convention['year']) . "</td>";
 		$content_myconvents .= "</tr>\n";
 	}
 	$content_myconvents .= "</table>\n";
@@ -129,7 +129,7 @@ if ($games) {
 
 	foreach ($games as $game) {
 		$content_myscenarios .= "<tr>";
-		$content_myscenarios .= "<td><span title=\"" . htmlspecialchars($game['title']) . "\">" . getdatahtml('sce', $game['id'], $game['title_translation']) . "</span></td>";
+		$content_myscenarios .= "<td><span title=\"" . htmlspecialchars($game['title']) . "\">" . getdatahtml('game', $game['id'], $game['title_translation']) . "</span></td>";
 		if ($game['boardgame']) {
 			$options = getuserlogoptions('boardgame');
 		} else {

@@ -156,7 +156,7 @@ foreach ($syss as $sys) {
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($sys['description']) . "<br>";
-	print "<a href=\"gamesystem.php?system=" . $sys['id'] . "\">[RPG system]</a>";
+	print "<a href=\"gamesystem.php?gamesystem=" . $sys['id'] . "\">[RPG system]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(

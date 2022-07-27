@@ -9,7 +9,7 @@ require_once("../../inc/rpgconnect.inc");
 $q = $_REQUEST['q'];
 
 list($category, $dataid) = explode("_",$q);
-if (!$category) $category = 'aut';
+if (!$category) $category = 'person';
 if (!$dataid) $dataid = '1';
 
 
@@ -31,7 +31,7 @@ $main_fromid = $category.'_'.$main_id;
 if (strlen($main_hint) > 400) $main_hint = substr($main_hint,0,400)."...";
 
 /*
-if ($category == 'aut') {
+if ($category == 'person') {
 	$main_hint = "<a href=\"/imdb?person=$main_id\">".htmlspecialchars($main_label)."</a>";
 }
 */
@@ -125,4 +125,3 @@ print "</TGGB>\n";
 </NODESET>
 </TGGB>
 */
-?>

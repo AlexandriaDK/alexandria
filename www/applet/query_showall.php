@@ -53,7 +53,7 @@ print "</EDGESET>\n\n";
 print "<NODESET>\n";
 
 foreach($names AS $person_id => $foo) {
-	$name = getentry('aut',$person_id);
+	$name = getentry('person',$person_id);
 #	$current_hint = htmlspecialchars($datahint[$id]);
 #	$current_hint = str_replace("\n","<br>\n",$current_hint);
 	$current_hint = '';
@@ -94,4 +94,3 @@ print "</TGGB>\n";
 </NODESET>
 </TGGB>
 */
-?>

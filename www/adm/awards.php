@@ -106,7 +106,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	}
 	$r = doquery($q);
 	if ($r) {
-		chlog($convention_id, 'convent', "Nominee updated: $name ($data_id), $award_name");
+		chlog($convention_id, 'convention', "Nominee updated: $name ($data_id), $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -122,7 +122,7 @@ if ($action == "addnominee") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($convention_id, 'convent', "Nominee added: $name, $award_name");
+		chlog($convention_id, 'convention', "Nominee added: $name, $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee added! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -140,7 +140,7 @@ if ($action == "changenominee" && $do == "Delete") {
 	$q = "DELETE FROM award_nominees WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($convention_id, 'convent', "Nominee removed: $id");
+		chlog($convention_id, 'convention', "Nominee removed: $id");
 	}
 	$_SESSION['admin']['info'] = "Nominee removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -149,7 +149,7 @@ if ($action == "changenominee" && $do == "Delete") {
 if ($action == 'deletenomineeentity') {
 	if (getone("SELECT id FROM award_nominee_entities WHERE id = $id")) {
 		doquery("DELETE FROM award_nominee_entities WHERE id = $id");
-		chlog($convention_id, 'convent', "Nominee connection deleted: $id");
+		chlog($convention_id, 'convention', "Nominee connection deleted: $id");
 		$_SESSION['admin']['info'] = "Connection removed! " . dberror();
 	} else {
 		$_SESSION['admin']['info'] = "Could not find connection! " . dberror();
@@ -194,9 +194,9 @@ if ($action == 'deletenomineeentity') {
 
 	printinfo();
 
-	if ($category == 'convent') {
+	if ($category == 'convention') {
 		// get data
-		$cat = 'convent';
+		$cat = 'convention';
 		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 		$mainlink = "convention.php?con=$data_id";
 
@@ -251,7 +251,7 @@ if ($action == 'deletenomineeentity') {
 		$nominees = getall("SELECT a.id, a.game_id, a.name, a.nominationtext, a.winner, a.ranking, b.title, COUNT(c.id) AS count_entity FROM award_nominees a LEFT JOIN game b ON a.game_id = b.id LEFT JOIN award_nominee_entities c ON a.id = c.award_nominee_id WHERE award_category_id = $data_id GROUP BY a.id ORDER BY winner DESC, a.id");
 
 		print "<table align=\"center\" border=0>" .
-			"<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convent&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convention_name) . " ($year)</a>" .
+			"<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convention&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convention_name) . " ($year)</a>" .
 			"</th></tr>\n" .
 			"<tr>\n" .
 			"<th>ID</th>" .

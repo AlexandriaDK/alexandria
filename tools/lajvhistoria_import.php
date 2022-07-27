@@ -24,7 +24,7 @@ function get_create_person($name, $lajv_id) {
         $internal = "Autoimport from lajvhistoria by PB" . PHP_EOL . "lajvhistoria_id: $lajv_id" . PHP_EOL;
         $sql = "INSERT INTO person (firstname, surname, internal) VALUES ('" . dbesc($names[1]). "', '" . dbesc($names[2]) . "', '" . dbesc($internal) . "')";
         $person_id = doquery($sql);
-        chlog($person_id, 'aut', 'Person created');
+        chlog($person_id, 'person', 'Person created');
     }
     return $person_id;
 }
@@ -273,4 +273,3 @@ if ( ! $games ) {
 doquery("START TRANSACTION");
 import_games($games);
 doquery("COMMIT");
-?>

@@ -11,9 +11,9 @@ $likesearch = likeesc((string) ($_REQUEST['q'] ?? ''));
 if ($action == "lookup") {
 	if ($q) {
 		$query = "
-			SELECT id, CONCAT(firstname,' ',surname) AS label, 'aut' AS type, 'person' AS linkpart FROM person WHERE CONCAT(firstname,' ',surname) LIKE '$likesearch%'
+			SELECT id, CONCAT(firstname,' ',surname) AS label, 'person' AS type, 'person' AS linkpart FROM person WHERE CONCAT(firstname,' ',surname) LIKE '$likesearch%'
 			UNION ALL
-			SELECT id, CONCAT(surname,', ',firstname) AS label, 'aut' AS type, 'person' AS linkpart FROM person WHERE CONCAT(surname,', ',firstname) LIKE '$likesearch%'
+			SELECT id, CONCAT(surname,', ',firstname) AS label, 'person' AS type, 'person' AS linkpart FROM person WHERE CONCAT(surname,', ',firstname) LIKE '$likesearch%'
 			UNION ALL
 			SELECT id, title AS label, 'game' AS type, 'scenarie' AS linkpart FROM person WHERE title LIKE '$likesearch%'
 			UNION ALL

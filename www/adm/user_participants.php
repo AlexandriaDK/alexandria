@@ -34,11 +34,10 @@ if (!($_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit
 }
 
 doquery("UPDATE game SET gms_min = " . strNullEscape($gms_min) . ", gms_max = " . strNullEscape($gms_max) . ", players_min = " . strNullEscape($players_min) . ", players_max = " . strNullEscape($players_max) . " WHERE id = $scenarie");
-chlog($scenarie,'sce','Participants updated');
+chlog($scenarie,'game','Participants updated');
 award_achievement(82);
 
 $_SESSION['can_edit_participant'][$scenarie] = TRUE;
 
 header("Location: ../data?scenarie=$scenarie");
 exit;
-?>

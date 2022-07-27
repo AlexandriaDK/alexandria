@@ -9,7 +9,6 @@ $data_id = (int) ($_REQUEST['data_id'] ?? 0);
 $category = (string) ($_REQUEST['category'] ?? '');
 $listlimit = (int) ($_REQUEST['listlimit'] ?? 0);
 $user_id = (int) ($_REQUEST['user_id'] ?? 0);
-if ($category == 'game') $category = 'sce';
 
 if ($listlimit <= 0) {
 	$listlimit = 100;
@@ -18,11 +17,11 @@ if ($listlimit <= 0) {
 function admLink($category, $data_id)
 {
 	$link = "";
-	if ($category == 'sce') return 'game.php?game=' . $data_id;
-	if ($category == 'convent') return 'convention.php?con=' . $data_id;
+	if ($category == 'game') return 'game.php?game=' . $data_id;
+	if ($category == 'convention') return 'convention.php?con=' . $data_id;
 	if ($category == 'conset') return 'conset.php?conset=' . $data_id;
-	if ($category == 'aut') return 'person.php?person=' . $data_id;
-	if ($category == 'sys') return 'gamesystem.php?system=' . $data_id;
+	if ($category == 'person') return 'person.php?person=' . $data_id;
+	if ($category == 'gamesystem') return 'gamesystem.php?gamesystem=' . $data_id;
 	if ($category == 'tag') return 'tag.php?tag_id=' . $data_id;
 	if ($category == 'review') return 'review.php?review_id=' . $data_id;
 	if ($category == 'issue') return 'magazine.php?issue_id=' . $data_id;
@@ -44,67 +43,58 @@ function getassoc($field, $table)
 if ($data_id && $category) {
 	$data_id = intval($data_id);
 	switch ($category) {
-		case 'aut':
-			$cat = 'aut';
+		case 'person':
 			$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 			$mainlink = "person.php?person=$data_id";
 			break;
-		case 'sce':
-			$cat = 'sce';
+		case 'game':
 			$q = "SELECT title FROM game WHERE id = '$data_id'";
 			$mainlink = "game.php?game=$data_id";
 			break;
-		case 'convent':
-			$cat = 'convent';
+		case 'convention':
 			$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 			$mainlink = "convention.php?con=$data_id";
 			break;
 		case 'conset':
-			$cat = 'conset';
 			$q = "SELECT name FROM conset WHERE id = '$data_id'";
 			$mainlink = "conset.php?conset=$data_id";
 			break;
-		case 'sys':
-			$cat = 'sys';
+		case 'gamesystem':
 			$q = "SELECT name FROM gamesystem WHERE id = '$data_id'";
-			$mainlink = "system.php?system=$data_id";
+			$mainlink = "gamesystem.php?gamesystem=$data_id";
 			break;
 		case 'tag':
-			$cat = 'tag';
 			$q = "SELECT tag FROM tag WHERE id = '$data_id'";
 			$mainlink = "tag.php?tag_id=$data_id";
 			break;
 		case 'review':
-			$cat = 'review';
 			$q = "SELECT title FROM reviews WHERE id = $data_id";
 			$mainlink = "review.php?review_id=$data_id";
 			break;
 		case 'issue':
-			$cat = 'issue';
 			$q = "SELECT title FROM issue WHERE id = $data_id";
 			$mainlink = "magazine.php?issue_id=$data_id";
 			break;
 		case 'magazine':
-			$cat = 'magazine';
 			$q = "SELECT name FROM magazine WHERE id = $data_id";
 			$mainlink = "magazine.php?magazine_id=$data_id";
 			break;
 		default:
-			$cat = 'aut';
+			$category = 'person';
 			$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
 			$mainlink = "person.php?person=$data_id";
 	}
 	$title = getone($q);
 
-	$query = "SELECT id, time, user, note FROM log WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id DESC";
+	$query = "SELECT id, time, user, note FROM log WHERE data_id = '$data_id' AND category = '$category' ORDER BY id DESC";
 	$result = getall($query);
 } else {
 	$data = [
-		'aut' => getassoc("CONCAT(firstname,' ',surname)", "person"),
-		'sce' => getassoc("title", "game"),
-		'convent' => getassoc("CONCAT(name,' (',COALESCE(year,'?'),')')", "convention"),
+		'person' => getassoc("CONCAT(firstname,' ',surname)", "person"),
+		'game' => getassoc("title", "game"),
+		'convention' => getassoc("CONCAT(name,' (',COALESCE(year,'?'),')')", "convention"),
 		'conset' => getassoc("name", "conset"),
-		'sys' => getassoc("name", "gamesystem"),
+		'gamesystem' => getassoc("name", "gamesystem"),
 		'tag' => getassoc("tag", "tag"),
 		'review' => getassoc("title", "reviews"),
 		'issue' => getassoc("title", "issue"),
@@ -170,7 +160,6 @@ if (isset($result)) {
 }
 
 print "<p>&nbsp;</p>\n<p style=\"text-align: center\">Logging was enabled in March 2002.</p>\n";
-
 ?>
 
 </body>

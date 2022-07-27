@@ -4,8 +4,8 @@ require_once("../base.inc.php");
 $q = $_REQUEST['q'];
 
 list($category, $dataid) = explode("_",$q);
-if (!$category) $category = 'aut';
-$other_category = 'aut';
+if (!$category) $category = 'person';
+$other_category = 'person';
 if (!$dataid) $dataid = '1';
 
 $query = "
@@ -16,7 +16,7 @@ $query = "
 ";
 
 $main_id = $dataid;
-$main_label = getentry('aut',$main_id);
+$main_label = getentry('person',$main_id);
 $main_fromid = $category.'_'.$main_id;
 
 $dataset = $firstfound = $names = array();
@@ -69,7 +69,7 @@ print "</EDGESET>\n\n";
 print "<NODESET>\n";
 
 foreach($names AS $person_id => $foo) {
-	$name = getentry('aut',$person_id);
+	$name = getentry('person',$person_id);
 #	$current_hint = htmlspecialchars($datahint[$id]);
 #	$current_hint = str_replace("\n","<br>\n",$current_hint);
 	$current_hint = '';
@@ -111,4 +111,3 @@ print "</TGGB>\n";
 </NODESET>
 </TGGB>
 */
-?>

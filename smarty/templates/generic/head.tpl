@@ -197,7 +197,7 @@
 
 				{$_top_visited_pt}: {$users_entries.visited + 0} {$_users}
 				<br><br>
-				<a href="adm/userlog.php?category=convent&amp;data_id={$id}">{$_top_details}</a>
+				<a href="adm/userlog.php?category=convention&amp;data_id={$id}">{$_top_details}</a>
 				
 			</div>
 		{/if}

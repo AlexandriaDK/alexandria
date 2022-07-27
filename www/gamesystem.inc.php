@@ -41,13 +41,13 @@ if (count($q) > 0) {
 	foreach ($q as $rs) { // Put all together
 		#		$game_id = $rs['id'];
 		if (!isset($gamelist[$rs['id']])) {
-			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files']], 'person' => [], 'convent' => []];
+			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files']], 'person' => [], 'convention' => []];
 		}
 		if ($rs['person_id']) {
 			$gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];
 		}
 		if ($rs['con_id']) {
-			$gamelist[$rs['id']]['convent'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id']];
+			$gamelist[$rs['id']]['convention'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id']];
 		}
 	}
 

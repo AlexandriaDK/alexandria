@@ -8,16 +8,17 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $type = (string) ($_REQUEST['type'] ?? '');
-$label = trim( (string) ($_REQUEST['label'] ?? '') );
+$label = trim((string) ($_REQUEST['label'] ?? ''));
 $id = (int) ($_REQUEST['currentid'] ?? 0);
 $term = (string) ($_REQUEST['term'] ?? '');
 
-function resultexit( $data ) {
-	print json_encode( $data );
+function resultexit($data)
+{
+	print json_encode($data);
 	exit;
 }
 
-if ($type == 'sce' && $label != "") {
+if ($type == 'game' && $label != "") {
 	$num = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($label) . "'");
 	print $num;
 }
@@ -25,13 +26,13 @@ if ($type == 'sce' && $label != "") {
 if ($type == 'games' && $term !== "") {
 	$games = getcol("SELECT CONCAT(id, ' - ', title) AS label FROM game WHERE title LIKE '" . dbesc($term) . "%'");
 	header("Content-Type: application/json");
-	print json_encode( $games );
+	print json_encode($games);
 	exit;
 }
 
 if ($type == 'countrycode' && $label != "") {
 	$countryname = getCountryName($label);
-	print $countryname;	
+	print $countryname;
 }
 
 if ($type == 'languagecode' && $label != "") {
@@ -48,7 +49,7 @@ if ($type == 'person' && $term !== "") {
 		SELECT CONCAT(person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
-	print json_encode( $refs );
+	print json_encode($refs);
 	exit;
 }
 
@@ -59,7 +60,7 @@ if ($type == 'game' && $term !== "") {
 		SELECT CONCAT(g.id, ' - ', title) AS label FROM game g WHERE title LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
-	print json_encode( $refs );
+	print json_encode($refs);
 	exit;
 }
 
@@ -94,35 +95,33 @@ if ($type == 'articlereference' && $term !== "") {
 		SELECT CONCAT('p', person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
 	");
 	header("Content-Type: application/json");
-	print json_encode( $refs );
+	print json_encode($refs);
 	exit;
 }
 
 
-if ( $type == 'addperson' && $label != "" ) {
-	if ( $pid = intval( $label ) ) {
-		resultexit( [ "new" => false, "error" => false, "id" => $pid, "msg" => "Existing user" ] );
+if ($type == 'addperson' && $label != "") {
+	if ($pid = intval($label)) {
+		resultexit(["new" => false, "error" => false, "id" => $pid, "msg" => "Existing user"]);
 	}
 	$result = [];
 	$name = $label;
 	if (strpos($name, " ") === FALSE) {
-		resultexit( [ "new" => false, "error" => true, "msg" => "No space in name" ] );
+		resultexit(["new" => false, "error" => true, "msg" => "No space in name"]);
 	}
 	$pos = strrpos($name, " ");
-	$surname = substr($name, $pos+1);
+	$surname = substr($name, $pos + 1);
 	$firstname = substr($name, 0, $pos);
-	$rid = getone("SELECT id FROM person WHERE firstname = '" . dbesc( $firstname ) . "' AND surname = '" . dbesc( $surname ) . "'");
-	if ( $rid ) {
-		resultexit( [ "new" => false, "error" => false, "id" => $rid, "msg" => "Existing user" ] );
+	$rid = getone("SELECT id FROM person WHERE firstname = '" . dbesc($firstname) . "' AND surname = '" . dbesc($surname) . "'");
+	if ($rid) {
+		resultexit(["new" => false, "error" => false, "id" => $rid, "msg" => "Existing user"]);
 	}
-	$q = "INSERT INTO person (firstname, surname) VALUES ('" . dbesc( $firstname ) . "', '" . dbesc( $surname ) . "')";
-	if ($r = doquery( $q ) ) {
+	$q = "INSERT INTO person (firstname, surname) VALUES ('" . dbesc($firstname) . "', '" . dbesc($surname) . "')";
+	if ($r = doquery($q)) {
 		$pid = dbid();
-		chlog($pid,'aut',"Person created");
-		resultexit( [ "new" => true, "error" => false, "id" => $pid, "msg" => "Person created" ] );
+		chlog($pid, 'person', "Person created");
+		resultexit(["new" => true, "error" => false, "id" => $pid, "msg" => "Person created"]);
 	} else {
-		resultexit( [ "new" => false, "error" => true, "msg" => "Database error" ] );
+		resultexit(["new" => false, "error" => true, "msg" => "Database error"]);
 	}
 }
-
-?>

@@ -57,10 +57,10 @@ ALTER TABLE award_nominees CHANGE sce_id game_id int NULL;
 ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 
 -- Change `category`, `data_id` to explicit fields for every data type for the purpose of foreign keys
--- Skip some as we would like to preserve log even if entry is deleted later on
--- Done: Links, Trivia, Files, Alias, Article_reference, award_nominee_entities
--- Skip: filedownloads, updates
--- Todo: log, review, reviews, updates, userlog, ...
+-- Simple change (not explicit fields, just renames) for some as we would like to preserve log even if entry is deleted later on
+-- Full: Links, Trivia, Files, Alias, Article_reference, award_nominee_entities, userlog
+-- Simple: filedownloads, updates, log
+-- Todo: review, reviews, ...
 
 -- Cleanup; orphans
 DELETE FROM trivia WHERE id = 99;
@@ -243,7 +243,7 @@ CASE category
 	WHEN 'convent' THEN 'convention'
 	WHEN 'sys' THEN 'gamesystem'
 	ELSE category
-END
+END;
 
 -- userlog
 ALTER TABLE userlog ADD game_id int NULL;
@@ -264,3 +264,20 @@ ALTER TABLE userlog ADD CONSTRAINT userlog_FK_2 FOREIGN KEY (convention_id) REFE
 
 ALTER TABLE userlog DROP COLUMN data_id;
 ALTER TABLE userlog DROP COLUMN category;
+
+-- More indexes for userlog? (user_id, game_id) and (user_id, convention_id)?
+
+-- log
+ALTER TABLE `log` DROP INDEX category;
+ALTER TABLE `log` CHANGE category category TINYTEXT NOT NULL;
+UPDATE `log` SET category =
+CASE category
+	WHEN 'aut' THEN 'person'
+	WHEN 'sce' THEN 'game'
+	WHEN 'convent' THEN 'convention'
+	WHEN 'sys' THEN 'gamesystem'
+	ELSE category
+END;
+
+CREATE INDEX log_category_IDX USING BTREE ON `log` (category (8),data_id);
+

@@ -4,26 +4,25 @@ require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
-$this_type = 'sys';
-$this_type_new = 'gamesystem';
+$this_type = 'gamesystem';
 
-$system = (int) ($_REQUEST['system'] ?? '');
+$gamesystem = (int) ($_REQUEST['gamesystem'] ?? '');
 $action = (string) ($_REQUEST['action'] ?? '');
 $name = (string) ($_REQUEST['name'] ?? '');
 $description = (string) ($_REQUEST['description'] ?? '');
 
-$this_id = $system;
+$this_id = $gamesystem;
 
 if ($action) {
 	validatetoken($token);
 }
 
 
-if (!$action && $system) {
-	list($id, $name, $description) = getrow("SELECT id, name, description FROM gamesystem WHERE id = '$system'");
+if (!$action && $gamesystem) {
+	list($id, $name, $description) = getrow("SELECT id, name, description FROM gamesystem WHERE id = '$gamesystem'");
 }
 
-if ($action == "edit" && $system) {
+if ($action == "edit" && $gamesystem) {
 	$name = trim($name);
 	if (!$name) {
 		$_SESSION['admin']['info'] = "Name is missing!";
@@ -31,13 +30,13 @@ if ($action == "edit" && $system) {
 		$q = "UPDATE gamesystem SET " .
 			"name = '" . dbesc($name) . "', " .
 			"description = '" . dbesc($description) . "' " .
-			"WHERE id = '$system'";
+			"WHERE id = '$gamesystem'";
 		$r = doquery($q);
 		if ($r) {
-			chlog($system, $this_type, "System edited");
+			chlog($gamesystem, $this_type, "System edited");
 		}
 		$_SESSION['admin']['info'] = "System edited! " . dberror();
-		rexit($this_type, ['system' => $system]);
+		rexit($this_type, ['gamesystem' => $gamesystem]);
 	}
 }
 
@@ -46,7 +45,7 @@ if ($action == "create") {
 	$rid = getone("SELECT id FROM gamesystem WHERE name = '$name'");
 	if ($rid) {
 		$_SESSION['admin']['info'] = "A system with this name already exists!";
-		$_SESSION['admin']['link'] = "gamesystem.php?system=" . $rid;
+		$_SESSION['admin']['link'] = "gamesystem.php?gamesystem=" . $rid;
 	} elseif (!$name) {
 		$_SESSION['admin']['info'] = "Name is missing!";
 	} else {
@@ -57,25 +56,25 @@ if ($action == "create") {
 			")";
 		$r = doquery($q);
 		if ($r) {
-			$system = dbid();
-			chlog($system, $this_type, "System created");
+			$gamesystem = dbid();
+			chlog($gamesystem, $this_type, "System created");
 		}
 		$_SESSION['admin']['info'] = "System created! " . dberror();
-		rexit($this_type, ['system' => $system]);
+		rexit($this_type, ['gamesystem' => $gamesystem]);
 	}
 }
 
-if ($action == "Delete" && $system) {
+if ($action == "Delete" && $gamesystem) {
 	$error = [];
-	if (getCount('game', $this_id, FALSE, $this_type_new)) $error[] = "game";
-	if (getCount('article_reference', $this_id, FALSE, $this_type_new)) $error[] = "article reference";
+	if (getCount('game', $this_id, FALSE, $this_type)) $error[] = "game";
+	if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ", $error);
-		rexit($this_type, ['system' => $system]);
+		rexit($this_type, ['gamesystem' => $gamesystem]);
 	} else {
 		$name = getone("SELECT name FROM gamesystem WHERE id = $this_id");
 
-		$q = "DELETE FROM gamesystem WHERE id = $system";
+		$q = "DELETE FROM gamesystem WHERE id = $gamesystem";
 		$r = doquery($q);
 
 		if ($r) {
@@ -85,24 +84,24 @@ if ($action == "Delete" && $system) {
 		rexit($this_type);
 	}
 }
-htmladmstart("System");
+htmladmstart("Game system");
 
-print "<FORM ACTION=\"gamesystem.php\" METHOD=\"post\">\n";
+print "<form action=\"gamesystem.php\" method=\"post\">\n";
 print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
-if (!$system) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
+if (!$gamesystem) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";
-	print "<INPUT TYPE=\"hidden\" name=\"system\" value=\"$system\">\n";
+	print "<INPUT TYPE=\"hidden\" name=\"gamesystem\" value=\"$gamesystem\">\n";
 }
 
 print "<a href=\"gamesystem.php\">New system</a>";
 
 print "<table border=0>\n";
 
-if ($system) {
-	print "<tr><td>ID</td><td>$system - <a href=\"../data?system=$system\" accesskey=\"q\">Show RPG system page</a>";
+if ($gamesystem) {
+	print "<tr><td>ID</td><td>$gamesystem - <a href=\"../data?system=$gamesystem\" accesskey=\"q\">Show RPG system page</a>";
 	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$system\">Show log</a>";
+		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$gamesystem\">Show log</a>";
 	}
 	print "\n</td></tr>\n";
 }
@@ -111,17 +110,17 @@ tr("Name", "name", $name);
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 
 
-print '<tr><td>&nbsp;</td><td><input type="submit" value="' . ($system ? "Update" : "Create") . ' system">' . ($system ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete system?\n\nAs a safety precaution all relations will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
+print '<tr><td>&nbsp;</td><td><input type="submit" value="' . ($gamesystem ? "Update" : "Create") . ' system">' . ($gamesystem ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete system?\n\nAs a safety precaution all relations will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
-if ($system) {
-	print changelinks($system, $this_type);
-	print changetrivia($system, $this_type);
-	print changealias($system, $this_type);
-	print changefiles($system, $this_type);
-	print showpicture($system, $this_type);
-	print showtickets($system, $this_type);
+if ($gamesystem) {
+	print changelinks($gamesystem, $this_type);
+	print changetrivia($gamesystem, $this_type);
+	print changealias($gamesystem, $this_type);
+	print changefiles($gamesystem, $this_type);
+	print showpicture($gamesystem, $this_type);
+	print showtickets($gamesystem, $this_type);
 
-	$q = getall("SELECT id, title FROM game WHERE gamesystem_id = '$system' ORDER BY title, id");
+	$q = getall("SELECT id, title FROM game WHERE gamesystem_id = '$gamesystem' ORDER BY title, id");
 	print "<tr valign=top><td align=right>Contains the following<br>scenarios</td><td>\n";
 	foreach ($q as list($id, $title)) {
 		print "<a href=\"game.php?game=$id\">$title</a><br>";
@@ -139,20 +138,20 @@ if ($system) {
 <hr size=1>
 
 <form action="gamesystem.php" method="get">
-	<table border=0>
+	<table>
 		<tr valign="baseline">
 			<td>
-				<big>Choose system</big>
+				<b>Choose system</b>
 			</td>
 
 			<td>
-				<select name=system>
+				<select name="gamesystem">
 
 					<?php
 					$q = getall("SELECT id, name FROM gamesystem ORDER BY name");
 					foreach ($q as $r) {
 						print "<option value=$r[id]";
-						if ($r['id'] == $system) print " SELECTED";
+						if ($r['id'] == $gamesystem) print " SELECTED";
 						print ">$r[name]\n";
 					}
 					?>

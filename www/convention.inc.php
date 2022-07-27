@@ -190,7 +190,7 @@ foreach ($gamelist as $game_id => $game) {
 	$total = $sce_new + $sce_rerun + $sce_cancelled;
 	$board_total = $board_new + $board_rerun + $board_cancelled;
 
-	$scen_antaltxt = antaltxt($sce_new, $sce_rerun, $sce_cancelled, $total, 'sce');
+	$scen_antaltxt = antaltxt($sce_new, $sce_rerun, $sce_cancelled, $total, 'game');
 	$board_antaltxt = antaltxt($board_new, $board_rerun, $board_cancelled, $board_total, 'board');
 
 	if ($scenlist) {
@@ -241,7 +241,7 @@ if ($awardnominees) {
 				$html .= "<h5 class=\"" . $class . "\">";
 				$html .= "<span class=\"" . $class . "\">";
 				if ($nominee['game_id']) {
-					$html .= getdatahtml('sce', $nominee['game_id'], $nominee['title']);
+					$html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
 				} else {
 					$html .= htmlspecialchars($nominee['name']);
 				}

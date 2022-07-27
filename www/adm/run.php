@@ -45,7 +45,7 @@ if ($action == "changerun" && $do != "Delete") {
 	     "WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Run updated");
+		chlog($id,'game',"Run updated");
 	}
 	$_SESSION['admin']['info'] = "Run updated! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -56,7 +56,7 @@ if ($action == "changerun" && $do == "Delete") {
 	$q = "DELETE FROM gamerun WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Run deleted");
+		chlog($id,'game',"Run deleted");
 	}
 	$_SESSION['admin']['info'] = "Run deleted! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -74,7 +74,7 @@ if ($action == "addrun") {
 	     "('$id', '$begin', '$end', '" . dbesc($location). "', '" . dbesc($country). "', '" . dbesc($description) . "', $cancelled)";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Run created");
+		chlog($id,'game',"Run created");
 	}
 	$_SESSION['admin']['info'] ="Run created! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -141,5 +141,3 @@ if ($id) {
 	print "Error: No data id provided.";
 }
 print "</body>\n</html>\n";
-
-?>

@@ -15,12 +15,12 @@ if (!$user_id || !$scenario) {
 	exit;
 }
 
-if ( $action ) {
-	validatetoken( $token );
+if ($action) {
+	validatetoken($token);
 }
 
 // valid user
-$tag = trim( (string) $_REQUEST['tag'] );
+$tag = trim((string) $_REQUEST['tag']);
 $tag_id = (int) $_REQUEST['tag_id'];
 
 $q = getone("SELECT 1 FROM game WHERE id = $scenario");
@@ -41,20 +41,19 @@ if ($action == 'add') {
 		VALUES ($scenario, '" . dbesc($tag) . "', $user_id)
 	");
 	$r = doquery($q);
-	if ($scetag_id = dbid($dblink) ) {
+	if ($scetag_id = dbid($dblink)) {
 		$_SESSION['can_edit_tag'][$scetag_id] = TRUE;
 		// award_achievement(91);
-		chlog($scenario,'sce','Tag added: ' . $tag);
+		chlog($scenario, 'game', 'Tag added: ' . $tag);
 		award_achievement(100);
 	}
 } elseif ($action == 'delete') {
-	if ( $_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_tag'][$tag_id] ) {
-	$tag = getone("SELECT tag FROM tags WHERE id = $tag_id");
-	doquery("DELETE FROM tags WHERE id = $tag_id");
-	chlog($scenario,'sce','Tag fjernet: ' . $tag);
+	if ($_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_tag'][$tag_id]) {
+		$tag = getone("SELECT tag FROM tags WHERE id = $tag_id");
+		doquery("DELETE FROM tags WHERE id = $tag_id");
+		chlog($scenario, 'game', 'Tag fjernet: ' . $tag);
 	}
-} 
+}
 
 header("Location: ../data?scenarie=$scenario");
 exit;
-?>

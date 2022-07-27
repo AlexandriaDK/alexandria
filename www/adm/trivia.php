@@ -13,7 +13,6 @@ $internal = $_REQUEST['internal'] ?? '';
 $id = (int) ($_REQUEST['id'] ?? 0);
 $data_id = $_REQUEST['data_id'] ?? '';
 $category = $_REQUEST['category'] ?? '';
-if ($category == 'sce') $category = 'game';
 
 // Ret trivia
 if ($action == "changetrivia" && $do != "Delete") {
@@ -113,5 +112,3 @@ if ($data_id && $category) {
 	print "Error: No data id.";
 }
 print "</body>\n</html>\n";
-?>
-

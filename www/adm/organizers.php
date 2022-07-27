@@ -6,7 +6,7 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 
 $this_type = 'organizers';
-$category = 'convent';
+$category = 'convention';
 
 $action = $_REQUEST['action'] ?? FALSE;
 $do = $_REQUEST['do'] ?? FALSE;
@@ -82,7 +82,7 @@ if ($action == "addorganizer") {
 
 
 if ($data_id) {
-	$cat = 'convent';
+	$cat = 'convention';
 	$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
 	$mainlink = "convention.php?con=$data_id";
 

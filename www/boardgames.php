@@ -6,7 +6,7 @@ if ($_SESSION['user_id']) {
 	$userlog = getuserloggames($_SESSION['user_id']);
 }
 
-// Find all games, including persons and cons - restrict to one premiere convent
+// Find all games, including persons and cons - restrict to one premiere convention
 $r = getall("
 	SELECT p.id AS autid, CONCAT(p.firstname,' ',p.surname) AS autname, g.id, g.title, g.boardgame, c.id AS convention_id, c.name AS convention_name, c.year, c.begin, c.end, c.cancelled, COUNT(f.id) AS files, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
@@ -24,19 +24,19 @@ $r = getall("
 $last_game_id = 0;
 $scenlist = "";
 
-foreach($r AS $row) {
+foreach ($r as $row) {
 	$game_id = $row['id'];
 
 	$scenlist .= "\t<tr class=\"listresult\">\n";
 	if ($_SESSION['user_id']) {
 		if ($game_id != $last_game_id) {
-			if ($row['boardgame'] ) {
+			if ($row['boardgame']) {
 				$options = getuserlogoptions('boardgame');
 			} else {
 				$options = getuserlogoptions('scenario');
 			}
 
-			foreach( $options AS $type) {
+			foreach ($options as $type) {
 				$scenlist .= "<td>";
 				if ($type != NULL) {
 					$scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? FALSE);
@@ -50,12 +50,12 @@ foreach($r AS $row) {
 	}
 
 	if ($game_id != $last_game_id && $row['files'] > 0) {
-		$scenlist .= "<td><span title=\"". htmlspecialchars($t->getTemplateVars('_sce_bgdownloadable' ) ) . "\"><a href=\"data?scenarie=" . $game_id . "\">💾</a></span></td>";
+		$scenlist .= "<td><span title=\"" . htmlspecialchars($t->getTemplateVars('_sce_bgdownloadable')) . "\"><a href=\"data?scenarie=" . $game_id . "\">💾</a></span></td>";
 	} else {
 		$scenlist .= "<td></td>";
 	}
 	if ($game_id != $last_game_id) {
-		$scenlist .= "\t\t<td><a href=\"data?scenarie=" . $game_id . "\" class=\"scenarie\" title=\"" . htmlspecialchars($row['title']) . "\">".htmlspecialchars($row['title_translation'])."</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?scenarie=" . $game_id . "\" class=\"scenarie\" title=\"" . htmlspecialchars($row['title']) . "\">" . htmlspecialchars($row['title_translation']) . "</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
@@ -71,7 +71,7 @@ foreach($r AS $row) {
 		if ($row['cancelled'] == 1) {
 			$class .= " cancelled";
 		}
-		$scenlist .= "\t\t<td>" . smarty_function_con( [ 'id' => $row['convention_id'], 'name' => $row['convention_name'], 'year' => $row['year'], 'begin' => $row['begin'], 'end' => $row['end'], 'cancelled' => $row['cancelled'] ] ) . "</td>\n";
+		$scenlist .= "\t\t<td>" . smarty_function_con(['id' => $row['convention_id'], 'name' => $row['convention_name'], 'year' => $row['year'], 'begin' => $row['begin'], 'end' => $row['end'], 'cancelled' => $row['cancelled']]) . "</td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}
@@ -80,6 +80,6 @@ foreach($r AS $row) {
 	$last_game_id = $game_id;
 }
 
-$t->assign('scenlist',$scenlist);
-$t->assign('boardgamesonly',TRUE);
+$t->assign('scenlist', $scenlist);
+$t->assign('boardgamesonly', TRUE);
 $t->display('games.tpl');

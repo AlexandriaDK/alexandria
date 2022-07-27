@@ -4,8 +4,7 @@ require "base.inc.php";
 chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
-$this_type = 'aut';
-$this_type_new = 'person';
+$this_type = 'person';
 
 $action = $_REQUEST['action'] ?? '';
 $person = $_REQUEST['person'] ?? '';
@@ -53,14 +52,14 @@ if ($action == "ret" && $person) {
 // Delete person
 if ($action == "Delete" && $person) { // Should check if $person id exists
 	$error = [];
-	if (getCount('pgrel', $this_id, FALSE, $this_type_new)) $error[] = "scenario";
-	if (getCount('pcrel', $this_id, FALSE, $this_type_new)) $error[] = "con (organizer roles)";
-	if (getCount('trivia', $this_id, FALSE, $this_type_new)) $error[] = "trivia";
-	if (getCount('links', $this_id, FALSE, $this_type_new)) $error[] = "link";
-	if (getCount('alias', $this_id, FALSE, $this_type_new)) $error[] = "alias";
-	if (getCount('users', $this_id, FALSE, $this_type_new)) $error[] = "user";
-	if (getCount('contributor', $this_id, FALSE, $this_type_new)) $error[] = "article (magazine)";
-	if (getCount('article_reference', $this_id, FALSE, $this_type_new)) $error[] = "article reference";
+	if (getCount('pgrel', $this_id, FALSE, $this_type)) $error[] = "scenario";
+	if (getCount('pcrel', $this_id, FALSE, $this_type)) $error[] = "con (organizer roles)";
+	if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
+	if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
+	if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
+	if (getCount('users', $this_id, FALSE, $this_type)) $error[] = "user";
+	if (getCount('contributor', $this_id, FALSE, $this_type)) $error[] = "article (magazine)";
+	if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
 	if ($error) {
 		$_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ", $error);
 		rexit($this_type, ['person' => $person]);

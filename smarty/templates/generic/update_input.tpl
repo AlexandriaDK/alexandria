@@ -11,7 +11,7 @@
 			{$_update_intro|sprintf:"fblogin":""|nl2br}
 		</p>
 
-{if $category == 'convent' && $label != ""}
+{if $category == 'convention' && $label != ""}
 		<p>
 			{$_update_add|sprintf:"data?con=$data_id&amp;edit=organizers#organizers"}
 		</p>

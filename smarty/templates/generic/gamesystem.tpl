@@ -46,8 +46,8 @@
 			{/foreach}
 			</td>
 			<td>
-			{foreach $game.convent AS $convent}
-			{con dataset=$convent}<br>
+			{foreach $game.convention AS $convention}
+			{con dataset=$convention}<br>
 			{/foreach}
 		</tr>
 	{/foreach}

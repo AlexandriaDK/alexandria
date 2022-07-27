@@ -13,7 +13,6 @@ $description = $_REQUEST['description'] ?? '';
 $id = $_REQUEST['id'] ?? '';
 $category = $_REQUEST['category'] ?? '';
 $data_id = $_REQUEST['data_id'] ?? '';
-if ($category == 'game') $category = 'sce';
 
 $url = trim($url);
 if ($url && substr($url,0,4) != 'http' && substr($url,0,1) != '{') {
@@ -151,5 +150,3 @@ if ($data_id && $category) {
 }
 
 print "</body>\n</html>\n";
-
-?>

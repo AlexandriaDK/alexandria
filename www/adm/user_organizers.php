@@ -13,7 +13,7 @@ $token = $_REQUEST['token'] ?? '';
 $pcrel_id = (int) ($_REQUEST['pcrel_id'] ?? 0);
 
 if (!$user_id) {
-	header("Location: ../data?con=$convent");
+	header("Location: ../data?con=$convention");
 	exit;
 }
 
@@ -48,12 +48,12 @@ if ($action == 'add' && ($person_id || $person_extra)) {
 	if ($pcrel_id = dbid()) {
 		$_SESSION['can_edit_organizers'][$pcrel_id] = TRUE;
 		award_achievement(91);
-		chlog($convention, 'convent', 'Organizer added: ' . ($person_id ? $person_id : $person_extra));
+		chlog($convention, 'convention', 'Organizer added: ' . ($person_id ? $person_id : $person_extra));
 	}
 } elseif ($action == 'delete') {
 	if ($_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_organizers'][$pcrel_id]) {
 		doquery("DELETE FROM pcrel WHERE id = $pcrel_id");
-		chlog($convention, 'convent', 'Organizer removed');
+		chlog($convention, 'convention', 'Organizer removed');
 	}
 }
 
