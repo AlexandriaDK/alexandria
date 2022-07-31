@@ -1285,7 +1285,7 @@ function getnexteventstable()
 			SELECT 'convention' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled, c.name AS origname
 			FROM convention c
 			LEFT JOIN conset ON c.conset_id = conset.id
-			WHERE end >= '" . date("Y-m-d") . "'
+			WHERE end >= '" . date("Y-m-d") . "' AND RIGHT(`begin`,5) != '00-00'
 		)
 		UNION
 		(
@@ -1293,7 +1293,7 @@ function getnexteventstable()
 			FROM gamerun gr
 			INNER JOIN game g ON gr.game_id = g.id
 			LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
-			WHERE gr.end >= '" . date("Y-m-d") . "'
+			WHERE gr.end >= '" . date("Y-m-d") . "' AND RIGHT(`begin`,5) != '00-00'
 		)
 		ORDER BY begin, end, name
 	");
