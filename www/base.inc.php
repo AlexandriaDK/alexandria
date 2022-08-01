@@ -109,49 +109,49 @@ if (!defined('DBERROR')) {
 }
 
 // Import language strings
-$import_languages = array_unique(['en', LANG]);
-foreach ($import_languages as $language) {
-	$strings = getall("SELECT label, text, language FROM weblanguages WHERE language = '" . dbesc($language) . "'");
-	foreach ($strings as $string) {
-		$t->assign('_' . $string['label'], $string['text']);
+if (!defined('DBERROR')) {
+	$import_languages = array_unique(['en', LANG]);
+	foreach ($import_languages as $language) {
+		$strings = getall("SELECT label, text, language FROM weblanguages WHERE language = '" . dbesc($language) . "'");
+		foreach ($strings as $string) {
+			$t->assign('_' . $string['label'], $string['text']);
+		}
 	}
-}
 
-// Startup variables
+	// Startup variables
 
-if (isset($_SESSION['user_id'])) { // set last active
-	doquery(
-		"
+	if (isset($_SESSION['user_id'])) { // set last active
+		doquery(
+			"
 		UPDATE users
 		SET
 		active_days_in_row = CASE DATE(last_active) WHEN CURDATE() THEN active_days_in_row WHEN CURDATE() - INTERVAL 1 DAY THEN active_days_in_row + 1 ELSE 0 END,
 		last_active = NOW()
 		WHERE id = " . $_SESSION['user_id']
-	);
-	if ($_SESSION['user_author_id'] ?? FALSE) {
-		$scenario_missing_participants = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) INNER JOIN cgrel c ON a.id = c.game_id AND c.presentation_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
-		$scenario_missing_tags = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) LEFT JOIN tags c ON a.id = c.game_id AND c.tag != 'English' WHERE c.game_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
-		if ($scenario_missing_participants && $scenario_missing_tags) {
-			// choose random set to display
-			if (rand(0, 1)) {
-				$t->assign('user_scenario_missing_players', $scenario_missing_participants);
+		);
+		if ($_SESSION['user_author_id'] ?? FALSE) {
+			$scenario_missing_participants = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) INNER JOIN cgrel c ON a.id = c.game_id AND c.presentation_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+			$scenario_missing_tags = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) LEFT JOIN tags c ON a.id = c.game_id AND c.tag != 'English' WHERE c.game_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+			if ($scenario_missing_participants && $scenario_missing_tags) {
+				// choose random set to display
+				if (rand(0, 1)) {
+					$t->assign('user_scenario_missing_players', $scenario_missing_participants);
+				} else {
+					$t->assign('user_scenario_missing_tags', $scenario_missing_tags);
+				}
 			} else {
+				$t->assign('user_scenario_missing_players', $scenario_missing_participants);
 				$t->assign('user_scenario_missing_tags', $scenario_missing_tags);
 			}
-		} else {
-			$t->assign('user_scenario_missing_players', $scenario_missing_participants);
-			$t->assign('user_scenario_missing_tags', $scenario_missing_tags);
 		}
+
+		$active_days_in_row = getone("SELECT active_days_in_row FROM users WHERE id = '" . $_SESSION['user_id'] . "'");
+		if ($active_days_in_row >= 6)  award_user_achievement($user_id, 16); //  7 days in row
+		if ($active_days_in_row >= 29) award_user_achievement($user_id, 17); // 30 days in row
+
+		check_begin_page_achievements();
 	}
-
-	$active_days_in_row = getone("SELECT active_days_in_row FROM users WHERE id = '" . $_SESSION['user_id'] . "'");
-	if ($active_days_in_row >= 6)  award_user_achievement($user_id, 16); //  7 days in row
-	if ($active_days_in_row >= 29) award_user_achievement($user_id, 17); // 30 days in row
-
-	check_begin_page_achievements();
 }
-
-
 
 // login and user specific functions
 
