@@ -193,7 +193,7 @@ if ($action == "create") {
 			foreach ($descriptions as $d) {
 				if ($d['description'] !== "") {
 					$insertcount++;
-					$inserts[] = "($game, '" . dbesc($d['description']) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
+					$inserts[] = "($game, '" . dbesc(trim($d['description'])) . "', '" . dbesc($d['language']) . "','" . dbesc($d['note']) . "')";
 				}
 			}
 			if ($insertcount > 0) { // only run query if at least one description; otherwise SQL is invalid
