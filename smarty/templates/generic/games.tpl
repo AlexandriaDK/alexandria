@@ -10,6 +10,7 @@
 {include file="head.tpl"}
 
 <div id="contentwide">
+{include file="originalsearch.tpl"}
 
 {if ! isset($boardgamesonly) }
 	<h2 class="pagetitle gamesselect">

@@ -1,4 +1,5 @@
 <div id="content">
+{include file="originalsearch.tpl"}
 
 	<h2 class="datatitle">{$name|escape}</h2>
 

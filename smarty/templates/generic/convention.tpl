@@ -1,4 +1,5 @@
 <div id="content">
+{include file="originalsearch.tpl"}
 
 	<h2 class="datatitle{if $cancelled} cancelled{/if}">{$name|escape} ({$year|yearname})</h2>
 	<div class="arrows">

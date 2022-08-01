@@ -2,6 +2,7 @@
 {include file="head.tpl"}
 
 <div id="content">
+{include file="originalsearch.tpl"}
 {if $pic}
 	<div style="float: right;">
 		<a href="/gfx/{$picpath}/l_{$picid}.jpg">

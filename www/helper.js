@@ -250,3 +250,17 @@ $(function () {
 		$('.organizerhidden').show();
 	});
 });
+
+// Clean up URL if searchterm is set
+function cleanURLSearchPart() {
+	var path = window.location.pathname
+	const params = new URLSearchParams(window.location.search);
+	if (!params.get('searchterm')) {
+		return false;
+	}
+	params.delete('searchterm');
+	var newpath = path + '?' + params.toLocaleString();
+	history.replaceState(null, null, newpath);
+}
+
+cleanURLSearchPart();

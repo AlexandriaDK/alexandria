@@ -113,20 +113,20 @@ div.longblock:hover {
 #content {
 	position: absolute;
 	left: 195px;
-	top: 55px;
+	top: 40px;
 	width: 70em;
 }
 
 #contenttext {
 	position: absolute;
 	left: 195px;
-	top: 55px;
+	top: 40px;
 }
 
 #contentwide {
 	position: absolute;
 	left: 195px;
-	top: 55px;
+	top: 40px;
 }
 
 div,
@@ -979,4 +979,17 @@ table.magazinecontent span.description {
 
 .organizerhidden {
 	display: none;
+}
+
+div.originalsearch {
+	width: 640px;
+	text-align: left;
+	font-size: 0.8em;
+	margin-top: 0;
+	font-style: italic;
+	margin-bottom: 1em;
+}
+
+div.originalsearch a {
+	font-weight: bold;
 }

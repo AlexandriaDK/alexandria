@@ -64,6 +64,11 @@ if (is_dir($template_dir . LANG)) {
 	$t->template_dir = $template_dir .  'generic/';
 }
 
+$searchterm = (string) ($_GET['searchterm'] ?? '');
+if ($searchterm !== '') {
+	$t->assign('searchterm', $searchterm);
+}
+
 // Check if SQL structure even exists
 if (!defined('DBERROR') && (getone("SHOW tables LIKE 'installation'") === NULL || getone("SELECT `value` FROM installation WHERE `key` = 'status'") != 'live')) { // Table does not exist!
 	define("INSTALLNOW", TRUE);
@@ -1048,7 +1053,7 @@ function getdatalink($cat, $data_id, $admin = FALSE)
 			$value = ($admin ? "/adm/convention.php?con=$data_id" : "data?con=$data_id");
 			break;
 		case 'tag':
-			$tag = getone("SELECT tag FROM tag WHERE id = $data_id");
+			$tag = getone("SELECT tag FROM tag WHERE id = $data_id") ?? '';
 			$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "data?tag=" . rawurlencode($tag));
 			break;
 		case 'issue':

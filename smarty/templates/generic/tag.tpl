@@ -1,4 +1,5 @@
 <div id="content">
+{include file="originalsearch.tpl"}
 
 <article>
 	<h2 class="datatitle">{$tag|escape}</h2>

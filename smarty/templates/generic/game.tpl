@@ -5,6 +5,7 @@ $( function() {
 </script>
 
 <div id="content">
+{include file="originalsearch.tpl"}
 
 	<h2 class="datatitle">{$title|escape}</h2>
 
