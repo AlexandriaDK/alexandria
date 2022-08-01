@@ -16,7 +16,7 @@ $exportqueries = [
 	'systems' => "SELECT id, name, description FROM gamesystem ORDER BY id",
 	'genres' => "SELECT id, name, genre FROM genre ORDER BY id",
 	'genre_game_relations' => "SELECT id, genre_id, game_id FROM ggrel ORDER BY game_id, genre_id, id",
-	'tags' => "SELECT id, tag, description FROM tag ORDER BY id",
+	'tags' => "SELECT id, tag, description, '' AS internal FROM tag ORDER BY id",
 	'gametags' => "SELECT id, game_id, tag FROM tags ORDER BY id",
 	'gameruns' => "SELECT id, game_id, begin, end, location, description, cancelled, country FROM gamerun ORDER BY id",
 	'gamedescriptions' => "SELECT id, game_id, description, language, note FROM game_description ORDER BY game_id, language, id",
@@ -167,4 +167,3 @@ $json_output = json_encode( $output );
 header( "Content-Type: application/json" );
 header( "Content-Length: " . strlen( $json_output) );
 print $json_output;
-?>
