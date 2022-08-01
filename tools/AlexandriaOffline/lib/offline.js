@@ -647,7 +647,6 @@ function showIssue(data) {
                 for (var reference of references) {
                     var category = getCategoryFromReference(reference);
                     var data_id = reference[category + '_id'];
-                    console.log(category, data_id);
                     html += linkFromReference(category, data_id) + ' ';
                 }
                 html += '</span>';
@@ -847,10 +846,8 @@ function getFieldFromCategory(category) {
 }
 
 function getCategoryFromReference(object) {
-    console.log(object);
     var categories = ['person', 'game', 'convention', 'conset', 'gamesystem', 'tag', 'magazine', 'issue']
     for (var category of categories) {
-        console.log(category);
         var field = category + '_id';
         if (object[field] != null) {
             return category;
@@ -954,7 +951,7 @@ function linkFromReference(category, id) {
         return personLink(id);
     } else if (category == 'tag') {
         return tagIdLink(id);
-    } else if (category == 'system') {
+    } else if (category == 'gamesystem') {
         return RPGSystemLink(id);
     } else if (category == 'convention') {
         return conLink(id);
