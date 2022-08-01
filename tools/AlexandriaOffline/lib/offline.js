@@ -645,7 +645,10 @@ function showIssue(data) {
             if (references) {
                 html += '<br><span class="references">'
                 for (var reference of references) {
-                    html += linkFromReference(reference.category, reference.data_id) + ' ';
+                    var category = getCategoryFromReference(reference);
+                    var data_id = reference[category + '_id'];
+                    console.log(category, data_id);
+                    html += linkFromReference(category, data_id) + ' ';
                 }
                 html += '</span>';
             }
@@ -836,9 +839,30 @@ function makeFileLink(data_id, category, filename, description, language) {
     return html;
 }
 
+function getFieldFromCategory(category) {
+    if (['person', 'game', 'convention', 'conset', 'gamesystem', 'tag', 'magazine', 'issue'].includes(category)) {
+        return category + '_id';
+    }
+    return 'person_id';
+}
+
+function getCategoryFromReference(object) {
+    console.log(object);
+    var categories = ['person', 'game', 'convention', 'conset', 'gamesystem', 'tag', 'magazine', 'issue']
+    for (var category of categories) {
+        console.log(category);
+        var field = category + '_id';
+        if (object[field] != null) {
+            return category;
+        }
+    }
+    return false;
+}
+
 function makeArticleReferenceSection(category, data_id, referencetype = 'reference') {
+    var field = getFieldFromCategory(category);
     if (referencetype == 'reference') {
-        var references = a.article_reference.filter(rel => rel.data_id == data_id && rel.category == category);
+        var references = a.article_reference.filter(rel => rel[field] == data_id);
         var title = 'Referenced in the following articles';
     } else if (referencetype == 'contributor') {
         var references = a.contributors.filter(rel => rel.person_id == data_id);
@@ -1077,6 +1101,13 @@ function getTagsUsed() {
     });
 }
 
+function getMagazines() {
+    return getCache('magazines', function (a, b) {
+        return (a.name > b.name ? 1 : -1);
+    });
+}
+
+
 function search() {
     var search = $('#searchtext').val()
     if (search === '') {
@@ -1089,8 +1120,8 @@ function search() {
     result.boardgames = getBoardgames().filter(p => (p.title).toUpperCase().includes(searchUpper));
     result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) || (a.conventionsets[p.conset_id].name + ' ' + p.year).toUpperCase().includes(searchUpper));
     result.systems = getSystems().filter(p => (p.name).toUpperCase().includes(searchUpper));
+    result.magazines = getMagazines().filter(p => (p.name).toUpperCase().includes(searchUpper));
     result.tags = [];
-    // :TODO: Search for magazine names
     var tagsdefined = getTags().filter(p => (p.tag).toUpperCase().includes(searchUpper));
     var tagsused = getTagsUsed().filter(p => (p.tag).toUpperCase().includes(searchUpper));
     var resulttags = tagsdefined.concat(tagsused);
@@ -1145,7 +1176,14 @@ function search() {
         }
         html += '</ul>';
     }
-    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length + result.tags.length == 0) {
+    if (result.magazines.length > 0) {
+        html += '<h3>Magazines</h3><ul>';
+        for (element of result.magazines) {
+            html += makeLink('magazine', 'magazine', element.id, element.name);
+        }
+        html += '</ul>';
+    }
+    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length + result.tags.length + result.magazines.length == 0) {
         html += 'Nothing found.'
     }
 
