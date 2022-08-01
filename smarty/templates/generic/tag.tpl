@@ -46,6 +46,7 @@
 
 {include file="articlereference.tpl"}
 {include file="trivialink.tpl"}
+{include file="internal.tpl"}
 {include file="updatelink.tpl"}
 
 </div>

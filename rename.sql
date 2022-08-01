@@ -56,6 +56,8 @@ ALTER TABLE updates CHANGE intern internal text CHARACTER SET utf8mb4 COLLATE ut
 ALTER TABLE award_nominees CHANGE sce_id game_id int NULL;
 ALTER TABLE award_categories CHANGE convent_id convention_id int NULL;
 
+ALTER TABLE tag ADD `internal` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci;
+
 -- Change `category`, `data_id` to explicit fields for every data type for the purpose of foreign keys
 -- Simple change (not explicit fields, just renames) for some as we would like to preserve log even if entry is deleted later on
 -- Full: Links, Trivia, Files, Alias, Article_reference, award_nominee_entities, userlog
