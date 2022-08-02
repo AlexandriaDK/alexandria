@@ -472,11 +472,11 @@ function getuserloggames($user_id)
 function getuserlogconvents($user_id)
 {
 	return getcol("
-		SELECT data_id
+		SELECT convention_id
 		FROM userlog
 		WHERE userlog.user_id = '$user_id' AND userlog.convention_id IS NOT NULL
-		GROUP BY data_id
-		ORDER BY data_id
+		GROUP BY convention_id
+		ORDER BY convention_id
 	");
 }
 
