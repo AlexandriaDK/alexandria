@@ -6,7 +6,7 @@ require_once("smartfind.inc.php");
 function getjostid ($name) {
 	global $id_a, $id_b, $id_data;
 	$id_a = $id_b = $id_data = array();
-	category_search($name, "CONCAT(firstname,' ',surname)", "aut");
+	category_search($name, "CONCAT(firstname,' ',surname)", "person");
 	/*
 	print "<!--";
 	print "id_a:";
@@ -24,8 +24,8 @@ function getjostid ($name) {
 }
 
 // Hent personer, og prøv at slå dem op
-$from = (string) $_REQUEST['from'];
-$to = (string) $_REQUEST['to'];
+$from = (string) ($_REQUEST['from'] ?? '');
+$to = (string) ($_REQUEST['to'] ?? '');
 
 // Prepare for errors
 $from_error = $to_error = FALSE;
@@ -45,11 +45,11 @@ if (is_numeric($to)) {
 	if (!$to_id) $to_error = TRUE;
 }
 
-if ($from_id) $from = getentry('aut',$from_id);
-if ($to_id)	$to = getentry('aut',$to_id);
+if (isset($from_id)) $from = getentry('person',$from_id);
+if (isset($to_id))	$to = getentry('person',$to_id);
 
-$mainperson = $from_id;
-$subperson = $to_id;
+$mainperson = $from_id ?? 0;
+$subperson = $to_id ?? 0;
 
 $content = "";
 $intro = 0;
@@ -57,13 +57,11 @@ if (!$mainperson || !$subperson) {
 	$intro = 1;
 }
 
-unset($person);
-unset($check);
-unset($qnums);
+$qnums = 0;
 
 if ($mainperson && $subperson) {
 
-	$person = getcolid("SELECT id, CONCAT(firstname,' ',surname) AS name FROM aut");
+	$person = getcolid("SELECT id, CONCAT(firstname,' ',surname) AS name FROM person");
 	
 	$title = getcolid("SELECT id, title FROM title");
 	
@@ -72,7 +70,7 @@ if ($mainperson && $subperson) {
 	
 	if ($mainperson == $subperson) $error = "Vælg venligst to <b>forskellige</b> personer …\n";
 
-	if (!$error) {
+	if (!isset($error)) {
 		$check[1][] = $subperson;
 		$checked[] = $subperson;
 		$i = 1;
@@ -86,83 +84,80 @@ if ($mainperson && $subperson) {
 		
 			$inlist = join(",",$check[$i]);	
 			$notlist = join(",",$checked);
-		
-		// Old query
-		
+
 			$query_nocon = "
-				SELECT
-					COUNT(*) AS antal,
-					t2.aut_id AS link,
-					sce.id AS sceid,
-					sce.title,
-					COALESCE(alias.label, sce.title) AS title_translation,
-					t2.tit_id,
-					t1.aut_id AS rlink,
-					t1.tit_id AS rtit_id
-				FROM aut AS a1
-				INNER JOIN asrel t1 ON t1.aut_id = a1.id
-				INNER JOIN sce ON sce.id = t1.sce_id
-				INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
-				INNER JOIN aut a2 ON a2.id = t2.aut_id
-				LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-				WHERE
-					t1.aut_id IN ($inlist) AND
-					t2.aut_id NOT IN ($notlist) AND
-					t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
-				GROUP BY
-					link
-				ORDER BY
-					a1.firstname,
-					a1.surname,
-					a2.firstname,
-					a2.surname,
-					t1.tit_id,
-					t2.tit_id,
-					title_translation
-			";
-		
-		// New query including cons
-		
+			SELECT
+				COUNT(*) AS antal,
+				t2.person_id AS link,
+				g.id AS gameid,
+				g.title,
+				COALESCE(alias.label, g.title) AS title_translation,
+				t2.title_id,
+				t1.person_id AS rlink,
+				t1.title_id AS rtitle_id
+			FROM person a1
+			INNER JOIN pgrel t1 ON t1.person_id = a1.id
+			INNER JOIN game g ON g.id = t1.game_id
+			INNER JOIN pgrel t2 ON t1.game_id = t2.game_id
+			INNER JOIN person a2 ON a2.id = t2.person_id
+			LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
+			WHERE
+				t1.person_id IN ($inlist) AND
+				t2.person_id NOT IN ($notlist) AND
+				t1.title_id IN (1,4,5) AND t2.title_id IN (1,4,5)
+			GROUP BY
+				link
+			ORDER BY
+				a1.firstname,
+				a1.surname,
+				a2.firstname,
+				a2.surname,
+				t1.title_id,
+				t2.title_id,
+				title_translation
+		";
+	
+
+
 			$query_con = "
 				SELECT
 					COUNT(*) AS antal,
-					t2.aut_id AS link,
-					sce.id AS sceid,
-					sce.title,
-					t2.tit_id,
-					t1.aut_id AS rlink,
-					t1.tit_id AS rtit_id,
-					convent.name,
-					convent.year
-				FROM
-					aut AS a1
-				INNER JOIN asrel t1 ON t1.aut_id = a1.id
-				INNER JOIN sce ON sce.id = t1.sce_id
-				INNER JOIN asrel t2 ON t1.sce_id = t2.sce_id
-				INNER JOIN aut a2 ON a2.id = t2.aut_id
-				LEFT JOIN csrel ON sce.id = csrel.sce_id AND csrel.pre_id = 1
-				LEFT JOIN convent ON convent.id = csrel.convent_id
+					t2.person_id AS link,
+					g.id AS gameid,
+					g.title,
+					t2.title_id,
+					t1.person_id AS rlink,
+					t1.title_id AS rtitle_id,
+					c.name,
+					c.year
+				FROM person AS p1
+				INNER JOIN pgrel t1 ON t1.person_id = p1.id
+				INNER JOIN game g ON g.id = t1.game_id
+				INNER JOIN pgrel t2 ON t1.game_id = t2.game_id
+				INNER JOIN person p2 ON p2.id = t2.person_id
+				LEFT JOIN cgrel ON g.id = cgrel.game_id AND cgrel.presentation_id = 1
+				LEFT JOIN convention c ON c.id = cgrel.convention_id
 				WHERE
-					t1.aut_id IN ($inlist) AND
-					t2.aut_id NOT IN ($notlist) AND
-					t1.tit_id IN (1,4,5) AND t2.tit_id IN (1,4,5)
+					t1.person_id IN ($inlist) AND
+					t2.person_id NOT IN ($notlist) AND
+					t1.title_id IN (1,4,5) AND t2.title_id IN (1,4,5)
 				GROUP BY
 					link
 				ORDER BY
-					a1.firstname,
-					a1.surname,
-					a2.firstname,
-					a2.surname,
-					t1.tit_id,
-					t2.tit_id,
-					sce.title
+					p1.firstname,
+					p1.surname,
+					p2.firstname,
+					p2.surname,
+					t1.title_id,
+					t2.title_id,
+					g.title
 			";
 		
 		// set query
 		
 			$query = $query_nocon;
 		
-			if ($showquery == TRUE) $content .= "<br>$query<br>\n";
+			if ($showquery ?? FALSE) $content .= "<br>$query<br>\n";
 			$q = getall($query);
 			print dberror();
 			$qnums++;
@@ -171,7 +166,7 @@ if ($mainperson && $subperson) {
 		#		$content .= "($qnums) ".$row['link'] . " => " . $row['rlink']."<br>";
 				$scenarie[$row['link']]['title'] = $row['title_translation'];
 				$scenarie[$row['link']]['origtitle'] = $row['title'];
-				$scenarie[$row['link']]['sceid'] = $row['sceid'];
+				$scenarie[$row['link']]['gameid'] = $row['gameid'];
 				$scenarie[$row['link']]['antal'] = $row['antal'];
 				if ($row['link'] == $mainperson) {
 					$found = TRUE;
@@ -206,7 +201,7 @@ if ($mainperson && $subperson) {
 			while ($find != $subperson && $i < 20) {
 				$i++;
 				$scen = $scenarie[$find]['title'];
-				$scenid = $scenarie[$find]['sceid'];
+				$scenid = $scenarie[$find]['gameid'];
 				$antal = $scenarie[$find]['antal'];
 				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $scenid, htmlspecialchars($scen), $kobling[$find], htmlspecialchars($person[$kobling[$find]]) ) );
 				// til graf
@@ -242,7 +237,7 @@ if ($mainperson && $subperson) {
 }
 
 // people
-$people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM aut ORDER BY firstname, surname");	
+$people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM person ORDER BY firstname, surname");	
 $json_people = json_encode($people);
 
 $t->assign('type','jostgame');

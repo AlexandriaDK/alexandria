@@ -5,7 +5,7 @@
 require("./connect.php");
 require("base.inc.php");
 
-$articles = getall("SELECT a.owner, a.name, a.aut_id, b.title, b.link, b.pubdate, b.content FROM feeds a, feedcontent b WHERE a.id = b.feed_id ORDER BY b.pubdate DESC LIMIT 0,40");
+$articles = getall("SELECT a.owner, a.name, a.person_id, b.title, b.link, b.pubdate, b.content FROM feeds a, feedcontent b WHERE a.id = b.feed_id ORDER BY b.pubdate DESC LIMIT 0,40");
 
 header("Content-Type: application/rss+xml");
 

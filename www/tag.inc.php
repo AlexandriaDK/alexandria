@@ -5,13 +5,14 @@ if ($_SESSION['user_id']) {
 	$userlog = getuserloggames($_SESSION['user_id']);
 }
 
-list($tag_id, $ttag, $description) = getrow("SELECT id, tag, description FROM tag WHERE tag = '" . dbesc($tag) . "'");
+list($tag_id, $ttag, $description, $internal) = getrow("SELECT id, tag, description, internal FROM tag WHERE tag = '" . dbesc($tag) . "'");
 $this_id = $tag_id ?? 0;
+$internal = (($_SESSION['user_editor'] ?? FALSE) ? $internal : ""); // only set internal if editor
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
-	$t->assign('content', $t->getTemplateVars('_nomatch') );
-	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch') );
+	$t->assign('content', $t->getTemplateVars('_nomatch'));
+	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
 	$t->display('default.tpl');
 	exit;
 }
@@ -19,15 +20,15 @@ if (!$tag) {
 	$tag = $ttag;
 }
 $q = getall("
-	SELECT sce.id, title, convent.name, convent.id AS con_id, convent.year, convent.begin, convent.end, convent.cancelled, aut_extra, COUNT(files.id) AS files, COALESCE(alias.label, sce.title) AS title_translation
-	FROM sce
-	INNER JOIN tags ON sce.id = tags.sce_id
-	LEFT JOIN csrel ON csrel.sce_id = sce.id AND csrel.pre_id = 1
-	LEFT JOIN convent ON csrel.convent_id = convent.id
-	LEFT JOIN files ON sce.id = files.data_id AND files.category = 'sce' AND files.downloadable = 1
-	LEFT JOIN alias ON sce.id = alias.data_id AND alias.category = 'sce' AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE tags.tag = '" . dbesc($tag). "'
-	GROUP BY sce.id, convent.id
+	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, person_extra, COUNT(f.id) AS files, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
+	INNER JOIN tags ON g.id = tags.game_id
+	LEFT JOIN cgrel ON cgrel.game_id = g.id AND cgrel.presentation_id = 1
+	LEFT JOIN convention c ON cgrel.convention_id = c.id
+	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
+	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
+	WHERE tags.tag = '" . dbesc($tag) . "'
+	GROUP BY g.id, c.id
 	ORDER BY title_translation
 ");
 
@@ -35,16 +36,16 @@ $slist = [];
 $sl = 0;
 
 if (count($q) > 0) {
-	foreach($q AS $rs) {
+	foreach ($q as $rs) {
 		if ($_SESSION['user_id']) {
-			foreach(array('read','gmed','played') AS $type) {
-				$slist[$sl][$type] = getdynamicscehtml($rs['id'],$type,$userlog[$rs['id']][$type] ?? FALSE);
+			foreach (array('read', 'gmed', 'played') as $type) {
+				$slist[$sl][$type] = getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? FALSE);
 			}
 		}
-		$sce_id = (int) $rs['id'];
+		$game_id = (int) $rs['id'];
 		// query-i-løkke... skal optimeres!
 		$slist[$sl]['files'] = $rs['files'];
-		$slist[$sl]['link'] = "data?scenarie=".$rs['id'];
+		$slist[$sl]['link'] = "data?scenarie=" . $rs['id'];
 		$slist[$sl]['title'] = $rs['title_translation'];
 		$slist[$sl]['origtitle'] = $rs['title'];
 		$slist[$sl]['personlist'] = "";
@@ -52,26 +53,26 @@ if (count($q) > 0) {
 
 		$personlist = [];
 		$qq = getall("
-			SELECT aut.id, CONCAT(firstname,' ',surname) AS name
-			FROM aut, asrel
-			WHERE asrel.sce_id = $sce_id AND asrel.aut_id = aut.id AND asrel.tit_id IN(1,5)
+			SELECT p.id, CONCAT(firstname,' ',surname) AS name
+			FROM person p, pgrel
+			WHERE pgrel.game_id = $game_id AND pgrel.person_id = p.id AND pgrel.title_id IN(1,5)
 			ORDER BY firstname, surname
 		");
-		foreach($qq AS $thisforfatter) {
-			list($forfid,$forfname) = $thisforfatter;
+		foreach ($qq as $thisforfatter) {
+			list($forfid, $forfname) = $thisforfatter;
 			$personlist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
 		}
-		if (!$personlist && $rs['aut_extra']) {
-			$personlist[] = $rs['aut_extra'];
+		if (!$personlist && $rs['person_extra']) {
+			$personlist[] = $rs['person_extra'];
 		}
 		if ($personlist) {
-			$slist[$sl]['personlist'] = join("<br />",$personlist);
+			$slist[$sl]['personlist'] = join("<br />", $personlist);
 		}
 
 		if ($rs['con_id']) {
-		$coninfo = nicedateset($rs['begin'],$rs['end']);
+			$coninfo = nicedateset($rs['begin'], $rs['end']);
 			$slist[$sl]['coninfo'] = $coninfo;
-			$slist[$sl]['conlink'] = "data?con=".$rs['con_id'];
+			$slist[$sl]['conlink'] = "data?con=" . $rs['con_id'];
 			$slist[$sl]['conname'] = $rs['name'] . " (" . yearname($rs['year']) . ")";
 		}
 
@@ -91,23 +92,23 @@ $articles = getarticlereferences($this_id, $this_type);
 $available_pic = hasthumbnailpic($this_id, $this_type);
 
 // Smarty
-$t->assign('pagetitle',$tag);
-$t->assign('type',$this_type);
+$t->assign('pagetitle', $tag);
+$t->assign('type', $this_type);
 
-$t->assign('id',$tag_id);
-$t->assign('tag',$tag);
-$t->assign('pic',$available_pic);
-$t->assign('ogimage', getimageifexists($this_id, $this_type) );
-$t->assign('description',$description);
-$t->assign('slist',$slist);
-$t->assign('trivia',$trivialist);
-$t->assign('link',$linklist);
-$t->assign('articles',$articles);
-$t->assign('filelist',$filelist);
-$t->assign('filedir', getcategorydir($this_type) );
-if (in_array(strtolower($tag), ['lgbtq', 'queer', 'queerness'] ) ) {
+$t->assign('id', $tag_id);
+$t->assign('tag', $tag);
+$t->assign('internal', $internal);
+$t->assign('pic', $available_pic);
+$t->assign('ogimage', getimageifexists($this_id, $this_type));
+$t->assign('description', $description);
+$t->assign('slist', $slist);
+$t->assign('trivia', $trivialist);
+$t->assign('link', $linklist);
+$t->assign('articles', $articles);
+$t->assign('filelist', $filelist);
+$t->assign('filedir', getcategorydir($this_type));
+if (in_array(strtolower($tag), ['lgbtq', 'queer', 'queerness'])) {
 	$t->assign('lgbtmenu', TRUE);
 }
 
 $t->display('data.tpl');
-?>

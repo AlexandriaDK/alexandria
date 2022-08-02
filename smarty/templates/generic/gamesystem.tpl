@@ -1,4 +1,5 @@
 <div id="content">
+{include file="originalsearch.tpl"}
 
 	<h2 class="datatitle">{$name|escape}</h2>
 
@@ -10,11 +11,7 @@
 	</div>
 {/if}
 
-{if $alias != ""}
-	<p class="indata">
-		({$_aka}: {$alias})
-	</p>
-{/if}
+{include file="alias.tpl"}
 
 {if $description != ""}
 	
@@ -50,8 +47,8 @@
 			{/foreach}
 			</td>
 			<td>
-			{foreach $game.convent AS $convent}
-			{con dataset=$convent}<br>
+			{foreach $game.convention AS $convention}
+			{con dataset=$convention}<br>
 			{/foreach}
 		</tr>
 	{/foreach}

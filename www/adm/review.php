@@ -27,7 +27,7 @@ if ( $action ) {
 
 if ( ! $action && $review_id) {
 	list($id, $data_id, $category, $review_title, $description, $reviewer, $syndicatedurl, $published, $visible, $language) = getrow("SELECT id, data_id, category, title, description, reviewer, syndicatedurl, published, visible, language FROM reviews WHERE id = $review_id");
-	$game_title = getone( "SELECT title FROM sce WHERE id = $data_id");
+	$game_title = getone( "SELECT title FROM game WHERE id = $data_id");
 	$gameidtitle = $data_id . " - " . $game_title;
 }
 

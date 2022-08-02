@@ -4,7 +4,7 @@ chdir( __DIR__ . '/../www/' );
 require("./connect.php");
 require("./base.inc.php");
 
-$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM aut");
+$names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM person");
 $namesclean = [];
 foreach ($names AS $id => $name) {
     $parts = explode(' ', $name);

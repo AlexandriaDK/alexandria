@@ -8,9 +8,9 @@ function mailsanitize($string) {
 	return str_replace(array("\r","\n"),"",$string);
 }
 
-$cat = $_REQUEST['cat'];
-$data_id = $_REQUEST['data_id'];
-$data_label = $_REQUEST['data_label'];
+$cat = $_REQUEST['cat'] ?? '';
+$data_id = $_REQUEST['data_id'] ?? '';
+$data_label = ($_REQUEST['data_label'] ?? '');
 $data_description = $_REQUEST['data_description'];
 $user_name = mailsanitize($_REQUEST['user_name']);
 $user_email = mailsanitize($_REQUEST['user_email']);

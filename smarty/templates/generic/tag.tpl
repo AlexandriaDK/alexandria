@@ -1,4 +1,5 @@
 <div id="content">
+{include file="originalsearch.tpl"}
 
 <article>
 	<h2 class="datatitle">{$tag|escape}</h2>
@@ -46,6 +47,7 @@
 
 {include file="articlereference.tpl"}
 {include file="trivialink.tpl"}
+{include file="internal.tpl"}
 {include file="updatelink.tpl"}
 
 </div>

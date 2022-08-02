@@ -16,7 +16,7 @@ if ( ! $r ) {
 }
 
 // hardcoded to use game, not other categories
-$target_title = getone( "SELECT title FROM sce WHERE id = " . $r['data_id'] );
+$target_title = getone( "SELECT title FROM game WHERE id = " . $r['data_id'] );
 $target_link = getdatalink( $r['category'], $r['data_id'] );
 $target_html = getdatahtml( $r['category'], $r['data_id'], $target_title );
 

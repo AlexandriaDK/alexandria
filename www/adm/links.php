@@ -6,26 +6,17 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'links';
 
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$url = $_REQUEST['url'];
-$description = $_REQUEST['description'];
-$id = $_REQUEST['id'];
-$category = $_REQUEST['category'];
-$data_id = $_REQUEST['data_id'];
-if ($category == 'game') $category = 'sce';
+$action = $_REQUEST['action'] ?? '';
+$do = $_REQUEST['do'] ?? '';
+$url = $_REQUEST['url'] ?? '';
+$description = $_REQUEST['description'] ?? '';
+$id = $_REQUEST['id'] ?? '';
+$category = $_REQUEST['category'] ?? '';
+$data_id = $_REQUEST['data_id'] ?? '';
 
 $url = trim($url);
 if ($url && substr($url,0,4) != 'http' && substr($url,0,1) != '{') {
 	$url = 'https://' . $url;
-}
-
-function rlyehlink ($text) {
-	if (preg_match('/^r(lyeh)?(\d+)/i',$text,$regs)) {
-		return $regs[2];
-	} else {
-		return false;
-	}
 }
 
 if ( $action ) {
@@ -36,10 +27,6 @@ if ( $action ) {
 if ($action == "changelink" && $do != "Remove") {
 	$url = trim($url);
 	$description = trim($description);
-	if ($rid = rlyehlink($url)) {
-		$url = "http://rlyeh.alexandria.dk/pub/scenarier/game.php3?id=".$rid;
-		$description = "Scenariet til download på Projekt R\\'lyeh";
-	}
 	$q = "UPDATE links SET " .
 	     "url = '" . dbesc($url) . "', " .
 	     "description = '" . dbesc($description) . "' " .
@@ -67,13 +54,10 @@ if ($action == "changelink" && $do == "Remove") {
 if ($action == "addlink") {
 	$url = trim($url);
 	$description = trim($description);
-	if ($rid = rlyehlink($url)) {
-		$url = "http://rlyeh.alexandria.dk/pub/scenarier/game.php3?id=".$rid;
-		$description = "Scenariet til download på Projekt R\\'lyeh";
-	}
+	$data_field = getFieldFromCategory($category);
 	$q = "INSERT INTO links " .
-	     "(data_id, category, url, description) VALUES ".
-	     "('$data_id', '$category', '" . dbesc($url) . "', '" . dbesc($description) . "')";
+	     "($data_field, url, description) VALUES ".
+	     "('$data_id', '" . dbesc($url) . "', '" . dbesc($description) . "')";
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
@@ -84,48 +68,12 @@ if ($action == "addlink") {
 
 }
 
-
 if ($data_id && $category) {
 	$data_id = intval($data_id);
-	switch($category) {
-	case 'aut':
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-		break;
-	case 'sce':
-		$cat = 'sce';
-		$q = "SELECT title FROM sce WHERE id = '$data_id'";
-		$mainlink = "game.php?game=$data_id";
-		break;
-	case 'convent':
-		$cat = 'convent';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convent WHERE id = '$data_id'";
-		$mainlink = "convent.php?con=$data_id";
-		break;
-	case 'conset':
-		$cat = 'conset';
-		$q = "SELECT name FROM conset WHERE id = '$data_id'";
-		$mainlink = "conset.php?conset=$data_id";
-		break;
-	case 'sys':
-		$cat = 'sys';
-		$q = "SELECT name FROM sys WHERE id = '$data_id'";
-		$mainlink = "system.php?system=$data_id";
-		break;
-	case 'tag':
-		$cat = 'tag';
-		$q = "SELECT tag FROM tag WHERE id = '$data_id'";
-		$mainlink = "tag.php?tag_id=$data_id";
-		break;
-	default:
-		$cat = 'aut';
-		$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM aut WHERE id = '$data_id'";
-		$mainlink = "person.php?person=$data_id";
-	}
-	$title = getone($q);
+	$data_field = getFieldFromCategory($category);
+	$linktitle = getlabel($category, $data_id, TRUE);
 	
-	$query = "SELECT id, url, description FROM links WHERE data_id = '$data_id' AND category = '$cat' ORDER BY id";
+	$query = "SELECT id, url, description FROM links WHERE `$data_field` = '$data_id' ORDER BY id";
 	$result = getall($query);
 }
 
@@ -133,7 +81,7 @@ htmladmstart("Links");
 
 if ($data_id && $category) {
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=5>Edit links for: <a href=\"$mainlink\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=5>Edit links for: $linktitle</th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
 	      "<th>URL</th>".
@@ -202,5 +150,3 @@ if ($data_id && $category) {
 }
 
 print "</body>\n</html>\n";
-
-?>

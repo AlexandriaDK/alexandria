@@ -49,21 +49,21 @@ if ($magazineid) {
 	// two lookups with and without page being NULL could be combined to one
 	// No need to create article tree with authors as subset. Template already handles that.
 	$colophon = getall("
-		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		SELECT article.id, contributor.person_id, contributor.person_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
-		LEFT JOIN aut ON contributor.aut_id = aut.id
-		LEFT JOIN sce ON article.sce_id = sce.id
+		LEFT JOIN person p ON contributor.person_id = p.id
+		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issueid
 		AND page IS NULL AND article.title = ''
 		ORDER BY article.id
 	");
 	$articles = getall("
-		SELECT article.id, contributor.aut_id, contributor.aut_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.sce_id, CONCAT(aut.firstname, ' ', aut.surname) AS name, sce.title AS scetitle
+		SELECT article.id, contributor.person_id, contributor.person_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
-		LEFT JOIN aut ON contributor.aut_id = aut.id
-		LEFT JOIN sce ON article.sce_id = sce.id
+		LEFT JOIN person p ON contributor.person_id = p.id
+		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issueid
 		AND (page IS NOT NULL OR article.title != '')
 		ORDER BY page, article.id
@@ -75,7 +75,7 @@ if ($magazineid) {
 			$articles[$articleid]['references'] = [];
 			$articles[$articleid]['contributorcount'] = 0;
 			$lastid = $articleid;
-			$references = getall('SELECT category, data_id FROM article_reference WHERE article_id = ' . $article['id'] . ' ORDER BY category, id');
+			$references = getall("SELECT COALESCE(person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(magazine_id) THEN 'magazine' WHEN !ISNULL(issue_id) THEN 'issue' END AS category FROM article_reference WHERE article_id = " . $article['id'] . " ORDER BY category, id");
 			foreach ($references AS $reference_id => $reference) {
 				$articles[$articleid]['references'][] = getentryhtml($reference['category'], $reference['data_id']);
 			}
@@ -129,10 +129,10 @@ if ($magazineid) {
 $t->assign('magazineid',$magazineid);
 $t->assign('issueid',$issueid);
 $t->assign('id',$id);
-$t->assign('magazines',$magazines);
+$t->assign('magazines',$magazines ?? '');
 $t->assign('magazinename',$magazinename);
 $t->assign('magazinedescription',$magazinedescription);
-$t->assign('intern',$internal);
+$t->assign('internal',$internal);
 $t->assign('issues',$issues);
 $t->assign('issue',$issue);
 $t->assign('colophon',$colophon);

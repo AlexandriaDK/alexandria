@@ -52,26 +52,25 @@ for ($i=1;$i<=$chainlen;$i=$i+0.5) {
 
 // names
 $i = 0;
+$type = 'game';
 foreach($dataset AS $id) {
 	$i++;
-	$type = ($type=='aut'?'sce':'aut');
-	if ($type == 'aut') {
-		$label = getentry('aut',$id);
+	$type = ($type=='person'?'game':'person');
+	if ($type == 'person') {
+		$label = getentry('person',$id);
 		$color = $red;
 	} else {
-		$label = getentry('sce',$id);
+		$label = getentry('game',$id);
 		$color = $yellow;
 	}
 	if (mb_strlen($label) > 20) $label = mb_substr($label,0,18)."...";
 
 	list(,,$txtw,,,$txth) = imagettfbbox($fontsize,0, $fontpath, fixttftext($label));
-	$txty = abs($txty);
 
-	$x = ($type=='aut'?$leftmargin:($w-$leftmargin)) - ($txtw/2);
+	$x = ($type=='person'?$leftmargin:($w-$leftmargin)) - ($txtw/2);
 	$y = ($i*$space*0.5) - ($txth/2);
 
-
-	imagettftext($im,$fontsize,0,$x,$y,$color, $fontpath, fixttftext($label));
+	imagettftext($im,$fontsize,0,intval($x),intval($y),$color, $fontpath, fixttftext($label));
 
 }
 

@@ -9,37 +9,37 @@ $data_id = (int) ($_REQUEST['data_id'] ?? 0);
 $output = [];
 
 $exportqueries = [
-	'persons' => "SELECT id, firstname, surname FROM aut ORDER BY id",
-	'games' => "SELECT id, title, boardgame, sys_id AS system_id, sys_ext AS system_extra, aut_extra AS person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM sce ORDER BY id",
-	'conventions' => "SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.confirmed, a.cancelled, a.country FROM convent a ORDER BY a.id",
+	'persons' => "SELECT id, firstname, surname FROM person ORDER BY id",
+	'games' => "SELECT id, title, boardgame, gamesystem_id, gamesystem_extra, person_extra, gms_min, gms_max, players_min, players_max, participants_extra FROM game ORDER BY id",
+	'conventions' => "SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.confirmed, a.cancelled, a.country FROM convention a ORDER BY a.id",
 	'conventionsets' => "SELECT id, name, description, country FROM conset ORDER BY id",
-	'systems' => "SELECT id, name, description FROM sys ORDER BY id",
-	'genres' => "SELECT id, name, genre FROM gen ORDER BY id",
-	'genre_game_relations' => "SELECT id, gen_id AS genre_id, sce_id AS game_id FROM gsrel ORDER BY sce_id, gen_id, id",
-	'tags' => "SELECT id, tag, description FROM tag ORDER BY id",
-	'gametags' => "SELECT id, sce_id AS game_id, tag FROM tags ORDER BY id",
-	'gameruns' => "SELECT id, sce_id AS game_id, begin, end, location, description, cancelled, country FROM scerun ORDER BY id",
+	'systems' => "SELECT id, name, description FROM gamesystem ORDER BY id",
+	'genres' => "SELECT id, name, genre FROM genre ORDER BY id",
+	'genre_game_relations' => "SELECT id, genre_id, game_id FROM ggrel ORDER BY game_id, genre_id, id",
+	'tags' => "SELECT id, tag, description, '' AS internal FROM tag ORDER BY id",
+	'gametags' => "SELECT id, game_id, tag FROM tags ORDER BY id",
+	'gameruns' => "SELECT id, game_id, begin, end, location, description, cancelled, country FROM gamerun ORDER BY id",
 	'gamedescriptions' => "SELECT id, game_id, description, language, note FROM game_description ORDER BY game_id, language, id",
 	'titles' => "SELECT id, title, title_label, priority, iconfile, iconwidth, iconheight, textsymbol FROM title ORDER BY id",
-	'presentations' => "SELECT id, event, event_label, iconfile, textsymbol FROM pre ORDER BY id",
-	'feeds' => "SELECT id, url, owner, aut_id AS person_id, name, pageurl, lastchecked, podcast, pauseupdate FROM feeds ORDER BY id",
-	'trivia' => "SELECT id, data_id, category, fact FROM trivia ORDER BY id",
-	'links' => "SELECT id, data_id, category, url, description FROM links ORDER BY id",
-	'aliases' => "SELECT id, data_id, category, label, visible FROM alias WHERE visible = 1 ORDER BY category, data_id, id", // Don't expose hidden aliases yet
-	'files' => "SELECT id, data_id, category, filename, description, downloadable, inserted, language, indexed FROM files WHERE downloadable = 1 ORDER BY category, data_id, id",
+	'presentations' => "SELECT id, event, event_label, iconfile, textsymbol FROM presentation ORDER BY id",
+	'feeds' => "SELECT id, url, owner, person_id, name, pageurl, lastchecked, podcast, pauseupdate FROM feeds ORDER BY id",
+	'trivia' => "SELECT id, fact, '' AS internal, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, fact FROM trivia ORDER BY id",
+	'links' => "SELECT id, url, description, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id FROM links ORDER BY id",
+	'aliases' => "SELECT id, label, visible, language, person_id, game_id, convention_id, conset_id, gamesystem_id FROM alias WHERE visible = 1 ORDER BY id", // Don't expose hidden aliases yet
+	'files' => "SELECT id, filename, description, downloadable, inserted, language, indexed, game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id FROM files WHERE downloadable = 1 ORDER BY id",
 	'sitetexts' => "SELECT id, label, text, language, lastupdated FROM weblanguages ORDER BY language, id",
 	'awards' => "SELECT id, name, conset_id, description, label FROM awards ORDER BY id",
-	'award_categories' => "SELECT id, name, convent_id, description, award_id FROM award_categories ORDER BY id",
-	'award_nominee_entities' => "SELECT id, award_nominee_id, data_id, category, label FROM award_nominee_entities ORDER BY award_nominee_id, id",
-	'award_nominees' => "SELECT id, award_category_id, sce_id AS game_id, name, nominationtext, winner, ranking FROM award_nominees ORDER BY id",
-	'person_game_title_relations' => "SELECT id, aut_id AS person_id, sce_id AS game_id, tit_id AS title_id, note FROM asrel ORDER BY aut_id, sce_id, id",
-	'game_convention_presentation_relations' => "SELECT id, sce_id AS game_id, convent_id AS convention_id, pre_id AS presentation_id FROM csrel ORDER BY convention_id, sce_id, id",
-	'person_convention_relations' => "SELECT id, aut_id AS person_id, convent_id AS convention_id, aut_extra AS person_extra, role FROM acrel ORDER BY convention_id, aut_id, id",
+	'award_categories' => "SELECT id, name, convention_id, description, award_id FROM award_categories ORDER BY id",
+	'award_nominee_entities' => "SELECT id, award_nominee_id, label, person_id, game_id FROM award_nominee_entities ORDER BY award_nominee_id, id",
+	'award_nominees' => "SELECT id, award_category_id, game_id, name, nominationtext, winner, ranking FROM award_nominees ORDER BY id",
+	'person_game_title_relations' => "SELECT id, person_id, game_id, title_id, note FROM pgrel ORDER BY person_id, game_id, id",
+	'game_convention_presentation_relations' => "SELECT id, game_id, convention_id, presentation_id FROM cgrel ORDER BY convention_id, game_id, id",
+	'person_convention_relations' => "SELECT id, person_id, convention_id, person_extra, role FROM pcrel ORDER BY convention_id, person_id, id",
 	'magazines' => "SELECT id, name, description FROM magazine ORDER BY id",
 	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
-	'articles' => "SELECT id, issue_id, page, title, description, articletype, sce_id AS game_id FROM article ORDER BY issue_id, id",
-	'contributors' => "SELECT id, aut_id AS person_id, aut_extra AS person_extra, role, article_id FROM contributor ORDER BY id",
-	'article_reference' => "SELECT id, article_id, category, data_id FROM article_reference ORDER BY id"
+	'articles' => "SELECT id, issue_id, page, title, description, articletype, game_id FROM article ORDER BY issue_id, id",
+	'contributors' => "SELECT id, person_id, person_extra, role, article_id FROM contributor ORDER BY id",
+	'article_reference' => "SELECT id, article_id, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id FROM article_reference ORDER BY id"
 ];
 
 if ( $dataset ) {
@@ -90,7 +90,7 @@ if ( $dataset ) {
 		$output = $data;
 	}
 } elseif ( $setup === 'sqlstructure' ) { // Order is important due to foreign keys
-	$tables = [ 'aut', 'sys', 'sce', 'conset', 'convent', 'gen', 'gsrel', 'tag', 'tags', 'scerun', 'title', 'files', 'pre', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'asrel', 'csrel', 'acrel', 'users', 'loginmap', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts' ];
+	$tables = [ 'person', 'gamesystem', 'game', 'conset', 'convention', 'genre', 'ggrel', 'tag', 'tags', 'gamerun', 'title', 'files', 'presentation', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'pgrel', 'cgrel', 'gcrel', 'users', 'loginmap', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -167,4 +167,3 @@ $json_output = json_encode( $output );
 header( "Content-Type: application/json" );
 header( "Content-Length: " . strlen( $json_output) );
 print $json_output;
-?>

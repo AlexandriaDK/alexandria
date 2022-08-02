@@ -2,11 +2,11 @@
 require("./connect.php");
 require("base.inc.php");
 
-$systems = getall("SELECT id, name FROM sys ORDER BY name");
-$genres = getall("SELECT id, name FROM gen WHERE genre = 1 ORDER BY name");
-$categories = getall("SELECT id, name FROM gen WHERE genre = 0 ORDER BY name");
+$systems = getall("SELECT id, name FROM gamesystem ORDER BY name");
+$genres = getall("SELECT id, name FROM genre WHERE genre = 1 ORDER BY name");
+$categories = getall("SELECT id, name FROM genre WHERE genre = 0 ORDER BY name");
 $consets = getall("SELECT id, name FROM conset ORDER BY name");
-$filelanguages = getall( "SELECT COUNT(DISTINCT data_id) AS count, language FROM files WHERE category = 'sce' AND language != '' AND downloadable = 1 GROUP BY language ORDER BY count DESC", FALSE);
+$filelanguages = getall("SELECT COUNT(DISTINCT game_id) AS count, language FROM files WHERE language != '' AND downloadable = 1 GROUP BY language ORDER BY count DESC", FALSE);
 
 $suggestlanguages = [];
 foreach ( $filelanguages AS $filelanguage ) {
@@ -17,11 +17,10 @@ foreach ( $filelanguages AS $filelanguage ) {
     }
 }
 
-$t->assign('servername',$_SERVER['SERVER_NAME']);
 $t->assign('systems',$systems);
 $t->assign('genres',$genres);
 $t->assign('categories',$categories);
 $t->assign('consets',$consets);
-$t->assign( 'suggestlanguages', $suggestlanguages );
+$t->assign('suggestlanguages', $suggestlanguages);
 $t->display('find_advanced.tpl');
 ?>

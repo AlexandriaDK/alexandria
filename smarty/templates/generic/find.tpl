@@ -7,14 +7,14 @@
 		{$_find_title}
 	</h2>
 
-{if $find_aut}
+{if $find_person}
 	<h3 class="findhead">
 		{$_persons|ucfirst}
 	</h3>
-	{$find_aut}
+	{$find_person}
 {/if}
 
-{if $find_sce}
+{if $find_game}
 	<h3 class="findhead">
 		{if $search_boardgames}
 		{$_boardgames|ucfirst}
@@ -22,21 +22,21 @@
 		{$_scenarios|ucfirst}
 		{/if}
 	</h3>
-	{$find_sce}
+	{$find_game}
 {/if}
 
-{if $find_convent}
+{if $find_convention}
 	<h3 class="findhead">
 		{$_conventions|ucfirst}
 	</h3>
-	{$find_convent}
+	{$find_convention}
 {/if}
 
-{if $find_sys}
+{if $find_gamesystem}
 	<h3 class="findhead">
 		{$_rpgsystems|ucfirst}
 	</h3>
-	{$find_sys}
+	{$find_gamesystem}
 {/if}
 
 {if $find_tags}
@@ -74,7 +74,7 @@
 	{$find_blogposts}
 {/if}
 
-{if ! $find_aut && ! $find_sce && ! $find_convent && ! $find_sys && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_articles}
+{if ! $find_person && ! $find_game && ! $find_convention && ! $find_gamesystem && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_articles}
 	<p class="nomatch">
 		{$_find_nomatch}
 	</p>

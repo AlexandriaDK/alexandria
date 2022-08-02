@@ -12,7 +12,7 @@ function addLocaleCountry($dbresult) {
 
 function conListByConfirmed($confirmed) {
 	$confirmed = (int) $confirmed;
-	$list = getall("SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, COALESCE(convent.country, conset.country) AS country FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE confirmed = $confirmed ORDER BY convent.year DESC, convent.name");
+	$list = getall("SELECT convention.id, convention.name, convention.begin, convention.end, convention.year, COALESCE(convention.country, conset.country) AS country FROM convention LEFT JOIN conset ON convention.conset_id = conset.id WHERE confirmed = $confirmed ORDER BY convention.year DESC, convention.name");
 	$list = addLocaleCountry($list);
 	return $list;
 }
@@ -20,12 +20,12 @@ function conListByConfirmed($confirmed) {
 function conListByConfirmedGroup($confirmed) {
 	$confirmed = (int) $confirmed;
 	$result = [];
-	$list = getall("SELECT convent.id, convent.name, convent.begin, convent.end, convent.year, COALESCE(convent.country, conset.country) AS country FROM convent LEFT JOIN conset ON convent.conset_id = conset.id WHERE confirmed = $confirmed ORDER BY country, convent.year DESC, convent.name");
-	foreach ($list AS $convent) {
-		if (!isset($result[$convent['country']]) ) {
-			$result[$convent['country']] = [ 'countryname' => getCountryName($convent['country']), 'cons' => [] ];
+	$list = getall("SELECT convention.id, convention.name, convention.begin, convention.end, convention.year, COALESCE(convention.country, conset.country) AS country FROM convention LEFT JOIN conset ON convention.conset_id = conset.id WHERE confirmed = $confirmed ORDER BY country, convention.year DESC, convention.name");
+	foreach ($list AS $convention) {
+		if (!isset($result[$convention['country']]) ) {
+			$result[$convention['country']] = [ 'countryname' => getCountryName($convention['country']), 'cons' => [] ];
 		}
-		$result[$convent['country']]['cons'][] = $convent;
+		$result[$convention['country']]['cons'][] = $convention;
 	}
 	uasort($result, function($a, $b) { return count($b['cons']) - count($a['cons']); }); // sort array with most cons at top
 	return $result;

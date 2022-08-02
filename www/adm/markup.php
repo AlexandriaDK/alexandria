@@ -6,20 +6,21 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$action = (string) $_REQUEST['action'];
-$id = (int) $_REQUEST['id'];
-$table = (string) $_REQUEST['table'];
-$text = (string) $_REQUEST['text'];
+$action = (string) ($_REQUEST['action'] ?? FALSE);
+$id = (int) ($_REQUEST['id'] ?? FALSE);
+$table = (string) ($_REQUEST['table'] ?? FALSE);
+$text = (string) ($_REQUEST['text'] ?? FALSE);
 
-if ( $action ) {
-	validatetoken( $token );
+if ($action) {
+	validatetoken($token);
 }
 
 if ($action == 'fix') {
 	updatestuff($table, $text, $id);
 }
 
-function updatestuff ($table, $text, $id) {
+function updatestuff($table, $text, $id)
+{
 	$field = 'description';
 	if ($table == 'trivia') {
 		$field = 'fact';
@@ -30,12 +31,13 @@ function updatestuff ($table, $text, $id) {
 	exit;
 }
 
-function linkfix ($matches) {
-	if ($id = getone("SELECT id FROM sce WHERE title = '" . dbesc($matches[1]) . "'") ) {
+function linkfix($matches)
+{
+	if ($id = getone("SELECT id FROM game WHERE title = '" . dbesc($matches[1]) . "'")) {
 		$code = '[[[s' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
-	if ($id = getone("SELECT id FROM aut WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'") ) {
+	if ($id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'")) {
 		$code = '[[[p' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
@@ -48,19 +50,19 @@ print "<h1>Markup fixes</h1>" . PHP_EOL;
 
 $regexp_sql = '\\\[\\\[\\\[[^|]+\\\]\\\]\\\]';
 $regexp_php = '_\\\[\\\[\\\[([^|]+)\\\]\\\]\\\]_';
-$sql = "select id, fact from trivia where fact regexp '$regexp_sql'";
-$trivias = getall("select id, fact, data_id, category from trivia where fact regexp '$regexp_sql'");
+
+$trivias = getall("select id, fact, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' END AS category from trivia where fact regexp '$regexp_sql'");
 $tags = getall("select id, tag, description from tag where description regexp '$regexp_sql'");
-$scenarios = getall("select id, title, description from sce where description regexp '$regexp_sql'");
-$cons = getall("select id, description from convent where description regexp '$regexp_sql'");
-$syss = getall("select id, description from sys where description regexp '$regexp_sql'");
+$scenarios = getall("select gd.id, gd.game_id, g.title, gd.description from game_description gd inner join game g ON gd.game_id = g.id where gd.description regexp '$regexp_sql'");
+$cons = getall("select id, description from convention where description regexp '$regexp_sql'");
+$syss = getall("select id, description from gamesystem where description regexp '$regexp_sql'");
 
 $total = count($trivias) + count($tags) + count($scenarios) + count($cons) + count($syss);
 print dberror();
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Trivia</th></tr>" . PHP_EOL;
-foreach($trivias AS $trivia) {
+foreach ($trivias as $trivia) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"trivia\"><input type=\"hidden\" name=\"id\" value=\"" . $trivia['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
@@ -78,13 +80,12 @@ foreach($trivias AS $trivia) {
 	print "</tr>";
 	print "</form>";
 	print PHP_EOL;
-
 }
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Tags</th></tr>" . PHP_EOL;
-foreach($tags AS $tag) {
+foreach ($tags as $tag) {
 	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"tag\"><input type=\"hidden\" name=\"id\" value=\"" . $tag['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
@@ -101,18 +102,17 @@ foreach($tags AS $tag) {
 	print "</tr>";
 	print "</form>";
 	print PHP_EOL;
-
 }
 print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Scenarios</th></tr>" . PHP_EOL;
-foreach($scenarios AS $scenario) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sce\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
+foreach ($scenarios as $scenario) {
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"game_description\"><input type=\"hidden\" name=\"id\" value=\"" . $scenario['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($scenario['description']) . "<br>";
-	print "<a href=\"game.php?game=" . $scenario['id'] . "\">[scenario]</a>";
+	print "<a href=\"game.php?game=" . $scenario['game_id'] . "\">[scenario]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -129,12 +129,12 @@ print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">Cons</th></tr>" . PHP_EOL;
-foreach($cons AS $con) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convent\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
+foreach ($cons as $con) {
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"convention\"><input type=\"hidden\" name=\"id\" value=\"" . $con['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . nl2br(htmlspecialchars($con['description'])) . "<br>";
-	print "<a href=\"convent.php?con=" . $con['id'] . "\">[convention]</a>";
+	print "<a href=\"convention.php?con=" . $con['id'] . "\">[convention]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -151,12 +151,12 @@ print "</table>";
 
 print "<table border=\"1\">" . PHP_EOL;
 print "<tr><th colspan=\"2\">RPG Systems</th></tr>" . PHP_EOL;
-foreach($syss AS $sys) {
-	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"sys\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
+foreach ($syss as $sys) {
+	print "<form action=\"markup.php\" method=\"post\"><input type=\"hidden\" name=\"action\" value=\"fix\"><input type=\"hidden\" name=\"table\" value=\"gamesystem\"><input type=\"hidden\" name=\"id\" value=\"" . $sys['id'] . "\">";
 	print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 	print "<tr>";
 	print "<td>" . htmlspecialchars($sys['description']) . "<br>";
-	print "<a href=\"system.php?system=" . $sys['id'] . "\">[RPG system]</a>";
+	print "<a href=\"gamesystem.php?gamesystem=" . $sys['id'] . "\">[RPG system]</a>";
 
 	print "</td>";
 	$fixedfact = preg_replace_callback(
@@ -176,5 +176,3 @@ if ($total == 0) {
 }
 
 print "</body>\n</html>\n";
-
-?>

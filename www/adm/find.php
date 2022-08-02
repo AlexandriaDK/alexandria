@@ -9,21 +9,21 @@ $find = $_REQUEST['find'] ?? '';
 
 // Lidt kvik-find-kode:
 
-if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i",$find,$regs)) {
+if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i", $find, $regs)) {
 	$pref = strtolower($regs[1]);
 	$id = $regs[2];
 
 	$url = "";
-	switch($pref) {
+	switch ($pref) {
 		case "s":
 		case "g":
 			$url = "game.php?game=" . $id;
 			break;
 
 		case "sys":
-			$url = "system.php?system=" . $id;
+			$url = "gamesystem.php?gamesystem=" . $id;
 			break;
-		
+
 		case "i":
 			$url = "magazine.php?issue_id=" . $id;
 			break;
@@ -31,10 +31,10 @@ if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i",$find,$regs)) {
 		case "m":
 			$url = "magazine.php?magazine_id=" . $id;
 			break;
-		
+
 
 		case "c":
-			$url = "convent.php?con=" . $id;
+			$url = "convention.php?con=" . $id;
 			break;
 
 		case "cs":
@@ -52,23 +52,22 @@ if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i",$find,$regs)) {
 			$url = "ticket.php?id=" . $id;
 			break;
 	}
-	if ( $url ) {
-		header( "Location: " . $url );
+	if ($url) {
+		header("Location: " . $url);
 		exit;
 	}
-
 }
 
 $r1 = getall("
-	(SELECT id, title, 0 AS alias FROM sce WHERE title LIKE '%".likeesc($find)."%')
+	(SELECT id, title, 0 AS alias FROM game WHERE title LIKE '%" . likeesc($find) . "%')
 	UNION
-	(SELECT data_id, label AS title, 1 AS alias FROM alias WHERE label LIKE '%".likeesc($find)."%' AND category = 'sce')
+	(SELECT game_id, label AS title, 1 AS alias FROM alias WHERE label LIKE '%" . likeesc($find) . "%' AND person_id IS NOT NULL)
 	ORDER BY title
 ");
 $r2 = getall("
-	(SELECT id, CONCAT(firstname,' ',surname) AS name, 0 AS alias FROM aut WHERE CONCAT(firstname,' ',surname) LIKE '%".likeesc($find)."%')
+	(SELECT id, CONCAT(firstname,' ',surname) AS name, 0 AS alias FROM person p WHERE CONCAT(firstname,' ',surname) LIKE '%" . likeesc($find) . "%')
 	UNION
-	(SELECT data_id, label AS name, 1 AS alias FROM alias WHERE label LIKE '%".likeesc($find)."%' AND category = 'aut')
+	(SELECT person_id, label AS name, 1 AS alias FROM alias WHERE label LIKE '%" . likeesc($find) . "%' AND person_id IS NOT NULL)
 	ORDER BY name
 ");
 
@@ -88,9 +87,9 @@ print "<b>Found results:</b><br>";
 
 print "Scenarios:<br>";
 
-unset($antal);
-foreach($r1 AS list($id, $name, $alias) ) {
-	print "&nbsp;&nbsp;<a href=\"game.php?game=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
+$antal = 0;
+foreach ($r1 as list($id, $name, $alias)) {
+	print "&nbsp;&nbsp;<a href=\"game.php?game=$id\" " . ($alias ? 'style="font-style: italic;"' : '') . ">$name</a><br>\n";
 	$antal++;
 }
 if ($antal == 0) print "&nbsp;&nbsp;None<br>";
@@ -98,16 +97,17 @@ print "<br>\n\n";
 
 print "People:<br>\n";
 
-unset($antal);
+$antal = 0;
 
-foreach($r2 AS list($id, $name, $alias) ) {
-	print "&nbsp;&nbsp;<a href=\"person.php?person=$id\" " . ($alias ? 'style="font-style: italic;"' : '' ) . ">$name</a><br>\n";
+foreach ($r2 as list($id, $name, $alias)) {
+	print "&nbsp;&nbsp;<a href=\"person.php?person=$id\" " . ($alias ? 'style="font-style: italic;"' : '') . ">$name</a><br>\n";
 	$antal++;
 }
 if ($antal == 0) print "&nbsp;&nbsp;None<br>";
 
-print "<br><a href=\"" . htmlspecialchars( $_SERVER['HTTP_REFERER'] ) ."\">Back</a><br>";
+print "<br><a href=\"" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "\">Back</a><br>";
 
 ?>
 </body>
+
 </html>

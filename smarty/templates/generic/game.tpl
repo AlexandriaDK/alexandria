@@ -5,6 +5,7 @@ $( function() {
 </script>
 
 <div id="content">
+{include file="originalsearch.tpl"}
 
 	<h2 class="datatitle">{$title|escape}</h2>
 
@@ -16,15 +17,13 @@ $( function() {
 	</div>
 {/if}
 
-{if $alias != ""}
-	<p class="indata">
-		({$_aka}: {$alias})
-	</p>
-{/if}
+{include file="alias.tpl"}
 
-{if $sysstring != "" || $genre != "" || $participants != "" || $tags || $user_id}
+{if $sysstring != "" || $genre != "" || $participants != "" || $tags || isset($user_id)}
+	{if isset($user_id)}
 	<form action="adm/user_tags.php" method="post">
 	<input type="hidden" name="token" value="{$token}">
+	{/if}
 	<ul class="taglist">
 	{foreach $tags AS $tag_id => $tag}
 	<li>
@@ -36,12 +35,14 @@ $( function() {
 	</li>
 	{/foreach}
 	{* This part is really only for users logged in *}
-	{if $user_id}
+	{if isset($user_id)}
 	<li><a href="#" onclick="$('#tag_input_li').toggle(100).focus();$('#tag_input').focus();" title="{$_sce_addtag}" accesskey="t" class="tag">+</a></li>
 	<li style="display: none;" id="tag_input_li"><input type="hidden" name="scenario" value="{$id}"><input type="hidden" name="action" value="add"><input type="text" name="tag" id="tag_input" class="newtag" placeholder="E.g. Grind Night"></li>
 	{/if}
 	</ul>	
+	{if isset($user_id)}
 	</form>
+	{/if}
 	<p class="indata">
 	{if $sysstring != ""}
 		{$_rpgsystem|ucfirst}: {$sysstring}
@@ -53,15 +54,15 @@ $( function() {
 	{/if}
 	{if $participants != ""}
 		{$_participants|ucfirst}: {$participants|escape}
-		{if $user_can_edit_participants || $user_admin || $user_editor}
+		{if $user_can_edit_participants || isset($user_admin) || isset($user_editor)}
 		- <a href="#" onclick="$('#form_participants').toggle(); return false;">{$_sce_editplayerno}</a>
 		{/if}
 	{/if}
-	{if ($user_id) && $participants == ""}
+	{if isset($user_id) && $participants == ""}
 		{$_participants|ucfirst}: {$_unknown|ucfirst}. <a href="#" onclick="document.getElementById('form_participants').style.display='block'; return false;">{$_sce_addplayerno}</a>
 	{/if}
 	</p>
-	{if ($user_id) }
+	{if isset($user_id) }
 		<div id="form_participants" style="display: none">
 		<form action="adm/user_participants.php" method="post">
 		<input type="hidden" name="token" value="{$token}">
@@ -79,12 +80,12 @@ $( function() {
 {/if}
 
 
-{if $aut_extra != ""}
+{if $person_extra != ""}
 	<h3 class="parttitle">
 		{$_sce_organizedby}
 	</h3>
 	<p class="indata">
-		{$aut_extra}
+		{$person_extra}
 	</p>
 {/if}
 

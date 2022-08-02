@@ -1,12 +1,12 @@
 <br><br>
-{if $user_id && $type == 'convent'}
-<a href="data?con={$id}&amp;edit=organizers#organizers"><span class="updatelinktext">{$_update_addorganizers}</span></a>
+{if isset($user_id) && $type == 'convention'}
+<a href="#neworganizer" class="addorganizer"><span class="updatelinktext">{$_update_addorganizers}</span></a>
 -
 {/if}
 {if not ($type == 'magazine' && ! $id)}
 <a href="rettelser?cat={$type}&amp;data_id={$id}"><span class="updatelinktext">{$_update_submit}</span></a>
 {/if}
-{if $user_editor}
+{if isset($user_editor)}
 {if not ($type == 'magazine' && ! $id)}
 - 
 {/if}

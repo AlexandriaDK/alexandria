@@ -17,7 +17,7 @@ $id = (int) $_REQUEST['id'];
 $run_id = (int) $_REQUEST['run_id'];
 $cancelled = (int) isset($_REQUEST['cancelled']);
 
-$q = "SELECT title FROM sce WHERE id = '$id'";
+$q = "SELECT title FROM game WHERE id = '$id'";
 $title = getone($q);
 
 function typechange($type) {
@@ -35,7 +35,7 @@ if ($action == "changerun" && $do != "Delete") {
 	if (strlen($end) == 4) $end .= "-00-00"; // add blank month+date
 	if (strlen($end) == 7) $end .= "-00"; // add blank date
 	if (!$end) $end = $begin;
-	$q = "UPDATE scerun SET " .
+	$q = "UPDATE gamerun SET " .
 	     "begin = '$begin', " .
 	     "end = '$end', " .
 	     "location = '" . dbesc($location) . "', " .
@@ -45,7 +45,7 @@ if ($action == "changerun" && $do != "Delete") {
 	     "WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Run updated");
+		chlog($id,'game',"Run updated");
 	}
 	$_SESSION['admin']['info'] = "Run updated! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -53,10 +53,10 @@ if ($action == "changerun" && $do != "Delete") {
 
 // Delete run
 if ($action == "changerun" && $do == "Delete") {
-	$q = "DELETE FROM scerun WHERE id = '$run_id'";
+	$q = "DELETE FROM gamerun WHERE id = '$run_id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Run deleted");
+		chlog($id,'game',"Run deleted");
 	}
 	$_SESSION['admin']['info'] = "Run deleted! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
@@ -69,18 +69,18 @@ if ($action == "addrun") {
 	if (strlen($end) == 4) $end .= "-00-00"; // add blank month+date
 	if (strlen($end) == 7) $end .= "-00"; // add blank date
 	if (!$end) $end = $begin;
-	$q = "INSERT INTO scerun " .
-	     "(sce_id, begin, end, location, country, description, cancelled) VALUES ".
+	$q = "INSERT INTO gamerun " .
+	     "(game_id, begin, end, location, country, description, cancelled) VALUES ".
 	     "('$id', '$begin', '$end', '" . dbesc($location). "', '" . dbesc($country). "', '" . dbesc($description) . "', $cancelled)";
 	$r = doquery($q);
 	if ($r) {
-		chlog($id,'sce',"Run created");
+		chlog($id,'game',"Run created");
 	}
 	$_SESSION['admin']['info'] ="Run created! " . dberror();
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
-$query = "SELECT id, begin, end, location, country, description, cancelled FROM scerun WHERE sce_id = '$id' ORDER BY begin, end, id";
+$query = "SELECT id, begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$id' ORDER BY begin, end, id";
 $result = getall($query);
 
 htmladmstart("Run");
@@ -141,5 +141,3 @@ if ($id) {
 	print "Error: No data id provided.";
 }
 print "</body>\n</html>\n";
-
-?>

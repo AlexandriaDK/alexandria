@@ -13,22 +13,21 @@ $tag = (string) ($_REQUEST['tag'] ?? '');
 $review = (int) ($_REQUEST['review'] ?? 0);
 
 if ($person) {
-	include ("person.inc.php");
+	include("person.inc.php");
 } elseif ($scenarie || $game) {
-	include ("game.inc.php");
+	include("game.inc.php");
 } elseif ($con) {
-	include ("convent.inc.php");
+	include("convention.inc.php");
 } elseif ($conset) {
-	include ("conset.inc.php");
+	include("conset.inc.php");
 } elseif ($system) {
-	include ("system.inc.php");
+	include("gamesystem.inc.php");
 } elseif ($year) {
-	include ("year.inc.php");
+	include("year.inc.php");
 } elseif ($tag) {
-	include ("tag.inc.php");
+	include("tag.inc.php");
 } elseif ($review) {
-	include ("review.inc.php");
+	include("review.inc.php");
 } else {
-	include ("default.inc.php");
+	include("default.inc.php");
 }
-?>

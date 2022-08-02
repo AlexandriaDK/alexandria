@@ -12,21 +12,11 @@ if ( $action && ( $_SESSION['token'] !== $_POST['token'] ) ) {
 }
 
 function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
-	$replacements = [
-		'game_id' => 'sce_id',
-		'person_id' => 'aut_id',
-		'person_extra' => 'aut_extra',
-		'title_id' => 'tit_id',
-		'convention_id' => 'convent_id',
-		'system_id' => 'sys_id',
-		'system_extra' => 'sys_ext',
-		'genre_id' => 'gen_id',
-		'presentation_id' => 'pre_id',
-	];
+	$replacements = [];
 	if ( $fields == NULL ) {
 		$fields = [];
 		foreach ( $allvalues[0] AS $key => $list ) {
-			if ( $table != 'game_description' ) { // Cheating, converting game_id to sce_id and person_id to aut_id
+			if ( $table != 'game_description' ) { // Old system, converting game_id to sce_id and person_id to aut_id. Not necessary anymore
 				if (isset($replacements[$key])) {
 					$key = $replacements[$key];
 				}
@@ -147,7 +137,7 @@ if ( $action == 'importstructure' ) {
 		case 'game_convention_presentation_relations':
 		case 'person_convention_relations':
 		case 'genre_game_relations':
-			$tablemap = [ 'persons' => 'aut', 'conventions' => 'convent', 'conventionsets' => 'conset', 'systems' => 'sys', 'genres' => 'gen', 'gameruns' => 'scerun', 'titles' => 'title', 'presentations' => 'pre', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor', 'person_game_title_relations' => 'asrel', 'game_convention_presentation_relations' => 'csrel', 'person_convention_relations' => 'acrel', 'genre_game_relations' => 'gsrel', 'games' => 'sce', 'gametags' => 'tags' ];
+			$tablemap = [ 'persons' => 'person', 'conventions' => 'convention', 'conventionsets' => 'conset', 'systems' => 'gamesystem', 'genres' => 'genre', 'gameruns' => 'gamerun', 'titles' => 'title', 'presentations' => 'presentation', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor', 'person_game_title_relations' => 'pgrel', 'game_convention_presentation_relations' => 'cgrel', 'person_convention_relations' => 'pcrel', 'genre_game_relations' => 'ggrel', 'games' => 'game', 'gametags' => 'tags' ];
 			if ( isset( $tablemap[ $dataset ] ) ) {
 				$table = $tablemap[ $dataset ];
 			} else {

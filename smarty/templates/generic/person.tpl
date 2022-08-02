@@ -1,4 +1,5 @@
 <div id="content">
+{include file="originalsearch.tpl"}
 
 	<h2 class="datatitle">{$name|escape}</h2>
 
@@ -10,11 +11,7 @@
 	</div>
 {/if}
 
-{if $alias != ""}
-<p class="indata">
-	({$_aka}: {$alias})
-</p>
-{/if}
+{include file="alias.tpl"}
 
 {if $birth != "" || $death != ""}
 <p class="indata">
@@ -73,10 +70,10 @@
 	{foreach from=$organizerlist item=$con}
 	<tr>
 	<td style="text-align: right;" {if $con.cancelled}class="cancelled"{/if}>
-		{con id=$con.convent_id name=$con.name begin=$con.begin end=$con.end }
+		{con id=$con.convention_id name=$con.name begin=$con.begin end=$con.end }
 	</td>
 	<td style="padding-right: 10px" {if $con.cancelled}class="cancelled"{/if}>
-		{con id=$con.convent_id year=$con.year }
+		{con id=$con.convention_id year=$con.year }
 	</td>
 	<td>
 		{$con.role|escape}
@@ -91,7 +88,7 @@
 	<table id="personarticles">
 	{foreach $articlesfrom as $article}
 	<tr>
-	<td>{if $article.sce_id}<a href="data?scenarie={$article.sce_id}" class="scenarie">{$article.title|escape}</a>{elseif $article.title != ''}{$article.title|escape}{else}<span class="colophon">{$_magazines_colophon|escape}</span>{/if}</td>
+	<td>{if $article.game_id}<a href="data?scenarie={$article.game_id}" class="scenarie">{$article.title|escape}</a>{elseif $article.title != ''}{$article.title|escape}{else}<span class="colophon">{$_magazines_colophon|escape}</span>{/if}</td>
 	<td>{$article.role|escape}</td>
 	<td class="page">{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
 	<td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a>{if $article.releasetext} ({$article.releasetext|escape}){/if}</td>

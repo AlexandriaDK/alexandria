@@ -15,7 +15,7 @@ if (!$user_id) {
 
 $userloginmap = getcolid("SELECT site, siteuserid FROM loginmap WHERE user_id = $user_id");
 
-$useraut = getrow("SELECT users.aut_id, aut.firstname, aut.surname FROM users INNER JOIN aut ON users.aut_id = aut.id WHERE users.id = $user_id");
+$useraut = getrow("SELECT users.person_id, p.firstname, p.surname FROM users INNER JOIN person p ON users.person_id = p.id WHERE users.id = $user_id");
 
 // get name and accounts from map.
 

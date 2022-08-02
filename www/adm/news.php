@@ -7,12 +7,12 @@ require "base.inc.php";
 $this_type = 'news';
 
 unset($result);
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$text = $_REQUEST['text'];
-$online = $_REQUEST['online'];
-$published = $_REQUEST['published'];
-$id = $_REQUEST['id'];
+$action = $_REQUEST['action'] ?? FALSE;
+$do = $_REQUEST['do'] ?? FALSE;
+$text = $_REQUEST['text'] ?? FALSE;
+$online = $_REQUEST['online'] ?? FALSE;
+$published = $_REQUEST['published'] ?? FALSE;
+$id = $_REQUEST['id'] ?? FALSE;
 
 if ( $action ) {
 	validatetoken( $token );
@@ -59,7 +59,7 @@ if ($id) {
 
 htmladmstart("News");
 
-if ($info) {
+if ($info ?? FALSE) {
 	print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">$info</font></td></tr></table>\n";
 }
 

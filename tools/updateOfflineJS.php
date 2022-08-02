@@ -10,4 +10,3 @@ data = $json
 }
 EOD;
 file_put_contents('AlexandriaOffline/data/alexandria_content.js', $js);
-?>

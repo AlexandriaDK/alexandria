@@ -8,18 +8,19 @@ $data_id = intval($data_id);
 $fileondisk = ALEXFILES.'/'.$category.'/'.$data_id.'/'.$filename;
 
 if (file_exists($fileondisk) ) {
-	if ($category == 'scenario') $category = 'sce';
+	if ($category == 'scenario') $category = 'game';
 	$referer = $_SERVER['HTTP_REFERER'];
-	list($file_id) = getrow("SELECT id FROM files WHERE category = '$category' AND data_id = '$data_id'");
+	$data_field = getFieldFromCategory($category);
+	list($file_id) = getrow("SELECT id FROM files WHERE `$data_field` = $data_id");
 	doquery("INSERT INTO filedownloads (files_id, data_id, category, accesstime, referer) VALUES ('$file_id','$data_id','$category',NOW(),'".dbesc($referer)."')");
 
 	// achievements
-	if ($category == 'sce') {
+	if ($category == 'game') {
 		award_achievement(60); // download a scenario
 	}
 
-	if ($category == 'sce' && $_SESSION['user_author_id'] ) {
-		$is_author = getone("SELECT 1 FROM asrel WHERE sce_id = '$data_id' AND tit_id IN (1,4) AND aut_id = '" . $_SESSION['user_author_id'] . "'");
+	if ($category == 'game' && ($_SESSION['user_author_id'] ?? FALSE) ) {
+		$is_author = getone("SELECT 1 FROM pgrel WHERE game_id = '$data_id' AND title_id IN (1,4) AND person_id = '" . $_SESSION['user_author_id'] . "'");
 		if ($is_author) {
 			award_achievement(85); // download own scenario
 		}

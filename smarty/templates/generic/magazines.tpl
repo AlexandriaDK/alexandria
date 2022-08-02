@@ -2,6 +2,7 @@
 {include file="head.tpl"}
 
 <div id="content">
+{include file="originalsearch.tpl"}
 {if $pic}
 	<div style="float: right;">
 		<a href="/gfx/{$picpath}/l_{$picid}.jpg">
@@ -41,10 +42,10 @@
 		{$row.role|escape}
 	</td>
 	<td>
-		{if $row.aut_id}
-		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
+		{if $row.person_id}
+		<a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
 		{else}
-		{$row.aut_extra|escape|nl2br}
+		{$row.person_extra|escape|nl2br}
 		{/if}
 	</td>
 	</tr>
@@ -63,7 +64,7 @@
 	<td class="page">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
 	<td>{$row.articletype|escape}</td>
 	<td {if $row.contributorcount > 1} rowspan="{$row.contributorcount}"{/if}>
-	{if $row.sce_id}<a href="data?scenarie={$row.sce_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}
+	{if $row.game_id}<a href="data?scenarie={$row.game_id}" class="scenarie">{$row.title|escape}</a>{else}{$row.title|escape}{/if}
 	{if $row.description}<br><span class="description">{$row.description|escape|textlinks|nl2br}</span>{/if}
 	{if $row.references}<br><div class="references">
 	{foreach $row.references AS $reference}{$reference} {/foreach}</div></td>
@@ -72,10 +73,10 @@
 	<td colspan="2"></td>
 	{/if}
 	<td class="contributor">
-		{if $row.aut_id}
-		<a href="data?person={$row.aut_id}" class="person">{$row.name|escape}</a>
+		{if $row.person_id}
+		<a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
 		{else}
-		{$row.aut_extra|escape}
+		{$row.person_extra|escape}
 		{/if}
 	</td>
 	<td class="role">{$row.role|escape}</td>
