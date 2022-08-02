@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 mb_internal_encoding("UTF-8");
 header("Permissions-Policy: interest-cohort=()");
@@ -146,8 +146,8 @@ if (!defined('DBERROR')) {
 		}
 
 		$active_days_in_row = getone("SELECT active_days_in_row FROM users WHERE id = '" . $_SESSION['user_id'] . "'");
-		if ($active_days_in_row >= 6)  award_user_achievement($user_id, 16); //  7 days in row
-		if ($active_days_in_row >= 29) award_user_achievement($user_id, 17); // 30 days in row
+		if ($active_days_in_row >= 6)  award_user_achievement($_SESSION['user_id'], 16); //  7 days in row
+		if ($active_days_in_row >= 29) award_user_achievement($_SESSION['user_id'], 17); // 30 days in row
 
 		check_begin_page_achievements();
 	}
