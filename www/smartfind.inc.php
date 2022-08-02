@@ -251,4 +251,3 @@ function getidbyalias ($find, $category) {
 	}
 	return getalphaidbybeta($find, "alias", "label", $data_field, TRUE);
 }
-?>

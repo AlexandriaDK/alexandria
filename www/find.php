@@ -264,7 +264,7 @@ if ($find) {
 
 	if (!$cat || $cat == "con") {
 		category_search($find, "CONCAT(name, ' (', year, ')') ", "convention");
-		// category_search($find, "name", "conventionwithyear");
+		category_search($find, "name", "conventionwithyear");
 	}
 
 	if (!$cat || $cat == "sys") {
@@ -274,7 +274,6 @@ if ($find) {
 	if (!$cat || $cat == "magazine") {
 		category_search($find, "name", "magazine");
 	}
-
 
 	// If only one perfect match, redirect user at once
 	if ($redirect == TRUE) {
