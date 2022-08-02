@@ -23,10 +23,10 @@ if (strlen($term) >= 2) {
 		";
 	}
 	if ($type == 'game' || $type == '') {
-		$queryparts[] = "SELECT game.id, title AS label, 'game' AS type, 'game' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(person.firstname,' ',person.surname) ORDER BY person.popularity DESC, person.id SEPARATOR '$separator'), '') AS note FROM game LEFT JOIN pgrel ON game.id = pgrel.game_id AND pgrel.title_id IN (1,5) LEFT JOIN person ON pgrel.person_id = person.id  WHERE title LIKE '$likeescapequery%' GROUP BY game.id";
+		$queryparts[] = "SELECT game.id, title AS label, 'game' AS type, 'scenarie' AS linkpart, 'scenarie' AS filepart, COALESCE(GROUP_CONCAT(CONCAT(person.firstname,' ',person.surname) ORDER BY person.popularity DESC, person.id SEPARATOR '$separator'), '') AS note FROM game LEFT JOIN pgrel ON game.id = pgrel.game_id AND pgrel.title_id IN (1,5) LEFT JOIN person ON pgrel.person_id = person.id  WHERE title LIKE '$likeescapequery%' GROUP BY game.id";
 	}
 	if ($type == 'gamesystem' || $type == '') {
-		$queryparts[] = "SELECT gamesystem.id, name AS label, 'gamesystem' AS type, 'gamesystem' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(game.title ORDER BY game.popularity DESC SEPARATOR '$separator'), '') AS note FROM gamesystem LEFT JOIN game ON gamesystem.id = game.gamesystem_id WHERE name LIKE '$likeescapequery%' GROUP BY gamesystem.id";
+		$queryparts[] = "SELECT gamesystem.id, name AS label, 'gamesystem' AS type, 'system' AS linkpart, 'system' AS filepart, COALESCE(GROUP_CONCAT(game.title ORDER BY game.popularity DESC SEPARATOR '$separator'), '') AS note FROM gamesystem LEFT JOIN game ON gamesystem.id = game.gamesystem_id WHERE name LIKE '$likeescapequery%' GROUP BY gamesystem.id";
 	}
 	if ($type == 'convention' || $type == '') {
 		$queryparts[] = "

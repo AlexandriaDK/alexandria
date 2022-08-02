@@ -9,15 +9,18 @@ switch ($cat) {
 	case 'awards':
 		$returl = 'awards.php?category=convention&data_id=';
 		break;
+	case 'scenarie':
 	case 'game':
 		$returl = 'game.php?game=';
 		break;
 	case 'conset':
 		$returl = 'conset.php?conset=';
 		break;
+	case 'system':
 	case 'gamesystem':
 		$returl = 'gamesystem.php?gamesystem=';
 		break;
+	case 'con':
 	case 'convention':
 		$returl = 'convention.php?con=';
 		break;
