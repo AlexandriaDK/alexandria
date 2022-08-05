@@ -88,8 +88,9 @@ if ($action == "update" && $game) {
 			doquery("DELETE FROM game_description WHERE game_id = $game");
 			$inserts = [];
 			foreach ($descriptions as $d) {
-				if ($d['description'] !== "") {
-					$inserts[] = "($game, '" . dbesc(trim($d['description'])) . "', '" . dbesc(trim($d['language'])) . "','" . dbesc(trim($d['note'])) . "')";
+				$desc = trim($d['description']);
+				if ($desc !== "") {
+					$inserts[] = "($game, '" . dbesc($desc) . "', '" . dbesc(trim($d['language'])) . "','" . dbesc(trim($d['note'])) . "')";
 				}
 			}
 			if ($inserts) {
