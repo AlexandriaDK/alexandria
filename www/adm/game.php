@@ -25,7 +25,7 @@ $internal = $_REQUEST['internal'] ?? FALSE;
 $gamesystem_id = (int) ($_REQUEST['gamesystem_id'] ?? FALSE);
 $gamesystem_extra = $_REQUEST['gamesystem_extra'] ?? '';
 $person_extra = $_REQUEST['person_extra'] ?? '';
-//$con = $_REQUEST['con'] ?? FALSE;
+$con = $_REQUEST['con'] ?? FALSE;
 $boardgame = (int) (bool) ($_REQUEST['boardgame'] ?? FALSE);
 $person = (array) ($_REQUEST['person'] ?? []);
 
