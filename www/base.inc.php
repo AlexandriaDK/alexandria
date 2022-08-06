@@ -1074,9 +1074,12 @@ function getFieldFromCategory($cat, $table = '')
 {
 	$categories = [
 		'person' => 'person_id',
+		'scenario' => 'game_id',
 		'game' => 'game_id',
+		'convent' => 'convention_id',
 		'convention' => 'convention_id',
 		'conset' => 'conset_id',
+		'system' => 'gamesystem_id',
 		'gamesystem' => 'gamesystem_id',
 		'tag' => 'tag_id',
 		'magazine' => 'magazine_id',
