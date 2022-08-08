@@ -170,7 +170,7 @@ if ($data_id) {
 	print "<tr>\n" .
 		'<td style="text-align: right;">New</td>' .
 		'<td><input type="text" name="role" value="" size=40 maxlength=100 autofocus></td>' .
-		'<td><input type="text" name="person_text" value="" size=40 maxlength=100 class="tags"></td>' .
+		'<td><input type="text" name="person_text" value="" size=40 maxlength=100 class="peopletags"></td>' .
 		'<td colspan=2><input type="submit" name="do" value="Add"></td>' .
 		"</tr>\n";
 	print "</form>\n\n";
