@@ -571,7 +571,7 @@ function getcategorythumbdir($category)
 		"tag" => "tag",
 		"issue" => "issue",
 	];
-	return $thumbpaths[$category];
+	return $thumbpaths[$category] ?? '';
 }
 
 function hasthumbnailpic($id, $category)
@@ -592,8 +592,9 @@ function hasthumbnailpic($id, $category)
 	return $available_pic;
 }
 
-function getimageifexists($id, $category_dir)
+function getimageifexists($id, $category)
 {
+	$category_dir = getcategorythumbdir($category);
 	$path = "gfx/" . $category_dir . "/l_" . $id . ".jpg";
 	if (file_exists($path)) {
 		return $path;

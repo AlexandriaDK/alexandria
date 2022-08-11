@@ -272,7 +272,7 @@ $t->assign('type2', 'game');
 $t->assign('id', $scenarie);
 $t->assign('title', $showtitle);
 $t->assign('pic', $available_pic);
-$t->assign('ogimage', getimageifexists($scenarie, 'scenarie'));
+$t->assign('ogimage', getimageifexists($this_id, $this_type));
 $t->assign('sysstring', $sysstring);
 $t->assign('alias', $aliaslist);
 $t->assign('filelist', $filelist);
