@@ -33,6 +33,7 @@ if ($magazineid) {
 	$id = $issueid;
 	if ($available_pic = hasthumbnailpic($issueid, $this_type)) {
 		$picid = $issueid;
+		$picpath = 'issue';
 		$ogimage = getimageifexists($issueid, $this_type);
 	}
 	$issue = getrow("
