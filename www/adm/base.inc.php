@@ -6,14 +6,13 @@ mb_internal_encoding("UTF-8");
 
 define("DOWNLOAD_PATH", "/home/penguin/web/loot.alexandria.dk/files/");
 
-function getlabel($cat, $data_id, $link = FALSE, $default = "")
+function getlabel($category, $data_id, $link = FALSE, $default = "")
 {
-	switch ($cat) {
+	switch ($category) {
 		case 'game':
 			$value = "title";
 			$url = 'data?scenarie=';
 			$returl = 'game.php?game=';
-			$cat = 'game';
 			break;
 
 		case 'conset':
@@ -26,14 +25,12 @@ function getlabel($cat, $data_id, $link = FALSE, $default = "")
 			$value = "name";
 			$url = 'data?system=';
 			$returl = 'gamesystem.php?gamesystem=';
-			$cat = 'gamesystem';
 			break;
 
 		case 'convention':
 			$value = "CONCAT(name,' (',COALESCE(year,'?'),')')";
 			$url = 'data?con=';
 			$returl = 'convention.php?con=';
-			$cat = 'convention';
 			break;
 
 		case 'issue':
@@ -48,19 +45,25 @@ function getlabel($cat, $data_id, $link = FALSE, $default = "")
 			$returl = 'magazine.php?magazine_id=';
 			break;
 
+		case 'tag':
+			$value = "tag";
+			$url = 'data?tag=';
+			$returl = 'tag.php?tag_id=';
+			break;
+	
 		case 'person':
 		default:
 			$value = "CONCAT(firstname,' ',surname)";
-			$cat = 'person';
+			$category = 'person';
 			$url = 'data?person=';
 			$returl = 'person.php?person=';
 	}
 
-	$label = getone("SELECT $value FROM $cat WHERE id = '$data_id'");
+	$label = getone("SELECT $value FROM $category WHERE id = '$data_id'");
 	if (!$label) $label = $default;
 
 	if ($link == TRUE) {
-		$label = '<a href="../' . $url . $data_id . '">' . $label . '</a> <a href="' . $returl . $data_id . '" accesskey="q">[edit]</a>';
+		$label = '<a href="../' . $url . ($category == 'tag' ? rawurlencode($label) : $data_id) . '">' . $label . '</a> <a href="' . $returl . $data_id . '" accesskey="q">[edit]</a>';
 	}
 	return $label;
 }
@@ -430,7 +433,7 @@ function htmladmstart($title = "", $headcontent = "")
 	$html = <<<EOD
 <!DOCTYPE html>
 <html><head>
-<title>Administration $htmltitle</title>
+<title>Editor $htmltitle</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="/uistyle.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
