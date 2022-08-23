@@ -31,7 +31,7 @@ $countries = getall("
 	WHERE country IN('da','sv','nb','uk') OR country REGEXP '^..[a-z]'
 ");
 foreach ($countries as $country) {
-	$htmlisocodes .= '<a href="' . ($country['category'] == 'gamerun' ? 'run.php?id=' : ($country['category'] == 'convention' ? 'c.php?con=' : 'conset.php?conset=')) . $country['id'] . '">';
+	$htmlisocodes .= '<a href="' . ($country['category'] == 'gamerun' ? 'run.php?id=' : ($country['category'] == 'convention' ? 'convention.php?con=' : 'conset.php?conset=')) . $country['id'] . '">';
 	$htmlisocodes .= 'Dataset ' . $country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
 if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
