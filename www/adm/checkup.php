@@ -172,7 +172,7 @@ $query = "SELECT c.id, c.name, year, conset.name AS setname FROM convention c LE
 
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlcondate .= "<a href=\"c.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
+	$htmlcondate .= "<a href=\"convention.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
 }
 
 // Authors with most non-downloadable scenarios
