@@ -781,9 +781,10 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 			var val = input.val();
 			if (val != '') {
 				var personId = parseInt(val);
-				var foundperson = availableNames.filter(s => s.startsWith(personId + " - "))[0];
-				if (foundperson) {
-					input.val(foundperson);
+				console.log(personId)
+//				var foundperson = availableNames.filter(s => s.startsWith(personId + " - "))[0];
+				if (personId) {
+//					input.val(foundperson);
 					input.addClass("personexists");
 				} else {
 					input.addClass("personunsure");
@@ -808,12 +809,8 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 				label: newpersonname
 			}, function(data) {
 				if (data.error == false) {
-					if (data.new == true) {
-						var newlabel = data.id + ' - ' + newpersonname;
-						availableNames.push(newlabel);
-					}
-					var inputlabel = availableNames.filter(s => s.startsWith(data.id + " - "))[0];
-					input.val(inputlabel);
+					var newlabel = data.id + ' - ' + newpersonname;
+					input.val(newlabel);
 					input.removeClass("persondoesnotexist personunsure").addClass("personexists");
 				} else {
 					input.removeClass("personexists personunsure").addClass("persondoesnotexist");
