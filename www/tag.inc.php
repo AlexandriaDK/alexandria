@@ -53,7 +53,7 @@ if (count($q) > 0) {
 
 		$personlist = [];
 		$qq = getall("
-			SELECT p.id, CONCAT(firstname,' ',surname) AS name
+			SELECT DISTINCT p.id, CONCAT(firstname,' ',surname) AS name
 			FROM person p, pgrel
 			WHERE pgrel.game_id = $game_id AND pgrel.person_id = p.id AND pgrel.title_id IN(1,5)
 			ORDER BY firstname, surname
