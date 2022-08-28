@@ -38,6 +38,10 @@ $participants_extra = $_REQUEST['participants_extra'] ?? '';
 
 $this_id = $game;
 
+function cancelledtext($cancelled) {
+	return $cancelled ? 'class="cancelled" title="Convention was cancelled"' : '';
+}
+
 if (!$action && $game) {
 	$row = getrow("SELECT * FROM game WHERE id = '$game'");
 	if ($row) {
@@ -658,7 +662,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 	if ($game) {
 		foreach ($qcrel as $row) {
-			$cancelledclass = $row['cancelled'] ? 'class="cancelled" title="Convention was cancelled"' : '';
+			$cancelledclass = cancelledtext($row['cancelled']);
 			print "<option value=\"{$row['preid']}_{$row['id']}\" $cancelledclass>{$row['name']} ({$row['year']}) ({$row['event']})</option>\n";
 		}
 	}
@@ -679,14 +683,17 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 						<select name="bigselectcon" id="bigselectcon" multiple size="7">
 ';
 	if ($conlock) { // default con
-		print "<option value=\"$conlock\" ondblclick=\"addtocon(m4,1);\" selected>{$con[$conlock]}\n";
+		$conl = getrow("SELECT name, year, cancelled FROM convention WHERE id = '$conlock'");
+		$context = $conl['name'] . " (" . $conl['year'] . ")";
+		$cancelledclass = cancelledtext($conl['cancelled']);
+		print "<option value=\"$conlock\" ondblclick=\"addtocon(m4,1);\" selected $cancelledclass>" . htmlspecialchars($context) . "</option>\n";
 		print "<option value=\"\">-----------\n";
 	}
 
 	if ($game && $qcrel && count($qcrel) > 0) {
 		foreach ($qcrel as $con) {
 			$conname = $con['name'] . " (" . $con['year'] . ")";
-			$cancelledclass = $con['cancelled'] ? 'class="cancelled" title="Convention was cancelled"' : '';
+			$cancelledclass = cancelledtext($con['cancelled']);
 			print '<option value="' . $con['id'] . '" ondblclick="addtocon(m4,1);" ' . $cancelledclass . '>' . htmlspecialchars($conname) . '</option>' . PHP_EOL;
 		}
 		if (count($qcrel) > 0) {
@@ -696,7 +703,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 	foreach ($cons as $con) {
 		$conname = $con['name'] . " (" . $con['year'] . ")";
-		$cancelledclass = $con['cancelled'] ? 'class="cancelled" title="Convention was cancelled"' : '';
+		$cancelledclass = cancelledtext($con['cancelled']);
 		print '<option value="' . $con['id'] . '" ondblclick="addtocon(m4,1);" ' . $cancelledclass . '>' . htmlspecialchars($conname) . '</option>' . PHP_EOL;
 	}
 	print '
