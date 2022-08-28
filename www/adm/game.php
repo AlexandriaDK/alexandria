@@ -265,6 +265,7 @@ if ($game) {
 			c.year,
 			c.begin,
 			c.end,
+			c.cancelled,
 			p.id AS preid,
 			p.event,
 			conset.name AS setname
@@ -286,11 +287,13 @@ if ($game) {
 }
 
 // Get all cons
-$con = [];
-$q = getall("SELECT c.id, c.name, year, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") or die(dberror());
-foreach ($q as $r) {
-	$con[$r['id']] = $r['name'] . " (" . $r['year'] . ")";
-}
+// $con = [];
+// $q = getall("SELECT c.id, c.name, year, c.cancelled, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") or die(dberror());
+// foreach ($q as $r) {
+// 	$con[$r['id']] = $r['name'] . " (" . $r['year'] . ")";
+// }
+
+$cons = getall("SELECT c.id, c.name, year, c.cancelled, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") or die(dberror());
 
 // Get all systems
 $gamesystem = [];
@@ -655,7 +658,8 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 	if ($game) {
 		foreach ($qcrel as $row) {
-			print "<option value=\"{$row['preid']}_{$row['id']}\">{$row['name']} ({$row['year']}) ({$row['event']})</option>\n";
+			$cancelledclass = $row['cancelled'] ? 'class="cancelled" title="Convention was cancelled"' : '';
+			print "<option value=\"{$row['preid']}_{$row['id']}\" $cancelledclass>{$row['name']} ({$row['year']}) ({$row['event']})</option>\n";
 		}
 	}
 
@@ -680,16 +684,20 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 	}
 
 	if ($game && $qcrel && count($qcrel) > 0) {
-		foreach ($qcrel as $row) {
-			print "<option value=\"{$row['id']}\">{$row['name']} ({$row['year']})</option>\n";
+		foreach ($qcrel as $con) {
+			$conname = $con['name'] . " (" . $con['year'] . ")";
+			$cancelledclass = $con['cancelled'] ? 'class="cancelled" title="Convention was cancelled"' : '';
+			print '<option value="' . $con['id'] . '" ondblclick="addtocon(m4,1);" ' . $cancelledclass . '>' . htmlspecialchars($conname) . '</option>' . PHP_EOL;
 		}
 		if (count($qcrel) > 0) {
 			print "<option value=\"\">-----------\n";
 		}
 	}
 
-	foreach ($con as $conid => $conname) {
-		print "<option value=\"$conid\" ondblclick=\"addtocon(m4,1);\">$conname\n";
+	foreach ($cons as $con) {
+		$conname = $con['name'] . " (" . $con['year'] . ")";
+		$cancelledclass = $con['cancelled'] ? 'class="cancelled" title="Convention was cancelled"' : '';
+		print '<option value="' . $con['id'] . '" ondblclick="addtocon(m4,1);" ' . $cancelledclass . '>' . htmlspecialchars($conname) . '</option>' . PHP_EOL;
 	}
 	print '
 						</select>
