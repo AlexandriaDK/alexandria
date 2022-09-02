@@ -88,42 +88,69 @@ if (count($alttitle) == 1) {
 $filelist = getfilelist($scenarie, $this_type);
 
 // List of authors, ...
-$forflist = $scenlist = "";
+$personrungroups = [];
 $q = getall("
-	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol
+	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.cancelled
 	FROM person p
 	INNER JOIN pgrel ON p.id = pgrel.person_id
 	LEFT JOIN title ON pgrel.title_id = title.id
+	LEFT JOIN gamerun ON pgrel.gamerun_id = gamerun.id
 	WHERE pgrel.game_id = '$scenarie'
-	ORDER BY title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
+	ORDER BY gamerun_id IS NULL DESC, gamerun.begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 foreach ($q as $rs) {
+	$gamerun_id = $rs['gamerun_id'];
+	if (!isset($personrungroups[$gamerun_id])) {
+		$parts = [];
+		// if ($datestring = nicedateset($rs['begin'], $rs['end'])) {
+		if ($datestring = substr($rs['begin'],0,4)) { // just get the year for now
+			$parts[] = $datestring;
+		}
+		if ($rs['location']) {
+			$parts[] = $rs['location'];
+		}
+		if ($rs['country']) {
+			$parts[] = getCountryName($rs['country']);
+		}
+		$personrungroups[$gamerun_id] = [
+			'label' => implode(', ', $parts),
+			'cancelled' => $rs['cancelled'],
+			'persons' => []
+		];
+		
+	}
 	$title = $t->getTemplateVars("_" . $rs['title_label']);
 	$htmlnote = "";
+	$personhtml = "";
 	if ($rs['note']) {
 		$htmlnote = " (" . textlinks(htmlspecialchars($rs['note'])) . ")";
 	}
 	if (isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id']) {
 		$_SESSION['can_edit_participant'][$scenarie] = TRUE;
 	}
-	$forflist .= '<tr><td style="text-align: center">';
-	if ($rs['textsymbol']) { // unicode-ikoner
-		$forflist .= '<span class="titicon" title="' . htmlspecialchars(ucfirst($title)) . '">' . $rs['textsymbol'] . '</span>';
+	$personhtml .= '<tr><td style="text-align: center">';
+	if ($rs['textsymbol']) { // unicode icons
+		$personhtml .= '<span class="titicon" title="' . htmlspecialchars(ucfirst($title)) . '">' . $rs['textsymbol'] . '</span>';
 	} elseif ($rs['iconfile']) {
-		$forflist .= '<img src="/gfx/' . rawurlencode($rs['iconfile']) . '" alt="' . htmlspecialchars(ucfirst($title)) . '" title="' . htmlspecialchars(ucfirst($title)) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
+		$personhtml .= '<img src="/gfx/' . rawurlencode($rs['iconfile']) . '" alt="' . htmlspecialchars(ucfirst($title)) . '" title="' . htmlspecialchars(ucfirst($title)) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
 	} else {
-		$forflist .= ' ';
+		$personhtml .= ' ';
 	}
-	$forflist .= "</td>";
-	$scenlist .= '<td><a href="data?scenarie=' . $rs['id'] . '" class="scenarie">' . htmlspecialchars($rs['title']) . '</a></td>';
-	$forflist .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' . htmlspecialchars($rs['name']) . '</a>' . $htmlnote . '</td>';
-	$forflist .= "</tr>" . PHP_EOL;
+	$personhtml .= "</td>";
+	$personhtml .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' . htmlspecialchars($rs['name']) . '</a>' . $htmlnote . '</td>';
+	$personhtml .= "</tr>" . PHP_EOL;
+	$personrungroups[$gamerun_id]['persons'][] = $personhtml;
 }
 
-if ($forflist) {
-	$forflist = "<table class=\"people indata\">\n$forflist\n</table>";
+$personlist = '';
+if ($personrungroups) { // ugly mix of HTML and non-HTML created above
+	foreach($personrungroups AS $group) {
+		if ($group['label']) {
+			$personlist .= '<h4 class="peoplegamerun">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
+		}
+		$personlist .= '<table class="people indata">' . implode('', $group['persons']) . '</table>' . PHP_EOL;
+	}
 }
-
 
 // System
 if ($r['system_translation']) {
@@ -278,7 +305,7 @@ $t->assign('alias', $aliaslist);
 $t->assign('filelist', $filelist);
 $t->assign('filedir', getcategorydir($this_type));
 
-$t->assign('forflist', $forflist);
+$t->assign('personlist', $personlist);
 $t->assign('person_extra', $r['person_extra']);
 $t->assign('descriptions', $descriptions);
 $t->assign('internal', $internal);

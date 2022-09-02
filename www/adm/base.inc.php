@@ -381,8 +381,8 @@ function strSplitParticipants($str)
 	if (!preg_match('/^(\d+)\s*([–-]\s*(\d+))?$/u', $str, $match)) {
 		return [NULL, NULL];
 	}
-	$str_min = $match[1];
-	$str_max = $match[3];
+	$str_min = $match[1] ?? '';
+	$str_max = $match[3] ?? '';
 	if (!$str_max) {
 		$str_max = $str_min;
 	} elseif ($str_min > $str_max) {

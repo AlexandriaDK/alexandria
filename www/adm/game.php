@@ -36,6 +36,8 @@ list($players_min, $players_max) = strSplitParticipants($players);
 
 $participants_extra = $_REQUEST['participants_extra'] ?? '';
 
+$runs = [];
+
 $this_id = $game;
 
 function cancelledtext($cancelled) {
@@ -88,6 +90,8 @@ if ($action == "update" && $game) {
 			"boardgame = $boardgame " .
 			"WHERE id = $game";
 		$r = doquery($q);
+
+		// :TODO: The following is used both for inserts and updates. It ought to be moved into a common insertion/function
 		if ($r) {
 			doquery("DELETE FROM game_description WHERE game_id = $game");
 			$inserts = [];
@@ -102,16 +106,19 @@ if ($action == "update" && $game) {
 				$r = doquery($sql);
 			}
 
+			// Add person-game relations
 			$q = "DELETE FROM pgrel WHERE game_id = '$game'";
 			$r = doquery($q);
-			foreach ($person as $autdata) {
 
+			foreach ($person as $autdata) {
 				$person_id = (int) $autdata['name'];
 				$title_id = (int) $autdata['title'];
 				$note = trim((string) $autdata['note']);
+				$gamerun_id = (int) ($autdata['gamerun'] ?? '');
+				
 				if ($title_id && $person_id) {
-					$q = "INSERT INTO pgrel (game_id, person_id, title_id, note) " .
-						"VALUES ($game, $person_id, $title_id, '" . dbesc($note) . "')";
+					$q = "INSERT INTO pgrel (game_id, person_id, title_id, gamerun_id, note) " .
+						"VALUES ($game, $person_id, $title_id, " . sqlifnull($gamerun_id) . ", '" . dbesc($note) . "')";
 					$r = doquery($q);
 					print dberror();
 				}
@@ -125,7 +132,6 @@ if ($action == "update" && $game) {
 		// Only change relations if javascript is enabled
 		if ($jsenabled == "1") {
 
-			// Add person-game relations
 			// Add game-con relations
 
 			$q = "DELETE FROM cgrel WHERE game_id = '$game'";
@@ -215,9 +221,11 @@ if ($action == "create") {
 			$person_id = (int) $autdata['name'];
 			$title_id = (int) $autdata['title'];
 			$note = trim((string) $autdata['note']);
+			$gamerun_id = (int) ($autdata['gamerun'] ?? '');
+				
 			if ($title_id && $person_id) {
-				$q = "INSERT INTO pgrel (game_id, person_id, title_id, note) " .
-					"VALUES ($game, $person_id, $title_id, '" . dbesc($note) . "')";
+				$q = "INSERT INTO pgrel (game_id, person_id, title_id, gamerun_id, note) " .
+				"VALUES ($game, $person_id, $title_id, " . sqlifnull($gamerun_id) . ", '" . dbesc($note) . "')";
 				$r = doquery($q);
 				print dberror();
 			}
@@ -244,23 +252,20 @@ if ($action == "create") {
 	}
 }
 
-# Get existing person relations
 
 if ($game) {
+	// Get existing person relations
 	$qrel = getall("
-	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.title_id AS titid, title.title
+	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.title_id, title.title, pgrel.gamerun_id
 	FROM pgrel
 	INNER JOIN person p ON pgrel.person_id = p.id
 	LEFT JOIN title ON pgrel.title_id = title.id
 	WHERE pgrel.game_id = $game
-	ORDER BY title.priority, pgrel.title_id, p.surname, p.firstname
+	ORDER BY title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 	print dberror();
-}
 
-# Get existing con relations
-
-if ($game) {
+	// Get existing con relations
 	$qcrel = getall("
 		SELECT
 			cgrel.id AS relid,
@@ -288,14 +293,10 @@ if ($game) {
 			c.name
 	");
 	print dberror();
-}
 
-// Get all cons
-// $con = [];
-// $q = getall("SELECT c.id, c.name, year, c.cancelled, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") or die(dberror());
-// foreach ($q as $r) {
-// 	$con[$r['id']] = $r['name'] . " (" . $r['year'] . ")";
-// }
+	// get all runs
+	$runs = getall("SELECT id, begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$game' ORDER BY begin, end, id");
+}
 
 $cons = getall("SELECT c.id, c.name, year, c.cancelled, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") or die(dberror());
 
@@ -368,8 +369,9 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 				for (let i = 0; i < 5; i++) { // five name inputs at a time
 					var acount = $("#persontable tr").length;
 					var newcount = acount + 1;
-					var options = '<?php print titleoptions($titles, 'NEWCOUNT'); ?>'.replace('NEWCOUNT', newcount);
-					var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + options + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span></td></tr>';
+					var titleoptions = '<?php print titleoptions($titles, 'NEWCOUNT'); ?>'.replace('NEWCOUNT', newcount);
+					var runoptions = '<?php print runoptions($runs, 'NEWCOUNT'); ?>'.replace('NEWCOUNT', newcount);
+					var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + titleoptions + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span>' + runoptions + '</td></tr>';
 					var newtr = $("#persontable").append(dynhtml);
 					var bar = $("#persontable").find('tr:last input:first')
 						.autocomplete({
@@ -518,7 +520,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 <body>
 
-	<?php
+<?php
 	include("links.inc.php");
 
 	printinfo();
@@ -528,6 +530,29 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 		$html = '<select name="person[' . $count . '][title]">';
 		foreach ($titles as $id => $title) {
 			$html .= '<option value="' . $id . '"' . ($id == $default ? ' selected' : '') . '>' . htmlspecialchars($title) . '</option>';
+		}
+		$html .= '</select>';
+		return $html;
+	}
+
+	function runoptions($runs, $count, $default = FALSE) {
+		if (!$runs) {
+			return '';
+		}
+		$html = ' <select name="person[' . $count . '][gamerun]">';
+		$html .= '<option value="" title="Optional run"></option>';
+		foreach ($runs as $run) {
+			$parts = [];
+			if ($datestring = nicedateset($run['begin'], $run['end'])) {
+				$parts[] = $datestring;
+			}
+			if ($run['location']) {
+				$parts[] = $run['location'];
+			}
+			if ($run['country']) {
+				$parts[] = getCountryName($run['country']);
+			}
+			$html .= '<option value="' . $run['id'] . '"' . ($run['id'] == $default ? ' selected' : '') . '>' . htmlspecialchars(implode(', ', $parts)) . '</option>';
 		}
 		$html .= '</select>';
 		return $html;
@@ -626,13 +651,14 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 			print '<tr data-personid="' . $acount . '"><td>';
 			print '<input class="personlookup personexists" type="text" name="person[' . $acount . '][name]" value="' . $row['id'] . ' - ' . htmlspecialchars($row['name']) . '" placeholder="Name">';
 			print '</td><td>';
-			print titleoptions($titles, $acount, $row['titid']);
-			#		print '<input type="text" name="person[' . $acount . '][title]" value="' . $row['titid'] . ' - ' . htmlspecialchars( $row['title'] ) . '" placeholder="Title">';
+			print titleoptions($titles, $acount, $row['title_id']);
 			print '</td><td>';
 			print '<input type="text" name="person[' . $acount . '][note]" value="' . htmlspecialchars($row['note']) . '" placeholder="Optional note">';
 			print '</td><td>';
 			print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
 			print '<span title="Add new person" class="atoggle glow" onclick="addperson(' . $acount . ');"> 👤</span>';
+			print runoptions($runs, $acount, $row['gamerun_id']);
+
 			print '</td></tr>' . PHP_EOL;
 		}
 	}

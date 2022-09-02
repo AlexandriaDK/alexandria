@@ -25,18 +25,21 @@ $aliaslist = getaliaslist($person, $this_type);
 $q = getall("
 	SELECT
 		*,
-		LEAST(COALESCE(firstcondate,'9999-99-99'), COALESCE(firstrundate,'9999-99-99')) AS combinedfirstrun,
+		LEAST(COALESCE(firstcondate,'9999-99-99'), COALESCE(firstrundatecombined,'9999-99-99')) AS combinedfirstrun,
 		CASE
-		WHEN ISNULL(firstcondate) AND ISNULL(firstrundate) THEN NULL
-		WHEN !ISNULL(firstcondate) AND ISNULL(firstrundate) THEN 'con'
-		WHEN ISNULL(firstcondate) AND !ISNULL(firstrundate) THEN 'run'
-		WHEN firstcondate <= firstrundate THEN 'con'
+		WHEN ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN NULL
+		WHEN !ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN 'con'
+		WHEN ISNULL(firstcondate) AND !ISNULL(firstrundatecombined) THEN 'run'
+		WHEN firstcondate <= firstrundatecombined THEN 'con'
 		ELSE 'run'
 		END AS runtype
 	FROM (
 		SELECT
 			MIN(COALESCE(c.begin,c.year)) AS firstcondate,
 			MIN(gamerun.begin) AS firstrundate,
+			MIN(gr2.begin) AS firstownrun,
+			IF(MIN(IFNULL(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)) AS firstrundatecombined,
+			MIN(IFNULL(gr2.id, 0)) AS earliestrunid, -- gives 0 if at least one registration to game without specific run
 			g.id,
 			g.title AS title,
 			g.boardgame AS boardgame,
@@ -49,26 +52,17 @@ $q = getall("
 			title.textsymbol,
 			COUNT(f.id) AS files,
 			COALESCE(alias.label, g.title) AS title_translation
-		FROM
-			pgrel,
-			title,
-			game g
-		LEFT JOIN cgrel ON
-			cgrel.game_id = g.id
-		LEFT JOIN convention c ON
-			cgrel.convention_id = c.id
-		LEFT JOIN gamerun ON
-			g.id = gamerun.game_id 
-		LEFT JOIN files f ON
-			g.id = f.game_id AND f.downloadable = 1
-		LEFT JOIN alias ON
-			g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
-		WHERE
-			g.id = pgrel.game_id AND
-			pgrel.title_id = title.id AND
-			pgrel.person_id = '$person' 
-		GROUP BY
-			g.id, title.id
+		FROM pgrel
+		INNER JOIN game g ON pgrel.game_id = g.id
+		LEFT JOIN title ON  pgrel.title_id = title.id
+		LEFT JOIN cgrel ON cgrel.game_id = g.id
+		LEFT JOIN convention c ON cgrel.convention_id = c.id
+		LEFT JOIN gamerun ON g.id = gamerun.game_id 
+		LEFT JOIN gamerun gr2 ON pgrel.gamerun_id = gr2.id 
+		LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
+		LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
+		WHERE pgrel.person_id = $person
+		GROUP BY g.id, title.id
 	) a
 	ORDER BY
 		combinedfirstrun != '9999-99-99', -- Sort games without any found date first
@@ -126,33 +120,49 @@ if (count($q) > 0) {
 			}
 		} elseif ($rs['runtype'] == 'run') {
 			$yearname = '';
-			$qrun = getrow("
-				SELECT YEAR(begin) AS year, begin, end, location, country
-				FROM gamerun
-				WHERE game_id = $game_id
-				AND begin != '0000-00-00'
-				ORDER BY begin
-				LIMIT 1
+			$earliestrunid = $rs['earliestrunid'];
+			$title_id = $rs['title_id'];
+			$runs = getall("
+				(
+					SELECT YEAR(begin) AS year, begin, end, location, country
+					FROM gamerun
+					WHERE game_id = $game_id
+					AND begin != '0000-00-00'
+					AND $earliestrunid = 0 -- only true if person was original creator
+					ORDER BY begin
+					LIMIT 1
+				)
+				UNION
+				(
+					SELECT YEAR(begin) AS year, begin, end, location, country
+					FROM gamerun
+					INNER JOIN pgrel ON gamerun.id = pgrel.gamerun_id AND pgrel.person_id = $person AND pgrel.title_id = $title_id
+					WHERE gamerun.game_id = $game_id
+					AND begin != '0000-00-00'
+					ORDER BY begin
+				)
 			");
-			$rundescription = '';
-			$runinfo = nicedateset($qrun['begin'] ?? NULL, $qrun['end'] ?? NULL);
-			if (isset($qrun['location'])) {
-				$rundescription = $qrun['location'];
-			}
-			if (isset($qrun['country'])) {
-				if ($rundescription !== '') {
-					$rundescription .= ', ';
+			foreach ($runs AS $qrun) {
+				$rundescription = '';
+				$runinfo = nicedateset($qrun['begin'] ?? NULL, $qrun['end'] ?? NULL);
+				if (isset($qrun['location'])) {
+					$rundescription = $qrun['location'];
 				}
-				$rundescription .= getCountryName($qrun['country']);
+				if (isset($qrun['country'])) {
+					if ($rundescription !== '') {
+						$rundescription .= ', ';
+					}
+					$rundescription .= getCountryName($qrun['country']);
+				}
+				if ($rundescription !== '') {
+					$rundescription .= ' ';
+				}
+				if (isset($qrun['year'])) {
+					$yearname = yearname($qrun['year']);
+					$rundescription .= '(' . $yearname . ')';
+				}
+				$runlist[] = '<span title="' . htmlspecialchars($runinfo) . '">' . htmlspecialchars($rundescription) . '</span>';
 			}
-			if ($rundescription !== '') {
-				$rundescription .= ' ';
-			}
-			if (isset($qrun['year'])) {
-				$yearname = yearname($qrun['year']);
-				$rundescription .= '(' . $yearname . ')';
-			}
-			$runlist[] = '<span title="' . htmlspecialchars($runinfo) . '">' . htmlspecialchars($rundescription) . '</span>';
 		}
 		if ($runlist) {
 			$slist[$sl]['runlist'] = join("<br />", $runlist);

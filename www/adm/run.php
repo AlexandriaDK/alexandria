@@ -6,15 +6,15 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'run';
 
-$action = $_REQUEST['action'];
-$do = $_REQUEST['do'];
-$begin = trim( $_REQUEST['begin'] );
-$end = trim( $_REQUEST['end'] );
-$location = trim( (string) $_REQUEST['location'] );
-$country = trim( (string) $_REQUEST['country'] );
-$description = (string) $_REQUEST['description'];
-$id = (int) $_REQUEST['id'];
-$run_id = (int) $_REQUEST['run_id'];
+$action = (string) ($_REQUEST['action'] ?? '');
+$do = (string) ($_REQUEST['do'] ?? '');
+$begin = trim( (string) ($_REQUEST['begin'] ?? '') );
+$end = trim( (string) ($_REQUEST['end'] ?? '') );
+$location = trim( (string) ($_REQUEST['location'] ?? '') );
+$country = trim( (string) ($_REQUEST['country'] ?? '') );
+$description = (string) ($_REQUEST['description'] ?? '');
+$id = (int) ($_REQUEST['id'] ?? 0);
+$run_id = (int) ($_REQUEST['run_id'] ?? 0);
 $cancelled = (int) isset($_REQUEST['cancelled']);
 
 $q = "SELECT title FROM game WHERE id = '$id'";
@@ -53,7 +53,11 @@ if ($action == "changerun" && $do != "Delete") {
 
 // Delete run
 if ($action == "changerun" && $do == "Delete") {
-	$q = "DELETE FROM gamerun WHERE id = '$run_id'";
+	if (getone("SELECT COUNT(*) FROM pgrel WHERE gamerun_id = $run_id")) {
+		$_SESSION['admin']['info'] = "Error: There are persons for the game connected to this run!";
+		rexit( $this_type, [ 'id' => $id ] );
+	}
+	$q = "DELETE FROM gamerun WHERE id = $run_id";
 	$r = doquery($q);
 	if ($r) {
 		chlog($id,'game',"Run deleted");
@@ -80,7 +84,15 @@ if ($action == "addrun") {
 	rexit( $this_type, [ 'id' => $id ] );
 }
 
-$query = "SELECT id, begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$id' ORDER BY begin, end, id";
+$query = "
+	SELECT gamerun.id, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.description, gamerun.cancelled, COUNT(pgrel.person_id) AS personcount
+	FROM gamerun
+	LEFT JOIN pgrel ON gamerun.id = pgrel.gamerun_id 
+	WHERE gamerun.game_id = $id
+	GROUP BY gamerun.id, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.description, gamerun.cancelled
+	ORDER BY gamerun.begin, gamerun.end, gamerun.id
+";
+
 $result = getall($query);
 
 htmladmstart("Run");
@@ -88,9 +100,10 @@ htmladmstart("Run");
 if ($id) {
 
 	print "<table align=\"center\" border=0>".
-	      "<tr><th colspan=6>Edit runs for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n".
+	      "<tr><th colspan=10>Edit runs for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n".
 	      "<tr>\n".
 	      "<th>ID</th>".
+	      "<th>Persons</th>".
 	      "<th>Start date</th>".
 	      "<th>End date</th>".
 	      "<th>Location</th>".
@@ -108,6 +121,7 @@ if ($id) {
 		      '<input type="hidden" name="run_id" value="'.$row['id'].'">';
 		print "<tr>\n".
 		      '<td style="text-align:right;">'.$row['id'].'</td>'.
+		      '<td align="right">' . $row['personcount'] . '</td>'.
 		      '<td><input type="' . $typebegin . '" name="begin" value="'.htmlspecialchars($row['begin']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typebegin) . '</td>'.
 		      '<td><input type="' . $typeend . '" name="end" value="'.htmlspecialchars($row['end']).'" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typeend) . '</td>'.
 			  '<td><input type="text" name="location" value="'.htmlspecialchars($row['location']).'" size="30" maxlength="80"></td>'.
@@ -125,6 +139,7 @@ if ($id) {
 	      '<input type="hidden" name="id" value="'.$id.'">';
 	print "<tr>\n".
 	      '<td style="text-align:right;">New</td>'.
+		  '<td></td>'.
 	      '<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>'.
 	      '<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>'.
 	      '<td><input type="text" name="location" value="" size="30" maxlength="80"></td>'.

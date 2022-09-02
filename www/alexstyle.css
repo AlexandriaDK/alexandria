@@ -319,6 +319,10 @@ table.conlist {
 	padding: 1px;
 }
 
+table.people {
+	margin-bottom: 1em;
+}
+
 table.tablestat th {
 	text-align: left;
 }
@@ -578,7 +582,12 @@ p.jostdescription {
 span.label {
 	font-weight: bold;
 	font-style: italic;
+}
 
+h4.peoplegamerun {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-left: 1em;
 }
 
 p.addorganizersyourself {

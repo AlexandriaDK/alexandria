@@ -89,11 +89,11 @@ $( function() {
 	</p>
 {/if}
 
-{if $forflist != ""}
+{if $personlist != ""}
 	<h3 class="parttitle">
 		{$_sce_by}
 	</h3>
-		{$forflist}
+		{$personlist}
 {/if}
 
 {include file="filelist.tpl"}
