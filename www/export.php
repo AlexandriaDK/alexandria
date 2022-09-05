@@ -26,7 +26,6 @@ $exportqueries = [
 	'trivia' => "SELECT id, fact, '' AS internal, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, fact FROM trivia ORDER BY id",
 	'links' => "SELECT id, url, description, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id FROM links ORDER BY id",
 	'aliases' => "SELECT id, label, visible, language, person_id, game_id, convention_id, conset_id, gamesystem_id FROM alias WHERE visible = 1 ORDER BY id", // Don't expose hidden aliases yet
-	'files' => "SELECT id, filename, description, downloadable, inserted, language, indexed, game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id FROM files WHERE downloadable = 1 ORDER BY id",
 	'sitetexts' => "SELECT id, label, text, language, lastupdated FROM weblanguages ORDER BY language, id",
 	'awards' => "SELECT id, name, conset_id, description, label FROM awards ORDER BY id",
 	'award_categories' => "SELECT id, name, convention_id, description, award_id FROM award_categories ORDER BY id",
@@ -39,7 +38,8 @@ $exportqueries = [
 	'issues' => "SELECT id, magazine_id, title, releasedate, releasetext FROM issue ORDER BY magazine_id, releasedate, id",
 	'articles' => "SELECT id, issue_id, page, title, description, articletype, game_id FROM article ORDER BY issue_id, id",
 	'contributors' => "SELECT id, person_id, person_extra, role, article_id FROM contributor ORDER BY id",
-	'article_reference' => "SELECT id, article_id, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id FROM article_reference ORDER BY id"
+	'article_reference' => "SELECT id, article_id, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id FROM article_reference ORDER BY id",
+	'files' => "SELECT id, filename, description, downloadable, inserted, language, indexed, game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id FROM files WHERE downloadable = 1 ORDER BY id",
 ];
 
 if ( $dataset ) {
@@ -80,7 +80,8 @@ if ( $dataset ) {
 	case 'all':
 		$output = [];
 		foreach ( $exportqueries AS $table => $query ) {
-			$output[ $table ] = getall( $query, FALSE );
+#			print $table . " " . $query . PHP_EOL;
+			$output[ $table ] = getall( $query, FALSE )[0];
 		}
 		break;
 	default:
@@ -90,7 +91,7 @@ if ( $dataset ) {
 		$output = $data;
 	}
 } elseif ( $setup === 'sqlstructure' ) { // Order is important due to foreign keys
-	$tables = [ 'person', 'gamesystem', 'game', 'conset', 'convention', 'genre', 'ggrel', 'tag', 'tags', 'gamerun', 'title', 'files', 'presentation', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'pgrel', 'cgrel', 'users', 'loginmap', 'userlog', 'news', 'filedata', 'filedownloads', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedata', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts' ];
+	$tables = [ 'person', 'gamesystem', 'game', 'conset', 'convention', 'genre', 'ggrel', 'tag', 'tags', 'gamerun', 'title', 'presentation', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'pgrel', 'cgrel', 'pcrel', 'users', 'loginmap', 'userlog', 'news', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts', 'files', 'filedata' ];
 	$tablecreate = [];
 	foreach ( $tables AS $table ) {
 		$create = getrow( "SHOW CREATE TABLE `$table`" );
@@ -126,7 +127,6 @@ if ( $dataset ) {
 			'trivia' => 'Trivia for persons, games, conventions, convention sets, systems and tags',
 			'links' => 'Links for persons, games, conventions, convention sets, systems and tags',
 			'aliases' => 'Aliases for persons, games, conventions, convention sets, and systems',
-			'files' => 'List of files for scenarios, convents and convention sets at alexandria.dk',
 			'sitetexts' => 'Site texts in different languages',
 			'awards' => 'Types of awards',
 			'award_categories' => 'Individual awards',
@@ -140,7 +140,8 @@ if ( $dataset ) {
 			'issues' => 'Issues for magazines',
 			'articles' => 'Articles in issues',
 			'contributors' => 'Contributors for magazines',
-			'article_reference' => 'References in articles to other data entries'
+			'article_reference' => 'References in articles to other data entries',
+			'files' => 'List of files for scenarios, convents and convention sets at alexandria.dk',
 		],
 		'examples' => [
 			'export' => 'This overview',
