@@ -297,9 +297,10 @@ if ($game) {
 		)
 		UNION ALL
 		(
-		SELECT convention.id, convention.name, convention.year, COALESCE(convention.begin, convention.year) AS begin, convention.end, convention.place AS location, convention.country, convention.description, convention.cancelled, CONCAT('c_', convention.id) AS combinedid
+		SELECT convention.id, convention.name, convention.year, COALESCE(convention.begin, convention.year) AS begin, convention.end, convention.place AS location, COALESCE(convention.country, conset.country), convention.description, convention.cancelled, CONCAT('c_', convention.id) AS combinedid
 		FROM cgrel
 		INNER JOIN convention ON cgrel.convention_id = convention.id
+		INNER JOIN conset ON convention.conset_id = conset.id
 		WHERE cgrel.game_id = $game
 		)
 		ORDER BY begin, end, combinedid
