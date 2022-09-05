@@ -293,11 +293,11 @@ if ($game) {
 	// get all runs
 	$events = getall("
 		(
-		SELECT id, begin, end, location, country, description, cancelled, CONCAT('r_', id) AS combinedid FROM gamerun WHERE game_id = $game
+		SELECT id, '' AS name, NULL AS year, begin, end, location, country, description, cancelled, CONCAT('r_', id) AS combinedid FROM gamerun WHERE game_id = $game
 		)
 		UNION ALL
 		(
-		SELECT convention.id, COALESCE(convention.begin, convention.year) AS begin, convention.end, convention.place AS location, convention.country, convention.description, convention.cancelled, CONCAT('c_', convention.id) AS combinedid
+		SELECT convention.id, convention.name, convention.year, COALESCE(convention.begin, convention.year) AS begin, convention.end, convention.place AS location, convention.country, convention.description, convention.cancelled, CONCAT('c_', convention.id) AS combinedid
 		FROM cgrel
 		INNER JOIN convention ON cgrel.convention_id = convention.id
 		WHERE cgrel.game_id = $game
@@ -558,7 +558,9 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 		$html .= '<option value="" title="Optional run"></option>';
 		foreach ($events as $event) {
 			$parts = [];
-			if ($datestring = nicedateset($event['begin'], $event['end'])) {
+			if ($event['name']) {
+				$parts[] = $event['name'] . " (" . $event['year'] . ")";
+			} elseif ($datestring = nicedateset($event['begin'], $event['end'])) {
 				$parts[] = $datestring;
 			}
 			if ($event['location']) {
