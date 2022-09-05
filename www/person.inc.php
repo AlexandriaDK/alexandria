@@ -129,7 +129,7 @@ if (count($q) > 0) {
 				) UNION ALL (
 					SELECT c.id, c.name, c.year, c.begin, c.end, c.cancelled
 					FROM convention c
-					INNER JOIN pgrel ON c.id = pgrel.convention_id AND pgrel.person_id = $person AND pgrel.title_id = $title_id
+					INNER JOIN pgrel ON c.id = pgrel.convention_id AND pgrel.person_id = $person AND pgrel.title_id = $title_id AND pgrel.game_id = $game_id
 					ORDER BY begin
 					
 				)
