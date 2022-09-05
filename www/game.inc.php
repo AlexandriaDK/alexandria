@@ -155,7 +155,9 @@ if ($personrungroups) { // ugly mix of HTML and non-HTML created above
 			$cancelledcss = $group['cancelled'] ? 'cancelled' : '';
 			$personlist .= '<h4 class="peoplegamerun ' . $cancelledcss . '">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
 		}
-		$personlist .= '<table class="people indata">' . implode('', $group['persons']) . '</table>' . PHP_EOL;
+		if ($group['persons']) {
+			$personlist .= '<table class="people indata">' . implode(' ', $group['persons']) . '</table>' . PHP_EOL;
+		}
 	}
 }
 
