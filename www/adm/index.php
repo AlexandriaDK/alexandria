@@ -22,10 +22,10 @@ require "base.inc.php";
 <script>
 $(document).ready(function() {  
 	$.get( "frontstat.php?days=7", function( data ) {
-		$( "tbody#stats" ).append( data );
+		$( "#lastseven" ).replaceWith( data );
 	});
 	$.get( "frontstat.php?days=365", function( data ) {
-		$( "tbody#stats" ).append( data );
+		$( "#lastyear" ).replaceWith( data );
 	})
 });
 
@@ -59,6 +59,8 @@ printinfo();
 <table>
 <thead>
 <tr style="font-size: 0.8em;"><th>Name</th><th>Edits (new)</th><th>Edits (total)</th><th>Most recent edit</th></tr>
+<tr id="lastseven"><th colspan="4">Last 7 days</th></tr>
+<tr id="lastyear"><th colspan="4">Last 365 days</th></tr>
 </thead>
 <tbody id="stats">
 
