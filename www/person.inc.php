@@ -25,7 +25,7 @@ $aliaslist = getaliaslist($person, $this_type);
 $q = getall("
 	SELECT
 		*,
-		LEAST(COALESCE(firstcondate,'9999-99-99'), COALESCE(firstrundatecombined,'9999-99-99')) AS combinedfirstrun,
+		LEAST(COALESCE(firstcondatecombined,'9999-99-99'), COALESCE(firstrundatecombined,'9999-99-99')) AS combinedfirstrun,
 		CASE
 		WHEN ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN NULL
 		WHEN !ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN 'con'
@@ -38,8 +38,14 @@ $q = getall("
 			MIN(COALESCE(c.begin,c.year)) AS firstcondate,
 			MIN(gamerun.begin) AS firstrundate,
 			MIN(gr2.begin) AS firstownrun,
+			MIN(COALESCE(c2.begin,c2.year)) AS firstowncon,
 			IF(MIN(IFNULL(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)) AS firstrundatecombined,
-			MIN(IFNULL(gr2.id, 0)) AS earliestrunid, -- gives 0 if at least one registration to game without specific run
+			IF(MIN(IFNULL(c2.id, 0)) = 0, MIN(COALESCE(c.begin,c.year)), MIN(COALESCE(c2.begin, c2.year))) AS firstcondatecombined,
+			COALESCE(
+				IF(MIN(IFNULL(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)),
+				IF(MIN(IFNULL(c2.id, 0)) = 0, MIN(COALESCE(c.begin,c.year)), MIN(COALESCE(c2.begin, c2.year)))
+			) AS firsteventdatecombined,
+			MIN(IFNULL(COALESCE(gr2.id,c2.id), 0)) AS earliesteventid, -- gives 0 if at least one registration to game without specific run
 			g.id,
 			g.title AS title,
 			g.boardgame AS boardgame,
@@ -57,6 +63,7 @@ $q = getall("
 		LEFT JOIN title ON  pgrel.title_id = title.id
 		LEFT JOIN cgrel ON cgrel.game_id = g.id
 		LEFT JOIN convention c ON cgrel.convention_id = c.id
+		LEFT JOIN convention c2 ON pgrel.convention_id = c2.id
 		LEFT JOIN gamerun ON g.id = gamerun.game_id 
 		LEFT JOIN gamerun gr2 ON pgrel.gamerun_id = gr2.id 
 		LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
@@ -106,29 +113,39 @@ if (count($q) > 0) {
 		$game_id = $rs['id'];
 
 		$runlist = [];
+
+		$yearname = '';
+		$earliesteventid = $rs['earliesteventid'];
+		$title_id = $rs['title_id'];
 		if ($rs['runtype'] == 'con') { // get all "first cons"
 			$qq = getall("
-				SELECT c.id, c.name, c.year, c.begin, c.end, c.cancelled
-				FROM convention c
-				INNER JOIN cgrel ON c.id = cgrel.convention_id
-				WHERE cgrel.presentation_id = 1 AND cgrel.game_id = $game_id
-				ORDER BY c.name
+				(
+					SELECT c.id, c.name, c.year, c.begin, c.end, c.cancelled
+					FROM convention c
+					INNER JOIN cgrel ON c.id = cgrel.convention_id
+					WHERE cgrel.presentation_id = 1 AND cgrel.game_id = $game_id
+					AND $earliesteventid = 0 -- only true if person was original creator
+					ORDER BY begin
+				) UNION ALL (
+					SELECT c.id, c.name, c.year, c.begin, c.end, c.cancelled
+					FROM convention c
+					INNER JOIN pgrel ON c.id = pgrel.convention_id AND pgrel.person_id = $person AND pgrel.title_id = $title_id
+					ORDER BY begin
+					
+				)
 			");
 			foreach ($qq as $rrs) {
 				$coninfo = nicedateset($rrs['begin'], $rrs['end']);
 				$runlist[] = "<a href=\"data?con={$rrs['id']}\" class=\"con" . ($rrs['cancelled'] == 1 ? " cancelled" : "") . "\" title=\"$coninfo\">" . htmlspecialchars($rrs['name']) . " (" . yearname($rrs['year']) . ")</a>";
 			}
 		} elseif ($rs['runtype'] == 'run') {
-			$yearname = '';
-			$earliestrunid = $rs['earliestrunid'];
-			$title_id = $rs['title_id'];
 			$runs = getall("
 				(
 					SELECT YEAR(begin) AS year, begin, end, location, country
 					FROM gamerun
 					WHERE game_id = $game_id
 					AND begin != '0000-00-00'
-					AND $earliestrunid = 0 -- only true if person was original creator
+					AND $earliesteventid = 0 -- only true if person was original creator
 					ORDER BY begin
 					LIMIT 1
 				)

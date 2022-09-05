@@ -3,23 +3,23 @@ $this_type = 'game';
 if ($game) {
 	$scenarie = $game;
 }
-$this_id = $scenarie;
+$this_id = $game = $scenarie;
 
 $r = getrow("
 	SELECT g.id, g.title, g.internal, g.gamesystem_id, g.gamesystem_extra, g.person_extra, g.ottowinner, g.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, gs.name AS sysname, COALESCE(alias.label, gs.name) AS system_translation
 	FROM game g
 	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
 	LEFT JOIN alias ON g.gamesystem_id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE g.id = $scenarie
+	WHERE g.id = $game
 	GROUP BY g.id
 ");
 $showtitle = $gametitle = $r['title'];
 
 // Achievements
-if ($scenarie == 161)      award_achievement(55); // De Professionelle
-if ($scenarie == 3812)     award_achievement(56); // Fordømt Ungdom
-if ($scenarie == 3827)     award_achievement(57); // Paninaro
-if (in_array($scenarie, [3755, 4615, 4516, 4597, 4461])) award_achievement(98); // Bicycling  :TODO: - Use tag instead
+if ($game == 161)      award_achievement(55); // De Professionelle
+if ($game == 3812)     award_achievement(56); // Fordømt Ungdom
+if ($game == 3827)     award_achievement(57); // Paninaro
+if (in_array($game, [3755, 4615, 4516, 4597, 4461])) award_achievement(98); // Bicycling  :TODO: - Use tag instead
 if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner  :TODO: - check using achievement table
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario  :TODO: - use tag instead
 
@@ -30,7 +30,7 @@ if ($r['id'] == 0) {
 	$t->display('default.tpl');
 	exit;
 }
-$descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $scenarie ORDER BY (LEFT(language, 2) = '" . LANG . "') DESC, LENGTH(language), priority, language");
+$descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $game ORDER BY (LEFT(language, 2) = '" . LANG . "') DESC, LENGTH(language), priority, language");
 foreach ($descriptions as $d_id => $description) {
 	list($language) = explode(" ", $description['language']);
 	if (preg_match('/^[a-z]{2}$/', $language)) {
@@ -71,39 +71,46 @@ if ($r['participants_extra']) {
 $participants = implode(', ', $participants);
 
 // List of aliases, alternative title?
-$alttitle = getcol("SELECT label FROM alias WHERE game_id = '$scenarie' AND language = '$lang' AND visible = 1");
+$alttitle = getcol("SELECT label FROM alias WHERE game_id = '$game' AND language = '$lang' AND visible = 1");
 if (count($alttitle) == 1) {
 	$showtitle = $alttitle[0];
-	$aliaslist = getaliaslist($scenarie, $this_type, $showtitle);
+	$aliaslist = getaliaslist($game, $this_type, $showtitle);
 	if ($aliaslist) {
 		$aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>, " . $aliaslist;
 	} else {
 		$aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>";
 	}
 } else {
-	$aliaslist = getaliaslist($scenarie, $this_type);
+	$aliaslist = getaliaslist($game, $this_type);
 }
 
 // List of files
-$filelist = getfilelist($scenarie, $this_type);
+$filelist = getfilelist($game, $this_type);
 
-// List of authors, ...
+// List of persons
 $personrungroups = [];
 $q = getall("
-	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.cancelled
+	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.convention_id, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, convention.name AS convention_name, COALESCE(convention.begin,convention.year,gamerun.begin) AS begin, COALESCE(convention.end, gamerun.end) AS end, COALESCE(convention.place, gamerun.location) AS location, COALESCE(convention.country, conset.country, gamerun.country) AS country, COALESCE(convention.cancelled,gamerun.cancelled) AS cancelled, CASE WHEN convention_id IS NOT NULL THEN CONCAT('c_', convention_id) WHEN gamerun_id IS NOT NULL THEN CONCAT('r_', gamerun_id) ELSE NULL END AS combined_id
 	FROM person p
 	INNER JOIN pgrel ON p.id = pgrel.person_id
 	LEFT JOIN title ON pgrel.title_id = title.id
 	LEFT JOIN gamerun ON pgrel.gamerun_id = gamerun.id
-	WHERE pgrel.game_id = '$scenarie'
+	LEFT JOIN convention ON pgrel.convention_id = convention.id
+	LEFT JOIN conset ON convention.conset_id = conset.id
+	WHERE pgrel.game_id = $game
 	ORDER BY gamerun_id IS NULL DESC, gamerun.begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 foreach ($q as $rs) {
 	$gamerun_id = $rs['gamerun_id'];
-	if (!isset($personrungroups[$gamerun_id])) {
+	$convention_id = $rs['convention_id'];
+	$combined_id = $rs['combined_id'];
+	if (!isset($personrungroups[$combined_id])) {
 		$parts = [];
 		// if ($datestring = nicedateset($rs['begin'], $rs['end'])) {
-		if ($datestring = substr($rs['begin'],0,4)) { // just get the year for now
+		if ($datestring = substr($rs['begin']??'',0,4)) { // just get the year for now
+			if ($rs['convention_name']) {
+				$datestring = $rs['convention_name'] . " (" . $datestring . ")";
+			}
 			$parts[] = $datestring;
 		}
 		if ($rs['location']) {
@@ -112,12 +119,11 @@ foreach ($q as $rs) {
 		if ($rs['country']) {
 			$parts[] = getCountryName($rs['country']);
 		}
-		$personrungroups[$gamerun_id] = [
+		$personrungroups[$combined_id] = [
 			'label' => implode(', ', $parts),
 			'cancelled' => $rs['cancelled'],
 			'persons' => []
 		];
-		
 	}
 	$title = $t->getTemplateVars("_" . $rs['title_label']);
 	$htmlnote = "";
@@ -126,7 +132,7 @@ foreach ($q as $rs) {
 		$htmlnote = " (" . textlinks(htmlspecialchars($rs['note'])) . ")";
 	}
 	if (isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id']) {
-		$_SESSION['can_edit_participant'][$scenarie] = TRUE;
+		$_SESSION['can_edit_participant'][$game] = TRUE;
 	}
 	$personhtml .= '<tr><td style="text-align: center">';
 	if ($rs['textsymbol']) { // unicode icons
@@ -139,7 +145,7 @@ foreach ($q as $rs) {
 	$personhtml .= "</td>";
 	$personhtml .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' . htmlspecialchars($rs['name']) . '</a>' . $htmlnote . '</td>';
 	$personhtml .= "</tr>" . PHP_EOL;
-	$personrungroups[$gamerun_id]['persons'][] = $personhtml;
+	$personrungroups[$combined_id]['persons'][] = $personhtml;
 }
 
 $personlist = '';
@@ -170,7 +176,7 @@ $q = getall("
 	FROM convention c
 	INNER JOIN cgrel ON c.id = cgrel.convention_id
 	INNER JOIN presentation p ON cgrel.presentation_id = p.id
-	WHERE cgrel.game_id = '$scenarie'
+	WHERE cgrel.game_id = '$game'
 	ORDER BY c.year, c.begin, p.id, c.name
 ");
 foreach ($q as $rs) {
@@ -191,7 +197,7 @@ foreach ($q as $rs) {
 
 // List of runs
 $runlist = "";
-$q = getall("SELECT begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$scenarie' ORDER BY begin, end, id");
+$q = getall("SELECT begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$game' ORDER BY begin, end, id");
 foreach ($q as $rs) {
 	$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
 	$runlist .= ucfirst(nicedateset($rs['begin'], $rs['end']));
@@ -228,7 +234,7 @@ $q = getall("
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	INNER JOIN convention c ON b.convention_id = c.id
-	WHERE a.game_id = $scenarie
+	WHERE a.game_id = $game
 	ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC
 ");
 foreach ($q as $rs) {
@@ -259,7 +265,7 @@ $q = getall("
 	SELECT g.id, g.name
 	FROM genre g
 	INNER JOIN ggrel ON g.id = ggrel.genre_id
-	WHERE ggrel.game_id = '$scenarie'
+	WHERE ggrel.game_id = '$game'
 	ORDER BY g.name
 ");
 foreach ($q as $rs) {
@@ -271,7 +277,7 @@ $genre = join(", ", $genre);
 $linklist = getlinklist($this_id, $this_type);
 $trivialist = gettrivialist($this_id, $this_type);
 $taglist = gettaglist($this_id, $this_type);
-if ($_SESSION['can_edit_participant'][$scenarie] ?? FALSE) {
+if ($_SESSION['can_edit_participant'][$game] ?? FALSE) {
 	foreach ($taglist as $tag_id => $tag) {
 		$_SESSION['can_edit_tag'][$tag_id] = TRUE;
 	}
@@ -282,7 +288,7 @@ $articlesfrom = getarticles($this_id, $this_type);
 $articles = getarticlereferences($this_id, $this_type);
 
 // Thumbnail
-$available_pic = hasthumbnailpic($scenarie, $this_type);
+$available_pic = hasthumbnailpic($game, $this_type);
 
 // Userdata, entries from all users
 $userlog = [];
@@ -296,7 +302,7 @@ $t->assign('pagetitle', $showtitle);
 $t->assign('type', $this_type);
 $t->assign('type2', 'game');
 
-$t->assign('id', $scenarie);
+$t->assign('id', $game);
 $t->assign('title', $showtitle);
 $t->assign('pic', $available_pic);
 $t->assign('ogimage', getimageifexists($this_id, $this_type));
@@ -313,7 +319,7 @@ $t->assign('gms', $gms);
 $t->assign('players', $players);
 $t->assign('participants', $participants);
 $t->assign('boardgame', $r['boardgame']);
-$t->assign('user_can_edit_participants', $_SESSION['can_edit_participant'][$scenarie] ?? FALSE);
+$t->assign('user_can_edit_participants', $_SESSION['can_edit_participant'][$game] ?? FALSE);
 $t->assign('conlist', $conlist);
 $t->assign('runlist', $runlist);
 $t->assign('awards', $awards);
@@ -327,11 +333,11 @@ $t->assign('json_tags', TRUE);
 $t->assign('user_can_edit_tag', $_SESSION['can_edit_tag'] ?? FALSE);
 
 $t->assign('user_read', in_array('read', $userlog));
-$t->assign('user_read_html', getdynamicgamehtml($scenarie, 'read', in_array('read', $userlog)));
+$t->assign('user_read_html', getdynamicgamehtml($game, 'read', in_array('read', $userlog)));
 $t->assign('user_gmed', in_array('gmed', $userlog));
-$t->assign('user_gmed_html', getdynamicgamehtml($scenarie, 'gmed', in_array('gmed', $userlog)));
+$t->assign('user_gmed_html', getdynamicgamehtml($game, 'gmed', in_array('gmed', $userlog)));
 $t->assign('user_played', in_array('played', $userlog));
-$t->assign('user_played_html', getdynamicgamehtml($scenarie, 'played', in_array('played', $userlog)));
+$t->assign('user_played_html', getdynamicgamehtml($game, 'played', in_array('played', $userlog)));
 $t->assign('users_entries', $users_entries ?? FALSE);
 
 if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist)) {

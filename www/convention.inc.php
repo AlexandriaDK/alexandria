@@ -101,8 +101,8 @@ $q = getall("
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
 	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
-	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5)
-	LEFT JOIN person p ON p.id = pgrel.person_id
+	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5) AND (COALESCE(pgrel.convention_id, pgrel.gamerun_id) IS NULL OR pgrel.convention_id = $con)
+	LEFT JOIN person p ON p.id = pgrel.person_id 
 	LEFT JOIN alias a ON g.id = a.game_id AND a.language = '" . LANG . "' AND a.visible = 1
 	LEFT JOIN alias a2 ON gs.id = a2.gamesystem_id AND a2.language = '" . LANG . "' AND a2.visible = 1
 	WHERE cgrel.convention_id = $con

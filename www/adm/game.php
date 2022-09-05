@@ -1,4 +1,5 @@
 <?php
+define("DEBUG",1);
 require "adm.inc.php";
 require "base.inc.php";
 chdir("..");
@@ -36,12 +37,37 @@ list($players_min, $players_max) = strSplitParticipants($players);
 
 $participants_extra = $_REQUEST['participants_extra'] ?? '';
 
-$runs = [];
+$events = [];
 
 $this_id = $game;
 
 function cancelledtext($cancelled) {
 	return $cancelled ? 'class="cancelled" title="Convention was cancelled"' : '';
+}
+
+function addPersonsToGame($game_id, $persons) {
+	// Add person-game relations
+	$q = "DELETE FROM pgrel WHERE game_id = $game_id";
+	$r = doquery($q);
+
+	foreach ($persons as $persondata) {
+		$person_id = (int) $persondata['name'];
+		$title_id = (int) $persondata['title'];
+		$note = trim((string) $persondata['note']);
+		$category = "";
+		if ($persondata['event']) {
+			list($category, $event_id) = explode("_", ($persondata['event']) );
+		}
+		$convention_id = ($category == 'c' ? $event_id : NULL);
+		$gamerun_id = ($category == 'r' ? $event_id : NULL);
+		
+		if ($title_id && $person_id) {
+			$q = "INSERT INTO pgrel (game_id, person_id, title_id, convention_id, gamerun_id, note) " .
+				"VALUES ($game_id, $person_id, $title_id, " . sqlifnull($convention_id) . ", " . sqlifnull($gamerun_id) . ", '" . dbesc($note) . "')";
+			$r = doquery($q);
+			print dberror();
+		}
+	}
 }
 
 if (!$action && $game) {
@@ -107,22 +133,7 @@ if ($action == "update" && $game) {
 			}
 
 			// Add person-game relations
-			$q = "DELETE FROM pgrel WHERE game_id = '$game'";
-			$r = doquery($q);
-
-			foreach ($person as $autdata) {
-				$person_id = (int) $autdata['name'];
-				$title_id = (int) $autdata['title'];
-				$note = trim((string) $autdata['note']);
-				$gamerun_id = (int) ($autdata['gamerun'] ?? '');
-				
-				if ($title_id && $person_id) {
-					$q = "INSERT INTO pgrel (game_id, person_id, title_id, gamerun_id, note) " .
-						"VALUES ($game, $person_id, $title_id, " . sqlifnull($gamerun_id) . ", '" . dbesc($note) . "')";
-					$r = doquery($q);
-					print dberror();
-				}
-			}
+			addPersonsToGame($game, $person);
 		}
 		print dberror();
 		if ($r) {
@@ -216,20 +227,7 @@ if ($action == "create") {
 		$_SESSION['admin']['info'] = "Game created! " . dberror();
 
 		// Add person-game relations
-		foreach ($person as $autdata) {
-
-			$person_id = (int) $autdata['name'];
-			$title_id = (int) $autdata['title'];
-			$note = trim((string) $autdata['note']);
-			$gamerun_id = (int) ($autdata['gamerun'] ?? '');
-				
-			if ($title_id && $person_id) {
-				$q = "INSERT INTO pgrel (game_id, person_id, title_id, gamerun_id, note) " .
-				"VALUES ($game, $person_id, $title_id, " . sqlifnull($gamerun_id) . ", '" . dbesc($note) . "')";
-				$r = doquery($q);
-				print dberror();
-			}
-		}
+		addPersonsToGame($game, $person);
 
 		// Relation system for cons only works if javascript is enabled
 		if ($jsenabled == "1") {
@@ -252,16 +250,15 @@ if ($action == "create") {
 	}
 }
 
-
 if ($game) {
 	// Get existing person relations
 	$qrel = getall("
-	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.title_id, title.title, pgrel.gamerun_id
+	SELECT pgrel.id AS relid, p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.note, pgrel.title_id, title.title, pgrel.convention_id, pgrel.gamerun_id
 	FROM pgrel
 	INNER JOIN person p ON pgrel.person_id = p.id
 	LEFT JOIN title ON pgrel.title_id = title.id
 	WHERE pgrel.game_id = $game
-	ORDER BY title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
+	ORDER BY title.priority, title.id, pgrel.note = '' DESC, COALESCE(gamerun_id, convention_id), pgrel.note, p.surname, p.firstname, p.id
 ");
 	print dberror();
 
@@ -295,7 +292,19 @@ if ($game) {
 	print dberror();
 
 	// get all runs
-	$runs = getall("SELECT id, begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$game' ORDER BY begin, end, id");
+	$events = getall("
+		(
+		SELECT id, begin, end, location, country, description, cancelled, CONCAT('r_', id) AS combinedid FROM gamerun WHERE game_id = $game
+		)
+		UNION ALL
+		(
+		SELECT convention.id, COALESCE(convention.begin, convention.year) AS begin, convention.end, convention.place AS location, convention.country, convention.description, convention.cancelled, CONCAT('c_', convention.id) AS combinedid
+		FROM cgrel
+		INNER JOIN convention ON cgrel.convention_id = convention.id
+		WHERE cgrel.game_id = $game
+		)
+		ORDER BY begin, end, combinedid
+	");
 }
 
 $cons = getall("SELECT c.id, c.name, year, c.cancelled, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id ORDER BY setname, year, begin, end, name") or die(dberror());
@@ -370,8 +379,8 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 					var acount = $("#persontable tr").length;
 					var newcount = acount + 1;
 					var titleoptions = '<?php print titleoptions($titles, 'NEWCOUNT'); ?>'.replace('NEWCOUNT', newcount);
-					var runoptions = '<?php print runoptions($runs, 'NEWCOUNT'); ?>'.replace('NEWCOUNT', newcount);
-					var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + titleoptions + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span>' + runoptions + '</td></tr>';
+					var eventoptions = '<?php print eventoptions($events, 'NEWCOUNT'); ?>'.replace('NEWCOUNT', newcount);
+					var dynhtml = '<tr data-personid="' + newcount + '"><td><input class="personlookup" name="person[' + newcount + '][name]" placeholder="Name"></td><td>' + titleoptions + '</td><td><input name="person[' + newcount + '][note]" placeholder="Optional note"></td><td><span class="atoggle" onclick="disabletoggle(' + newcount + ');">🗑️</span> <span title="Add new person" class="atoggle glow" onclick="addperson(' + newcount + ');">👤</span>' + eventoptions + '</td></tr>';
 					var newtr = $("#persontable").append(dynhtml);
 					var bar = $("#persontable").find('tr:last input:first')
 						.autocomplete({
@@ -535,24 +544,31 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 		return $html;
 	}
 
-	function runoptions($runs, $count, $default = FALSE) {
-		if (!$runs) {
+	function eventoptions($events, $count, $convention_default = FALSE, $gamerun_default = FALSE) {
+		if ($convention_default) {
+			$default = 'c_' . $convention_default;
+		} elseif ($gamerun_default) {
+			$default = 'r_' . $gamerun_default;
+		} else {
+			$default = NULL;
+		}
+		if (!$events) {
 			return '';
 		}
-		$html = ' <select name="person[' . $count . '][gamerun]">';
+		$html = ' <select name="person[' . $count . '][event]">';
 		$html .= '<option value="" title="Optional run"></option>';
-		foreach ($runs as $run) {
+		foreach ($events as $event) {
 			$parts = [];
-			if ($datestring = nicedateset($run['begin'], $run['end'])) {
+			if ($datestring = nicedateset($event['begin'], $event['end'])) {
 				$parts[] = $datestring;
 			}
-			if ($run['location']) {
-				$parts[] = $run['location'];
+			if ($event['location']) {
+				$parts[] = $event['location'];
 			}
-			if ($run['country']) {
-				$parts[] = getCountryName($run['country']);
+			if ($event['country']) {
+				$parts[] = getCountryName($event['country']);
 			}
-			$html .= '<option value="' . $run['id'] . '"' . ($run['id'] == $default ? ' selected' : '') . '>' . htmlspecialchars(implode(', ', $parts)) . '</option>';
+			$html .= '<option value="' . $event['combinedid'] . '"' . ($event['combinedid'] == $default ? ' selected' : '') . '>' . htmlspecialchars(implode(', ', $parts)) . '</option>';
 		}
 		$html .= '</select>';
 		return $html;
@@ -657,7 +673,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 			print '</td><td>';
 			print '<span class="atoggle" onclick="disabletoggle(' . $acount . ');">🗑️</span>';
 			print '<span title="Add new person" class="atoggle glow" onclick="addperson(' . $acount . ');"> 👤</span>';
-			print runoptions($runs, $acount, $row['gamerun_id']);
+			print eventoptions($events, $acount, $row['convention_id'], $row['gamerun_id']);
 
 			print '</td></tr>' . PHP_EOL;
 		}
