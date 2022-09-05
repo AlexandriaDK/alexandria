@@ -88,7 +88,7 @@ if (count($alttitle) == 1) {
 $filelist = getfilelist($game, $this_type);
 
 // List of persons
-$personrungroups = [];
+$personrungroups = ["" => NULL];
 $q = getall("
 	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.convention_id, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, convention.name AS convention_name, COALESCE(convention.begin,convention.year,gamerun.begin) AS begin, COALESCE(convention.end, gamerun.end) AS end, COALESCE(convention.place, gamerun.location) AS location, COALESCE(convention.country, conset.country, gamerun.country) AS country, COALESCE(convention.cancelled,gamerun.cancelled) AS cancelled, CASE WHEN convention_id IS NOT NULL THEN CONCAT('c_', convention_id) WHEN gamerun_id IS NOT NULL THEN CONCAT('r_', gamerun_id) ELSE NULL END AS combined_id
 	FROM person p
@@ -98,7 +98,7 @@ $q = getall("
 	LEFT JOIN convention ON pgrel.convention_id = convention.id
 	LEFT JOIN conset ON convention.conset_id = conset.id
 	WHERE pgrel.game_id = $game
-	ORDER BY gamerun_id IS NULL DESC, gamerun.begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
+	ORDER BY COALESCE(gamerun_id, convention_id) IS NULL DESC, begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 foreach ($q as $rs) {
 	$gamerun_id = $rs['gamerun_id'];
@@ -152,7 +152,8 @@ $personlist = '';
 if ($personrungroups) { // ugly mix of HTML and non-HTML created above
 	foreach($personrungroups AS $group) {
 		if ($group['label']) {
-			$personlist .= '<h4 class="peoplegamerun">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
+			$cancelledcss = $group['cancelled'] ? 'cancelled' : '';
+			$personlist .= '<h4 class="peoplegamerun ' . $cancelledcss . '">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
 		}
 		$personlist .= '<table class="people indata">' . implode('', $group['persons']) . '</table>' . PHP_EOL;
 	}
