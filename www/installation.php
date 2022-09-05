@@ -45,12 +45,14 @@ function dbmultiinsert( $table, $allvalues, $fields = NULL ) {
 			print "<pre>";
 			print "TABLE $table \n";
 		}
-		doquery( "TRUNCATE TABLE `$table` ");
+		doquery( "DELETE FROM `$table` ");
 		foreach ( $datasets AS $dataset ) {
 			$multisql = "INSERT INTO `$table` (" . implode( ", ", $fields ) . ") VALUES " . implode( ", ", $dataset );
-			doquery( $multisql );
 			if (INSTALLATION_DEBUG === TRUE) {
 				print htmlspecialchars($multisql) . "\n";
+			}
+			doquery( $multisql );
+			if (INSTALLATION_DEBUG === TRUE) {
 				$error = dberror();
 				if ($error) {
 					print "\nMySQL error: " . $error . "\n";
@@ -171,6 +173,7 @@ if ( $action == 'importstructure' ) {
 
 $t->assign( 'installation', TRUE );
 $t->assign( 'dbname', DB_NAME ); 
+$t->assign( 'pagetitle', 'Installation' );
 $t->display( 'installation.tpl' );
 
 exit;
