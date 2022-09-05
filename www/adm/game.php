@@ -1,5 +1,4 @@
 <?php
-define("DEBUG",1);
 require "adm.inc.php";
 require "base.inc.php";
 chdir("..");
