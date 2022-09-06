@@ -171,7 +171,7 @@
 				{/if}
 				{$_top_played_pt}: {$users_entries.played + 0} {$_users}
 				<br><br>
-				<a href="adm/userlog.php?category=sce&amp;data_id={$id}">{$_top_details}</a>
+				<a href="adm/userlog.php?category=game&data_id={$id}">{$_top_details}</a>
 				
 			</div>
 		{/if}
