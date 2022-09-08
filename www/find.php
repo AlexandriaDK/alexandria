@@ -50,7 +50,7 @@ function search_articles($find)
 	foreach ($articles as $article) {
 		$output .= "<li>" .
 			getdatahtml('issue', $article['issueid'], getentry('issue', $article['issueid'], FALSE, TRUE)) .
-			"<ul><li>" . textlinks(htmlspecialchars($article['title'] . ($article['description'] ? ' - ' . $article['description'] : ''))) .
+			"<ul><li>" . preg_replace('/' . preg_quote($find, '/') . '/i', '<b>$0</b>', textlinks(htmlspecialchars($article['title'] . ($article['description'] ? ' - ' . $article['description'] : '')))) .
 			($article['page'] ? " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($article['page']) . ')' : '') .
 			'</li></ul>' .
 			'</li>' . PHP_EOL;
