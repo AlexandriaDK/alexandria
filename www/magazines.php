@@ -26,6 +26,9 @@ if ($magazineid) {
 		$issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, id");
 		foreach ($issues AS $key => $issue) {
 			$issues[$key]['thumbnail'] = hasthumbnailpic($issue['id'], 'issue');
+			if (!$ogimage) {
+				$ogimage = getimageifexists($issue['id'], 'issue');
+			}
 		}
 		$articles = getarticlereferences($magazineid, 'magazine');
 	}
