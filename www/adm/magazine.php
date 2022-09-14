@@ -359,7 +359,7 @@ if ($magazine_id && $issue_id) {
 	$dirfiles = count(glob(DOWNLOAD_PATH . getcategorydir('issue') . "/" . $issue_id . "/*"));
 	print '<p style="font-weight: bold;">Edit articles for: <a href="' . $mainlink . '" accesskey="w" title="Hotkey: W">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title . ', ' . $issue_releasename) . ' <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup> - <a href="files.php?category=issue&data_id=' . $issue_id . '" accesskey="f">' . $files . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a> - <a href="showlog.php?category=issue&data_id=' . $issue_id . '">Show log</a></p>';
 	// print '<table><tr><th>Edit articles for: <a href="' . $mainlink . '">' . htmlspecialchars($magazine_name) . '</a>: ' . htmlspecialchars($issue_title) . '</a> <sup><a href="' . $publiclink . '" accesskey="q">[public page]</a></sup></th></tr>';
-	print '<table>';
+	print '<table id="articlelist">';
 
 	foreach ($articles AS $article) {
 		$article_id = $article['id'] ?? FALSE;
@@ -396,10 +396,10 @@ if ($magazine_id && $issue_id) {
 		$person = (($article['person_id'] ?? FALSE) ? $article['person_id'] . " - " . $article['personname'] : $article['person_extra'] ?? '' );
 		$game = (($article['game_id'] ?? FALSE) ? $article['game_id'] . " - " . $article['gametitle'] : '' );
 		print "<table>";
-		print '<tr valign="top" style="white-space: nowrap">' .
-				'<td style="text-align:right; min-width: 2em;" ' . (($article['id'] ?? FALSE)  && $highlight_article_id == $article['id'] ? 'class="highlightarticle"' : '') . '>' . ($article['id'] ?? 'New') . '</td>'.
+		print '<tr valign="top">' .
+				'<td class="articleid' . (($article['id'] ?? FALSE)  && $highlight_article_id == $article['id'] ? ' highlightarticle"' : '') . '">' . ($article['id'] ?? 'New') . '</td>'.
 				'<td><input placeholder="Title" type="text" name="title" value="'.htmlspecialchars($article['title'] ?? '').'" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
-				'<td><input placeholder="Page" type="number" min="1" name="page" value="'.htmlspecialchars($article['page'] ?? '').'" style="width: 4em;"></td>';
+				'<td><input placeholder="Page" type="number" min="1" name="page" value="'.htmlspecialchars($article['page'] ?? '').'" class="page"></td>';
 		print '<td data-count="' . count($contributors) . '">';
 		$pcount = 0;
 		foreach ($contributors AS $contributor) {
@@ -436,15 +436,15 @@ if ($magazine_id && $issue_id) {
 				(! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove article?\');">' : '') . '</td>'.
 				"</tr>\n";
 		print "</table>";
-		print "</form>\n\n";
-		print "</td></tr>";
+		print "</form>\n";
+		print "</td></tr>\n\n";
 		
 	}
 	print '</table></td></tr>';
 	print '</tbody></table>';
 	print '<p>Leave title and page blank for colophone</p>';
 	print '<form action="magazine.php" method="post"><input type="hidden" name="action" value="duplicatearticle"><input type="hidden" name="magazine_id" value="' . $magazine_id . '"><input type="hidden" name="issue_id" value="' . $issue_id . '">';
-	print '<p>Create duplicate of existing article/colophon into this issue. ID is shown left of articles. <input type="number" name="original_article_id" placeholder="ID of article" style="width: 7em;"> <input type="submit" value="Duplicate"></p>';
+	print '<p>Create duplicate of existing article/colophon into this issue. ID is shown left of articles. <input type="number" name="original_article_id" placeholder="ID of article" class="originalarticleid"> <input type="submit" value="Duplicate"></p>';
 	print '</form>';
 
 } elseif ($magazine_id) {

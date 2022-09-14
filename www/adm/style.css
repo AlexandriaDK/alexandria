@@ -293,3 +293,24 @@ tr.zerousermap td.accounts {
 option.cancelled {
 	text-decoration: line-through;
 }
+
+table#articlelist form:focus-within {
+	background-color: #c96;
+}
+
+table#articlelist table tr {
+	white-space: nowrap;
+}
+
+td.articleid {
+	text-align:right;
+	min-width: 2em;
+}
+
+input.originalarticleid {
+	width: 7em;
+}
+
+input.page {
+	width: 4em;
+}
