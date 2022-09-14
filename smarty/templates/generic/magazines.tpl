@@ -54,11 +54,11 @@
 	</table>
 	{/if}
 
-	{if $articles}
+	{if $issue_articles}
 	<h4>{$_magazines_content}</h4>
 	<table class="magazinecontent">
 	<tbody>
-	{foreach $articles as $row}	
+	{foreach $issue_articles as $row}	
 	<tr>
 	{if not isset($lastid) || $row.id != $lastid}
 	<td class="page">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
@@ -85,6 +85,7 @@
 	{/foreach}
 	</tbody>
 	</table>
+	{include file="articlereference.tpl"}
 	{/if}
 
 {elseif $magazineid}

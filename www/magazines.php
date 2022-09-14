@@ -14,6 +14,7 @@ $available_pic = $picpath = $picid = FALSE;
 $internal = '';
 $filelist = [];
 $articles = [];
+$issue_articles = FALSE;
 $ogimage = FALSE;
 
 if ($magazineid) {
@@ -61,7 +62,7 @@ if ($magazineid) {
 		AND page IS NULL AND article.title = ''
 		ORDER BY article.id
 	");
-	$articles = getall("
+	$issue_articles = getall("
 		SELECT article.id, contributor.person_id, contributor.person_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
 		FROM article
 		LEFT JOIN contributor ON article.id = contributor.article_id
@@ -73,19 +74,19 @@ if ($magazineid) {
 	");
 	$lastarticleid = $lastid = FALSE;
 	// Adding contributor count to create rowspan for title and description
-	foreach ($articles AS $articleid => $article) {
+	foreach ($issue_articles AS $articleid => $article) {
 		if ($lastarticleid !== $article['id']) {
-			$articles[$articleid]['references'] = [];
-			$articles[$articleid]['contributorcount'] = 0;
+			$issue_articles[$articleid]['references'] = [];
+			$issue_articles[$articleid]['contributorcount'] = 0;
 			$lastid = $articleid;
 			$references = getall("SELECT COALESCE(person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(magazine_id) THEN 'magazine' WHEN !ISNULL(issue_id) THEN 'issue' END AS category FROM article_reference WHERE article_id = " . $article['id'] . " ORDER BY category, id");
 			foreach ($references AS $reference_id => $reference) {
-				$articles[$articleid]['references'][] = getentryhtml($reference['category'], $reference['data_id']);
+				$issue_articles[$articleid]['references'][] = getentryhtml($reference['category'], $reference['data_id']);
 			}
 		} else {
-			$articles[$articleid]['contributorcount'] = 0;
+			$issue_articles[$articleid]['contributorcount'] = 0;
 		}
-		$articles[$lastid]['contributorcount']++;
+		$issue_articles[$lastid]['contributorcount']++;
 		$lastarticleid = $article['id'];
 	}
 
@@ -117,7 +118,7 @@ if ($magazineid) {
 	}
 	// List of files
 	$filelist = getfilelist($issueid,$this_type);
-
+	$articles = getarticlereferences($issueid, $this_type);
 } else {
 	$magazines = getall("
 		SELECT magazine.id, magazine.name, magazine.description, COUNT(issue.id) AS issuecount
@@ -139,6 +140,7 @@ $t->assign('internal',$internal);
 $t->assign('issues',$issues);
 $t->assign('issue',$issue);
 $t->assign('colophon',$colophon);
+$t->assign('issue_articles',$issue_articles);
 $t->assign('articles',$articles);
 $t->assign('error', $error);
 $t->assign('pic',$available_pic);
@@ -148,7 +150,6 @@ $t->assign('arrowset',$arrows);
 $t->assign('ogimage', $ogimage );
 $t->assign('filelist',$filelist);
 $t->assign('filedir', getcategorydir($this_type) );
-$t->assign('articles', $articles);
 
 $t->display('magazines.tpl');
 
