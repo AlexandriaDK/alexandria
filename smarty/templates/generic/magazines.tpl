@@ -85,8 +85,8 @@
 	{/foreach}
 	</tbody>
 	</table>
-	{include file="articlereference.tpl"}
 	{/if}
+	{include file="articlereference.tpl"}
 
 {elseif $magazineid}
 	<h2 class="pagetitle">
