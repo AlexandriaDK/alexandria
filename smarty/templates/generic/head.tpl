@@ -20,7 +20,7 @@
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 {if isset($URLLANG) }
-{foreach from=$ALEXLANGUAGES item=altlanguage}
+{foreach $ALEXLANGUAGES as $altlanguage => $altlanguagelocalname}
 {if $URLLANG != $altlanguage}
 		<link rel="alternate" hreflang="{$altlanguage}" href="https://alexandria.dk/{$altlanguage}/{$BASEURI}" />
 {/if}
@@ -262,7 +262,7 @@
 			<img src="/gfx/icon_translator.svg" alt="Language icon">
 			{$_chooselanguage}
 			<br><br>
-			{foreach $ALEXLANGUAGES as $altlanguage}<a href="/{$altlanguage}/{$BASEURI}">{$altlanguage}</a>{if not $altlanguage@last} • {/if}{/foreach}
+			{foreach $ALEXLANGUAGES as $altlanguage => $altlanguagelocalname}<a href="/{$altlanguage}/{$BASEURI}" hreflang="{$altlanguage}" title="{$altlanguagelocalname|escape}">{$altlanguage}</a>{if not $altlanguagelocalname@last} • {/if}{/foreach}
 			</div>
 {/if}
 

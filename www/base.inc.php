@@ -16,8 +16,8 @@ if (!isset($_SESSION) && isset($_COOKIE[session_name()])) {
 	session_start();
 }
 // detect language
-#$alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
-$alexlanguages = ['da', 'de', 'en', 'nb', 'sv'];
+# $alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
+$alexlanguages = ['da' => 'Dansk', 'de' => 'Deutsch', 'en' => 'English', 'nb' => 'Norsk bokmål', 'sv' => 'Svenska'];
 $lang = "";
 if (preg_match('_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|hi|tl|sa|ta|bn|nv|cr|oj|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches)) {
 	$lang = $urllang = $matches[1];
