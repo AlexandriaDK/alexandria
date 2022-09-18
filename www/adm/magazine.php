@@ -497,11 +497,12 @@ if ($magazine_id && $issue_id) {
 				(($issue['entries'] ?? 0) == 0 && ! $new ? '<input type="submit" name="do" value="Delete" class="delete" onclick="return confirm(\'Remove issue?\');">' : '') . '</td>'.
 				"</tr>\n";
 		if ( ! $new ) {
+			$dbfiles = getone("SELECT COUNT(*) FROM files WHERE `issue_id` = " . $issue['id']);		
 			print '<tr><td></td><td colspan="3">' . 
 			$statushtml .
 			'<a href="magazine.php?magazine_id=' . $magazine_id . '&amp;issue_id=' . $issue['id'] . '">' .
 			($issue['entries'] == 1 ? '1 entry' : (int) $issue['entries'] . ' entries') .
-			'</a> - <a href="files.php?category=issue&data_id=' . $issue['id'] . '">' . $issue['files'] . '/' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</a></td></tr>';
+			'</a> - <a href="files.php?category=issue&data_id=' . $issue['id'] . '"><span title="Files registered in database">' . $dbfiles . '</span>/<span title="Files uploaded">' . ($dirfiles == 1 ? '1 file' : $dirfiles . ' files'). '</span></a></td></tr>';
 		}
 		print "</form>\n\n";
 	}
