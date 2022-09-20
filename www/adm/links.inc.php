@@ -14,7 +14,7 @@ $find = $_REQUEST['find'] ?? '';
 			}
 			?>
 			<br>
-			<span style="font-size: 12px;"><label for="ffind" accesskey="k"><span title="Hotkey: K">Quic<u>K</u> find:</span> <input id="ffind" type="text" name="find" value="<?php print htmlspecialchars($find); ?>" size="20"></label>
+			<span style="font-size: 12px;"><label for="ffind" accesskey="k"><span title="Hotkey: K">Quic<u>K</u> find:</span> <input id="ffind" type="search" name="find" value="<?php print htmlspecialchars($find); ?>" size="20"></label>
 				<?php
 				$conlock = (int) ($_COOKIE['conlock'] ?? 0);
 				$langlock = (string) ($_COOKIE['langlock'] ?? '');
