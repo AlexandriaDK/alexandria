@@ -15,7 +15,7 @@ if ($action) {
 }
 
 $game = (int) ($_REQUEST['game'] ?? FALSE);
-$title = (string) ($_REQUEST['title'] ?? '');
+$title = trim((string) ($_REQUEST['title'] ?? ''));
 $descriptions = (array) ($_REQUEST['descriptions'] ?? []);
 $langlock = $_COOKIE['langlock'] ?? LANG;
 if (!$descriptions) {
