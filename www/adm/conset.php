@@ -8,7 +8,7 @@ $this_type = 'conset';
 
 $conset = (int) ($_REQUEST['conset'] ?? '');
 $action = (string) ($_REQUEST['action'] ?? '');
-$name = (string) ($_REQUEST['name'] ?? '');
+$name = trim((string) ($_REQUEST['name'] ?? ''));
 $description = (string) ($_REQUEST['description'] ?? '');
 $internal = (string) ($_REQUEST['internal'] ?? '');
 $country = (string) ($_REQUEST['country'] ?? '');
