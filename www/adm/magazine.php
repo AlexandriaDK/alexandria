@@ -383,6 +383,7 @@ if ($magazine_id && $issue_id) {
 		}
 		if (! $contributors) {
 			$contributors[] = [];
+			$contributors[] = [];
 		}
 		if (! $references) {
 			$references[] = [];
