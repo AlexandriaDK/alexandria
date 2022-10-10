@@ -1,6 +1,6 @@
 {if $articles}
-<h3 class="parttitle">{$_articles_referenced}</h3>
-	<table id="personarticles">
+<h3 class="parttitle" id="references">{$_articles_referenced}</h3>
+	<table>
 	{foreach $articles as $article}
 	<tr>
 	<td>{if isset($article.game_id)}<a href="data?scenarie={$article.game_id}">{$article.title|escape}</a>{else}{$article.title|escape}{/if}</td>
