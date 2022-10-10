@@ -30,7 +30,7 @@ foreach ($r as $row) {
 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
 }
 
-// Update arrangør
+// Update organizer
 if ($action == "changeorganizer" && $do != "Delete") {
 
 	$q = "UPDATE pcrel SET " .
@@ -51,7 +51,7 @@ if ($action == "changeorganizer" && $do != "Delete") {
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
 }
 
-// Delete arrangør
+// Delete organizer
 if ($action == "changeorganizer" && $do == "Delete") {
 	$q = "DELETE FROM pcrel WHERE id = '$id'";
 	$r = doquery($q);
@@ -62,8 +62,8 @@ if ($action == "changeorganizer" && $do == "Delete") {
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
 }
 
-// Tilføj arrangør
-if ($action == "addorganizer") {
+// Add organizer
+if ($action == "addorganizer" && ( $person_id || $person_extra || $role ) ) {
 	$q = "INSERT INTO pcrel " .
 		"(person_id, person_extra, convention_id, role, added_by_user_id) VALUES " .
 		"(" . strNullEscape($person_id) . ", '" . dbesc($person_extra) . "',  $data_id, '" . dbesc($role) . "', " . $_SESSION['user_id'] . ")";
