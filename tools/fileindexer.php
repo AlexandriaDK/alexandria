@@ -87,6 +87,7 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 	$numpages = 0;
 	foreach($pages AS $page => $text) {
 		if ($text) {
+			$text = preg_replace('/\s+/',' ',$text);
 			$numpages++;
 			$archivefilevalue = ($archivefile ? "'" . dbesc($archivefile) . "'" : 'NULL' );
 			$label = ($page + 1);
