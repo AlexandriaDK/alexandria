@@ -37,9 +37,10 @@ function antaltxt($new, $rerun, $cancelled, $total, $type = 'game')
 if ($con == 26) award_achievement(79); // X-Con
 if ($con == 127 || $con == 743) award_achievement(80); // 1. Copenhagen Gamecon (Viking Con I) or Konvent '77 (GothCon I)
 
-$convention = getrow("SELECT c.id, c.name, c.internal, c.year, c.description, begin, end, place, conset_id, confirmed, cancelled, conset.name AS cname, COALESCE(c.country, conset.country) AS country
+$convention = getrow("SELECT c.id, c.name, c.internal, c.year, c.description, c.begin, c.end, c.place, c.conset_id, c.confirmed, c.cancelled, conset.name AS cname, COALESCE(c.country, conset.country) AS country, COALESCE(alias.label, conset.name) AS cname_translation
 	FROM convention c
 	LEFT JOIN conset ON c.conset_id = conset.id
+	LEFT JOIN alias ON conset.id = alias.conset_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE c.id = $con
 ");
 if (is_null($convention['id'])) {
@@ -56,7 +57,7 @@ $filelist = getfilelist($con, $this_type);
 
 // Part of con series? Find previous and next.
 if ($convention['conset_id']) {
-	$cname = ($convention['conset_id'] == 40 ? $t->getTemplateVars('_cons_other') : $convention['cname']);
+	$cname = ($convention['conset_id'] == 40 ? $t->getTemplateVars('_cons_other') : $convention['cname_translation']);
 	$partofhtml = "<a href=\"data?conset=" . $convention['conset_id'] . "\" class=\"con\">" . htmlspecialchars($cname) . "</a>";
 	$qq = getall("
 		SELECT id, name, year, begin, end
