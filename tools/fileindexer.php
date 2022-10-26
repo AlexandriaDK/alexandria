@@ -128,7 +128,7 @@ function OCRFile($file) {
 	$lang = $languages[$file['language']] ?? 'eng';
 	$langparm = "-l $lang";
 	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
-	$command = "ocrmypdf -s $langparm '$filepath' '$filepath' 2>&1";
+	$command = "ocrmypdf -s $langparm " . escapeshellarg($filepath) . " " . escapeshellarg($filepath) . " 2>&1";
 	print "Command: " . $command . PHP_EOL;
 	$result = `$command`;
 	print $result . PHP_EOL;
