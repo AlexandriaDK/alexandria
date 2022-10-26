@@ -41,7 +41,7 @@ if (!function_exists('mb_basename')) {
 function splitpdf($path, $pages, $category, $data_id)
 { // requires pdftk
 	$pages = trim($pages);
-	if (!preg_match('/^\d+(-\d+)?(left|right|down)?( +\d+(-\d+)?(left|right|down)?)?$/', $pages)) {
+	if (!preg_match('/^\d+(-\d+)?(left|right|down)?( +\d+(-\d+)?(left|right|down)?)*$/', $pages)) {
 		$_SESSION['admin']['info'] = "Bad page range: $pages";
 		return false;
 	} else {
