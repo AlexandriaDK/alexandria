@@ -196,6 +196,7 @@ function showTags() {
 
 function showMagazines() {
     showCategoryList('Magazines', 'magazines', 'magazines', 'magazine', 'name');
+    onlineLink('magazines');
     return false;
 }
 
@@ -585,6 +586,8 @@ function showMagazine(data) {
     html += makeArticleReferenceSection('magazine', id);
 
     showContent(html);
+    onlineLink('magazines?id=' + id);
+
 }
 
 function showIssue(data) {
@@ -671,6 +674,8 @@ function showIssue(data) {
     html += makeArticleReferenceSection('issue', id);
 
     showContent(html);
+    onlineLink('magazines?issue=' + id);
+
 }
 
 function showSingleData(data) {
