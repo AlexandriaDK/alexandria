@@ -80,8 +80,7 @@ if ( $dataset ) {
 	case 'all':
 		$output = [];
 		foreach ( $exportqueries AS $table => $query ) {
-#			print $table . " " . $query . PHP_EOL;
-			$output[ $table ] = getall( $query, FALSE )[0];
+			$output[ $table ] = getall( $query, FALSE );
 		}
 		break;
 	default:
