@@ -15,7 +15,7 @@
 		</h3>
 
 		<p>
-			{$_about_history|sprintf:'https://loot.alexandria.dk/varefakta.php':'data?scenarie=525':'data?person=1':'data?con=198#awards':'data?con=497#awards':'https://www.facebook.com/groups/FriendsOfAlexandria':'https://gitlab.com/brodersen/alexandria':'export':'https://loot.alexandria.dk/AlexandriaOffline.zipxxx'|nl2br}
+			{$_about_history|sprintf:'https://loot.alexandria.dk/varefakta.php':'data?scenarie=525':'data?person=1':'data?con=198#awards':'data?con=497#awards':'https://www.facebook.com/groups/FriendsOfAlexandria':'https://gitlab.com/brodersen/alexandria':'export':'https://loot.alexandria.dk/AlexandriaOffline.zip'|nl2br}
 		</p>
 </div>
 
