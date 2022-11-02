@@ -20,6 +20,9 @@ $internal = $_REQUEST['internal'] ?? '';
 $confirmed = $_REQUEST['confirmed'] ?? '';
 $country = trim((string) ($_REQUEST['country'] ?? ''));
 $cancelled = (int) (bool) ($_REQUEST['cancelled'] ?? '');
+if (!$end || $end == "0000-00-00") {
+	$end = $begin;
+}
 
 $this_id = $con;
 
@@ -227,9 +230,6 @@ print '<tr><td>Country code</td><td><input type="text" id="country" name="countr
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=internal cols=60 rows=4 WRAP=VIRTUAL>\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
 
-
-## Con-serie ##
-
 print "<tr valign=top><td>Con series</td>";
 print "<td>\n";
 print "<select name=\"conset_id\">\n";
@@ -242,8 +242,6 @@ foreach ($conset as $id => $name) {
 print "</select>\n";
 print "</td></tr>\n\n";
 
-## Bekræft data? ##
-
 print "<tr valign=top><td>Data validity</td>";
 print "<td>\n";
 print "<select name=\"confirmed\">\n";
@@ -253,7 +251,6 @@ foreach ($conflist as $id => $stage) {
 	print "<option value=$id";
 	if ($id == $confirmed) print " SELECTED";
 	print " style=\"background-color: " . $levelcolors[$stage['level']] . "\"";
-
 	print ">" . $stage['label'] . "\n";
 }
 print "</select>\n";
@@ -298,8 +295,7 @@ if ($con) {
 ?>
 
 </table>
-
-</FORM>
+</form>
 
 <hr size=1>
 
@@ -350,5 +346,4 @@ if ($con) {
 </script>
 
 </body>
-
 </html>
