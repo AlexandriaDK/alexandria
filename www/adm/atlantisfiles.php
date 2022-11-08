@@ -15,9 +15,16 @@ $map = [
 	'Dommedag 2056 - New Orleans' => 'Dommedag 2056: New Orleans',
 	'MS Titanic II' => 'M/S Titanic II',
 	'New York Coppers' => 'New York Coppers: Gaden uden nåde!',
-	'Husk sovepose!' => 'Husk sovepose ...',
+	'HuskSovepose' => 'Husk sovepose ...',
 	'Sarajevo 2001' => 'Sarajevo-2001',
 	'Crossroads' => 'Crossroads (Fastaval 93)',
+	'Julescenariet 93' => 'Julescenariet \'93',
+	'Hvem Puler Pudlen' => 'Hvem Puler Pudlen?',
+	'In the Grip of ... Winter' => 'In the Grip of ... Winter?',
+	'Lokes Løn - Nillingen' => 'Lokes løn: Nillingen',
+	'Marx mildner luften...' => 'Marx mildner luften for den flåede mår',
+
+
 
 ];
 
