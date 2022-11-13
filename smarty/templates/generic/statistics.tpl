@@ -17,7 +17,7 @@
 		</thead>
 		<tbody>
 		{foreach from=$stat_con_country item=$scc}
-		<tr><td class="statnumber">{$scc.placeout}</td><td>{$scc.localecountry}</td><td class="statnumber">{$scc.count|nicenumber} </td></tr>
+		<tr><td class="statnumber">{$scc.placeout}</td><td><a href="cons#{$scc.ccode|escape}" class="con">{$scc.localecountry|escape}</a></td><td class="statnumber">{$scc.count|nicenumber} </td></tr>
 		{/foreach}
 		</tbody>
 		</table>
