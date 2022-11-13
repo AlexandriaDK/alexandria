@@ -8,7 +8,7 @@
 	</h2>
 
 	<p class="gameslinks countryselector">
-	<span class="countryselector">{$_conset_all}</span> • {foreach $countries as $countrycode}<span class="countryselector" data-countrycode="{$countrycode|escape}">{$countrycode|getCountryName|escape}</span>{if not $countrycode@last} • {/if}{/foreach}
+		<a href="#" class="countryselector">{$_conset_all}</a> • {foreach $countries as $countrycode}<a href="#{$countrycode|escape}" class="countryselector" data-countrycode="{$countrycode|escape}">{$countrycode|getCountryName|escape}</a>{if not $countrycode@last} • {/if}{/foreach}
 	</p>
 
 	<div class="con concolumns">
@@ -26,16 +26,5 @@
 
 	</div>
 </div>
-
-<script>
-$( "span.countryselector" ).click(function() {
-	$('.conblock[data-countries]').show();
-	$('.conblock ul li').show();
-	if ( this.dataset.countrycode ) {
-		$('.conblock[data-countries]').not( '[data-countries~="' + this.dataset.countrycode + '"]').hide();
-		$('.conblock ul li[data-country]').not( '[data-country="' + this.dataset.countrycode + '"]').hide();
-	}
-});
-</script>
 
 {include file="end.tpl"}
