@@ -70,7 +70,7 @@ $r = getall("
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	$wherepart
-	GROUP BY cgrel.presentation_id,cgrel.game_id,pgrel.person_id, g.id, c.id
+	GROUP BY cgrel.presentation_id,cgrel.game_id,pgrel.person_id, g.id, c.id, alias.label
 	ORDER BY title_translation, p.surname, p.firstname, c.year, c.begin, c.end
 ");
 
