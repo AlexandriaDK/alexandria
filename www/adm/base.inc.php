@@ -197,12 +197,13 @@ function changefiles($data_id, $category)
 	return $html;
 }
 
-function changeawards($convention_id)
+function changeawards($data_id, $category)
 {
-	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convention_id = '$convention_id'");
+	$type_field = $category . '_id';
+	list($numawards, $numnominees) = getrow("SELECT COUNT(DISTINCT a.id), COUNT(b.id) FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE `$type_field` = $data_id");
 	$html  = "<tr valign=top><td>Awards</td><td>\n";
 	$html .= sprintf("$numawards %s, $numnominees %s", ($numawards == 1 ? "award" : "awards"), ($numnominees == 1 ? "nominated" : "nominated"));
-	$html .= " - <a href=\"awards.php?category=convention&amp;data_id=$convention_id\" accesskey=\"w\">Edit awards</a>";
+	$html .= " - <a href=\"awards.php?category=$category&amp;data_id=$data_id\" accesskey=\"w\">Edit awards</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;
 }

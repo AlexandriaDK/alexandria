@@ -10,7 +10,7 @@ $this_type = 'awards';
 $category = (string) ($_REQUEST['category'] ?? FALSE);
 $action = (string) ($_REQUEST['action'] ?? FALSE);
 $do = (string) ($_REQUEST['do'] ?? FALSE);
-$name = (string) ($_REQUEST['name'] ?? FALSE);
+$name = trim((string) ($_REQUEST['name'] ?? ''));
 $description = (string) ($_REQUEST['description'] ?? FALSE);
 $nominationtext = (string) ($_REQUEST['nominationtext'] ?? FALSE);
 $id = (int) ($_REQUEST['id'] ?? FALSE);
@@ -22,28 +22,17 @@ $award_nominee_entity = (int) ($_REQUEST['award_nominee_entity'] ?? '');
 $award_nominee_entity_extra = $_REQUEST['award_nominee_entity'] ?? '';
 $data_id = (int) ($_REQUEST['data_id'] ?? FALSE);
 $convention_id = (int) ($_REQUEST['convention_id'] ?? FALSE);
+$tag_id = (int) ($_REQUEST['tag_id'] ?? FALSE);
 $winner = (int) isset($_REQUEST['winner']);
 $ranking = (string) ($_REQUEST['ranking'] ?? '');
 
+$type = $convention_id ? 'convention' : 'tag';
+$type_id = $convention_id ? $convention_id : $tag_id;
+
 $user_id = $_SESSION['user_id'];
 
-
-// $people = [];
-
-// $result = getall("SELECT id, firstname, surname FROM person ORDER BY firstname, surname");
-// foreach($result AS $row) {
-// 	$people[] = $row['id'] . " - " . $row['firstname'] . " " . $row['surname'];
-// }
-
-// $scenarios = [];
-// $result = getall("SELECT id, title FROM game ORDER BY title");
-// foreach($result AS $row) {
-// 	$scenarios[] = $row['id'] . " - " . $row['title'];
-// }
-
-// Edit kategori
+// Edit category
 if ($action == "changecategory" && $do != "Delete") {
-
 	$q = "UPDATE award_categories SET " .
 		"name = '" . dbesc($name) . "', " .
 		"description = '" . dbesc($description) . "' " .
@@ -77,8 +66,12 @@ if ($action == "changecategory" && $do == "Delete") {
 
 // Add category
 if ($action == "addcategory") {
+	$type_field = 'category_id';
+	if ($category == 'tag') {
+		$type_field = 'tag_id';
+	}
 	$q = "INSERT INTO award_categories " .
-		"(name, description, convention_id) VALUES " .
+		"(name, description, $type_field) VALUES " .
 		"('" . dbesc($name) . "', '" . dbesc($description) . "', " . $data_id . ")";
 	$r = doquery($q);
 	if ($r) {
@@ -158,10 +151,9 @@ if ($action == 'deletenomineeentity') {
 }
 ?>
 <!DOCTYPE html>
-<HTML>
-
-<HEAD>
-	<TITLE>Administration - Awards</TITLE>
+<html>
+<head>
+	<title>Administration - Awards</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="/uistyle.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -194,15 +186,20 @@ if ($action == 'deletenomineeentity') {
 
 	printinfo();
 
-	if ($category == 'convention') {
+	if ($category == 'convention' || $category == 'tag') {
+		$type_field = 'convention_id';
 		// get data
-		$cat = 'convention';
-		$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
-		$mainlink = "convention.php?con=$data_id";
+		if ($category == 'convention') {
+			$title = getone("SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = $data_id");
+			$mainlink = "convention.php?con=$data_id";
+			$type_field = 'convention_id';
+		} else {
+			$title = getone("SELECT tag FROM tag WHERE id = $data_id");
+			$mainlink = "tag.php?tag_id=$data_id";
+			$type_field = 'tag_id';
+		}
 
-		$title = getone($q);
-
-		$query = "SELECT a.id, a.name, a.description, SUM(b.winner = 1) AS winners, COUNT(b.id) AS nominees FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE convention_id = '$data_id' GROUP BY a.id";
+		$query = "SELECT a.id, a.name, a.description, SUM(b.winner = 1) AS winners, COUNT(b.id) AS nominees FROM award_categories a LEFT JOIN award_nominees b ON a.id = b.award_category_id WHERE `$type_field` = $data_id GROUP BY a.id";
 		$result = getall($query);
 
 		print "<table align=\"center\" border=0>" .
@@ -244,14 +241,26 @@ if ($action == 'deletenomineeentity') {
 		print "</table>" . PHP_EOL;
 	} elseif ($category == "awardcategory" && $data_id) {
 		// get category
-		list($category_id, $name, $convention_id, $convention_name, $year) = getrow("SELECT a.id, a.name, a.convention_id, b.name AS convention_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convention_id = b.id WHERE a.id = $data_id");
+		list($category_id, $name, $convention_id, $convention_name, $year, $tag_id, $tag_name) = getrow("
+			SELECT a.id, a.name, a.convention_id, b.name AS convention_name, b.year, a.tag_id, c.tag AS tag_name
+			FROM award_categories a
+			LEFT JOIN convention b ON a.convention_id = b.id
+			LEFT JOIN tag c ON a.tag_id = c.id
+			WHERE a.id = $data_id
+		");
 		if (!$category_id) {
 			die("Unknown award category");
 		}
 		$nominees = getall("SELECT a.id, a.game_id, a.name, a.nominationtext, a.winner, a.ranking, b.title, COUNT(c.id) AS count_entity FROM award_nominees a LEFT JOIN game b ON a.game_id = b.id LEFT JOIN award_nominee_entities c ON a.id = c.award_nominee_id WHERE award_category_id = $data_id GROUP BY a.id ORDER BY winner DESC, a.id");
 
 		print "<table align=\"center\" border=0>" .
-			"<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name) . " at: <a href=\"awards.php?category=convention&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convention_name) . " ($year)</a>" .
+			"<tr><th colspan=5>Edit nominees for " . htmlspecialchars($name);
+		if ($convention_id) {
+			print " at: <a href=\"awards.php?category=convention&amp;data_id=$convention_id\" accesskey=\"q\">" . htmlspecialchars($convention_name) . " ($year)</a>";
+		} elseif ($tag_id) {
+			print " for: <a href=\"awards.php?category=tag&amp;data_id=$tag_id\" accesskey=\"q\">" . htmlspecialchars($tag_name) . "</a>";
+		}
+		print 
 			"</th></tr>\n" .
 			"<tr>\n" .
 			"<th>ID</th>" .

@@ -7,13 +7,12 @@
 <a href="rettelser?cat={$type}&amp;data_id={$id}"><span class="updatelinktext">{$_update_submit}</span></a>
 {/if}
 {if isset($user_editor)}
-{if not ($type == 'magazine' && ! $id)}
+{if not ($type == 'magazine' && ! $id) && not ($type == 'awards') }
 - 
 {/if}
 {if ! $id && $type == 'tag'}
 <a href="adm/tag.php?tag={$tag|rawurlencode}" accesskey="r" title="Hotkey: R"><span class="updatelinktext">{$_update_edit}</span></a>
-{else}
+{elseif $type != 'awards'}
 <a href="adm/redir.php?cat={$type}&amp;data_id={$id}" accesskey="r" title="Hotkey: R"><span class="updatelinktext">{$_update_edit}</span></a>
 {/if}
 {/if}
-

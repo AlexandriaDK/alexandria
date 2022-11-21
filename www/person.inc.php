@@ -191,31 +191,34 @@ if (count($q) > 0) {
 }
 
 // List of awards
-$awarddata = [];
+$awarddata = ['convention' => [], 'tag' => [] ];
 
 // awards if your are an author (1), organizer (4), or designer (5)
 $q = getall("
 	(
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, e.title, COALESCE(f.label,e.title) AS title_translation
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, t.id AS tag_id, t.tag, e.title, COALESCE(f.label,e.title) AS title_translation, COALESCE(b.convention_id, b.tag_id) AS type_id
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	INNER JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN tag t ON b.tag_id = t.id
 	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person
 	INNER JOIN game e ON a.game_id = e.id
 	LEFT JOIN alias f ON e.id = f.game_id AND f.language = '" . LANG . "' AND f.visible = 1
 	)
 	UNION ALL
 	(
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, '' AS title, '' as title_translation
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, t.id AS tag_id, t.tag, '' AS title, '' as title_translation, COALESCE(b.convention_id, b.tag_id) AS type_id
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	INNER JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN tag t ON b.tag_id = t.id
 	INNER JOIN award_nominee_entities d ON a.id = d.award_nominee_id AND d.person_id = $person
 	)
 	ORDER BY year ASC, begin ASC, convention_id ASC, winner DESC, id ASC
 ");
 
 foreach ($q as $rs) {
+	$type = ($rs['convention_id'] ? 'convention' : 'tag');
 	$awardtext = "";
 	if ($rs['title_translation']) {
 		$awardtext .= '<span title="' . htmlspecialchars($rs['title']) . '">' . htmlspecialchars($rs['title_translation']) . "</span>: ";
@@ -235,18 +238,24 @@ foreach ($q as $rs) {
 		$awardtext .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
 	}
 
-	// $awardtext .=  " – " . $rs['conventname'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") . "<br>" . PHP_EOL;
-	$awarddata[$rs['convention_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
-	$awarddata[$rs['convention_id']]['conset_id'] = $rs['conset_id'];
-	$awarddata[$rs['convention_id']]['text'][] = $awardtext;
+	$name = $type == 'convention' ? $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") : $rs['tag'];
+	$type_id = $type == 'convention' ? $rs['convention_id'] : $rs['tag_id'];
+	$awarddata[$type][$type_id]['name'] = $name;
+	$awarddata[$type][$type_id]['text'][] = $awardtext;
+	if ($type == 'convention') {
+		$awarddata[$type][$type_id]['conset_id'] = $rs['conset_id'];
+	}
 }
+$awards = [];
+
 $awardlist = "";
-foreach ($awarddata as $convention_id => $data) {
-	$con_award_url = "/awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
-	$awardlist .= "<h4 class=\"awardconventhead\"><a href=\"" . $con_award_url . "\" class=\"con\" title=\"Alle priser for " . htmlspecialchars($data['name']) . "\">" . htmlspecialchars($data['name']) . "</a></h4>" . PHP_EOL;
-	$awardlist .= "<div>";
-	$awardlist .= implode("<br>" . PHP_EOL, $data['text']);
-	$awardlist .= "</div>" . PHP_EOL;
+foreach ($awarddata['convention'] as $convention_id => $data) {
+	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
+	$awards[] = ['type_award_url' => $con_award_url, 'type_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
+}
+foreach ($awarddata['tag'] as $tag_id => $data) {
+	$type_award_url = "awards?tid=" . $tag_id;
+	$awards[] = ['type_award_url' => $type_award_url, 'type_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
 }
 
 // List of organizer posts
@@ -299,7 +308,7 @@ $t->assign('birth', $birth);
 $t->assign('death', $death);
 $t->assign('age', $age_year);
 $t->assign('slist', $slist);
-$t->assign('award', $awardlist);
+$t->assign('awards', $awards);
 $t->assign('organizerlist', $organizerlist);
 $t->assign('articlesfrom', $articlesfrom);
 $t->assign('articles', $articles);

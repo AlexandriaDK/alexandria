@@ -231,16 +231,18 @@ foreach ($q as $rs) {
 }
 
 // Awards
-$awarddata = [];
+$awarddata = [ 'convention' => [], 'tag' => [] ];
 $q = getall("
-	SELECT a.id, a.nominationtext, a.winner, a.ranking, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.conset_id
+	SELECT a.id, a.nominationtext, a.winner, a.ranking, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.conset_id, t.tag AS tag_name, COALESCE(b.convention_id, b.tag_id) AS type_id
 	FROM award_nominees a
 	INNER JOIN award_categories b ON a.award_category_id = b.id
-	INNER JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN convention c ON b.convention_id = c.id
+	LEFT JOIN tag t ON b.tag_id = t.id
 	WHERE a.game_id = $game
 	ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC
 ");
 foreach ($q as $rs) {
+	$type = ($rs['convention_id'] ? 'convention' : 'tag');
 	$awardtext = ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner')) : ucfirst($t->getTemplateVars('_award_nominated'))) . ", " . htmlspecialchars($rs['name']);
 	if ($rs['ranking']) {
 		$awardtext .= " (" . htmlspecialchars($rs['ranking']) . ")";
@@ -251,15 +253,19 @@ foreach ($q as $rs) {
 		$awardtext .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
 	}
 
-	$awarddata[$rs['convention_id']]['name'] = $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "");
-	$awarddata[$rs['convention_id']]['conset_id'] = $rs['conset_id'];
-	$awarddata[$rs['convention_id']]['text'][] = $awardtext;
+	$awarddata[$type][$rs['type_id']]['name'] = ($type == 'convention' ? ($rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "")) : $rs['tag_name']);
+	$awarddata[$type][$rs['type_id']]['conset_id'] = $rs['conset_id'] ?? '';
+	$awarddata[$type][$rs['type_id']]['text'][] = $awardtext;
 }
 $awards = [];
 
-foreach ($awarddata as $convention_id => $data) {
+foreach ($awarddata['convention'] as $convention_id => $data) {
 	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
-	$awards[] = ['con_award_url' => $con_award_url, 'con_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
+	$awards[] = ['type_award_url' => $con_award_url, 'type_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
+}
+foreach ($awarddata['tag'] as $tag_id => $data) {
+	$type_award_url = "awards?tid=" . $tag_id;
+	$awards[] = ['type_award_url' => $type_award_url, 'type_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
 }
 
 // Genre

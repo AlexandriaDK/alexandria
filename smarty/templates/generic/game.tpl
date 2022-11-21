@@ -151,11 +151,10 @@ $( function() {
 {if $awards}
 <h3 id="awards">{$_con_awards|ucfirst}</h3>
 {foreach $awards AS $award}
-<h4 class="awardconventhead"><a href="{$award.con_award_url}" class="con" title="{$_allawardsfor|sprintf:$award.con_name|escape}">{$award.con_name|escape}</a></h4>
+<h4 class="awardconventhead"><a href="{$award.type_award_url}" class="con" title="{$_allawardsfor|sprintf:$award.type_name|escape}">{$award.type_name|escape}</a></h4>
 <div>
 {$award.awards}
 </div>
-
 {/foreach}
 {/if}
 

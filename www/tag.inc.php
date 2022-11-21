@@ -19,6 +19,8 @@ if (!$tag && !$tag_id) {
 if (!$tag) {
 	$tag = $ttag;
 }
+
+// scenarios
 $q = getall("
 	SELECT g.id, title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, person_extra, COUNT(f.id) AS files, COALESCE(alias.label, g.title) AS title_translation
 	FROM game g
@@ -80,6 +82,76 @@ if (count($q) > 0) {
 	}
 }
 
+// Awards - copypasted from convention.inc.php and should probably be a generic function
+// List of awards
+$awardlist = '';
+if ($tag_id) {
+	$award_nominees = getall("
+		SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.game_id, b.id AS category_id, b.tag_id, b.name AS category_name, t.tag AS tag_name, d.title, COALESCE(e.label,d.title) AS title_translation
+		FROM award_nominees a
+		INNER JOIN award_categories b ON a.award_category_id = b.id
+		LEFT JOIN tag t ON b.tag_id = t.id
+		LEFT JOIN game d ON a.game_id = d.id
+		LEFT JOIN alias e ON d.id = e.game_id AND e.language = '" . LANG . "' AND e.visible = 1
+		WHERE t.id = $tag_id
+		ORDER BY category_name, a.winner DESC, a.id
+	");
+
+	$awardset = [];
+	$awardnominees = [];
+	$html = "";
+	foreach ($award_nominees as $nominee) {
+		$tid = $nominee['tag_id'];
+		$tag_id = $nominee['tag_id'];
+		$cat_id = $nominee['category_id'];
+		if (!$tid) $tid = 0;
+		$awardnominees[$tid][$tag_id]['name'] = $nominee['tag_name'];
+		// $awardnominees[$tid][$tag_id]['year'] = $nominee['year'];
+		$awardnominees[$tid][$tag_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
+		$awardnominees[$tid][$tag_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation']];
+	}
+
+	if ($awardnominees) {
+		foreach ((array) $awardnominees[$tid] as $tagid => $atag) {
+			// $html .= "<div class=\"awardyear\" data-year=\"" . $atag['year'] . "\">";
+			$html .= "<div class=\"awardblock\">" . PHP_EOL;
+			foreach ($atag['categories'] as $category) {
+				$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
+				$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
+				foreach ($category['nominees'] as $nominee) {
+					$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
+					$html .= "<div class=\"" . $class . "\">";
+					$html .= "<h5 class=\"" . $class . "\">";
+					$html .= "<span class=\"" . $class . "\">";
+					if ($nominee['game_id']) {
+						$html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
+					} else {
+						$html .= htmlspecialchars($nominee['name']);
+					}
+					$html .= "</span>";
+					if ($nominee['nominationtext']) {
+						$nt_id = "nominee_text_" . $nominee['id'];
+						$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext')) . "\">[+]</span>";
+					}
+					$html .=  "</h5>";
+					if ($nominee['ranking']) {
+						$html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
+					}
+					if ($nominee['nominationtext']) {
+						$html .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
+					}
+
+					$html .= "</div>" . PHP_EOL;
+				}
+				$html .= "</div>" . PHP_EOL;
+			}
+			$html .= "</div>" . PHP_EOL;
+			// $html .= "</div>" . PHP_EOL;
+		}
+	}
+	$awardlist = $html;
+}
+
 // List of files
 $filelist = getfilelist($this_id, $this_type);
 
@@ -102,6 +174,7 @@ $t->assign('pic', $available_pic);
 $t->assign('ogimage', getimageifexists($this_id, $this_type));
 $t->assign('description', $description);
 $t->assign('slist', $slist);
+$t->assign('award', $awardlist);
 $t->assign('trivia', $trivialist);
 $t->assign('link', $linklist);
 $t->assign('articles', $articles);

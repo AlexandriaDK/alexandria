@@ -120,6 +120,7 @@ if ($tag_id) {
 	print changelinks($tag_id, $this_type);
 	print changetrivia($tag_id, $this_type);
 	print changefiles($tag_id, $this_type);
+	print changeawards($tag_id, $this_type);
 	print showtickets($tag_id, $this_type);
 
 	// Games with this tag

@@ -270,7 +270,7 @@ if ($con) {
 	print changealias($con, $this_type);
 	print changeorganizers($con, $this_type);
 	print changefiles($con, $this_type);
-	print changeawards($con);
+	print changeawards($con, $this_type);
 	print changeuserlog($con, $this_type);
 	print showpicture($con, $this_type);
 	print showtickets($con, $this_type);

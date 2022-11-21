@@ -45,6 +45,11 @@
 	</table>
 {/if}
 
+{if $award}
+<h3 id="awards">{$_con_awards}:</h3>
+		{$award}
+{/if}
+
 {include file="articlereference.tpl"}
 {include file="trivialink.tpl"}
 {include file="internal.tpl"}
