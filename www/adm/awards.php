@@ -26,8 +26,19 @@ $tag_id = (int) ($_REQUEST['tag_id'] ?? FALSE);
 $winner = (int) isset($_REQUEST['winner']);
 $ranking = (string) ($_REQUEST['ranking'] ?? '');
 
-$type = $convention_id ? 'convention' : 'tag';
-$type_id = $convention_id ? $convention_id : $tag_id;
+if ($category == 'convention') {
+	$type = 'convention';
+	$type_id = $data_id;
+} elseif ($category == 'tag') {
+	$type = 'tag';
+	$type_id = $data_id;
+	if (! $type_id) {
+		$type_id = $tag_id;
+	}
+} else {
+	$type = $convention_id ? 'convention' : 'tag';
+	$type_id = $convention_id ? $convention_id : $tag_id;
+}
 
 $user_id = $_SESSION['user_id'];
 
@@ -39,7 +50,7 @@ if ($action == "changecategory" && $do != "Delete") {
 		"WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id, $category, "Award updated: $id, $name");
+		chlog($type_id, $type, "Award updated: $id, $name");
 	}
 	$_SESSION['admin']['info'] = "Award updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -58,7 +69,7 @@ if ($action == "changecategory" && $do == "Delete") {
 	$q = "DELETE FROM award_categories WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($data_id, $category, "Category removed: $id");
+		chlog($type_id, $type, "Category removed: $id");
 	}
 	$_SESSION['admin']['info'] = "Category removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -66,7 +77,7 @@ if ($action == "changecategory" && $do == "Delete") {
 
 // Add category
 if ($action == "addcategory") {
-	$type_field = 'category_id';
+	$type_field = 'convention_id';
 	if ($category == 'tag') {
 		$type_field = 'tag_id';
 	}
@@ -76,7 +87,7 @@ if ($action == "addcategory") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($data_id, $category, "Award created: $name");
+		chlog($type_id, $type, "Award created: $name");
 	}
 	$_SESSION['admin']['info'] = "Award created! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -99,7 +110,7 @@ if ($action == "changenominee" && $do != "Delete") {
 	}
 	$r = doquery($q);
 	if ($r) {
-		chlog($convention_id, 'convention', "Nominee updated: $name ($data_id), $award_name");
+		chlog($type_id, $type, "Nominee updated: $name ($data_id), $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee updated! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -107,7 +118,6 @@ if ($action == "changenominee" && $do != "Delete") {
 
 // Add nominee
 if ($action == "addnominee") {
-	var_dump($convention_id);
 	$award_name = getone("SELECT name FROM award_categories WHERE id = $data_id");
 	$q = "INSERT INTO award_nominees " .
 		"(award_category_id, game_id, name, nominationtext, winner, ranking) VALUES " .
@@ -115,7 +125,7 @@ if ($action == "addnominee") {
 	$r = doquery($q);
 	if ($r) {
 		$id = dbid();
-		chlog($convention_id, 'convention', "Nominee added: $name, $award_name");
+		chlog($type_id, $type, "Nominee added: $name, $award_name");
 	}
 	$_SESSION['admin']['info'] = "Nominee added! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -133,7 +143,7 @@ if ($action == "changenominee" && $do == "Delete") {
 	$q = "DELETE FROM award_nominees WHERE id = '$id'";
 	$r = doquery($q);
 	if ($r) {
-		chlog($convention_id, 'convention', "Nominee removed: $id");
+		chlog($type_id, $type, "Nominee removed: $id");
 	}
 	$_SESSION['admin']['info'] = "Nominee removed! " . dberror();
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
@@ -142,7 +152,7 @@ if ($action == "changenominee" && $do == "Delete") {
 if ($action == 'deletenomineeentity') {
 	if (getone("SELECT id FROM award_nominee_entities WHERE id = $id")) {
 		doquery("DELETE FROM award_nominee_entities WHERE id = $id");
-		chlog($convention_id, 'convention', "Nominee connection deleted: $id");
+		chlog($type_id, $type, "Nominee connection deleted: $id");
 		$_SESSION['admin']['info'] = "Connection removed! " . dberror();
 	} else {
 		$_SESSION['admin']['info'] = "Could not find connection! " . dberror();
@@ -284,7 +294,7 @@ if ($action == 'deletenomineeentity') {
 			$entities = getall("SELECT id, COALESCE(person_id, game_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' END AS category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
 			$html_entity .= '<br>';
 			foreach ($entities as $entity) {
-				$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
+				$html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;tag_id=' . $tag_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
 				if ($entity['category']) {
 					$name = getentry($entity['category'], $entity['data_id']);
 					$link = getdatalink($entity['category'], $entity['data_id'], TRUE);
@@ -302,6 +312,7 @@ if ($action == 'deletenomineeentity') {
 				'<input type="hidden" name="category" value="' . $category . '">' .
 				'<input type="hidden" name="data_id" value="' . $data_id . '">' .
 				'<input type="hidden" name="convention_id" value="' . $convention_id . '">' .
+				'<input type="hidden" name="tag_id" value="' . $tag_id . '">' .
 				'<input type="hidden" name="id" value="' . $nominee['id'] . '">';
 			print "<tr valign=\"top\">\n" .
 				'<td style="text-align:right;">' . $nominee['id'] . '</td>' .
@@ -321,7 +332,8 @@ if ($action == 'deletenomineeentity') {
 			'<input type="hidden" name="action" value="addnominee">' .
 			'<input type="hidden" name="category" value="' . $category . '">' .
 			'<input type="hidden" name="data_id" value="' . $data_id . '">' .
-			'<input type="hidden" name="convention_id" value="' . $convention_id . '">';
+			'<input type="hidden" name="convention_id" value="' . $convention_id . '">'.
+			'<input type="hidden" name="tag_id" value="' . $tag_id . '">';
 		print "<tr valign=\"top\">\n" .
 			'<td style="text-align:right;">New</td>' .
 			'<td><input type="text" name="name" value="" size=40 maxlength=150 placeholder="(leave blank for scenario or board game)" autofocus></td>' .
