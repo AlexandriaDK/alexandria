@@ -1358,7 +1358,7 @@ function parseupcomingevents($eventset)
 		if ($type == 'convention') {
 			$calout .= "<td><a href=\"data?con=$id\" title=\"$coninfo\" class=\"con\">$name</a></td>\n";
 		} elseif ($type == 'game') {
-			$calout .= "<td><a href=\"data?scenarie=$id\" title=\"$coninfo\" class=\"scenarie\">$name</a></td>\n";
+			$calout .= "<td><a href=\"data?scenarie=$id\" title=\"$coninfo\" class=\"game\">$name</a></td>\n";
 		}
 		$calout .= "</tr>\n";
 	}

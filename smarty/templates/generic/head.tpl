@@ -236,7 +236,7 @@
 				{$_top_help_sce_no|@nl2br}
 				<br><br>
 				{foreach from=$user_scenario_missing_players item=$usmc}
-				<a href="data?scenarie={$usmc.id}" class="scenarie">{$usmc.title|escape}</a><br>
+				<a href="data?scenarie={$usmc.id}" class="game">{$usmc.title|escape}</a><br>
 				{/foreach}
 				<br>
 				{$_top_help_sce_no2|@nl2br}
@@ -248,7 +248,7 @@
 				{$_top_help_sce_tag|@nl2br}
 				<br><br>
 				{foreach from=$user_scenario_missing_tags item=$usmt}
-				<a href="data?scenarie={$usmt.id}" class="scenarie">{$usmt.title|escape}</a><br>
+				<a href="data?scenarie={$usmt.id}" class="game">{$usmt.title|escape}</a><br>
 				{/foreach}
 				<br>
 				{$_top_help_sce_tag2|@nl2br}
@@ -280,10 +280,10 @@
 					<a href="personer" class="person">{$_persons|ucfirst}</a>
 				</div>
 				<div class="topmenublock">
-					<a href="scenarier" class="scenarie">{$_scenarios|ucfirst}</a>
+					<a href="scenarier" class="game">{$_scenarios|ucfirst}</a>
 				</div>
 				<div class="topmenublock">
-					<a href="boardgames" class="scenarie">{$_boardgames|ucfirst}</a>
+					<a href="boardgames" class="game">{$_boardgames|ucfirst}</a>
 				</div>
 				<div class="topmenublock">
 					<a href="cons" class="con">{$_conventions|ucfirst}</a>

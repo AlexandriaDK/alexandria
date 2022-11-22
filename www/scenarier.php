@@ -111,7 +111,7 @@ foreach ($scenarios as $scenario_id => $scenario) {
 	} else {
 		$xscenlist .= "<td></td>";
 	}
-	$xscenlist .= "\t\t<td><a href=\"data?scenarie=" . $scenario_id . "\" class=\"scenarie\" title=\"" . htmlspecialchars($scenario['origtitle']) . "\">" . htmlspecialchars($scenario['title']) . "</a></td>\n";
+	$xscenlist .= "\t\t<td><a href=\"data?scenarie=" . $scenario_id . "\" class=\"game\" title=\"" . htmlspecialchars($scenario['origtitle']) . "\">" . htmlspecialchars($scenario['title']) . "</a></td>\n";
 
 	// persons
 	$xscenlist .= "\t\t<td>";

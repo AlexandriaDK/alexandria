@@ -80,7 +80,7 @@ foreach ($q as $row) {
 		unset($row['year']);
 		$output .= " " . $timeinfo . smarty_function_con($row) . "<br>\n";
 	} elseif ($row['type'] == 'game') {
-		$output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['name']}</a><br>\n";
+		$output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"game\">{$row['name']}</a><br>\n";
 	}
 	if ($row['cancelled']) {
 		$output .= "</span>";

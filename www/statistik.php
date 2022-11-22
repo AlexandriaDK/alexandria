@@ -9,7 +9,7 @@ $cooperation = 35;
 $usedsystem = 50;
 $mostcons = 7;
 $mostauthors = 5;
-$mostscenarios = 30;
+$mostscenarios = 35;
 
 $larp_id = 73;
 
@@ -54,19 +54,13 @@ name
 
 // Active authors
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		p.id,
-		CONCAT(p.firstname,' ',p.surname) AS name
+	SELECT COUNT(*) AS antal, p.id, CONCAT(p.firstname,' ',p.surname) AS name
 	FROM person p
 	INNER JOIN pgrel ON pgrel.person_id = p.id AND pgrel.title_id = 1
 	INNER JOIN game g ON pgrel.game_id = g.id
 	GROUP BY p.id
-	HAVING
-		antal >= $act_person
-	ORDER BY
-		antal DESC,
-		name
+	HAVING antal >= $act_person
+	ORDER BY antal DESC, name
 ");
 
 $placering = 0;
@@ -84,28 +78,16 @@ $stat_person_active .= "</table>\n";
 $stat_person_exp = '<table class="tablestat">';
 
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		p.id,
-		CONCAT(p.firstname,' ',p.surname) AS name
-	FROM
-		person p,
-		pgrel,
-		game g,
-		cgrel
-	WHERE
-		p.id = pgrel.person_id AND
-		pgrel.game_id = g.id AND
-		g.id = cgrel.game_id AND
-		pgrel.title_id = 1 AND
-		cgrel.presentation_id IN (1,2,3,42)
-	GROUP BY
-		p.id
-	HAVING 
-		antal >= $exposure
-	ORDER BY
-		antal DESC,
-		name
+	SELECT COUNT(*) AS antal, p.id, CONCAT(p.firstname,' ',p.surname) AS name
+	FROM person p, pgrel, game g, cgrel
+	WHERE p.id = pgrel.person_id
+	AND pgrel.game_id = g.id
+	AND g.id = cgrel.game_id
+	AND pgrel.title_id = 1
+	AND cgrel.presentation_id IN (1,2,3,42)
+	GROUP BY p.id
+	HAVING antal >= $exposure
+	ORDER BY antal DESC, name
 ");
 
 $placering = 0;
@@ -125,27 +107,16 @@ $stat_person_workwith = '
 
 // Authors with most cooperation with other authors
 $r = getall("
-	SELECT
-		COUNT(DISTINCT t2.person_id) AS antal,
-		a1.id,
-		CONCAT(a1.firstname,' ',a1.surname) AS name
-	FROM
-		pgrel AS t1,
-		pgrel AS t2,
-		person AS a1
-	WHERE
-		t1.game_id = t2.game_id AND
-		t1.person_id != t2.person_id AND
-		t1.person_id = a1.id AND
-		t1.title_id = 1 AND
-		t2.title_id = 1
-	GROUP BY 
-		t1.person_id
-	HAVING
-		antal >= $cooperation
-	ORDER BY
-		antal DESC,
-		name
+	SELECT COUNT(DISTINCT t2.person_id) AS antal, a1.id, CONCAT(a1.firstname,' ',a1.surname) AS name
+	FROM pgrel AS t1, pgrel AS t2, person AS a1
+	WHERE t1.game_id = t2.game_id
+	AND t1.person_id != t2.person_id
+	AND t1.person_id = a1.id
+	AND t1.title_id = 1
+	AND t2.title_id = 1
+	GROUP BY  t1.person_id
+	HAVING antal >= $cooperation
+	ORDER BY antal DESC, name
 ");
 foreach($r AS $row) {
 	$stat_person_workwith .= "<tr><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
@@ -162,23 +133,13 @@ $stat_gamesystem_used = '
 // Popularity of RPG Systems
 // We are currently disregarding LARP
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		gs.id,
-		gs.name
-	FROM
-		game g,
-		gamesystem gs
-	WHERE
-		g.gamesystem_id = gs.id AND
-		gs.id != '$larp_id'
-	GROUP BY
-		gs.id
-	HAVING
-		antal >= $usedsystem
-	ORDER BY
-		antal DESC,
-		name
+	SELECT COUNT(*) AS antal, gs.id, gs.name
+	FROM game g, gamesystem gs
+	WHERE g.gamesystem_id = gs.id
+	AND gs.id != '$larp_id'
+	GROUP BY gs.id
+	HAVING antal >= $usedsystem
+	ORDER BY antal DESC, name
 ");
 foreach($r AS $row) {
 	$stat_gamesystem_used .= "<tr><td><a href=\"data?system={$row['id']}\" class=\"system\">".htmlspecialchars($row['name'])."</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
@@ -193,27 +154,17 @@ $stat_game_replay = '
 ';
 
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		g.id,
-		g.title AS origtitle,
-		COALESCE(alias.label, g.title) AS title_translation
-	FROM
-		game g
+	SELECT COUNT(*) AS antal, g.id, g.title AS origtitle, COALESCE(alias.label, g.title) AS title_translation
+	FROM game g
 	INNER JOIN cgrel ON g.id = cgrel.game_id
 	LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
-	WHERE
-		cgrel.presentation_id IN (1,2,3,42)
-	GROUP BY
-		g.id
-	HAVING
-		antal >= $mostcons
-	ORDER BY
-		antal DESC,
-		title
+	WHERE cgrel.presentation_id IN (1,2,3,42)
+	GROUP BY g.id
+	HAVING antal >= $mostcons
+	ORDER BY antal DESC, title
 ");
 foreach($r AS $row) {
-	$stat_game_replay .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="scenarie" title="' . htmlspecialchars( $row['origtitle']) . '">' . htmlspecialchars( $row['title_translation'] ) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
+	$stat_game_replay .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="game" title="' . htmlspecialchars( $row['origtitle']) . '">' . htmlspecialchars( $row['title_translation'] ) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
 }
 
 $stat_game_replay .= '
@@ -235,8 +186,8 @@ $r = getall("SELECT COUNT(*) AS antal, g.id, g.title AS origtitle, COALESCE(alia
 	ORDER BY antal DESC, title
 ");
 foreach($r AS $row) {
-	$stat_game_auts .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="scenarie" title="' . htmlspecialchars( $row['origtitle']) . '">' . htmlspecialchars( $row['title_translation'] ) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
-#	$stat_game_auts .= "<tr><td><a href=\"data?scenarie={$row['id']}\" class=\"scenarie\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+	$stat_game_auts .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="game" title="' . htmlspecialchars( $row['origtitle']) . '">' . htmlspecialchars( $row['title_translation'] ) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
+#	$stat_game_auts .= "<tr><td><a href=\"data?scenarie={$row['id']}\" class=\"game\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_game_auts .= '
@@ -249,31 +200,15 @@ $stat_con_game = '
 
 // Conventions with most scenarios
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		c.id,
-		c.name,
-		c.year,
-		c.begin,
-		c.end,
-		c.cancelled
-	FROM
-		convention c,
-		cgrel,
-		game g
-	WHERE
-		c.id = cgrel.convention_id AND
-		cgrel.game_id = g.id AND
-		cgrel.presentation_id IN (1,2,3,42) AND
-		g.boardgame = 0
-	GROUP BY
-		c.id
-	HAVING
-		antal >= $mostscenarios
-	ORDER BY
-		antal DESC,
-		c.year,
-		c.name
+	SELECT COUNT(*) AS antal, c.id, c.name, c.year, c.begin, c.end, c.cancelled
+	FROM convention c, cgrel, game g
+	WHERE c.id = cgrel.convention_id
+	AND	cgrel.game_id = g.id
+	AND	cgrel.presentation_id IN (1,2,3,42)
+	AND g.boardgame = 0
+	GROUP BY c.id
+	HAVING antal >= $mostscenarios
+	ORDER BY antal DESC, c.year, c.name
 ");
 $placering = 0;
 $lastantal = "";
@@ -302,17 +237,11 @@ foreach($r AS $row) {
 }
 
 $r = getall("
-	SELECT
-		COUNT(*) AS antal,
-		c.year 
-	FROM
-		cgrel,
-		convention c
-	WHERE
-		cgrel.presentation_id = 1 AND
-		cgrel.convention_id = c.id
-	GROUP BY
-		c.year
+	SELECT COUNT(*) AS antal, c.year 
+	FROM cgrel, convention c
+	WHERE cgrel.presentation_id = 1
+	AND cgrel.convention_id = c.id
+	GROUP BY c.year
 ");
 foreach($r AS $row) {
 	$yearstat[$row['year']]['game'] = $row['antal'];
@@ -355,24 +284,40 @@ foreach ($r AS $row) {
 	$place++;
 	$placeout = ($lastcount != $row['count'] ? "$place." : "");
 	$lastcount = $row['count'];
-	$descriptionlanguage[] = ['count' => $row['count'], 'placeout' => $placeout, 'lcode' => $row['language'], 'localecountry' => getLanguageName( $row['language'] ) ];
+	$descriptionlanguage[] = ['count' => $row['count'], 'placeout' => $placeout, 'lcode' => $row['language'], 'localelanguage' => getLanguageName( $row['language'] ) ];
 }
+
+// Downloadable scenarios, languages
+$r = getall("SELECT COUNT(DISTINCT game_id) AS count, language FROM files WHERE language != '' AND downloadable = 1 GROUP BY language HAVING count > 0 ORDER BY count DESC", FALSE);
+
+$place = $lastcount = 0;
+$downloadablelanguage = [];
+foreach ( $r AS $row ) {
+	$languagename = getLanguageName( $row['language'] );
+    if ( $languagename != $row['language'] ) { // only accept known languages
+		$place++;
+		$placeout = ($lastcount != $row['count'] ? "$place." : "");
+		$lastcount = $row['count'];
+        $downloadablelanguage[] = [ 'count' => $row['count'], 'placeout' => $placeout, 'code' => $row['language'], 'localelanguage' => $languagename ];
+    }
+}
+
 
 award_achievement(51); // visit statistics page
 
-$t->assign('content',$content);
-$t->assign('stat_person_active',$stat_person_active);
-$t->assign('stat_person_exp',$stat_person_exp);
-$t->assign('stat_person_workwith',$stat_person_workwith);
-$t->assign('stat_gamesystem_used',$stat_gamesystem_used);
-$t->assign('stat_game_replay',$stat_game_replay);
-$t->assign('stat_game_auts',$stat_game_auts);
-$t->assign('stat_con_game',$stat_con_game);
-$t->assign('stat_con_year',$yearstatpart);
-$t->assign('stat_con_country',$concountry);
-$t->assign('stat_run_country',$runcountry);
-$t->assign('stat_description_language',$descriptionlanguage);
+$t->assign('content', $content);
+$t->assign('stat_person_active', $stat_person_active);
+$t->assign('stat_person_exp', $stat_person_exp);
+$t->assign('stat_person_workwith', $stat_person_workwith);
+$t->assign('stat_gamesystem_used', $stat_gamesystem_used);
+$t->assign('stat_game_replay', $stat_game_replay);
+$t->assign('stat_game_auts', $stat_game_auts);
+$t->assign('stat_con_game', $stat_con_game);
+$t->assign('stat_con_year', $yearstatpart);
+$t->assign('stat_con_country', $concountry);
+$t->assign('stat_run_country', $runcountry);
+$t->assign('stat_description_language', $descriptionlanguage);
+$t->assign('stat_downloadable_language', $downloadablelanguage);
 
 $t->display('statistics.tpl');
-
 ?>

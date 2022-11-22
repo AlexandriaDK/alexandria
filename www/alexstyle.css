@@ -361,13 +361,11 @@ a:visited {
 	color: #808;
 }
 
-div.scenarie a:link,
-a.scenarie:link {
+div.scenarie a:link, a.scenarie:link, div.game a:link, a.game:link {
 	color: #e80;
 }
 
-div.scenarie a:visited,
-a.scenarie:visited {
+div.scenarie a:visited, a.scenarie:visited, div.game a:visited, a.game:visited {
 	color: #b50;
 }
 
@@ -966,7 +964,7 @@ table.magazinecontent span.description {
 	color: black;
 }
 
-.references a.scenarie {
+.references a.scenarie, .references a.game {
 	background-color: #e80;
 	color: black;
 }

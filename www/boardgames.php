@@ -55,7 +55,7 @@ foreach ($r as $row) {
 		$scenlist .= "<td></td>";
 	}
 	if ($game_id != $last_game_id) {
-		$scenlist .= "\t\t<td><a href=\"data?scenarie=" . $game_id . "\" class=\"scenarie\" title=\"" . htmlspecialchars($row['title']) . "\">" . htmlspecialchars($row['title_translation']) . "</a></td>\n";
+		$scenlist .= "\t\t<td><a href=\"data?scenarie=" . $game_id . "\" class=\"game\" title=\"" . htmlspecialchars($row['title']) . "\">" . htmlspecialchars($row['title_translation']) . "</a></td>\n";
 	} else {
 		$scenlist .= "\t\t<td>&nbsp;</td>\n";
 	}

@@ -12,19 +12,6 @@
 	<tr>
 	<td>
 		<table class="tablestat tablestartpad">
-		<thead>
-		<tr><th colspan="3">{$_stat_consbycountry|nl2br}</th></tr>
-		</thead>
-		<tbody>
-		{foreach from=$stat_con_country item=$scc}
-		<tr><td class="statnumber">{$scc.placeout}</td><td><a href="cons#{$scc.ccode|escape}" class="con">{$scc.localecountry|escape}</a></td><td class="statnumber">{$scc.count|nicenumber} </td></tr>
-		{/foreach}
-		</tbody>
-		</table>
-	</td>
-
-	<td>
-		<table class="tablestat tablestartpad">
 		<tr><th colspan="3">{$_stat_runsbycountry|nl2br}</th></tr>
 		{foreach from=$stat_run_country item=$src}
 		<tr><td class="statnumber">{$src.placeout}</td><td>{$src.localecountry}</td><td class="statnumber">{$src.count|nicenumber} </td></tr>
@@ -36,13 +23,27 @@
 		<table class="tablestat tablestartpad">
 		<tr><th colspan="3">{$_stat_descriptionsbylanguage|nl2br}</th></tr>
 		{foreach from=$stat_description_language item=$sdl}
-		<tr><td class="statnumber">{$sdl.placeout}</td><td>{$sdl.localecountry|ucfirst}</td><td class="statnumber">{$sdl.count|nicenumber} </td></tr>
+		<tr><td class="statnumber">{$sdl.placeout}</td><td>{$sdl.localelanguage|ucfirst}</td><td class="statnumber">{$sdl.count|nicenumber} </td></tr>
 		{/foreach}
+		</table>
+	</td>
+
+	<td>
+		<table class="tablestat tablestartpad">
+		<thead>
+		<tr><th colspan="3">{$_stat_downloadablebylanguage|nl2br}</th></tr>
+		</thead>
+		<tbody>
+		{foreach from=$stat_downloadable_language item=$sdl}
+		<tr><td class="statnumber">{$sdl.placeout}</td><td><a href="find?search_filelanguage[]={$sdl.code|escape}&search_type=findspec" class="game">{$sdl.localelanguage|ucfirst}</a></td><td class="statnumber">{$sdl.count|nicenumber} </td></tr>
+		{/foreach}
+		</tbody>
 		</table>
 	</td>
 	</tr>
 	
 	<tr>	
+
 	<td class="statleft"><span class="stathead">{$_stat_largestcons|nl2br}</span><br>
 		{$stat_con_game}
 	</td>
@@ -55,6 +56,20 @@
 		{/foreach}
 		</table>
 	</td>
+
+	<td>
+	<table class="tablestat tablestartpad">
+	<thead>
+	<tr><th colspan="3">{$_stat_consbycountry|nl2br}</th></tr>
+	</thead>
+	<tbody>
+	{foreach from=$stat_con_country item=$scc}
+	<tr><td class="statnumber">{$scc.placeout}</td><td><a href="cons#{$scc.ccode|escape}" class="con">{$scc.localecountry|escape}</a></td><td class="statnumber">{$scc.count|nicenumber} </td></tr>
+	{/foreach}
+	</tbody>
+	</table>
+	</td>
+
 	</tr>
 
 
