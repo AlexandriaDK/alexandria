@@ -9,7 +9,7 @@ $r = getrow("
 	SELECT g.id, g.title, g.internal, g.gamesystem_id, g.gamesystem_extra, g.person_extra, g.ottowinner, g.rlyeh_id, gms_min, gms_max, players_min, players_max, participants_extra, boardgame, gs.name AS sysname, COALESCE(alias.label, gs.name) AS system_translation
 	FROM game g
 	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
-	LEFT JOIN alias ON g.gamesystem_id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
+	LEFT JOIN alias ON g.gamesystem_id = alias.gamesystem_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 	WHERE g.id = $game
 	GROUP BY g.id
 ");
