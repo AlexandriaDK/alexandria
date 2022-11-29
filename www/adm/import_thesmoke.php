@@ -33,7 +33,7 @@ function res ($label, $value) {
 
 htmladmstart("The Smoke 2020 description parser");
 ?>
-<form action="thesmoke.php">
+<form action="import_thesmoke.php">
 <p>
 Full description text:<br>
 <textarea cols="100" rows="10" name="content">
