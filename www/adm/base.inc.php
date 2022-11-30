@@ -335,6 +335,10 @@ function rexit($this_type, $dataset = [])
 
 function mojibakefix($string)
 {
+	if (is_null($string))
+	{
+		return '';
+	}
 	$from = ['â€™', 'â€œ', 'â€', 'â€¦', 'Ã©', 'â€“', 'â€”', 'Ã§', 'Ã»'];
 	$to = ['\'', '"', '"', '…', 'é', '–', '—', 'ç', 'û'];
 	return str_replace($from, $to, $string);
