@@ -13,6 +13,7 @@ $format = (string) $_REQUEST['format'];
 
 $title = (string) $_REQUEST['title'];
 $authors = (string) $_REQUEST['authors'];
+$gms = (string) $_REQUEST['gms'];
 $organizer = (string) $_REQUEST['organizer'];
 $players = (string) $_REQUEST['players'];
 $participants_extra = (string) $_REQUEST['participants_extra'];
@@ -22,14 +23,18 @@ $tags = (string) $_REQUEST['tags'];
 $internal = (string) $_REQUEST['internal'];
 
 if ($action == 'creategame') {
-    $author_list = [];
+    $author_list =  $gm_list = [];
     foreach (explode("#", $authors) as $author_name) {
         $author_list[] = ['name' => $author_name, 'role_id' => 1]; // assuming author
+    }
+    foreach (explode("#", $gms) as $gm_name) {
+        $gm_list[] = ['name' => $gm_name, 'role_id' => 4]; // assuming organizer
     }
     list($players_min, $players_max) = strSplitParticipants($players);
     $game = [
         'title' => $title,
         'persons' => $author_list,
+        'gms' => $gm_list,
         'participants_extra' => $participants_extra,
         'organizer' => $organizer,
         'gamesystem_id' => 73, // LARP, assuming games are LARPs
@@ -64,7 +69,7 @@ if ($action == 'creategame') {
     }
 }
 
-function create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset)
+function create_game_form($title, $authors, $gms, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset)
 {
     global $intercon_letter;
     global $con_id;
@@ -79,9 +84,11 @@ function create_game_form($title, $authors, $organization, $players, $participan
         $url = $matches[1];
     }
     $authorfix = preg_replace('_, ?(and )?| and | ?[&/] ?_', '#', $authors);
+    $gmfix = preg_replace('_, ?(and )?| and | ?[&/] ?_', '#', $gms);
     $html  = '<form method="post" class="creategame"><table>';
     $html .= '<tr><td>Title:</td><td><input type="text" size="100" name="title" value="' . htmlspecialchars($title) . '"></td></tr>';
     $html .= '<tr><td>Authors (#):</td><td><input type="text" size="100"  name="authors" value="' . htmlspecialchars($authorfix) . '"></td></tr>';
+    $html .= '<tr><td>GMs (#):</td><td><input type="text" size="100"  name="gms" value="' . htmlspecialchars($gmfix) . '"></td></tr>';
     $html .= '<tr><td>Organizer:</td><td><input type="text" size="100"  name="organizer" value="' . htmlspecialchars($organization) . '"></td></tr>';
     $html .= '<tr><td>Players:</td><td><input type="text" size="100"  name="players" value="' . htmlspecialchars($players) . '"></td></tr>';
     $html .= '<tr><td>Players extra:</td><td><input type="text" size="100"  name="participants_extra" value="' . htmlspecialchars($participants_extra) . '"></td></tr>';
@@ -159,6 +166,7 @@ if ($type == 1) { // HTML scraper
             $title = html_entity_decode(strip_tags($game[1]));
             $title = preg_replace("_\s+_", " ", $title);
             $authors = strip_tags($game[2]);
+            $gms = ''; // :TODO: Missing in HTML scraper
             $organization = '';
             $players = strip_tags($game[3]);
             $participants_extra = '';
@@ -167,7 +175,7 @@ if ($type == 1) { // HTML scraper
             $internal = '';
             $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'");
             print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing . ' existing">⚠️</a>' : '') . "</p>";
-            print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset);
+            print create_game_form($title, $authors, $gms, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset);
             print "<hr>";
         } else {
             // for manual checks, e.g. special events
@@ -218,12 +226,12 @@ if ($type == 1) { // HTML scraper
         } else {
             $participants_extra = implode(", ", $playernotes);
         }
-        $members = implode(', ', $team_members); // For internal note
+        $gms = $members = implode(', ', $team_members); // For internal note
         $internal = "Autoimport: Import Intercon\nIntercon ID: $intercon_id\nDuration: $length_hours hours\nGMs: $members\n\nEntry: " . json_encode($entry) . "\n\nForm: " . json_encode($form) . "\n";
 
         $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'");
         print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing . ' existing">⚠️</a>' : '') . "</p>";
-        print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, '');
+        print create_game_form($title, $authors, $gms, $organization, $players, $participants_extra, $description, $fulldescription, $internal, '');
         print "<hr>";
     }
 }

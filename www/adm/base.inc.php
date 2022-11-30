@@ -497,10 +497,12 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 {
 	$title = $game['title'];
 	$gamesystem_id = $game['gamesystem_id'] ?? NULL;
+	$gamesystem_extra = $game['gamesystem_id'] ?? '';
 	$urls = $game['urls'] ?? [];
 	$genres = $game['genres'] ?? [];
 	$tags = $game['tags'] ?? [];
 	$persons = $game['persons'] ?? [];
+	$gms = $game['gms'] ?? [];
 	$cons = $game['cons'] ?? []; // list of con ids, e.g. [1, 4, 6] - assuming premiere
 	$organizer = $game['organizer'] ?? '';
 	$descriptions = $game['descriptions'] ?? [];
@@ -508,6 +510,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	$players_max = $game['players_max'] ?? NULL;
 	$participants_extra = $game['participants_extra'] ?? '';
 	$person_ids = [];
+	$gm_ids = [];
 	foreach ($persons as $person) {
 		if (trim($person['name'])) {
 			$person_ids[] = [
@@ -516,13 +519,23 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 			];
 		}
 	}
+
+	foreach ($gms as $gm) {
+		if (trim($gm['name'])) {
+			$gm_ids[] = [
+				'pid' => get_create_person(trim($gm['name']), $internal),
+				'role_id' => $gm['role_id']
+			];
+		}
+	}
+
 	if ($gamesystem_id == NULL) { // insert text NULL into SQL
 		$gamesystem_id = 'NULL';
 	}
 
 	// insert game
-	$game_id_sql = "INSERT INTO game (title, internal, gamesystem_id, person_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
-		"VALUES ('" . dbesc($title) . "', '" . dbesc($internal) . "', $gamesystem_id, '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
+	$game_id_sql = "INSERT INTO game (title, internal, gamesystem_id, gamesystem_extra, person_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
+		"VALUES ('" . dbesc($title) . "', '" . dbesc($internal) . "', $gamesystem_id, '" . dbesc($gamesystem_extra) . "', '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
 	$game_id = doquery($game_id_sql);
 	if (!$game_id) {
 		return false;
@@ -558,6 +571,15 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 		doquery($assql);
 	}
 
+	foreach ($gm_ids as $gm) {
+		$pid = $gm['pid'];
+		$role_id = $gm['role_id'];
+		foreach ($cons AS $con_id) {
+			$gmsql = "INSERT INTO pgrel (person_id, game_id, title_id, convention_id, note) VALUES ($pid, $game_id, $role_id, $con_id, 'GM')";
+			doquery($gmsql);
+		}
+	}
+	
 	foreach ($descriptions as $language => $description) {
 		$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
 		doquery($desc_sql);
@@ -572,8 +594,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 
 	foreach ($tags as $tag) {
 		if ($tag != '' && !getone("SELECT 1 FROM tags WHERE game_id = $game_id AND tag = '" . dbesc($tag) . "'")) {
-			$gsql = "INSERT INTO tags (game_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
-			doquery($gsql);
+			$tsql = "INSERT INTO tags (game_id, tag) VALUES ($game_id, '" . dbesc($tag) . "')";
+			doquery($tsql);
 		}
 	}
 
