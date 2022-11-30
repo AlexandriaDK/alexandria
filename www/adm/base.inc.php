@@ -575,7 +575,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 		$pid = $gm['pid'];
 		$role_id = $gm['role_id'];
 		foreach ($cons AS $con_id) {
-			$gmsql = "INSERT INTO pgrel (person_id, game_id, title_id, convention_id, note) VALUES ($pid, $game_id, $role_id, $con_id, 'GM')";
+			$gmsql = "INSERT INTO pgrel (person_id, game_id, title_id, convention_id, note) VALUES ($pid, $game_id, $role_id, $con_id, '')";
 			doquery($gmsql);
 		}
 	}
