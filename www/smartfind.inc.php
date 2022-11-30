@@ -7,7 +7,7 @@ define("URLMAGAZINE","magazines?id=");
 
 function log_search($find, $found="") {
 	$referer = dbesc($_SERVER['HTTP_REFERER'] ?? '');
-	doquery("INSERT INTO searches (find, found, referer, searchtime) VALUES ('$find','$found','" . dbesc($referer) ."',NOW())");
+	doquery("INSERT INTO searches (find, found, referer, searchtime) VALUES ('" . dbesc($find) . "','$found','" . dbesc($referer) ."',NOW())");
 }
 
 function category_search ($find, $searchfield, $category) {
