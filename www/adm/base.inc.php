@@ -497,7 +497,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 {
 	$title = $game['title'];
 	$gamesystem_id = $game['gamesystem_id'] ?? NULL;
-	$gamesystem_extra = $game['gamesystem_id'] ?? '';
+	$gamesystem_extra = $game['gamesystem_extra'] ?? '';
 	$urls = $game['urls'] ?? [];
 	$genres = $game['genres'] ?? [];
 	$tags = $game['tags'] ?? [];
