@@ -237,9 +237,10 @@ if ($awardnominees) {
 			$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
 			$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
 			foreach ($category['nominees'] as $nominee) {
+				$has_nominationtext = !!$nominee['nominationtext'];
 				$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
 				$html .= "<div class=\"" . $class . "\">";
-				$html .= "<h5 class=\"" . $class . "\">";
+				$html .= '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
 				$html .= "<span class=\"" . $class . "\">";
 				if ($nominee['game_id']) {
 					$html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
@@ -247,19 +248,15 @@ if ($awardnominees) {
 					$html .= htmlspecialchars($nominee['name']);
 				}
 				$html .= "</span>";
-				if ($nominee['nominationtext']) {
-					$nt_id = "nominee_text_" . $nominee['id'];
-					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext')) . "\">[+]</span>";
-				}
-				$html .=  "</h5>";
 				if ($nominee['ranking']) {
 					$html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
 				}
-				if ($nominee['nominationtext']) {
-					$html .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
+				$html .= "</summary>";
+				if ($has_nominationtext) {
+					$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
 				}
-
-				$html .= "</div>" . PHP_EOL;
+				$html .= '</details>';
+				$html .= '</div>' . PHP_EOL;
 			}
 			$html .= "</div>" . PHP_EOL;
 		}

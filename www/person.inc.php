@@ -159,7 +159,7 @@ if (count($q) > 0) {
 					ORDER BY begin
 				)
 			");
-			foreach ($runs AS $qrun) {
+			foreach ($runs as $qrun) {
 				$rundescription = '';
 				$runinfo = nicedateset($qrun['begin'] ?? NULL, $qrun['end'] ?? NULL);
 				if (isset($qrun['location'])) {
@@ -191,7 +191,7 @@ if (count($q) > 0) {
 }
 
 // List of awards
-$awarddata = ['convention' => [], 'tag' => [] ];
+$awarddata = ['convention' => [], 'tag' => []];
 
 // awards if your are an author (1), organizer (4), or designer (5)
 $q = getall("
@@ -219,7 +219,8 @@ $q = getall("
 
 foreach ($q as $rs) {
 	$type = ($rs['convention_id'] ? 'convention' : 'tag');
-	$awardtext = "";
+	$has_nominationtext = !!$rs['nominationtext'];
+	$awardtext = '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
 	if ($rs['title_translation']) {
 		$awardtext .= '<span title="' . htmlspecialchars($rs['title']) . '">' . htmlspecialchars($rs['title_translation']) . "</span>: ";
 	}
@@ -231,14 +232,13 @@ foreach ($q as $rs) {
 	if ($rs['title'] == '' && $rs['nomineename'] && $rs['nomineename'] != $r['name']) { // personal award, group name
 		$awardtext .= " (" . htmlspecialchars($rs['nomineename']) . ")";
 	}
+	$awardtext .= '</summary>';
 
-	if ($rs['nominationtext']) {
-		$nt_id = "nominee_text_" . $rs['id'];
-		$awardtext .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" style=\"font-weight: bold;\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext')) . "\">[+]</span>";
-		$awardtext .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
+	if ($has_nominationtext) {
+		$awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
 	}
-
-	$name = $type == 'convention' ? $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") : $rs['tag'];
+	$awardtext .= '</details>';
+	$name = ($type == 'convention' ? $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") : $rs['tag']);
 	$type_id = $type == 'convention' ? $rs['convention_id'] : $rs['tag_id'];
 	$awarddata[$type][$type_id]['name'] = $name;
 	$awarddata[$type][$type_id]['text'][] = $awardtext;
@@ -251,11 +251,11 @@ $awards = [];
 $awardlist = "";
 foreach ($awarddata['convention'] as $convention_id => $data) {
 	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
-	$awards[] = ['type_award_url' => $con_award_url, 'type_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
+	$awards[] = ['type_award_url' => $con_award_url, 'type_name' => $data['name'], 'awards' => implode("" . PHP_EOL, $data['text'])];
 }
 foreach ($awarddata['tag'] as $tag_id => $data) {
 	$type_award_url = "awards?tid=" . $tag_id;
-	$awards[] = ['type_award_url' => $type_award_url, 'type_name' => $data['name'], 'awards' => implode("<br>" . PHP_EOL, $data['text'])];
+	$awards[] = ['type_award_url' => $type_award_url, 'type_name' => $data['name'], 'awards' => implode("" . PHP_EOL, $data['text'])];
 }
 
 // List of organizer posts

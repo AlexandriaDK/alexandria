@@ -361,11 +361,17 @@ a:visited {
 	color: #808;
 }
 
-div.scenarie a:link, a.scenarie:link, div.game a:link, a.game:link {
+div.scenarie a:link,
+a.scenarie:link,
+div.game a:link,
+a.game:link {
 	color: #e80;
 }
 
-div.scenarie a:visited, a.scenarie:visited, div.game a:visited, a.game:visited {
+div.scenarie a:visited,
+a.scenarie:visited,
+div.game a:visited,
+a.game:visited {
 	color: #b50;
 }
 
@@ -619,22 +625,20 @@ div.clear {
 }
 
 div.winner,
-div.nominee {
+div.nominee,
+details.winner,
+details.nominee {
 	margin-left: 3em;
 	margin-bottom: 2px;
 	margin-top: 0;
 	padding: 0;
 }
 
-h5.winner span.winner {
+div.awardcategory span.winner,
+div.winner span.winner {
 	text-decoration: underline;
 }
 
-h5.winner,
-h5.nominee {
-	margin: 0;
-	padding: 0;
-}
 
 div.arrows {
 	font-size: 1.8em;
@@ -964,7 +968,8 @@ table.magazinecontent span.description {
 	color: black;
 }
 
-.references a.scenarie, .references a.game {
+.references a.scenarie,
+.references a.game {
 	background-color: #e80;
 	color: black;
 }
@@ -999,4 +1004,17 @@ div.originalsearch {
 
 div.originalsearch a {
 	font-weight: bold;
+}
+
+details summary {
+	cursor: pointer;
+}
+
+details summary.nonomtext {
+	list-style-type: unset;
+}
+
+details div.nomtext,
+details div.ranking {
+	margin-left: 1em;
 }

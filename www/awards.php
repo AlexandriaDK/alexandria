@@ -57,12 +57,12 @@ if (!$cid && !$tid) {
 }
 $awardset = [];
 $awardnominees = [];
-foreach($awards AS $award) {
+foreach ($awards as $award) {
 	$awardset[$award['type']][$award['type_id']]['name'] = $award['type_name'] ?? '';
 }
 
 // Kan slås sammen til én - og dermed fjerne ovenstående
-foreach ($award_nominees AS $nominee) {
+foreach ($award_nominees as $nominee) {
 	$type = $nominee['type'];
 	$type_id = $nominee['type_id'];
 	$cid = $nominee['conset_id'] ?? 0;
@@ -70,14 +70,14 @@ foreach ($award_nominees AS $nominee) {
 	$cat_id = $nominee['category_id'];
 
 	$awardnominees[$cid][$con_id]['name'] = $nominee['con_name'] ?? '';
-	$awardnominees[$cid][$con_id]['year'] = yearname( $nominee['year'] ?? NULL );
+	$awardnominees[$cid][$con_id]['year'] = yearname($nominee['year'] ?? NULL);
 	$awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
-	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation'], 'origtitle' => $nominee['title'] ];
+	$awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation'], 'origtitle' => $nominee['title']];
 }
 
 if (!$type_id) {
 	$html .= "<div>";
-	foreach($awards AS $award) {
+	foreach ($awards as $award) {
 		if ($award['type_id']) {
 			$html .= '<h3><a href="awards?' . ($award['type'] == 'convention' ? 'cid' : 'tid') . '=' . $award['type_id'] . '">' . htmlspecialchars($award['type_name']) . '</a></h3>';
 		}
@@ -99,14 +99,14 @@ if (!$type_id) {
 	$years = [];
 	$categories = [];
 	if ($type == 'convention') {
-		foreach($awardnominees[$cid] AS $convention) {
+		foreach ($awardnominees[$cid] as $convention) {
 			$years[$convention['year'] ?? 1] = TRUE;
-			foreach($convention['categories'] AS $category) {
+			foreach ($convention['categories'] as $category) {
 				$categories[$category['name']] = TRUE;
 			}
 		}
 		$html .= "<ul class=\"awardlist\">";
-		foreach($years AS $year => $true) {
+		foreach ($years as $year => $true) {
 			//$html .= "<li class=\"yearselector\" data-year=\"$year\" onclick=\"selectAwardOption(this.dataset.year, 'year');\">" . $year . "</li>";
 			$html .= "<li class=\"yearselector\" data-year=\"$year\" onclick=\"toggleAwardOptions(this.dataset.year, 'year');\">" . $year . "</li>";
 		}
@@ -115,8 +115,8 @@ if (!$type_id) {
 
 	// Mangler award-info, fx "Otto" eller "Den Gyldne Svupper" - skal nok alligevel lægges sammen
 	$html .= "<ul class=\"awardlist\">";
-	foreach($categories AS $category => $true) {
-//		$html .= "<li class=\"categoryselector\" data-category=\"" . htmlspecialchars($category) . "\" onclick=\"selectAwardOption(this.dataset.category, 'category');\">" . $category . "</li>";
+	foreach ($categories as $category => $true) {
+		//		$html .= "<li class=\"categoryselector\" data-category=\"" . htmlspecialchars($category) . "\" onclick=\"selectAwardOption(this.dataset.category, 'category');\">" . $category . "</li>";
 		$html .= "<li class=\"categoryselector\" data-category=\"" . htmlspecialchars($category) . "\" onclick=\"toggleAwardOptions(this.dataset.category, 'category');\">" . $category . "</li>";
 		//$html .= "<li class=\"categoryselector\" data-category=\"" . htmlspecialchars($category) . "\" onclick=\"selectAwardCategory(this.getAttribute('data-category'));\">" . $category . "</li>";
 	}
@@ -124,20 +124,21 @@ if (!$type_id) {
 
 	$html .= "<div class=\"clear\"></div>" . PHP_EOL;
 
-	foreach ($awardnominees[$cid] AS $conid => $convention) {
+	foreach ($awardnominees[$cid] as $conid => $convention) {
 		$htmlid = "con" . $conid;
 		$html .= "<div class=\"awardyear\" data-year=\"" . $convention['year'] . "\">";
 		if ($type == 'convention') {
-			$html .= "<h3 id=\"$htmlid\">" . getdatahtml('convention', $conid, $convention['name'] . " (" . ( $convention['year'] ) . ")") . "</h3>";
+			$html .= "<h3 id=\"$htmlid\">" . getdatahtml('convention', $conid, $convention['name'] . " (" . ($convention['year']) . ")") . "</h3>";
 		}
 		$html .= "<div class=\"awardblock\">" . PHP_EOL;
-		foreach($convention['categories'] AS $category) {
+		foreach ($convention['categories'] as $category) {
 			$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
 			$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
-			foreach($category['nominees'] AS $nominee) {
+			foreach ($category['nominees'] as $nominee) {
+				$has_nominationtext = !!$nominee['nominationtext'];
 				$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
 				$html .= "<div class=\"" . $class . "\">";
-				$html .= "<h5 class=\"" . $class . "\">";
+				$html .= '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
 				$html .= "<span class=\"" . $class . "\">";
 				if ($nominee['game_id']) {
 					$html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
@@ -145,33 +146,26 @@ if (!$type_id) {
 					$html .= htmlspecialchars($nominee['name']);
 				}
 				$html .= "</span>";
-				if ($nominee['nominationtext']) {
-					$nt_id = "nominee_text_" . $nominee['id'];
-					$html .= " <span onclick=\"document.getElementById('$nt_id').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"" . htmlspecialchars($t->getTemplateVars('_award_show_nominationtext') ) ."\">[+]</span>";
-
-				}
-				$html .=  "</h5>";
 				if ($nominee['ranking']) {
 					$html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
 				}
-				if ($nominee['nominationtext']) {
-					$html .= "<div class=\"nomtext\" style=\"display: none;\" id=\"$nt_id\">" . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . "</div>" . PHP_EOL;
+				$html .= "</summary>";
+				if ($has_nominationtext) {
+					$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
 				}
-
+				$html .= '</details>';
 				$html .= "</div>" . PHP_EOL;
 			}
 			$html .= "</div>" . PHP_EOL;
 		}
 		$html .= "</div>" . PHP_EOL;
 		$html .= "</div>" . PHP_EOL;
-		
-		
 	}
 	$html .= "<div class=\"clear\"></div>" . PHP_EOL;
 }
 
 $t->assign('html_content', $html);
-$t->assign('type',$this_type);
+$t->assign('type', $this_type);
 $t->assign('id', $ucid);
 $t->assign('cid', $ucid);
 $t->assign('tid', $tid);

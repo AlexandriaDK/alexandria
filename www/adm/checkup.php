@@ -48,7 +48,6 @@ $query = "
 	ORDER BY c.year DESC, c.begin DESC, c.name ASC
 ";
 $result = getall($query);
-$nameid = 0;
 $persons = [];
 foreach ($result as $row) { // create tree
 	$persons[$row['person_extra']][] = $row;
@@ -58,7 +57,6 @@ foreach ($persons as $name => $data) {
 	if (count($data) < 2) {
 		continue;
 	}
-	$nameid++;
 	$htmlorganizer .= '<details>';
 	$htmlorganizer .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
 	$htmlorganizer .= '<div>';
@@ -95,7 +93,6 @@ $query = "
 	ORDER BY issue.releasedate DESC, issue.id DESC
 ";
 $result = getall($query);
-$nameid = 0;
 $persons = [];
 foreach ($result as $row) { // create tree
 	$persons[$row['person_extra']][] = $row;
@@ -105,12 +102,9 @@ foreach ($persons as $name => $data) {
 	if (count($data) < 2) {
 		continue;
 	}
-	$nameid++;
 	$htmlmagazine .= '<details>';
 	$htmlmagazine .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
 	$htmlmagazine .= '<div>';
-	// $htmlmagazine .= " <span onclick=\"document.getElementById('magazine_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show magazines\">[+]</span>";
-	// $htmlmagazine .= "<div class=\"nomtext\" style=\"display: none;\" id=\"magazine_$nameid\">";
 	foreach ($data as $row) {
 		$htmlmagazine .= '<a href="magazine.php?magazine_id=' . $row['magazine_id'] . '&amp;issue_id=' . $row['issue_id'] . '">' . $row['name'] . ', ' . $row['title'] . '</a><br>';
 	}
