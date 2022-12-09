@@ -38,7 +38,7 @@ if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
 	$htmlisocodes .= "<b>All good!</b>";
 }
 
-$htmlorganizer = "<b>Organizers without ID:</b><br>\n";
+$htmlorganizer = "<b>Organizers without ID:</b>\n";
 
 $query = "
 	SELECT person_extra, c.id, c.name, c.year
@@ -59,14 +59,15 @@ foreach ($persons as $name => $data) {
 		continue;
 	}
 	$nameid++;
-	$htmlorganizer .= "<div>";
-	$htmlorganizer .= htmlspecialchars($name) . " (" . count($data) . ")";
-	$htmlorganizer .= " <span onclick=\"document.getElementById('organizer_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show cons\">[+]</span>";
-	$htmlorganizer .= "<div class=\"nomtext\" style=\"display: none;\" id=\"organizer_$nameid\">";
+	$htmlorganizer .= '<details>';
+	$htmlorganizer .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
+	$htmlorganizer .= '<div>';
 	foreach ($data as $row) {
 		$htmlorganizer .= '<a href="organizers.php?category=convention&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
 	}
-	$htmlorganizer .= "</div>" . PHP_EOL;
+	$htmlorganizer .= '</div></details>' . PHP_EOL;
+
+	// $htmlorganizer .= "</div>" . PHP_EOL;
 }
 
 $htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
@@ -82,7 +83,7 @@ foreach ($result as $row) {
 	$htmlorganizermatch .= "<br>\n";
 }
 
-$htmlmagazine = "<b>Magazine content providers without ID:</b><br>\n";
+$htmlmagazine = "<b>Magazine content providers without ID:</b>\n";
 
 $query = "
 	SELECT contributor.person_extra, issue.title, magazine.name, issue.magazine_id, article.issue_id
@@ -105,14 +106,15 @@ foreach ($persons as $name => $data) {
 		continue;
 	}
 	$nameid++;
-	$htmlmagazine .= "<div>";
-	$htmlmagazine .= htmlspecialchars($name) . " (" . count($data) . ")";
-	$htmlmagazine .= " <span onclick=\"document.getElementById('magazine_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show magazines\">[+]</span>";
-	$htmlmagazine .= "<div class=\"nomtext\" style=\"display: none;\" id=\"magazine_$nameid\">";
+	$htmlmagazine .= '<details>';
+	$htmlmagazine .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
+	$htmlmagazine .= '<div>';
+	// $htmlmagazine .= " <span onclick=\"document.getElementById('magazine_$nameid').style.display='block'; this.style.display='none'; return false;\" class=\"atoggle\" title=\"Show magazines\">[+]</span>";
+	// $htmlmagazine .= "<div class=\"nomtext\" style=\"display: none;\" id=\"magazine_$nameid\">";
 	foreach ($data as $row) {
 		$htmlmagazine .= '<a href="magazine.php?magazine_id=' . $row['magazine_id'] . '&amp;issue_id=' . $row['issue_id'] . '">' . $row['name'] . ', ' . $row['title'] . '</a><br>';
 	}
-	$htmlmagazine .= "</div>" . PHP_EOL;
+	$htmlmagazine .= '</div></details>' . PHP_EOL;
 }
 
 $htmlmagazinematch = "<b>Magazine content providers without ID, perhaps existing?</b><br>\n";
@@ -212,8 +214,8 @@ print "<p>\n";
 print "<table cellspacing=3 cellpadding=4>" .
 	"<tr valign=\"top\">" .
 	"<td>$htmlloneper</td>" .
-	"<td>$htmlorganizer<br><br>$htmlorganizermatch<br><br>$htmlisocodes</td>" .
-	"<td>$htmlmagazine<br><br>$htmlmagazinematch</td>" .
+	"<td>$htmlorganizermatch<br><br>$htmlorganizer<br><br>$htmlisocodes</td>" .
+	"<td>$htmlmagazinematch<br><br>$htmlmagazine</td>" .
 	"</tr><tr valign=\"top\">" .
 	"<td>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>" .
 	"<td>$htmlcondate</td>" .
