@@ -7,12 +7,12 @@ require "base.inc.php";
 
 $this_type = 'awards';
 
-$category = (string) ($_REQUEST['category'] ?? FALSE);
-$action = (string) ($_REQUEST['action'] ?? FALSE);
-$do = (string) ($_REQUEST['do'] ?? FALSE);
+$category = (string) ($_REQUEST['category'] ?? '');
+$action = (string) ($_REQUEST['action'] ?? '');
+$do = (string) ($_REQUEST['do'] ?? '');
 $name = trim((string) ($_REQUEST['name'] ?? ''));
-$description = (string) ($_REQUEST['description'] ?? FALSE);
-$nominationtext = (string) ($_REQUEST['nominationtext'] ?? FALSE);
+$description = (string) ($_REQUEST['description'] ?? '');
+$nominationtext = trim((string) ($_REQUEST['nominationtext'] ?? ''));
 $id = (int) ($_REQUEST['id'] ?? FALSE);
 $game_id = (int) ($_REQUEST['game_id'] ?? FALSE);
 if (!$game_id) {
@@ -32,7 +32,7 @@ if ($category == 'convention') {
 } elseif ($category == 'tag') {
 	$type = 'tag';
 	$type_id = $data_id;
-	if (! $type_id) {
+	if (!$type_id) {
 		$type_id = $tag_id;
 	}
 } else {
@@ -162,6 +162,7 @@ if ($action == 'deletenomineeentity') {
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Administration - Awards</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -270,7 +271,7 @@ if ($action == 'deletenomineeentity') {
 		} elseif ($tag_id) {
 			print " for: <a href=\"awards.php?category=tag&amp;data_id=$tag_id\" accesskey=\"q\">" . htmlspecialchars($tag_name) . "</a>";
 		}
-		print 
+		print
 			"</th></tr>\n" .
 			"<tr>\n" .
 			"<th>ID</th>" .
@@ -332,7 +333,7 @@ if ($action == 'deletenomineeentity') {
 			'<input type="hidden" name="action" value="addnominee">' .
 			'<input type="hidden" name="category" value="' . $category . '">' .
 			'<input type="hidden" name="data_id" value="' . $data_id . '">' .
-			'<input type="hidden" name="convention_id" value="' . $convention_id . '">'.
+			'<input type="hidden" name="convention_id" value="' . $convention_id . '">' .
 			'<input type="hidden" name="tag_id" value="' . $tag_id . '">';
 		print "<tr valign=\"top\">\n" .
 			'<td style="text-align:right;">New</td>' .
