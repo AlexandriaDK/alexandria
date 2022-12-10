@@ -112,6 +112,8 @@ foreach ($q as $rs) {
 				$datestring = $rs['convention_name'] . " (" . $datestring . ")";
 			}
 			$parts[] = $datestring;
+		} elseif ($rs['convention_name']) {
+			$parts[] = $rs['convention_name'];
 		}
 		if ($rs['location']) {
 			$parts[] = $rs['location'];
