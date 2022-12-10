@@ -28,8 +28,8 @@ $q = getall("
 		LEAST(COALESCE(firstcondatecombined,'9999-99-99'), COALESCE(firstrundatecombined,'9999-99-99')) AS combinedfirstrun,
 		CASE
 		WHEN ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN NULL
-		WHEN !ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN 'con'
-		WHEN ISNULL(firstcondate) AND !ISNULL(firstrundatecombined) THEN 'run'
+		WHEN NOT ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN 'con'
+		WHEN ISNULL(firstcondate) AND NOT ISNULL(firstrundatecombined) THEN 'run'
 		WHEN firstcondate <= firstrundatecombined THEN 'con'
 		ELSE 'run'
 		END AS runtype
