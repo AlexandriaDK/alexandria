@@ -1008,10 +1008,24 @@ div.originalsearch a {
 
 details summary {
 	cursor: pointer;
+	list-style-position: outside;
+}
+
+details summary::marker {
+	color: gray;
+}
+
+details summary:hover::marker {
+	color: black;
 }
 
 details summary.nonomtext {
 	list-style-type: unset;
+	cursor: default;
+}
+
+details summary.nonomtext:hover::marker {
+	color: gray;
 }
 
 details div.nomtext,
