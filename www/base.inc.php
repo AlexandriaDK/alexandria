@@ -655,7 +655,7 @@ function _textlink($string, $absolute_url = 0)
 				$search = "conset";
 				break;
 			case "sys":
-				$cat = "sys";
+				$cat = "gamesystem";
 				$class = "system";
 				$search = "sys";
 				break;
