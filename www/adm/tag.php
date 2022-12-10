@@ -109,7 +109,7 @@ if ($tag_id) {
 	print "\n</td></tr>\n";
 }
 
-tr("Tag", "tag", $tag);
+tr("Tag", "tag", $tag, "", "", "text", TRUE, TRUE);
 print "<tr valign=top><td>Description</td><td><textarea name=\"description\" cols=100 rows=15>\n" . htmlspecialchars($description) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=\"internal\" cols=100 rows=10>\n" . htmlspecialchars($internal) . "</textarea></td></tr>\n";
 

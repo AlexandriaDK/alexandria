@@ -50,7 +50,7 @@ function getlabel($category, $data_id, $link = FALSE, $default = "")
 			$url = 'data?tag=';
 			$returl = 'tag.php?tag_id=';
 			break;
-	
+
 		case 'person':
 		default:
 			$value = "CONCAT(firstname,' ',surname)";
@@ -68,9 +68,9 @@ function getlabel($category, $data_id, $link = FALSE, $default = "")
 	return $label;
 }
 
-function tr($tekst, $name, $def = "", $opt = "", $placeholder = "", $type = "text", $autofocus = FALSE)
+function tr($tekst, $name, $def = "", $opt = "", $placeholder = "", $type = "text", $autofocus = FALSE, $required = FALSE)
 {
-	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"" . htmlspecialchars($def ?? '') . "\" placeholder=\"" . htmlspecialchars($placeholder ?? '') . "\" size=50" . ($autofocus ? " autofocus" : "") . "></td><td>$opt</td></tr>\n";
+	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"" . htmlspecialchars($def ?? '') . "\" placeholder=\"" . htmlspecialchars($placeholder ?? '') . "\" size=50" . ($autofocus ? " autofocus" : "") . ($required ? " required" : "") . "></td><td>$opt</td></tr>\n";
 }
 
 function tt($tekst, $name, $content = "")
@@ -335,8 +335,7 @@ function rexit($this_type, $dataset = [])
 
 function mojibakefix($string)
 {
-	if (is_null($string))
-	{
+	if (is_null($string)) {
 		return '';
 	}
 	$from = ['â€™', 'â€œ', 'â€', 'â€¦', 'Ã©', 'â€“', 'â€”', 'Ã§', 'Ã»'];
@@ -574,12 +573,12 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	foreach ($gm_ids as $gm) {
 		$pid = $gm['pid'];
 		$role_id = $gm['role_id'];
-		foreach ($cons AS $con_id) {
+		foreach ($cons as $con_id) {
 			$gmsql = "INSERT INTO pgrel (person_id, game_id, title_id, convention_id, note) VALUES ($pid, $game_id, $role_id, $con_id, '')";
 			doquery($gmsql);
 		}
 	}
-	
+
 	foreach ($descriptions as $language => $description) {
 		$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
 		doquery($desc_sql);

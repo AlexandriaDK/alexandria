@@ -106,7 +106,7 @@ if ($gamesystem) {
 	print "\n</td></tr>\n";
 }
 
-tr("Name", "name", $name);
+tr("Name", "name", $name, "", "", "text", TRUE, TRUE);
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 
 

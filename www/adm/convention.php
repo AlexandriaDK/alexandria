@@ -209,7 +209,7 @@ if ($con) {
 	print "\n</td></tr>\n";
 }
 
-tr("Name", "name", $name);
+tr("Name", "name", $name, "", "", "text", TRUE, TRUE);
 tr("Year", "year", $year, "", "", "number");
 if ($begin && $begin != "0000-00-00") {
 	$opta = "(" . fulldate($begin) . " = " . customdateformat(LANG, 'cccc', $begin) . ")";
@@ -346,4 +346,5 @@ if ($con) {
 </script>
 
 </body>
+
 </html>

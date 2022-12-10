@@ -40,11 +40,13 @@ $events = [];
 
 $this_id = $game;
 
-function cancelledtext($cancelled) {
+function cancelledtext($cancelled)
+{
 	return $cancelled ? 'class="cancelled" title="Convention was cancelled"' : '';
 }
 
-function addPersonsToGame($game_id, $persons) {
+function addPersonsToGame($game_id, $persons)
+{
 	// Add person-game relations
 	$q = "DELETE FROM pgrel WHERE game_id = $game_id";
 	$r = doquery($q);
@@ -55,11 +57,11 @@ function addPersonsToGame($game_id, $persons) {
 		$note = trim((string) $persondata['note']);
 		$category = "";
 		if ($persondata['event']) {
-			list($category, $event_id) = explode("_", ($persondata['event']) );
+			list($category, $event_id) = explode("_", ($persondata['event']));
 		}
 		$convention_id = ($category == 'c' ? $event_id : NULL);
 		$gamerun_id = ($category == 'r' ? $event_id : NULL);
-		
+
 		if ($title_id && $person_id) {
 			$q = "INSERT INTO pgrel (game_id, person_id, title_id, convention_id, gamerun_id, note) " .
 				"VALUES ($game_id, $person_id, $title_id, " . sqlifnull($convention_id) . ", " . sqlifnull($gamerun_id) . ", '" . dbesc($note) . "')";
@@ -529,7 +531,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
 <body>
 
-<?php
+	<?php
 	include("links.inc.php");
 
 	printinfo();
@@ -544,7 +546,8 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 		return $html;
 	}
 
-	function eventoptions($events, $count, $convention_default = FALSE, $gamerun_default = FALSE) {
+	function eventoptions($events, $count, $convention_default = FALSE, $gamerun_default = FALSE)
+	{
 		if ($convention_default) {
 			$default = 'c_' . $convention_default;
 		} elseif ($gamerun_default) {
@@ -596,7 +599,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 		print "\n</td></tr>\n";
 	}
 
-	print "<tr><td>Title</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50> <span id=\"titlenote\"></span></td></tr>\n";
+	print "<tr><td>Title</td><td><input type=text name=\"title\" id=\"title\" value=\"" . htmlspecialchars($title) . "\" size=50 required> <span id=\"titlenote\"></span></td></tr>\n";
 	print "<tr><td>Description<br><a href='#' id='add_my_tab' accesskey='e' title='Hotkey: E'>[+]</a></td><td style=\"width: 100%; margin-top; 0; padding-top: 0;\">";
 	$dcount = 0;
 	$lihtml = $inputhtml = '';
@@ -841,9 +844,9 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 			if (val != '') {
 				var personId = parseInt(val);
 				console.log(personId)
-//				var foundperson = availableNames.filter(s => s.startsWith(personId + " - "))[0];
+				//				var foundperson = availableNames.filter(s => s.startsWith(personId + " - "))[0];
 				if (personId) {
-//					input.val(foundperson);
+					//					input.val(foundperson);
 					input.addClass("personexists");
 				} else {
 					input.addClass("personunsure");
