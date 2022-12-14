@@ -81,7 +81,7 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
 	// make sure content is UTF-8
 	$encoding = mb_detect_encoding($content, 'UTF-8,ISO-8859-1');
 	if ($encoding != 'UTF-8') {
-		$content = utf8_encode($content);
+		$content = mb_convert_encoding($content,"UTF-8","ISO-8859-1");
 	}
 	$pages = explode("\x0c",$content); // Split by Form feed control character
 	$numpages = 0;

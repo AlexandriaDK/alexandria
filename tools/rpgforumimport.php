@@ -36,16 +36,8 @@ function hed ($string) {
 }
 
 function uhed ($string) {
-	return utf8_encode( hed( $string ) );
+	return mb_convert_encoding( hed( $string ), "UTF-8", "ISO-8859-1" );
 }
-/*
-$x = 'Test &aelig; Test';
-$x = hed($x);
-
-print $x . PHP_EOL;
-print utf8_encode($x) . PHP_EOL;
-exit;
- */
 
 $posts = [];
 
@@ -74,7 +66,7 @@ while (($line = fgets($fp)) != FALSE) {
         if (preg_match('_^(.*)</em></b></i></ul></ol></li><hr/>$_', $line, $match) ) {
             $post .= hed($match[1]);
 	    $post = str_replace( "\x92", "'", $post ); // fix invalid char that prevents inserts
-	    $post = utf8_encode( $post );
+	    $post = mb_convert_encoding( $post, "ISO-8859-1" );
             $query = "INSERT INTO rpgforum_posts(title, author, timestamp, views, post) values ('" . dbesc($title) . "', '" . dbesc($author) . "', '" . timefix($timestamp) . "', $views, '" . dbesc($post) . "')";
 	    #print $query . PHP_EOL;
 	    doquery( $query );

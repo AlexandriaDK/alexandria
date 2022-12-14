@@ -15,7 +15,7 @@ function utf8_decode_enhanced($string) {
 	$result = str_replace("’","'",$result); // replaces quote
 	$result = str_replace("–",'-',$result); // replaces dash
 	$result = str_replace("…",'...',$result); // replaces ellipsis
-	$result = utf8_decode($result);
+	$result = mb_convert_encoding($result,"ISO-8859-1","UTF-8");
 	return $result;
 }
 
