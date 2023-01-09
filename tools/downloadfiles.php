@@ -23,9 +23,13 @@ foreach ( $files AS $file ) {
 		print "Downloading from: " . $urlpath . PHP_EOL;
 		$filedata = file_get_contents( $urlpath );
 		print "Saving to: " . $filepath . PHP_EOL;
-		$saved = file_put_contents( $filepath, $filedata );
-		if ( $saved === FALSE ) {
-			print "Error: Could not save file." . PHP_EOL;
+		if (strlen($filedata) == 0) {
+			print "Error: File is empty." . PHP_EOL;
+		} else {
+			$saved = file_put_contents( $filepath, $filedata );
+			if ( $saved === FALSE ) {
+				print "Error: Could not save file." . PHP_EOL;
+			}
 		}
 	}
 }
