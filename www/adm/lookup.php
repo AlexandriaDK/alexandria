@@ -35,6 +35,15 @@ if ($type == 'countrycode' && $label != "") {
 	print $countryname;
 }
 
+if ($type == 'consetcountrycode' && $label != "") {
+	$conset_id = (int) $label;
+	$countrycode = getone("SELECT country FROM conset WHERE id = $conset_id");
+	if ($countrycode) {
+		$countryname = getCountryName($countrycode);
+		print $countryname;
+	}
+}
+
 if ($type == 'languagecode' && $label != "") {
 	$languagename = getLanguageName($label);
 	print $languagename;
