@@ -79,7 +79,7 @@ if (!$type_id) {
 	$html .= "<div>";
 	foreach ($awards as $award) {
 		if ($award['type_id']) {
-			$html .= '<h3><a href="awards?' . ($award['type'] == 'convention' ? 'cid' : 'tid') . '=' . $award['type_id'] . '">' . htmlspecialchars($award['type_name']) . '</a></h3>';
+			$html .= '<h3><a href="awards?' . ($award['type'] == 'convention' ? 'cid' : 'tid') . '=' . $award['type_id'] . '" class="con">' . htmlspecialchars($award['type_name']) . '</a></h3>';
 		}
 	}
 	$html .= "</div>" . PHP_EOL;

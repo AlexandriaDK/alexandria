@@ -1020,7 +1020,7 @@ details summary:hover::marker {
 }
 
 details summary.nonomtext {
-	list-style-type: unset;
+	list-style-type: none;
 	cursor: default;
 }
 

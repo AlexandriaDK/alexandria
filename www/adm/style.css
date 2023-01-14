@@ -16,15 +16,11 @@ a:visited {
 	font-family: Garamond, Georgia, Times New Roman, Times, Serif;
 	color: #990000;
 }
-
-div.headlink form>a {
+div.headlink form > a {
 	text-decoration: none;
 }
 
-table#translations,
-table#translations tr,
-table#translations td,
-table#translations th {
+table#translations, table#translations tr, table#translations td, table#translations th {
 	border: 1px solid black;
 	padding: 2px;
 }
@@ -57,8 +53,7 @@ table#translations tr:not(:first-child):hover {
 }
 
 input.delete {
-	border: 1px solid #e00;
-	background: #f77;
+	border: 1px solid #e00; background: #f77;
 }
 
 td.mark {
@@ -68,7 +63,6 @@ td.mark {
 tr.headline th {
 	background-color: #feb;
 }
-
 tr {
 	vertical-align: top;
 }
@@ -77,8 +71,7 @@ input[type="number"] {
 	text-align: right;
 }
 
-input[type="text"]:disabled,
-select:disabled {
+input[type="text"]:disabled, select:disabled {
 	text-decoration: line-through;
 }
 
@@ -100,28 +93,23 @@ option.existing {
 	background: transparent;
 	border: none;
 }
-
 #tabs .ui-widget-header {
 	background: transparent;
 	border: none;
 	border-bottom: 1px solid #000;
 	border-radius: 0px;
 }
-
 #tabs .ui-tabs-nav .ui-state-default {
 	background: transparent;
 	border: none;
 }
-
 #tabs .ui-tabs-nav .ui-state-active {
 	background: transparent;
 	border: none;
 }
-
 #tabs .ui-tabs-nav .ui-state-default a {
 	color: #a99;
 }
-
 #tabs .ui-tabs-nav .ui-state-active a {
 	color: #000;
 }
@@ -196,11 +184,11 @@ tr.zerousermap td.accounts {
 }
 
 .issuestatus label {
-	display: inline-block;
-	background-color: #ddd;
-	padding: 4px;
-	font-family: sans-serif, Arial;
-	font-size: 12px;
+    display: inline-block;
+    background-color: #ddd;
+    padding: 4px;
+    font-family: sans-serif, Arial;
+    font-size: 12px;
 	border: 1px solid black;
 	opacity: 0.4;
 }
@@ -221,14 +209,11 @@ tr.zerousermap td.accounts {
 	background-color: #ff0;
 }
 
-.issuestatus label.finishednorefcon,
-.issuestatus label.finishednoref,
-.issuestatus label.finishednocon {
+.issuestatus label.finishednorefcon, .issuestatus label.finishednoref, .issuestatus label.finishednocon {
 	background-color: #0c0;
 }
 
-.issuestatus label.finishedpublished,
-.issuestatus label.finished {
+.issuestatus label.finishedpublished, .issuestatus label.finished {
 	background-color: #0f0;
 }
 
@@ -237,12 +222,12 @@ tr.zerousermap td.accounts {
 	opacity: 0.75;
 }
 
-.issuestatus input[type="radio"]:focus+label {
+.issuestatus input[type="radio"]:focus + label {
 	opacity: 0.75;
 }
 
-.issuestatus input[type="radio"]:checked+label {
-	/* background-color: #bfb;
+.issuestatus input[type="radio"]:checked + label {
+    /* background-color: #bfb;
     border-color: #4c4; */
 	opacity: 1;
 }
@@ -254,10 +239,9 @@ tr.zerousermap td.accounts {
 .tooltip {
 	position: relative;
 	display: inline-block;
-	border-bottom: 1px dotted black;
-	/* If you want dots under the hoverable text */
+	border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
-
+  
 /* Tooltip text */
 .tooltip .tooltiptext {
 	visibility: hidden;
@@ -272,13 +256,13 @@ tr.zerousermap td.accounts {
 	padding: 5px 0;
 	border-radius: 6px;
 	border: 1px solid black;
-
+   
 	/* Position the tooltip text - see examples below! */
 	position: absolute;
 	z-index: 1;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
+  /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
 	visibility: visible;
 }
@@ -286,8 +270,7 @@ tr.zerousermap td.accounts {
 .tooltip .tooltiptext::after {
 	content: " ";
 	position: absolute;
-	top: 100%;
-	/* At the bottom of the tooltip */
+	top: 100%; /* At the bottom of the tooltip */
 	left: 50%;
 	margin-left: -5px;
 	border-width: 5px;
@@ -321,7 +304,7 @@ table#articlelist table tr {
 }
 
 td.articleid {
-	text-align: right;
+	text-align:right;
 	min-width: 2em;
 }
 
@@ -331,12 +314,4 @@ input.originalarticleid {
 
 input.page {
 	width: 4em;
-}
-
-details summary {
-	cursor: pointer;
-}
-
-details div {
-	margin-left: 1em;
 }
