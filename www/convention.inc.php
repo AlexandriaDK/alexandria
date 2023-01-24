@@ -294,6 +294,10 @@ $articles = getarticlereferences($this_id, $this_type);
 
 // Thumbnail
 $available_pic = hasthumbnailpic($con, $this_type);
+$ogimage = getimageifexists($this_id, $this_type);
+if (!$ogimage) { // use conset image
+	$ogimage = getimageifexists($convention['conset_id'], 'conset');
+}
 
 // Userdata, entries from all users
 $userlog = [];
@@ -315,7 +319,7 @@ $t->assign('name', $showtitle);
 $t->assign('year', ($convention['year'] ? $convention['year'] : "?"));
 $t->assign('arrowset', $arrows);
 $t->assign('pic', $available_pic);
-$t->assign('ogimage', getimageifexists($this_id, $this_type));
+$t->assign('ogimage', $ogimage);
 $t->assign('place', $convention['place']);
 $t->assign('countrycode', $convention['country']);
 $t->assign('dateset', nicedateset($convention['begin'], $convention['end']));
