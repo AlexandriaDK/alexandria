@@ -1252,11 +1252,11 @@ function getarticlereferences($data_id, $category)
 
 function getorganizerlist($data_id, $category, $order = FALSE)
 {
-	if (!$order) {
-		$order = "a.role";
-	}
 	$organizerlist = [];
 	if ($category == 'convention') {
+		if (!$order) {
+			$order = "a.role, b.surname, b.firstname";
+		}
 		$organizerlist = getall("SELECT a.id, CONCAT(b.firstname, ' ', b.surname) AS name, a.person_id, a.person_extra, a.role FROM pcrel a LEFT JOIN person b ON a.person_id = b.id WHERE a.convention_id = '$data_id' ORDER BY $order");
 	} elseif ($category == 'person') {
 		$organizerlist = getall("SELECT a.id, a.convention_id, a.role, b.name, b.begin, b.end, b.year, b.cancelled FROM pcrel a INNER JOIN convention b ON a.convention_id = b.id WHERE a.person_id = '$data_id' ORDER BY b.year, b.begin, b.end, a.id");
