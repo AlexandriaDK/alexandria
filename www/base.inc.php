@@ -1255,7 +1255,7 @@ function getorganizerlist($data_id, $category, $order = FALSE)
 	$organizerlist = [];
 	if ($category == 'convention') {
 		if (!$order) {
-			$order = "a.role, b.surname, b.firstname";
+			$order = "a.role, COALESCE(CONCAT(b.firstname, ' ', b.surname), a.person_extra)";
 		}
 		$organizerlist = getall("SELECT a.id, CONCAT(b.firstname, ' ', b.surname) AS name, a.person_id, a.person_extra, a.role FROM pcrel a LEFT JOIN person b ON a.person_id = b.id WHERE a.convention_id = '$data_id' ORDER BY $order");
 	} elseif ($category == 'person') {
