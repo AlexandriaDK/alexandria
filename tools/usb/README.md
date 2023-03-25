@@ -12,7 +12,7 @@ With the USB project we would like to show the world how dedicated we are to our
 As Alexandria is continuously updated it is important to have scripts to fetch new scenarios and updated data.
 
 ### Windows
-A PowerScript file with a GUI will perform the updates.
+A PowerShell file with a GUI will perform the updates.
 * Should there be an option for automatic update without GUI?
 * Should the GUI call some background script for updates?
 
