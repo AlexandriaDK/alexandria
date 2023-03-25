@@ -3,7 +3,7 @@ $client = "usb2023"
 
 $state = ""
 $exporturl = "https://alexandria.dk/export?client=$client&version=$version"
-$staticurl = "https://loot.alexandria.dk/offline/data/alexandria_content.js"
+$staticurl = "https://loot.alexandria.dk/AlexandriaOffline/data/alexandria_content.js"
 $contentFilename = "alexandria_content.js"
 
 Add-Type -assembly System.Windows.Forms
