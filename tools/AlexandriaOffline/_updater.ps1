@@ -1,10 +1,10 @@
 $version = 1;
 $client = "usb2023"
 
-$state = ""
 $exporturl = "https://alexandria.dk/export?client=$client&version=$version"
 $staticurl = "https://loot.alexandria.dk/AlexandriaOffline/data/alexandria_content.js"
-$contentFilename = "alexandria_content.js"
+$contentFilename = "$PSScriptRoot\data\alexandria_content.js"
+$json = ""
 
 Add-Type -assembly System.Windows.Forms
 $form = New-Object System.Windows.Forms.Form
@@ -85,7 +85,7 @@ function updateJSON($json) {
     } else {
         $text = "function loadAlexandria() {`r`ndata = " + $json + "`r`n}`r`n"
     }
-    $filename = "$PSScriptRoot\data\$contentFilename"
+    $filename = $contentFilename
     updateStatus("Filename: $filename")
     $directory = [IO.Path]::GetDirectoryName($filename)
     if (-not [IO.Directory]::Exists($directory)) {
@@ -122,12 +122,12 @@ function updateAction() {
         $exporturldata = $staticurl
         updateStatus("Fetching data - hang on. This can take several minutes.")
     }
-    $export = $false
+    $export = $False
     $export = Invoke-WebRequest "$exporturldata" -TimeoutSec 300 -UseBasicParsing
 
     if (-not $export) {
         updateStatus("Error fetching content. Please try again later.")
-        return
+        return $False
     }
 
     updateStatus("Download complete! Length: " + ($export.Content.Length/1MB).ToString(".0") + " MB.")
@@ -135,14 +135,14 @@ function updateAction() {
     $json = $export.Content
     if ($json.Length -lt 100000) { # Basic check if content is too small
         updateStatus("Error: Content is incomplete. Please try again later.")
-        return
+        return $False
     }
     if ($live) {
         try {
             $json | ConvertFrom-Json
         } catch {
             updateStatus("Error: Content is invalid JSON. Please try again later.")
-            return
+            return $False
         }
     }
     updateStatus("Saving content.")
@@ -151,30 +151,132 @@ function updateAction() {
     return
 }
 
+function createFilesFolders {
+    ('', 'conset','convent','issue','person','scenario','system','tag') | ForEach-Object {
+        $folder = ("files/" + $_)
+        if (-not (Test-Path -Path ("$PSScriptRoot\$folder") -PathType Container) ) {
+            updateStatus "Creating folder $folder"
+            New-Item -Path $PSScriptRoot -Name $folder -ItemType Directory
+        }
+    }
+}
+function getPathFromFileData {
+    $filename = ""
+    $path = 'files/'
+    if ($_.game_id) {
+        $path = $path + 'scenario/' + $_.game_id + "/"
+    } elseif ($_.convention_id) {
+        $path = $path + 'convent/' + $_.convention_id + "/"
+    } elseif ($_.conset_id) {
+        $path = $path + 'conset/' + $_.conset_id + "/"
+    } elseif ($_.issue_id) {
+        $path = $path + 'issue/' + $_.issue_id + "/"
+    } elseif ($_.person_id) {
+        $path = $path + 'person/' + $_.person_id + "/"
+    } elseif ($_.gamesystem_id) {
+        $path = $path + 'system/' + $_.gamesystem_id + "/"
+    } elseif ($_.tag_id) {
+        $path = $path + 'tag/' + $_.tag_id + "/"
+    } else {
+        $global:filename = ""
+        return $False
+    }
+    if (-not (Test-Path -Path ("$PSScriptRoot\$path") -PathType Container) ) {
+        New-Item -Path $PSScriptRoot -Name $path -ItemType Directory
+    }
+    $filename = $path + $_.filename
+    $global:filename = $filename
+    return $filename
+}
+
+function filesAction {
+    updateStatus("Checking database.") 
+    if (-not (Test-Path -Path $contentFilename -PathType Leaf) ) {
+        updateStatus("Error: Database file does not exist. Run ""Check for updates"".")
+        return $False
+    }
+    createFilesFolders
+    $json = $global:json
+    if (-not $json) {
+        updateStatus("Loading database - hang on. This can take several seconds.")
+        $json = (Get-Content $contentFilename)[1].substring(7) | ConvertFrom-JSON # Assume JSON position ...
+    }
+    $global:json = $json
+    $totalCount = ($json.result.files).count
+    updateStatus("Found " + ($json.result.files).count + " files in database.")
+    updateStatus("Checking existing files.")
+    $missingFiles = @()
+    $existingCount = 0
+    $checkedCount = 0
+#    $json.result.files | Select-Object -first 10 | ForEach-Object {
+    $json.result.files | Select-Object -first 30 | ForEach-Object {
+        getPathFromFileData($_.filename, $_.game_id, $_.convention_id, $_.conset_id, $_.gamesystem_id, $_.tag_id, $_.issue_id)
+        $filename = $global:filename
+        if ($filename) {
+            updateStatus("Checking $filename")
+            if (Test-Path -Path ("$PSScriptRoot\$filename") -PathType Leaf) {
+                $existingCount = $existingCount + 1
+            } else {
+                updateStatus("Adding $filename")
+                $missingFiles += $filename
+            }
+        }
+        $checkedCount = $checkedCount + 1
+        if ($checkedCount % 100 -eq 0) {
+            updateStatus("Checked $checkedCount files (" + [Math]::Round($checkedCount/$totalCount*100) + "%)")
+        }
+    }
+    if ($checkedCount % 100 -ne 0) {
+        updateStatus("Checked $checkedCount files (" + [Math]::Round($checkedCount/$totalCount*100) + "%)")
+    }
+    updateStatus ("Existing files: $existingCount")
+    updateStatus ("Missing files: " + $missingFiles.count)
+    updateStatus ("Total count: " + $totalCount)
+    $missingFiles
+
+    if ($missingFiles.count -eq 0) {
+        updateStatus "No downloaded needed!"
+        return $True
+    }
+    updateStatus "Beginning download. Be very patient!"
+    $downloadCount = 0
+    $missingFiles | ForEach-Object {
+        $downloadCount += 1
+        $outFile = $PSScriptRoot + "\" + $_
+        $uri = 'https://download.alexandria.dk/' + $_
+        updateStatus("Downloading $downloadCount of " + $missingFiles.count + ": $uri")
+        Invoke-WebRequest -Uri $uri -Outfile $outFile -UseBasicParsing
+    }
+    updateStatus "Done!"
+    return $True
+}
+
 $updateClick = {
     $updateButton.Enabled = $false
+    $filesButton.Enabled = $false
     updateAction
     $updateButton.Enabled = $true
+    $filesButton.Enabled = $true
 }
 
 $filesClick = {
-    if ([System.Windows.Forms.Control]::ModifierKeys -band [System.Windows.Forms.Keys]::Control) {
-        updateStatus("Foo")
-    } else {
-        updateStatus("Bar")
-    }
+    $updateButton.Enabled = $false
+    $filesButton.Enabled = $false
+    filesAction
+    $updateButton.Enabled = $true
+    $filesButton.Enabled = $true
 }
 
 $updateButton = New-Object System.Windows.Forms.Button 
 $updateButton.Location = New-Object System.Drawing.Point(15,120) 
 $updateButton.Size = New-Object System.Drawing.Size(200,60)
-$updateButton.Text = 'Check for updates'
+$updateButton.Text = 'Update database'
 $updateButton.Font = New-Object System.Drawing.Font ("Arial", 15)
 $updateButton.add_Click($updateClick)
 $form.Controls.Add($updateButton)
 
 $filesButton = New-Object System.Windows.Forms.Button 
-$filesButton.Location = New-Object System.Drawing.Point(300,120) 
+$filesButton.Location = New-Object System.Drawing.Point(360,120) 
 $filesButton.Size = New-Object System.Drawing.Size(200,60)
 $filesButton.Text = 'Download files'
 $filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
