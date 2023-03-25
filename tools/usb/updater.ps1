@@ -28,6 +28,8 @@ $description.AutoSize = $true
 $description.Font = New-Object System.Drawing.Font ("Arial", 12)
 $form.Controls.Add($description)
 
+
+
 # Preload information
 # Should be an asynchronous background task
 $export = $null
@@ -37,6 +39,7 @@ $export = Invoke-WebRequest "$exporturl" -UseBasicParsing
 if ($export.StatusCode -eq 200) {
     $fetchtext = "Online"
     $fetchcolor = "Green"
+    Out-File -FilePath "$PSScriptRoot\4_test_export.json" -InputObject $export.Content
 } else {
     $fetchtext = "Offline"
     $fetchcolor= "Red"
