@@ -79,13 +79,11 @@ $Form.Controls.Add($LinkLabel2)
 # $form.Controls.Add($fetcher)
 
 # Action buttons
-function updateJSON($json, $live) {
-    if ($live) {
+function updateJSON($json) {
+    if (-not $toJS) {
         $text = $json
-        updateStatus("Saving as-is")
     } else {
-        $text = "function loadAlexandria() {`r`ndata = " + $json + "`r`n}"
-        updateStatus("Converting to .js")
+        $text = "function loadAlexandria() {`r`ndata = " + $json + "`r`n}`r`n"
     }
     $filename = "$PSScriptRoot\data\$contentFilename"
     updateStatus("Filename: $filename")
@@ -116,9 +114,11 @@ function updateAction() {
     }
     updateStatus("Service is online.")
     if ($live) {
-        $exporturldata = $exporturl + '&dataset=files'
+        $toJS = $True
+        $exporturldata = $exporturl + '&dataset=all'
         updateStatus("Fetching LIVE data - hang on. This can take several minutes.")
     } else {
+        $toJS = $False
         $exporturldata = $staticurl
         updateStatus("Fetching data - hang on. This can take several minutes.")
     }
@@ -133,7 +133,7 @@ function updateAction() {
     updateStatus("Download complete! Length: " + ($export.Content.Length/1MB).ToString(".0") + " MB.")
     updateStatus("Validating download.")
     $json = $export.Content
-    if ($json.Length -lt 1000000) { # Basic check if content is too small
+    if ($json.Length -lt 100000) { # Basic check if content is too small
         updateStatus("Error: Content is incomplete. Please try again later.")
         return
     }
@@ -146,7 +146,7 @@ function updateAction() {
         }
     }
     updateStatus("Saving content.")
-    updateJSON($json, $live)
+    updateJSON($json)
     updateStatus("Done!")
     return
 }
