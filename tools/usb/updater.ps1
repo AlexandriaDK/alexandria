@@ -36,7 +36,7 @@ $form.Controls.Add($description)
 
 # Links
 $LinkLabel = New-Object System.Windows.Forms.LinkLabel
-$LinkLabel.Location  = New-Object System.Drawing.Point(15,($form.Height - 70))
+$LinkLabel.Location  = New-Object System.Drawing.Point(15,($form.Height - 65))
 $LinkLabel.Size = New-Object System.Drawing.Size(200,20)
 $LinkLabel.LinkColor = "BLUE"
 $LinkLabel.ActiveLinkColor = "RED"
@@ -45,7 +45,7 @@ $LinkLabel.add_Click({[system.Diagnostics.Process]::start("$PSScriptRoot\index.h
 $Form.Controls.Add($LinkLabel)
 
 $LinkLabel2 = New-Object System.Windows.Forms.LinkLabel
-$LinkLabel2.Location  = New-Object System.Drawing.Point(($form.Width - 200),($form.Height - 70))
+$LinkLabel2.Location  = New-Object System.Drawing.Point(($form.Width - 200),($form.Height - 65))
 $LinkLabel2.Size = New-Object System.Drawing.Size(180,20)
 $LinkLabel2.LinkColor = "BLUE"
 $LinkLabel2.ActiveLinkColor = "RED"
@@ -82,13 +82,16 @@ $Form.Controls.Add($LinkLabel2)
 function updateJSON($json, $live) {
     if ($live) {
         $text = $json
+        updateStatus("Saving as-is")
     } else {
-        $text = "function loadAlexandria() {^r^ndata = " + $json + "^r^n}"
+        $text = "function loadAlexandria() {`r`ndata = " + $json + "`r`n}"
+        updateStatus("Converting to .js")
     }
     $filename = "$PSScriptRoot\data\$contentFilename"
     updateStatus("Filename: $filename")
     $directory = [IO.Path]::GetDirectoryName($filename)
     if (-not [IO.Directory]::Exists($directory)) {
+        updateStatus("Creating ""Data"" Folder")
         [IO.Directory]::CreateDirectory($directory)
     }
     [IO.File]::WriteAllLines($filename, $text)
@@ -121,6 +124,7 @@ function updateAction() {
     }
     $export = $false
     $export = Invoke-WebRequest "$exporturldata" -TimeoutSec 300 -UseBasicParsing
+
     if (-not $export) {
         updateStatus("Error fetching content. Please try again later.")
         return
@@ -143,6 +147,7 @@ function updateAction() {
     }
     updateStatus("Saving content.")
     updateJSON($json, $live)
+    updateStatus("Done!")
     return
 }
 
