@@ -1,4 +1,10 @@
 $version = 1;
+$client = "usb2023"
+
+$state = ""
+$exporturl = "https://alexandria.dk/export?client=$client&version=$version"
+$staticurl = "https://loot.alexandria.dk/offline/data/alexandria_content.js"
+$contentFilename = "alexandria_content.js"
 
 Add-Type -assembly System.Windows.Forms
 $form = New-Object System.Windows.Forms.Form
@@ -28,45 +34,162 @@ $description.AutoSize = $true
 $description.Font = New-Object System.Drawing.Font ("Arial", 12)
 $form.Controls.Add($description)
 
+# Links
+$LinkLabel = New-Object System.Windows.Forms.LinkLabel
+$LinkLabel.Location  = New-Object System.Drawing.Point(15,($form.Height - 70))
+$LinkLabel.Size = New-Object System.Drawing.Size(200,20)
+$LinkLabel.LinkColor = "BLUE"
+$LinkLabel.ActiveLinkColor = "RED"
+$LinkLabel.Text = "Open offline copy on this computer"
+$LinkLabel.add_Click({[system.Diagnostics.Process]::start("$PSScriptRoot\index.html")})
+$Form.Controls.Add($LinkLabel)
 
+$LinkLabel2 = New-Object System.Windows.Forms.LinkLabel
+$LinkLabel2.Location  = New-Object System.Drawing.Point(($form.Width - 200),($form.Height - 70))
+$LinkLabel2.Size = New-Object System.Drawing.Size(180,20)
+$LinkLabel2.LinkColor = "BLUE"
+$LinkLabel2.ActiveLinkColor = "RED"
+$LinkLabel2.Text = "Visit Alexandria USB project page"
+$LinkLabel2.add_Click({[system.Diagnostics.Process]::start("https://alexandria.dk/usb?client=$client&version=$version")})
+$Form.Controls.Add($LinkLabel2)
 
 # Preload information
 # Should be an asynchronous background task
-$export = $null
-$exporturl = "https://alexandria.dk/.htaccess"
-$exporturl = "https://alexandria.dk/export?client=offline&version=$version"
-$export = Invoke-WebRequest "$exporturl" -UseBasicParsing
-if ($export.StatusCode -eq 200) {
-    $fetchtext = "Online"
-    $fetchcolor = "Green"
-    Out-File -FilePath "$PSScriptRoot\4_test_export.json" -InputObject $export.Content
-} else {
-    $fetchtext = "Offline"
-    $fetchcolor= "Red"
-}
 
-$fetcher = New-Object System.Windows.Forms.Label
-$fetcher.Text = "Alexandria.dk status: $fetchtext"
-$fetcher.Location  = New-Object System.Drawing.Point(10,($form.Height - 50))
-$fetcher.AutoSize = $true
-$fetcher.Font = New-Object System.Drawing.Font ("Arial", 12)
-$fetcher.ForeColor = $fetchcolor
-$form.Controls.Add($fetcher)
+# $export = $null
+# $export = Invoke-WebRequest "$exporturl" -TimeoutSec 5 -UseBasicParsing
+# if ($export.StatusCode -eq 200) {
+#     $fetchtext = "Online"
+#     $fetchcolor = "Green"
+#     $filename = "$PSScriptRoot\4_test_export.json"
+#     # Use IO.File to save file as-is
+#     #Out-File -FilePath  -InputObject $export.Content -Encoding unicode
+#     [IO.File]::WriteAllLines(($filename | Resolve-Path), $export.Content)
+# } else {
+#     $fetchtext = "Offline"
+#     $fetchcolor= "Red"
+# }
+
+# $fetcher = New-Object System.Windows.Forms.Label
+# $fetcher.Text = "Alexandria.dk status: $fetchtext"
+# $fetcher.Location  = New-Object System.Drawing.Point(10,($form.Height - 50))
+# $fetcher.AutoSize = $true
+# $fetcher.Font = New-Object System.Drawing.Font ("Arial", 12)
+# $fetcher.ForeColor = $fetchcolor
+# $form.Controls.Add($fetcher)
 
 # Action buttons
+function updateJSON($json, $live) {
+    if ($live) {
+        $text = $json
+    } else {
+        $text = "function loadAlexandria() {^r^ndata = " + $json + "^r^n}"
+    }
+    $filename = "$PSScriptRoot\data\$contentFilename"
+    updateStatus("Filename: $filename")
+    $directory = [IO.Path]::GetDirectoryName($filename)
+    if (-not [IO.Directory]::Exists($directory)) {
+        [IO.Directory]::CreateDirectory($directory)
+    }
+    [IO.File]::WriteAllLines($filename, $text)
+}
+
+function updateStatus($text) {
+    $status.AppendText("[" + (Get-Date -UFormat "%T") + "] " + $text + "`r`n")
+}
+function updateAction() {
+    # Could use better error handling and progress
+
+    # Fetching cached copy (updated every night)
+    # Press Ctrl when clicking to request live copy
+    $live = [System.Windows.Forms.Control]::ModifierKeys -band [System.Windows.Forms.Keys]::Control
+
+    updateStatus("Checking Alexandria export service.")
+    $export = ""
+    $export = Invoke-WebRequest "$exporturl" -TimeoutSec 10 -UseBasicParsing
+    if (-not $export.StatusCode) {
+        updateStatus("Service is unavailable. Please try again later.")
+        return
+    }
+    updateStatus("Service is online.")
+    if ($live) {
+        $exporturldata = $exporturl + '&dataset=files'
+        updateStatus("Fetching LIVE data - hang on. This can take several minutes.")
+    } else {
+        $exporturldata = $staticurl
+        updateStatus("Fetching data - hang on. This can take several minutes.")
+    }
+    $export = $false
+    $export = Invoke-WebRequest "$exporturldata" -TimeoutSec 300 -UseBasicParsing
+    if (-not $export) {
+        updateStatus("Error fetching content. Please try again later.")
+        return
+    }
+
+    updateStatus("Download complete! Length: " + ($export.Content.Length/1MB).ToString(".0") + " MB.")
+    updateStatus("Validating download.")
+    $json = $export.Content
+    if ($json.Length -lt 1000000) { # Basic check if content is too small
+        updateStatus("Error: Content is incomplete. Please try again later.")
+        return
+    }
+    if ($live) {
+        try {
+            $json | ConvertFrom-Json
+        } catch {
+            updateStatus("Error: Content is invalid JSON. Please try again later.")
+            return
+        }
+    }
+    updateStatus("Saving content.")
+    updateJSON($json, $live)
+    return
+}
+
+$updateClick = {
+    $updateButton.Enabled = $false
+    updateAction
+    $updateButton.Enabled = $true
+}
+
+$filesClick = {
+    if ([System.Windows.Forms.Control]::ModifierKeys -band [System.Windows.Forms.Keys]::Control) {
+        updateStatus("Foo")
+    } else {
+        updateStatus("Bar")
+    }
+}
+
 $updateButton = New-Object System.Windows.Forms.Button 
 $updateButton.Location = New-Object System.Drawing.Point(15,120) 
-$updateButton.Size = New-Object System.Drawing.Size(200,100)
+$updateButton.Size = New-Object System.Drawing.Size(200,60)
 $updateButton.Text = 'Check for updates'
 $updateButton.Font = New-Object System.Drawing.Font ("Arial", 15)
-$updateButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+$updateButton.add_Click($updateClick)
 $form.Controls.Add($updateButton)
 
+$filesButton = New-Object System.Windows.Forms.Button 
+$filesButton.Location = New-Object System.Drawing.Point(300,120) 
+$filesButton.Size = New-Object System.Drawing.Size(200,60)
+$filesButton.Text = 'Download files'
+$filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
+$filesButton.add_Click($filesClick)
+$form.Controls.Add($filesButton)
+
+
+# Status textbox
+$status = New-Object System.Windows.Forms.TextBox 
+$status.Multiline = $True;
+$status.Location = New-Object System.Drawing.Size(15,200) 
+$status.Size = New-Object System.Drawing.Size(($form.Width - 40),130)
+$status.Scrollbars = "Vertical" 
+$status.Enabled = $true
+updateStatus("Ready for update.")
+$form.Controls.Add($status)
 
 # Check script version
 # ?action=checkupdate&type=powershell&version=$version
 
 # Start up dialog
 
-$form.Topmost = $true
-$form.ShowDialog()
+$result = $form.ShowDialog()
