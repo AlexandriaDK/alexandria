@@ -8,7 +8,7 @@ $json = ""
 
 Add-Type -assembly System.Windows.Forms
 $form = New-Object System.Windows.Forms.Form
-$form.Text ='Alexandria Mirror Updater'
+$form.Text ='Alexandria Downloader'
 $form.Width = 600
 $form.Height = 400
 $form.AutoSize = $true
@@ -21,7 +21,7 @@ $stream          = [System.IO.MemoryStream]::new($iconBytes, 0, $iconBytes.Lengt
 $form.Icon       = [System.Drawing.Icon]::FromHandle(([System.Drawing.Bitmap]::new($stream).GetHIcon()))
 
 $header = New-Object System.Windows.Forms.Label
-$header.Text = "Alexandria Updater"
+$header.Text = "Alexandria Downloader"
 $header.Location  = New-Object System.Drawing.Point(10,10)
 $header.AutoSize = $true
 $header.Font = New-Object System.Drawing.Font ("Arial", 30)
@@ -98,13 +98,9 @@ function updateJSON($json) {
 function updateStatus($text) {
     $status.AppendText("[" + (Get-Date -UFormat "%T") + "] " + $text + "`r`n")
 }
-function updateAction() {
-    # Could use better error handling and progress
 
-    # Fetching cached copy (updated every night)
-    # Press Ctrl when clicking to request live copy
-    $live = [System.Windows.Forms.Control]::ModifierKeys -band [System.Windows.Forms.Keys]::Control
-
+function startupAction {
+    updateStatus("Alexandria Downloader version $version.")
     updateStatus("Checking Alexandria export service.")
     $export = ""
     $export = Invoke-WebRequest "$exporturl" -TimeoutSec 10 -UseBasicParsing
@@ -113,6 +109,23 @@ function updateAction() {
         return
     }
     updateStatus("Service is online.")
+    $length = $False
+    $length = (Invoke-WebRequest $staticurl -UseBasicParsing -Method Head).Headers.'Content-Length'
+    if (-not $length) {
+        updateStatus("Database file is unavailable. Please try again later.")
+        return
+    }
+    updateStatus("Size of online database file: About " + [Math]::Round($length/1024/1024) + " MB.")
+    updateStatus("Ready for update.")
+}
+
+function updateAction() {
+    # Could use better error handling and progress
+
+    # Fetching cached copy (updated every night)
+    # Press Ctrl when clicking to request live copy
+    $live = [System.Windows.Forms.Control]::ModifierKeys -band [System.Windows.Forms.Keys]::Control
+
     if ($live) {
         $toJS = $True
         $exporturldata = $exporturl + '&dataset=all'
@@ -283,7 +296,6 @@ $filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
 $filesButton.add_Click($filesClick)
 $form.Controls.Add($filesButton)
 
-
 # Status textbox
 $status = New-Object System.Windows.Forms.TextBox 
 $status.Multiline = $True;
@@ -291,8 +303,9 @@ $status.Location = New-Object System.Drawing.Size(15,200)
 $status.Size = New-Object System.Drawing.Size(($form.Width - 40),130)
 $status.Scrollbars = "Vertical" 
 $status.Enabled = $true
-updateStatus("Ready for update.")
 $form.Controls.Add($status)
+
+startupAction
 
 # Check script version
 # ?action=checkupdate&type=powershell&version=$version
