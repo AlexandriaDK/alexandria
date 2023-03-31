@@ -110,7 +110,7 @@ function startupAction {
     }
     updateStatus("Service is online.")
     $length = $False
-    $length = (Invoke-WebRequest $staticurl -UseBasicParsing -Method Head).Headers.'Content-Length'
+    $length = (Invoke-WebRequest $staticurl -TimeoutSec 5 -UseBasicParsing -Method Head).Headers.'Content-Length'
     if (-not $length) {
         updateStatus("Database file is unavailable. Please try again later.")
         return
