@@ -23,14 +23,14 @@ function getjostid ($name) {
 	return false;
 }
 
-// Hent personer, og prøv at slå dem op
+// Get people; do they exist?
 $from = (string) ($_REQUEST['from'] ?? '');
 $to = (string) ($_REQUEST['to'] ?? '');
 
 // Prepare for errors
 $from_error = $to_error = FALSE;
 
-// Numre betragtes som id's - ellers find personerne ud fra navnet
+// Numbers are ID's - otherwise get people from name
 if (is_numeric($from)) {
 	$from_id = intval($from);
 } elseif ($from) {
@@ -58,6 +58,10 @@ if (!$mainperson || !$subperson) {
 }
 
 $qnums = 0;
+$graph = [];
+$svglist = [];
+$svg = '';
+
 
 if ($mainperson && $subperson) {
 
@@ -74,12 +78,9 @@ if ($mainperson && $subperson) {
 		$check[1][] = $subperson;
 		$checked[] = $subperson;
 		$i = 1;
-		$personerialt = 1;
+		$personstotal = 1;
 		
-		// STARTKODE FOR LØKKE
-		// running in circles!
-		
-		
+		// Loop!
 		while($check[$i]) {
 		
 			$inlist = join(",",$check[$i]);	
@@ -162,34 +163,30 @@ if ($mainperson && $subperson) {
 			print dberror();
 			$qnums++;
 			foreach($q AS $row) {
-				$kobling[$row['link']] = $row['rlink'];
+				$connection[$row['link']] = $row['rlink'];
 		#		$content .= "($qnums) ".$row['link'] . " => " . $row['rlink']."<br>";
-				$scenarie[$row['link']]['title'] = $row['title_translation'];
-				$scenarie[$row['link']]['origtitle'] = $row['title'];
-				$scenarie[$row['link']]['gameid'] = $row['gameid'];
-				$scenarie[$row['link']]['antal'] = $row['antal'];
+				$games[$row['link']]['title'] = $row['title_translation'];
+				$games[$row['link']]['origtitle'] = $row['title'];
+				$games[$row['link']]['gameid'] = $row['gameid'];
+				$games[$row['link']]['antal'] = $row['antal'];
 				if ($row['link'] == $mainperson) {
 					$found = TRUE;
 					break 2;
 				}
-				$personerialt++;
+				$personstotal++;
 				$check[($i+1)][] = $row['link'];
 				$checked[] = $row['link'];
 			}
 			$i++;
 		}
-		
-		// SLUTKODE FOR LØKKE
-		
+				
 		if ($found == TRUE) {
 			$content .= sprintf( $t->getTemplateVars( $qnums == 1 ? '_jost_connected' : '_jost_connected_pl' ), $person[$mainperson], $person[$subperson], $qnums );
-			// $content .= $person[$mainperson]." og ".$person[$subperson]." er forbundet i $qnums led:";
 			if ($qnums >= 6) award_achievement(29);
 			if ($qnums >= 10) award_achievement(30);
 			if ($qnums >= 15) award_achievement(31);
 		} else {
 			$content .= sprintf( $t->getTemplateVars('_jost_notconnected'), $person[$mainperson], $person[$subperson] );
-			// $content .= $person[$mainperson]." og ".$person[$subperson]." er ikke forbundet.";
 		}
 		$content .= "<br /><br />\n";
 		
@@ -200,36 +197,54 @@ if ($mainperson && $subperson) {
 			$find = $mainperson;
 			while ($find != $subperson && $i < 20) {
 				$i++;
-				$scen = $scenarie[$find]['title'];
-				$scenid = $scenarie[$find]['gameid'];
-				$antal = $scenarie[$find]['antal'];
-				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $scenid, htmlspecialchars($scen), $kobling[$find], htmlspecialchars($person[$kobling[$find]]) ) );
-				// til graf
+				$gametitle = $games[$find]['title'];
+				$gameid = $games[$find]['gameid'];
+				$antal = $games[$find]['antal'];
+				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $gameid, htmlspecialchars($gametitle), $connection[$find], htmlspecialchars($person[$connection[$find]]) ) );
+				// for graph
 				$graph[] = $find;
-				$graph[] = $scenid;
-				// til ImageMap
+				$graph[] = $gameid;
+				$svglist[] = ['type' => 'person','id' => $find, 'label' => $person[$find]];
+				$svglist[] = ['type' => 'game','id' => $gameid, 'label' => $gametitle];
+				// for ImageMap
 				$y1 = (($i - 0.5)*70) - 15;
 				$y2 = (($i - 0.5)*70) + 15;
 				$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"".htmlspecialchars($person[$find])."\" alt=\"".htmlspecialchars($person[$find])."\"/>\n";
 				$y1 = ($i*70) - 15;
 				$y2 = ($i*70) + 15;
-				$map .= "<area shape=\"rect\" coords=\"100,$y1,240,$y2\" href=\"data?scenarie=$scenid\" title=\"".htmlspecialchars($scen)."\" alt=\"".htmlspecialchars($scen)."\" />\n";
-				// næste i rækken
-				$find = $kobling[$find];
+				$map .= "<area shape=\"rect\" coords=\"100,$y1,240,$y2\" href=\"data?scenarie=$gameid\" title=\"".htmlspecialchars($scen)."\" alt=\"".htmlspecialchars($scen)."\" />\n";
+				// next
+				$find = $connection[$find];
 			}
-			// til graf
+			// for graph
 			$graph[] = $find;
-			// til ImageMap
+			$svglist[] = ['type' => 'person','id' => $find, 'label' => $person[$find]];
+			// for ImageMap
 			$y1 = (($i + 0.5)*70) - 15;
 			$y2 = (($i + 0.5)*70) + 15;
 			$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"$person[$subperson]\" alt=\"$person[$subperson]\" />\n";
 			$map .= "</map>\n";
 		}
-	
+
 		if ($found == TRUE) {
-// Requires gd
+			// Requires gd
 			$content .= $map;
 			$content .= "<br /><img src=\"jostgraph.php/sixdegrees_{$mainperson}_{$subperson}.png?".join(',',$graph)."\" usemap=\"#jostresult\" style=\"border: 0;\" alt=\"Graph between users\" />\n";
+			// Use SVG instead
+			// Graph contains 
+			$svgheight = count($svglist) * 60 + 60;
+			$svg .= '<svg preserveAspectRatio="none" height="' . $svgheight . '" width="350">' . PHP_EOL;
+			$y = 0;
+			foreach($svglist AS $svgentry) {
+				$cx = $svgentry['type'] == 'person' ? 120 : 220;
+				$cy += 60;
+				$class = $svgentry['type'] == 'person' ? 'person' : 'scenarie';
+				$svg .= '<a href="' . getdatalink($svgentry['type'], $svgentry['id']) . '" class="' . $class . '">' . PHP_EOL;
+				$svg .= '<ellipse cx="' . $cx . '" cy="' . $cy . '" rx="100" ry="50" stroke="black" stroke-width="2" fill="white"/>' . PHP_EOL;
+				$svg .= '<text x="' . ($cx-50) . '" y="' . $cy . '" font-size="12"> ' . htmlspecialchars($svgentry['label']) . '</text>' . PHP_EOL;
+				$svg .= '</a>' . PHP_EOL;
+			}
+			$svg .= '</svg>' . PHP_EOL;
 		}
 	} else {
 		$content .= "<p class=\"finderror\">$error</p>\n";
@@ -247,7 +262,8 @@ $t->assign('from',$from);
 $t->assign('to',$to);
 $t->assign('from_error',$from_error);
 $t->assign('to_error',$to_error);
-$t->assign('json_people', $json_people );
+#$t->assign('svg', $svg);
+$t->assign('svg', '');
 
 $t->display('jostgame.tpl');
 

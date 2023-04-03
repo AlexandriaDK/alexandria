@@ -24,8 +24,8 @@
 <tr><td><input type="submit" value="{$_jost_connect|escape}"></td></tr>
 </table>
 </form>
-
 	{$content}
+	{$svg}
 </div>
 
 {include file="end.tpl"}

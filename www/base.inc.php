@@ -982,11 +982,11 @@ function getdatahtml($cat, $data_id, $text, $admin = FALSE)
 
 	switch ($cat) {
 		case 'person':
-			$css = "person";
-			break;
-
 		case 'game':
-			$css = "scenarie";
+		case 'tag':
+		case 'magazine':
+		case 'issue':
+			$css = $cat;
 			break;
 
 		case 'conset':
@@ -999,18 +999,6 @@ function getdatahtml($cat, $data_id, $text, $admin = FALSE)
 
 		case 'convention':
 			$css = "con";
-			break;
-
-		case 'tag':
-			$css = "tag";
-			break;
-
-		case 'magazine':
-			$css = "magazine";
-			break;
-
-		case 'issue':
-			$css = "issue";
 			break;
 
 		default:

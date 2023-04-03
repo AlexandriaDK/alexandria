@@ -366,6 +366,7 @@ a.scenarie:link,
 div.game a:link,
 a.game:link {
 	color: #e80;
+	fill: #e80;
 }
 
 div.scenarie a:visited,
@@ -373,16 +374,19 @@ a.scenarie:visited,
 div.game a:visited,
 a.game:visited {
 	color: #b50;
+	fill: #b50;
 }
 
 div.person a:link,
 a.person:link {
 	color: #b00;
+	fill: #b00;
 }
 
 div.person a:visited,
 a.person:visited {
 	color: #800;
+	fill: #800;
 }
 
 div.con a:link,
