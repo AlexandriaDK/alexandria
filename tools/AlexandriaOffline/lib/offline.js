@@ -8,14 +8,8 @@ $(function () {
 
 function initialize() {
     loadData();
-    $('a[href="#persons"]').click(showPersons);
-    $('a[href="#scenarios"]').click(showGames);
-    $('a[href="#boardgames"]').click(showGames);
-    $('a[href="#conventionsets"]').click(showConventionSets);
-    $('a[href="#rpgsystems"]').click(showRPGSystems);
-    $('a[href="#tags"]').click(showTags);
-    $('a[href="#magazines"]').click(showMagazines);
-
+    locationHashChanged();
+    window.onhashchange = locationHashChanged;
     $("#search").submit(function (event) {
         search($('#searchtext').val());
         event.preventDefault();
@@ -45,16 +39,79 @@ function loadData() {
     showContent('');
 }
 
+function locationHashChanged() {
+    var h = location.hash.substring(1);
+    console.log(h);
+    if (h == 'persons') {
+        showPersons();
+        return;
+    }
+    if (h == 'scenarios' || h == 'boardgames') {
+        showGames();
+        return;
+    }
+    if (h == 'conventionsets') {
+        showConventionSets();
+        return;
+    }
+    if (h == 'gamesystems') {
+        showGameSystems();
+        return;
+    }
+    if (h == 'tags') {
+        showTags();
+        return;
+    }
+    if (h == 'magazines') {
+        showMagazines();
+        return;
+    }
+    var [key, id] = h.split('=');
+    if (key == 'gamesystem') {
+        showGameSystem(id);
+        return;
+    }
+    if (key == 'game') {
+        showGame(id);
+        return;
+    }
+    if (key == 'person') {
+        showPerson(id);
+        return;
+    }
+    if (key == 'conventionset') {
+        showConventions(id);
+        return;
+    }
+    if (key == 'convention') {
+        showConvention(id);
+        return;
+    }
+    if (key == 'tag') {
+        showTag(id);
+        return;
+    }
+    if (key == 'magazine') {
+        showMagazine(id);
+        return;
+    }
+    if (key == 'issue') {
+        showIssue(id);
+        return;
+    }
+    return false;
+}
+
 function showContent(html) {
     $("#content").html(html);
-    $('a[data-category="conventionset"]').click(showConventions);
-    $('a[data-category="convention"]').click(showConvention);
-    $('a[data-category="game"]').click(showGame);
-    $('a[data-category="person"]').click(showPerson);
-    $('a[data-category="system"]').click(showRPGSystem);
-    $('a[data-category="tag"]').click(showTag);
-    $('a[data-category="magazine"]').click(showMagazine);
-    $('a[data-category="issue"]').click(showIssue);
+//     $('a[data-category="conventionset"]').click(showConventions);
+//     $('a[data-category="convention"]').click(showConvention);
+//     $('a[data-category="game"]').click(showGame);
+//     $('a[data-category="person"]').click(showPerson);
+//     $('a[data-category="system"]').click(showGameSystem);
+//     $('a[data-category="tag"]').click(showTag);
+//     $('a[data-category="magazine"]').click(showMagazine);
+//     $('a[data-category="issue"]').click(showIssue);
 }
 
 function showPersons() {
@@ -118,8 +175,8 @@ function showConventionSets() {
     onlineLink('cons');
 }
 
-function showConventions(data) {
-    var id = data.target.dataset.id;
+function showConventions(id) {
+    // var id = data.target.dataset.id;
     var conset = a.conventionsets[id]
     var category = 'conventions';
     var title = 'Conventions for ' + esc(conset.name);
@@ -157,8 +214,8 @@ function showConventions(data) {
     onlineLink('data?conset=' + id);
 }
 
-function showRPGSystems() {
-    showCategoryList('RPG Systems', 'systems', 'rpgsystem', 'system', 'name');
+function showGameSystems() {
+    showCategoryList('RPG Systems', 'systems', 'gamesystem', 'system', 'name');
     onlineLink('systemer');
 }
 
@@ -195,7 +252,7 @@ function showTags() {
 }
 
 function showMagazines() {
-    showCategoryList('Magazines', 'magazines', 'magazines', 'magazine', 'name');
+    showCategoryList('Magazines', 'magazines', 'magazine', 'magazine', 'name');
     onlineLink('magazines');
     return false;
 }
@@ -214,7 +271,8 @@ function showCategoryList(title, category, anchor, datatype, label, unique = fal
     var seen = {};
     for (element of list) {
         if (!seen[element[label]]) {
-            html += '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
+            var anchorID = anchor + '=' + element.id;
+            html += '<li><a href="#' + anchorID + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + element.id + '">' + element[label] + '</a></li>';
         }
         if (unique) {
             seen[element[label]] = true;
@@ -224,8 +282,8 @@ function showCategoryList(title, category, anchor, datatype, label, unique = fal
     showContent(html);
 }
 
-function showRPGSystem(data) {
-    var id = data.target.dataset.id;
+function showGameSystem(id) {
+    // var id = data.target.dataset.id;
     var system = a.systems[id];
     // :TODO: 
     var files = a.files.filter(rel => rel.gamesystem_id == id);
@@ -277,8 +335,8 @@ function showRPGSystem(data) {
     onlineLink('data?system=' + id);
 }
 
-function showConvention(data) {
-    var id = data.target.dataset.id;
+function showConvention(id) {
+    // var id = data.target.dataset.id;
     var con = a.conventions[id];
     var nom = con.name + ' (' + con.year + ')';
     var datetext = niceDateSet(con.begin, con.end)
@@ -339,8 +397,8 @@ function showConvention(data) {
 
 }
 
-function showPerson(data) {
-    var id = data.target.dataset.id;
+function showPerson(id) {
+    // var id = data.target.dataset.id;
     var person = a.persons[id];
     var nom = person.firstname + ' ' + person.surname;
     var birth = person.birth; // not yet exposed
@@ -393,8 +451,8 @@ function showPerson(data) {
     onlineLink('data?person=' + id);
 }
 
-function showGame(data) {
-    var id = data.target.dataset.id;
+function showGame(id) {
+    // var id = data.target.dataset.id;
     var game = a.games[id];
     var title = game.title;
     var persons = a.person_game_title_relations.filter(rel => rel.game_id == id);
@@ -419,9 +477,8 @@ function showGame(data) {
         }
         html += '</p>';
     }
-
-    if (game.system_id || game.system_extra) {
-        html += '<p class="indata">RPG System: ' + (game.system_id ? RPGSystemLink(game.system_id) : '') + ' ' + game.system_extra + '</p>';
+    if (game.gamesystem_id || game.gamesystem_extra) {
+        html += '<p class="indata">RPG System: ' + (game.gamesystem_id ? GameSystemLink(game.gamesystem_id) : '') + ' ' + game.gamesystem_extra + '</p>';
     }
     if (game.gms_min || game.players_min) {
         html += '<p class="indata">';
@@ -504,8 +561,8 @@ function showGame(data) {
     onlineLink('data?scenarie=' + id);
 }
 
-function showTag(data) {
-    var tagname = data.target.dataset.id;
+function showTag(tagname) {
+    // var tagname = data.target.dataset.id;
     var aid = a.tags.filter(rel => rel.tag == tagname);
     if (aid.length > 0) {
         var tag = aid[0];
@@ -563,8 +620,8 @@ function showTag(data) {
     return false;
 }
 
-function showMagazine(data) {
-    var id = data.target.dataset.id;
+function showMagazine(id) {
+    // var id = data.target.dataset.id;
     var magazine = a.magazines[id];
     var issues = [];
     for (var issue in a.issues) { issues.push(a.issues[issue]); }
@@ -590,10 +647,10 @@ function showMagazine(data) {
 
 }
 
-function showIssue(data) {
+function showIssue(id) {
     var category = 'issue';
 
-    var id = data.target.dataset.id;
+    // var id = data.target.dataset.id;
     var issue = a.issues[id];
     var magazinename = a.magazines[issue.magazine_id].name;
     var title = magazinename + ': ' + issue.title + (issue.releasetext ? ', ' + issue.releasetext : '');
@@ -655,7 +712,7 @@ function showIssue(data) {
                 html += '</span>';
             }
             html += '</td>';
-            html += '<td>';
+            html += '<td class="articlefullcontributor">';
             for (var contributor of contributors) {
                 var pid = contributor.person_id;
                 if (pid) {
@@ -688,7 +745,7 @@ function showSingleData(data) {
     } else if (type == 'convention') {
         showConvention(data);
     } else if (type == 'system') {
-        showRPGSystem(data);
+        showGameSystem(data);
     }
 }
 
@@ -731,7 +788,7 @@ function bracketSections(match, category, data_id, label) {
     } else if (category == 'cs') {
         return consetLink(data_id, label);
     } else if (category == 'sys') {
-        return RPGSystemLink(data_id, label);
+        return GameSystemLink(data_id, label);
     } else if (category == 'm') {
         return magazineLink(data_id, label);
     }
@@ -783,7 +840,8 @@ function getAwards(category, id) {
 
 
 function makeLink(anchor, datatype, elementid, linktext, optional = '', li = true) {
-    var html = '<a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a> ' + esc(optional);
+    var anchorID = anchor + '=' + elementid;
+    var html = '<a href="#' + anchorID + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + elementid + '">' + esc(linktext) + '</a> ' + esc(optional);
     if (li) {
         html = '<li>' + html + '</li>';
     }
@@ -940,7 +998,7 @@ function makeConGameList(title, games) {
             html += '<br>';
         }
         html += '</td>';
-        html += '<td>' + (a.games[gid].system_id ? RPGSystemLink(a.games[gid].system_id) : '') + ' ' + a.games[gid].system_extra + '</td>';
+        html += '<td>' + (a.games[gid].gamesystem_id ? GameSystemLink(a.games[gid].gamesystem_id) : '') + ' ' + a.games[gid].gamesystem_extra + '</td>';
         html += '</tr>';
     }
     html += '</table>';
@@ -957,7 +1015,7 @@ function linkFromReference(category, id) {
     } else if (category == 'tag') {
         return tagIdLink(id);
     } else if (category == 'gamesystem') {
-        return RPGSystemLink(id);
+        return GameSystemLink(id);
     } else if (category == 'convention') {
         return conLink(id);
     } else if (category == 'magazine') {
@@ -970,7 +1028,8 @@ function linkFromReference(category, id) {
 }
 
 function typeLink(data_id, category, linktext, title = '', extraClass = '') {
-    var html = '<a href="#" class="' + category + (extraClass ? ' ' + extraClass : '') + '" title="' + esc(title) + '" data-category="' + category + '" data-id="' + data_id + '">' + esc(linktext) + '</a>';
+    var anchorID = category + '=' + data_id;
+    var html = '<a href="#' + anchorID + '" class="' + category + (extraClass ? ' ' + extraClass : '') + '" title="' + esc(title) + '" data-category="' + category + '" data-id="' + data_id + '">' + esc(linktext) + '</a>';
     return html;
 }
 
@@ -1000,8 +1059,8 @@ function personLink(id, label = '') {
     return typeLink(id, 'person', (label ? label : (a.persons[id].firstname + ' ' + a.persons[id].surname)));
 }
 
-function RPGSystemLink(id, label = '') {
-    return typeLink(id, 'system', (label ? label : a.systems[id].name));
+function GameSystemLink(id, label = '') {
+    return typeLink(id, 'gamesystem', (label ? label : a.systems[id].name));
 }
 
 function magazineLink(id, label = '') {
@@ -1167,7 +1226,7 @@ function search() {
     if (result.systems.length > 0) {
         html += '<h3>RPG Systems</h3><ul>';
         for (element of result.systems) {
-            html += makeLink('system', 'system', element.id, element.name);
+            html += makeLink('system', 'gamesystem', element.id, element.name);
         }
         html += '</ul>';
     }
