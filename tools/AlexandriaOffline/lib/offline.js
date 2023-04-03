@@ -104,14 +104,6 @@ function locationHashChanged() {
 
 function showContent(html) {
     $("#content").html(html);
-//     $('a[data-category="conventionset"]').click(showConventions);
-//     $('a[data-category="convention"]').click(showConvention);
-//     $('a[data-category="game"]').click(showGame);
-//     $('a[data-category="person"]').click(showPerson);
-//     $('a[data-category="system"]').click(showGameSystem);
-//     $('a[data-category="tag"]').click(showTag);
-//     $('a[data-category="magazine"]').click(showMagazine);
-//     $('a[data-category="issue"]').click(showIssue);
 }
 
 function showPersons() {
@@ -130,8 +122,8 @@ function showPersons() {
     onlineLink('personer');
 }
 
-function showGames(data) {
-    boardgames = (data.target.hash == '#boardgames');
+function showGames() {
+    boardgames = (location.hash == '#boardgames');
     if (boardgames) {
         var title = 'Board games';
     } else {
