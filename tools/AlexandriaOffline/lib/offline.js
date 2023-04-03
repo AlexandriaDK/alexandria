@@ -234,7 +234,8 @@ function showTags() {
     var seen = {};
     for (element of list) {
         if (!seen[element[label]]) {
-            html += '<li><a href="#' + anchor + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + esc(element[label]) + '">' + esc(element[label]) + '</a></li>';
+            anchorTag = 'tag=' + encodeURI(element[label]);
+            html += '<li><a href="#' + anchorTag + '" class="' + datatype + '" data-category="' + datatype + '" data-id="' + esc(element[label]) + '">' + esc(element[label]) + '</a></li>';
         }
         seen[element[label]] = true;
     }
@@ -465,7 +466,8 @@ function showGame(id) {
     if (tags.length > 0) {
         html += '<p class="indata">';
         for (tag of tags) {
-            html += '<a href="#tag" class="tag" data-category="tag" data-id="' + esc(tag.tag) + '">' + esc(tag.tag) + '</a> ';
+            var anchorTag = 'tag=' + encodeURI(tag.tag);
+            html += '<a href="#' + anchorTag + '" class="tag" data-category="tag" data-id="' + esc(tag.tag) + '">' + esc(tag.tag) + '</a> ';
         }
         html += '</p>';
     }
@@ -555,6 +557,7 @@ function showGame(id) {
 
 function showTag(tagname) {
     // var tagname = data.target.dataset.id;
+    tagname = decodeURI(tagname);
     var aid = a.tags.filter(rel => rel.tag == tagname);
     if (aid.length > 0) {
         var tag = aid[0];
