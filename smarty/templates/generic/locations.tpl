@@ -59,7 +59,7 @@ for(place_id in locations) {
 			var div = document.createElement('div');
 			var node = document.createTextNode(event.data_label);
 			div.appendChild(node);
-			markerText += `<a href="${link}" class="${className} ${classCancelled}">${div.innerHTML}</a><br>`;
+			markerText += `<a href="${link}" class="${className} ${classCancelled}" title="${event.nicedateset}">${div.innerHTML}</a><br>`;
 			if (event.type == 'convention' && (event.data_id == convention_id || event.conset_id == conset_id) ) {
 				highlight = true;
 			}
