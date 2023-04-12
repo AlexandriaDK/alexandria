@@ -17,8 +17,7 @@
 var locations = {$locations};
 var startlocation = {$startlocation};
 var start_id = {$start_id};
-var convention_id = {$convention_id};
-var conset_id = {$conset_id};
+
 {literal}
 if (startlocation) { // Find bbox
 	var bounds = [];
@@ -71,9 +70,6 @@ for(place_id in locations) {
 			var node = document.createTextNode(event.data_label);
 			div.appendChild(node);
 			markerText += `<a href="${link}" class="${className} ${classCancelled}" title="${event.nicedateset}">${div.innerHTML}</a><br>`;
-			if (event.type == 'convention' && (event.data_id == convention_id || event.conset_id == conset_id) ) {
-				highlight = true;
-			}
 		}
 		if (place.data.note) {
 			var div = document.createElement('div');
@@ -81,7 +77,7 @@ for(place_id in locations) {
 			div.appendChild(node);
 			markerText += '<br><span class="locationnote">' + div.innerHTML + '<br> </span>';
 		}
-		if (start_id == place_id || highlight == true) {
+		if (startlocation.includes(place_id.toString())) {
 			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: highlightIcon}).addTo(map);
 			if (bounds.length == 1) {
 				marker.bindPopup(markerText).openPopup(); // only open if exactly one location

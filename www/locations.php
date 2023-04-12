@@ -5,6 +5,7 @@ require("base.inc.php");
 $id = (int) $_REQUEST['id'];
 $convention_id = (int) $_REQUEST['convention_id'];
 $conset_id = (int) $_REQUEST['conset_id'];
+$game_id = (int) $_REQUEST['game_id'];
 $startlocation = FALSE;
 $location_target = FALSE;
 
@@ -29,9 +30,20 @@ if ($id) {
         INNER JOIN convention ON lrel.convention_id = convention.id
         WHERE conset_id = $conset_id
         AND locations.geo IS NOT NULL
-        ORDER BY convention.begin, convention.year
     ");
     $location_target = getentryhtml('conset', $conset_id);
+} elseif ($game_id) { // both individual runs and as part of conventions
+    $startlocation = getcol("
+        SELECT DISTINCT locations.id
+        FROM locations
+        INNER JOIN lrel ON locations.id = lrel.location_id
+        LEFT JOIN convention ON lrel.convention_id = convention.id
+        LEFT JOIN cgrel ON convention.id = cgrel.convention_id
+        LEFT JOIN gamerun ON lrel.gamerun_id = gamerun.id
+        WHERE (cgrel.game_id = $game_id OR gamerun.game_id = $game_id)
+        AND locations.geo IS NOT NULL
+    ");
+    $location_target = getentryhtml('game', $game_id);
 }
 
 $locations = getall("
@@ -64,8 +76,6 @@ $t->assign('type','locations');
 $t->assign('locations', json_encode($events));
 $t->assign('startlocation', json_encode($startlocation));
 $t->assign('start_id', $id);
-$t->assign('convention_id', $convention_id);
-$t->assign('conset_id', $conset_id);
 $t->assign('location_target', $location_target);
 
 $t->display('locations.tpl');
