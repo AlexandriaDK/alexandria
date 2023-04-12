@@ -221,6 +221,7 @@ function showLocations() {
 		GROUP BY l.id
 		ORDER BY l.id, l.name
 	");
+	print '<p><a href="locations.php?action=new">[New location]</a></p>' . PHP_EOL;
 	print '<table><thead><tr><th>ID</th><th>Name</th><th>Address</th><th>City</th><th>Country</th><th>Geo</th><th>Connections</th></tr></thead>';
 	print '<tbody>' . PHP_EOL;
 	foreach ($result AS $location) {
