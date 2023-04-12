@@ -38,7 +38,20 @@ for(place_id in locations) {
 	var place = locations[place_id];
 	if (place.data.hasGeo) {
 		var highlight = false;
-		var markerText = '<a href="locations?id=' + place_id + '"><b>' + place.data.name + '</b></a><br><br>';
+		var markerText = '<a href="locations?id=' + place_id + '"><b>' + place.data.name + '</b></a><br>';
+		if (place.data.city) {
+			markerText += place.data.city; // escape!
+		}
+		if (place.data.city && place.data.country) {
+			markerText += ', ';
+		}
+		if (place.data.country) {
+			markerText += place.data.country; // escape!
+		}
+		if (place.data.city || place.data.country) {
+			markerText += '<br>';
+		}
+		markerText += '<br>';
 		for(event of place.events) {
 			var link = (event.type == 'convention' ? 'data?con=' : 'data?scenarie=') + event.data_id;
 			var className = (event.type == 'convention' ? 'con' : 'game');
