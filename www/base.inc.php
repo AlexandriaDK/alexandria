@@ -986,6 +986,7 @@ function getdatahtml($cat, $data_id, $text, $admin = FALSE)
 		case 'tag':
 		case 'magazine':
 		case 'issue':
+		case 'locations':
 			$css = $cat;
 			break;
 
@@ -1052,6 +1053,9 @@ function getdatalink($cat, $data_id, $admin = FALSE)
 			break;
 		case 'magazine':
 			$value = ($admin ? "/adm/magazine.php?magazine_id=$data_id" : "magazines?id=$data_id");
+			break;
+		case 'location':
+			$value = ($admin ? "/adm/location.php?id=$data_id" : "locations?id=$data_id");
 			break;
 		default:
 			$value = ($admin ? "/adm/person.php?person=$data_id" : "data?person=$data_id");
@@ -1468,6 +1472,9 @@ function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE
 			$value = "name";
 			$fullcat = "Magazine";
 			break;
+		case 'locations':
+			$value = "name";
+			$fullcat = "Location";
 		default:
 	}
 

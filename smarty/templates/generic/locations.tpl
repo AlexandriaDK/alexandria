@@ -1,12 +1,18 @@
-{assign var="pagetitle" value="Locations"}
+{assign var="pagetitle" value="{$_locations_title}"}
 {include file="head.tpl"}
 
 <div id="content">
 	<h2 class="pagetitle">
-		Locations
+		{$_locations_title}
 	</h2>
 
-	<div id="map" style="height: 700px; width: 100%;">
+	{if $location_target}
+	<h3>
+		{$_locations_for|sprintf:$location_target}
+	</h3>
+	{/if}
+
+	<div id="map" style="height: 700px; width: 100%; z-index: 90;">
 <script>
 var locations = {$locations};
 var startlocation = {$startlocation};
@@ -14,12 +20,17 @@ var start_id = {$start_id};
 var convention_id = {$convention_id};
 var conset_id = {$conset_id};
 {literal}
-if (startlocation) {
-	startlocation.zoom = 16;
-} else {
-	startlocation = {'latitude': 56, 'longitude': 11, 'zoom': 5}
+if (startlocation) { // Find bbox
+	var bounds = [];
+	for (location_id of startlocation) {
+		bounds.push([locations[location_id].data.latitude, locations[location_id].data.longitude]);
+	}
 }
-var map = L.map('map', { fullscreenControl: true} ).setView([startlocation.latitude, startlocation.longitude], startlocation.zoom);
+if (bounds) {
+	var map = L.map('map', { fullscreenControl: true} ).fitBounds(bounds);
+} else {
+	var map = L.map('map', { fullscreenControl: true} ).setView([56, 11], 5);
+}
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -72,7 +83,11 @@ for(place_id in locations) {
 		}
 		if (start_id == place_id || highlight == true) {
 			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: highlightIcon}).addTo(map);
-			marker.bindPopup(markerText, { maxHeight: 300, minWidth: 150, maxWidth: 600}).openPopup();
+			if (bounds.length == 1) {
+				marker.bindPopup(markerText).openPopup(); // only open if exactly one location
+			} else  {
+				marker.bindPopup(markerText);			
+			}
 		} else {
 			var marker = L.marker([place.data.latitude, place.data.longitude]).addTo(map);
 			marker.bindPopup(markerText);

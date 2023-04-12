@@ -27,10 +27,12 @@
 {if $place || $dateset || $countrycode}
 	<p class="indata">
 	{if $place || $countrycode}
-		{$_location|ucfirst}: {if $place}{$place}{/if}{if $place && $countrycode}, {/if}{if $countrycode}{$countrycode|getCountryNameFallback}{/if}<br>
+		{$_location|ucfirst}: {if $place}{$place}{/if}{if $place && $countrycode}, {/if}{if $countrycode}{$countrycode|getCountryNameFallback}{/if}
+		{if $haslocations}<a href="locations.php?convention_id={$id}">🗺️</a>{/if}
+		<br>
 	{/if}
 	{if $dateset}
-		{$_date|ucfirst}: {$dateset}	
+		{$_date|ucfirst}: {$dateset}
 	{/if}
 	</p>
 {/if}

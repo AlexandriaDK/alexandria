@@ -54,6 +54,16 @@ if ( count( $alttitle ) == 1 ) {
 	$aliaslist = getaliaslist($conset, $this_type);
 }
 
+// Has locations?
+$haslocations = getone("
+	SELECT COUNT(*)
+	FROM lrel
+	INNER JOIN locations l ON lrel.location_id = l.id
+	INNER JOIN convention c ON lrel.convention_id = c.id
+	WHERE l.geo IS NOT NULL
+	AND c.conset_id = $conset
+");
+
 // Trivia, links and articles
 $trivialist = gettrivialist($this_id,$this_type);
 $linklist = getlinklist($this_id,$this_type);
@@ -71,6 +81,7 @@ $t->assign('id',$conset);
 $t->assign('name',$showtitle);
 $t->assign('pic',$available_pic);
 $t->assign('description',$r['description']);
+$t->assign('haslocations', $haslocations);
 $t->assign('internal',$internal);
 $t->assign('condata',$condata);
 $t->assign('trivia',$trivialist);

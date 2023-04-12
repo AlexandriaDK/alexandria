@@ -6,9 +6,32 @@ $id = (int) $_REQUEST['id'];
 $convention_id = (int) $_REQUEST['convention_id'];
 $conset_id = (int) $_REQUEST['conset_id'];
 $startlocation = FALSE;
+$location_target = FALSE;
 
 if ($id) {
-    $startlocation = getrow("SELECT ST_X(geo) AS latitude, ST_Y(geo) AS longitude FROM locations WHERE id = $id", FALSE);
+    $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT NULL", FALSE);
+    $location_target = getentryhtml('locations', $id);
+} elseif ($convention_id) {
+    $startlocation = getcol("
+        SELECT DISTINCT locations.id
+        FROM locations
+        INNER JOIN lrel ON locations.id = lrel.location_id
+        WHERE convention_id = $convention_id
+        AND locations.geo IS NOT NULL
+        ORDER BY lrel.id
+    ");
+    $location_target = getentryhtml('convention', $convention_id);
+} elseif ($conset_id) {
+    $startlocation = getcol("
+        SELECT DISTINCT locations.id
+        FROM locations
+        INNER JOIN lrel ON locations.id = lrel.location_id
+        INNER JOIN convention ON lrel.convention_id = convention.id
+        WHERE conset_id = $conset_id
+        AND locations.geo IS NOT NULL
+        ORDER BY convention.begin, convention.year
+    ");
+    $location_target = getentryhtml('conset', $conset_id);
 }
 
 $locations = getall("
@@ -43,6 +66,7 @@ $t->assign('startlocation', json_encode($startlocation));
 $t->assign('start_id', $id);
 $t->assign('convention_id', $convention_id);
 $t->assign('conset_id', $conset_id);
+$t->assign('location_target', $location_target);
 
 $t->display('locations.tpl');
 ?>

@@ -287,6 +287,15 @@ if (count($alttitle) == 1) {
 	$aliaslist = getaliaslist($con, $this_type);
 }
 
+// Has locations?
+$haslocations = getcol("
+	SELECT COUNT(*)
+	FROM lrel
+	INNER JOIN locations l ON lrel.location_id = l.id
+	WHERE l.geo IS NOT NULL
+	AND lrel.convention_id = $con
+");
+
 // Trivia, links and articles
 $trivialist = gettrivialist($this_id, $this_type);
 $linklist = getlinklist($this_id, $this_type);
@@ -321,6 +330,7 @@ $t->assign('arrowset', $arrows);
 $t->assign('pic', $available_pic);
 $t->assign('ogimage', $ogimage);
 $t->assign('place', $convention['place']);
+$t->assign('haslocations', $haslocations);
 $t->assign('countrycode', $convention['country']);
 $t->assign('dateset', nicedateset($convention['begin'], $convention['end']));
 $t->assign('partof', $partofhtml);
