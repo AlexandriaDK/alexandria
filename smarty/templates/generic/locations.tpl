@@ -72,7 +72,7 @@ for(place_id in locations) {
 		}
 		if (start_id == place_id || highlight == true) {
 			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: highlightIcon}).addTo(map);
-			marker.bindPopup(markerText).openPopup();
+			marker.bindPopup(markerText, { maxHeight: 300, minWidth: 150, maxWidth: 600}).openPopup();
 		} else {
 			var marker = L.marker([place.data.latitude, place.data.longitude]).addTo(map);
 			marker.bindPopup(markerText);

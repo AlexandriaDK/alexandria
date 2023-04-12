@@ -12,7 +12,7 @@ if ($id) {
 }
 
 $locations = getall("
-    SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT NULL AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS NULL, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS NULL, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS NULL, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), g.title) AS data_label, IF(lrel.gamerun_id IS NULL, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS NULL, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime
+    SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT NULL AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS NULL, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS NULL, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS NULL, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), CONCAT(g.title, ' (', IF(YEAR(gr.begin), YEAR(gr.begin), '?'), ')') ) AS data_label, IF(lrel.gamerun_id IS NULL, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS NULL, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime, COALESCE(c.end, c.year, gr.end) AS data_endtime
     FROM locations l
     LEFT JOIN lrel ON l.id = lrel.location_id
     LEFT JOIN convention c ON lrel.convention_id = c.id
@@ -32,7 +32,7 @@ foreach($locations AS $event) {
         ];
     }
     if ($event['data_id']) {
-        $events[$location_id]['events'][] = ['type' => $event['type'], 'data_id' => $event['data_id'], 'data_label' => $event['data_label'], 'data_begin' => $event['data_begin'], 'data_starttime' => $event['data_starttime'], 'data_cancelled' => $event['data_cancelled'], 'conset_id' => $event['conset_id'] ];
+        $events[$location_id]['events'][] = ['type' => $event['type'], 'data_id' => $event['data_id'], 'data_label' => $event['data_label'], 'data_begin' => $event['data_begin'], 'data_starttime' => $event['data_starttime'], 'data_cancelled' => $event['data_cancelled'], 'conset_id' => $event['conset_id'], 'nicedateset' => nicedateset($event['data_starttime'], $event['data_endtime']) ];
     }
 }
 
