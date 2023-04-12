@@ -124,6 +124,8 @@ function trEdit($label, $attribute, $value, $editable = TRUE, $placeholder = "",
 
 function generateJSMapHTML($latitude, $longitude, $zoom, $marker) {
 	$js = <<<EOD
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<script>
 var marker;
 function onMapClick(e) {
@@ -142,7 +144,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
-const addressSearchResults = new L.LayerGroup().addTo(map);
+L.Control.geocoder().addTo(map);
 map.on('click', onMapClick);
 EOD;
 	if ($marker) {
