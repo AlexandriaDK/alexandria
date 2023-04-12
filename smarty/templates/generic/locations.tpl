@@ -17,7 +17,7 @@ var conset_id = {$conset_id};
 if (startlocation) {
 	startlocation.zoom = 16;
 } else {
-	startlocation = {'latitude': 56, 'longitude': 11, 'zoom': 6}
+	startlocation = {'latitude': 56, 'longitude': 11, 'zoom': 5}
 }
 var map = L.map('map', { fullscreenControl: true} ).setView([startlocation.latitude, startlocation.longitude], startlocation.zoom);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
