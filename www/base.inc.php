@@ -1054,7 +1054,7 @@ function getdatalink($cat, $data_id, $admin = FALSE)
 		case 'magazine':
 			$value = ($admin ? "/adm/magazine.php?magazine_id=$data_id" : "magazines?id=$data_id");
 			break;
-		case 'location':
+		case 'locations':
 			$value = ($admin ? "/adm/location.php?id=$data_id" : "locations?id=$data_id");
 			break;
 		default:
