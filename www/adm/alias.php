@@ -31,7 +31,7 @@ if ($action == "changealias" && $do != "Delete") {
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
 }
 
-// Slet alias
+// Delete alias
 if ($action == "changealias" && $do == "Delete") {
 	$q = "DELETE FROM alias WHERE id = '$id'";
 	$r = doquery($q);
@@ -42,7 +42,7 @@ if ($action == "changealias" && $do == "Delete") {
 	rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
 }
 
-// Tilføj alias
+// Add alias
 if ($action == "addalias") {
 	$data_field = getFieldFromCategory($category);
 	$q = "INSERT INTO alias " .

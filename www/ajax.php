@@ -44,7 +44,7 @@ if (strlen($term) >= 2) {
 		";
 	}
 	if ($type == 'magazine' || $type == '') {
-		$queryparts[] = "SELECT magazine.id, name COLLATE utf8mb4_danish_ci, 'magazine' AS type, 'magazine' AS linkpart, 'magazine' AS filepart, '📚 (magazine)' AS note FROM magazine WHERE name LIKE '$likeescapequery%' ";
+		$queryparts[] = "SELECT magazine.id, name COLLATE utf8mb4_danish_ci, 'magazine' AS type, 'magazine' AS linkpart, 'magazine' AS filepart, '📚 (magazine)' AS note FROM magazine WHERE name LIKE '$likeescapequery%'";
 	}
 	if ($type == 'tag' || $type == '') {
 		$queryparts[] = "
@@ -52,6 +52,9 @@ if (strlen($term) >= 2) {
 		UNION
 		SELECT tag, tag AS label, 'tag' AS type, 'tag' AS linkpart, 'tag' AS filepart, '🏷️ (tag)' AS note FROM tag WHERE tag LIKE '$likeescapequery%' GROUP BY tag
 		";
+	}
+	if ($type == 'location' || $type == '') {
+		$queryparts[] = "SELECT locations.id, name AS label, 'location' AS type, 'locations' AS linkpart, '' AS filepart, '📍 (location)' AS note FROM locations WHERE name LIKE '$likeescapequery%' GROUP BY locations.id";
 	}
 	if (!$queryparts) { // Unknown type
 		print json_encode([]);
@@ -67,6 +70,7 @@ if (strlen($term) >= 2) {
 		if (file_exists($picfile)) {
 			$data['thumbnail'] = $picfile;
 		}
+		// add locations to preview list
 		if (in_array($data['type'], ['person', 'game', 'gamesystem'])) { // max 3 ($separator_limit) items
 			$anote = explode($separator, $data['note']);
 			$note = implode(", ", array_slice($anote, 0, $separator_limit));
@@ -79,7 +83,6 @@ if (strlen($term) >= 2) {
 			$data['label'] = $data['id'] . ' - ' . $data['label'];
 		}
 	}
-
 	$result = $all;
 }
 

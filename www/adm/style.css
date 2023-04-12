@@ -60,6 +60,10 @@ td.mark {
 	text-align: center;
 }
 
+td.number {
+	text-align: right;
+}
+
 tr.headline th {
 	background-color: #feb;
 }

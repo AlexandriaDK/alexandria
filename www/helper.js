@@ -31,6 +31,8 @@ $(function () {
     select: function (event, ui) {
       if (ui.item.linkpart == 'magazine') {
         window.location = 'magazines?id=' + encodeURIComponent(ui.item.id);
+      } else if (ui.item.linkpart == 'locations') {
+        window.location = 'locations?id=' + encodeURIComponent(ui.item.id);
       } else {
         window.location = 'data?' + ui.item.linkpart + '=' + encodeURIComponent(ui.item.id);
       }

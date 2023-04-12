@@ -26,6 +26,7 @@ function admLink($category, $data_id)
 	if ($category == 'review') return 'review.php?review_id=' . $data_id;
 	if ($category == 'issue') return 'magazine.php?issue_id=' . $data_id;
 	if ($category == 'magazine') return 'magazine.php?magazine_id=' . $data_id;
+	if ($category == 'locations') return 'locations.php?id=' . $data_id;
 
 	return $link;
 }
@@ -79,6 +80,10 @@ if ($data_id && $category) {
 			$q = "SELECT name FROM magazine WHERE id = $data_id";
 			$mainlink = "magazine.php?magazine_id=$data_id";
 			break;
+		case 'locations':
+			$q = "SELECT name FROM locations WHERE id = $data_id";
+			$mainlink = "location.php?id=$data_id";
+			break;
 		default:
 			$category = 'person';
 			$q = "SELECT CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$data_id'";
@@ -99,6 +104,7 @@ if ($data_id && $category) {
 		'review' => getassoc("title", "reviews"),
 		'issue' => getassoc("title", "issue"),
 		'magazine' => getassoc("name", "magazine"),
+		'locations' => getassoc("name", "locations"),
 
 	];
 	if ($user_id) {

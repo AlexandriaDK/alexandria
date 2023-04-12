@@ -316,6 +316,7 @@ function rexit($this_type, $dataset = [])
 		case 'review':
 		case 'person':
 		case 'gamesystem':
+		case 'locations':
 			$location = $this_type . '.php';
 			break;
 		default:

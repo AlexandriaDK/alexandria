@@ -1526,7 +1526,7 @@ function getone($query)
 	return $data;
 }
 
-function getrow($query)
+function getrow($query, $array = TRUE)
 {
 	global $dblink;
 	$result = mysqli_query($dblink, $query);
@@ -1534,7 +1534,11 @@ function getrow($query)
 		trigger_error("Error in query: $query - error: " . mysqli_error($dblink) . "<br>\n", E_USER_WARNING);
 		return false;
 	}
-	$data = mysqli_fetch_array($result);
+	if ($array) {
+		$data = mysqli_fetch_array($result);
+	} else {
+		$data = mysqli_fetch_assoc($result);
+	}
 	return $data;
 }
 

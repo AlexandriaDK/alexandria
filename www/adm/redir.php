@@ -27,6 +27,9 @@ switch ($cat) {
 	case 'review':
 		$returl = 'review.php?review_id=';
 		break;
+	case 'locations':
+		$returl = 'locations.php?id=';
+		break;
 	case 'issue':
 		$returl = 'magazine.php?issue_id=';
 		break;
