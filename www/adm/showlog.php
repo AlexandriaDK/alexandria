@@ -82,7 +82,7 @@ if ($data_id && $category) {
 			break;
 		case 'locations':
 			$q = "SELECT name FROM locations WHERE id = $data_id";
-			$mainlink = "location.php?id=$data_id";
+			$mainlink = "locations.php?id=$data_id";
 			break;
 		default:
 			$category = 'person';

@@ -266,7 +266,7 @@ function showLocation($id = NULL) {
 	$actionlabel = ($id ? 'Update location' : 'Create location');
 	print '<div><a href="locations.php?action=new">New location</a> - <a href="locations.php" accesskey="w">All locations</a></div>';
 	print '<form action="locations.php" method="post"><input type="hidden" name="action" value="' . $action . '"><input type="hidden" name="id" value="' . $location['id'] . '">';
-	print '<table><tr><td>ID</td><td>' . $location['id'] . ($location['id'] ? ' - <a href="../locations?id=' . $location['id'] . '" accesskey="q">Show location page</a>' : '') .	
+	print '<table><tr><td>ID</td><td>' . $location['id'] . ($location['id'] ? ' - <a href="../locations?id=' . $location['id'] . '" accesskey="q">Show location page</a> - <a href="showlog.php?category=locations&data_id=' . $location['id'] . '">Show log</a>' : '') .	
 	trEdit('Name', 'name', $location['name'], TRUE, '', 'namenote', '') .
 	trEdit('Address', 'address', $location['address']) .
 	trEdit('City', 'city', $location['city']) .
