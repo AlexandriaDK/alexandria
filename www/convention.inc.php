@@ -288,7 +288,7 @@ if (count($alttitle) == 1) {
 }
 
 // Has locations?
-$haslocations = getcol("
+$haslocations = getone("
 	SELECT COUNT(*)
 	FROM lrel
 	INNER JOIN locations l ON lrel.location_id = l.id
