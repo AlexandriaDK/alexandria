@@ -161,7 +161,7 @@ EOD;
 function getConnections($id) {
 	$html = '';
 	$connections = getall("
-		SELECT l.id, l.convention_id, l.gamerun_id, c.name, c.begin, c.year, g.title, g.id AS game_id, gr.begin, COALESCE(c.begin, c.year, gr.begin) AS starttime
+		SELECT l.id, l.convention_id, l.gamerun_id, c.name, c.begin, c.year, COALESCE(c.place, gr.location) AS location, g.title, g.id AS game_id, gr.begin, COALESCE(c.begin, c.year, gr.begin) AS starttime
 		FROM lrel l
 		LEFT JOIN convention c ON l.convention_id = c.id
 		LEFT JOIN gamerun gr ON l.gamerun_id = gr.id
@@ -169,7 +169,7 @@ function getConnections($id) {
 		WHERE l.location_id = $id
 		ORDER BY starttime
 	");
-	$html .= '<table><thead><tr><th>Name</th><th>Date</th><th>Type</th></tr></thead><tbody>' . PHP_EOL;
+	$html .= '<table><thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Noted location</th></tr></thead><tbody>' . PHP_EOL;
 	foreach($connections AS $connection) {
 		$type = $name = $editlink = '';
 		if ($connection['convention_id']) {
@@ -187,6 +187,7 @@ function getConnections($id) {
 		'<td><a href="' . $editlink . '">' . htmlspecialchars($name) . '</a></td>' . 
 		'<td class="number">' . htmlspecialchars($date) . '</td>' . 			
 		'<td>' . ucfirst($type) . '</td>' . 
+		'<td>' . htmlspecialchars($connection['location']) . '</td>' . 
 		'</tr>' . PHP_EOL;
 	}
 	$html .= '</tbody></table>';
