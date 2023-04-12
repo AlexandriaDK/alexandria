@@ -130,6 +130,7 @@ if ($type == 'locationreference' && $term !== "") {
 			CONCAT(conset.name, ' ', RIGHT(c.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
 			)
 		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
+		OR c.place LIKE '$likeescapequery%'
 		)
 		UNION ALL
 		(
@@ -137,6 +138,7 @@ if ($type == 'locationreference' && $term !== "") {
 		FROM gamerun gr
 		INNER JOIN game g ON gr.game_id = g.id
 		WHERE g.title LIKE '$likeescapequery%'
+		OR gr.location LIKE '$likeescapequery%'
 		)
 	");
 	header("Content-Type: application/json");

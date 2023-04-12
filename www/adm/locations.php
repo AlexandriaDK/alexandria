@@ -290,7 +290,7 @@ function showLocation($id = NULL) {
 	}
 	// set up map
 	print '<h2>Map</h2>' . PHP_EOL;
-	print '<div id="map" style="height: 500px; width: 100%; border: 1px solid black;"></div>';
+	print '<div id="map" style="height: 500px; width: 100%; border: 1px solid black; z-index: 90;"></div>';
 	$longitude = 11;
 	$latitude = 56;
 	$zoom = 7;

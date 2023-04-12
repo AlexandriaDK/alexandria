@@ -12,7 +12,7 @@
 	</h3>
 	{/if}
 
-	<div id="map" style="height: 700px; width: 100%; z-index: 90;">
+	<div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90;">
 <script>
 var locations = {$locations};
 var startlocation = {$startlocation};
