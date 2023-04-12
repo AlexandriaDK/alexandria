@@ -117,7 +117,9 @@ if ($type == 'locationreference' && $term !== "") {
 	$escapequery = dbesc($term);
 	$likeescapequery = likeesc($term);
 	$refs = getcol("
-		SELECT CONCAT('c', c.id, ' - ', c.name, ' (', COALESCE(year,'?'), ')') AS label FROM convention c
+		(
+		SELECT CONCAT('c', c.id, ' - ', c.name, ' (', COALESCE(year,'?'), '), ', c.place) AS label
+		FROM convention c
 		INNER JOIN conset ON c.conset_id = conset.id
 		WHERE c.name LIKE '$likeescapequery%'
 		OR CONCAT(c.name,' (',year,')') LIKE '$likeescapequery%'
@@ -128,8 +130,14 @@ if ($type == 'locationreference' && $term !== "") {
 			CONCAT(conset.name, ' ', RIGHT(c.year,2) ) = CONCAT(LEFT('$escapequery', (LENGTH('$escapequery') -3)), ' ', RIGHT('$escapequery', 2))
 			)
 		OR CONCAT(conset.name,' (',year,')') LIKE '$likeescapequery%'
---		UNION ALL
---		SELECT CONCAT('sys', gs.id, ' - ', name) AS label FROM gamesystem gs WHERE name LIKE '$likeescapequery%'
+		)
+		UNION ALL
+		(
+		SELECT CONCAT('gr', gr.id, ' - ', g.title, ' (', COALESCE(YEAR(gr.begin),'?'), '), ', gr.location) AS label
+		FROM gamerun gr
+		INNER JOIN game g ON gr.game_id = g.id
+		WHERE g.title LIKE '$likeescapequery%'
+		)
 	");
 	header("Content-Type: application/json");
 	print json_encode($refs);

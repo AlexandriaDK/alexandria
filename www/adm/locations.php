@@ -15,6 +15,8 @@ $country = (string) $_REQUEST['country'];
 $note = (string) $_REQUEST['note'];
 $latlon = (string) $_REQUEST['latlon'];
 $locationreference = (string) $_REQUEST['locationreference'];
+$relation_id = (int) $_REQUEST['relation_id'];
+$new = FALSE;
 
 if ($action == "createlocation") {
 	doquery("INSERT INTO locations (name, address, city, country, note) VALUES ('','','','','')");
@@ -95,6 +97,20 @@ if ($action == "createrelation" && $id) {
 	doquery("INSERT INTO lrel (location_id, convention_id, gamerun_id) values ($id, " . sqlifnull($convention_id) . ", " . sqlifnull($gamerun_id) . ")");
 	chlog($id, $this_type, "Relation added: $locationreference");
 	$_SESSION['admin']['info'] = "Relation added! " . dberror();
+	rexit($this_type, ['id' => $id]);
+}
+
+
+// Remove relation
+if ($action == "removerelation" && $id && $relation_id) {
+	if (! getone("SELECT COUNT(*) FROM lrel WHERE location_id = $id AND id = $relation_id") ) {
+		$_SESSION['admin']['info'] = "The relation does not exist. " . dberror();
+		rexit($this_type, ['id' => $id]);
+	}
+	$relationstring = getone("SELECT IF(convention_id IS NOT NULL, CONCAT('c', convention_id), CONCAT('gr', gamerun_id)) AS relationstring FROM lrel WHERE location_id = $id AND id = $relation_id");
+	doquery("DELETE FROM lrel WHERE location_id = $id AND id = $relation_id");
+	chlog($id, $this_type, "Relation removed: $relationstring");
+	$_SESSION['admin']['info'] = "Relation removed! " . dberror();
 	rexit($this_type, ['id' => $id]);
 }
 
@@ -182,12 +198,14 @@ function getConnections($id) {
 			$editlink = 'run.php?id=' . $connection['game_id'];
 		}
 		$date = fulldate($connection['starttime']);
+		$deleteurl = 'locations.php?action=removerelation&id=' . $id . '&relation_id=' . $connection['id'];
 
 		$html .= '<tr>' . 
 		'<td><a href="' . $editlink . '">' . htmlspecialchars($name) . '</a></td>' . 
 		'<td class="number">' . htmlspecialchars($date) . '</td>' . 			
 		'<td>' . ucfirst($type) . '</td>' . 
 		'<td>' . htmlspecialchars($connection['location']) . '</td>' . 
+		'<td><a href="#" onclick="if(confirm(\'Confirm that you want to delete the connection for the location to ' . htmlspecialchars($name) . '\')) { location.href=\'' . $deleteurl . '\'; return false;} else {return false;}">[Delete]</a></td>' .
 		'</tr>' . PHP_EOL;
 	}
 	$html .= '</tbody></table>';
@@ -262,7 +280,7 @@ function showLocation($id = NULL) {
 	if ($id) {
 		print '<h2>Connections</h2>';
 		print '<div><form action="locations.php" method="post"><input type="hidden" name="action" value="createrelation"><input type="hidden" name="id" value="' . $id . '">';
-		print 'Add convention: <input type="text" id="locationreference" name="locationreference" accesskey="a"> ';
+		print 'Add event: <input type="text" id="locationreference" name="locationreference" accesskey="a" placeholder="Convention or game run" size="60"> ';
 		print '<input type="submit" value="Add relation to location">';
 		print '</form></div>';
 		if ($location['connections'] > 0) {
