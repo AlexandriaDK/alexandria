@@ -1,6 +1,6 @@
 <div id="content">
 
-	<h2 class="datatitle">{$name|escape}{if $haslocations} <a href="locations.php?conset_id={$id}">🗺️</a>{/if}</h2>
+	<h2 class="datatitle">{$name|escape}{if $haslocations} <a href="locations?conset_id={$id}">🗺️</a>{/if}</h2>
 
 {if $pic}
 	<div style="float: right;">
