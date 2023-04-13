@@ -6,7 +6,7 @@ $id = (int) $_REQUEST['id'];
 $convention_id = (int) $_REQUEST['convention_id'];
 $conset_id = (int) $_REQUEST['conset_id'];
 $game_id = (int) $_REQUEST['game_id'];
-$startlocation = FALSE;
+$startlocation = [];
 $location_target = FALSE;
 
 if ($id) {

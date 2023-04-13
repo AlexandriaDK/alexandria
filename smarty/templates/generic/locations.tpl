@@ -17,15 +17,15 @@
 var locations = {$locations};
 var startlocation = {$startlocation};
 var start_id = {$start_id};
+var bounds = [];
 
 {literal}
-if (startlocation) { // Find bbox
-	var bounds = [];
+if (startlocation.length > 0) { // Find bbox
 	for (location_id of startlocation) {
 		bounds.push([locations[location_id].data.latitude, locations[location_id].data.longitude]);
 	}
 }
-if (bounds) {
+if (bounds.length > 0) {
 	var map = L.map('map', { fullscreenControl: true} ).fitBounds(bounds);
 } else {
 	var map = L.map('map', { fullscreenControl: true} ).setView([56, 11], 5);
