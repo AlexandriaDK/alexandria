@@ -990,6 +990,10 @@ function getdatahtml($cat, $data_id, $text, $admin = FALSE)
 			$css = $cat;
 			break;
 
+		case 'tags':
+			$css = 'tag';
+			break;
+
 		case 'conset':
 			$css = "con";
 			break;
@@ -1047,6 +1051,11 @@ function getdatalink($cat, $data_id, $admin = FALSE)
 		case 'tag':
 			$tag = getone("SELECT tag FROM tag WHERE id = $data_id") ?? '';
 			$value = ($admin ? "/adm/tag.php?tag_id=$data_id" : "data?tag=" . rawurlencode($tag));
+			break;
+		case 'tags':
+			$tag = $data_id;
+			$tag = getone("SELECT DISTINCT tag FROM tags WHERE tag = '" . dbesc($tag) . "'") ?? '';
+			$value = ($admin ? "/adm/tag.php?tag=" . rawurlencode($data_id) : "data?tag=" . rawurlencode($tag) );
 			break;
 		case 'issue':
 			$value = ($admin ? "/adm/magazine.php?issue_id=$data_id" : "magazines?issue=$data_id");
@@ -1433,6 +1442,7 @@ function getLocaleFromLang($lang)
 function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE)
 {
 	$value = $label = FALSE;
+	$data_id_orig = $data_id;
 	$data_id = (int) $data_id;
 
 	switch ($cat) {
@@ -1502,6 +1512,11 @@ function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE
 		} else {
 			$label .= " (?)";
 		}
+	}
+	if ($cat == 'tags') {
+		$label = getone("
+			SELECT DISTINCT tag FROM tags WHERE tag = '" . dbesc($data_id_orig) . "'
+		");
 	}
 
 	if ($label && $with_magazine) {

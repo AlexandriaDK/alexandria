@@ -6,6 +6,7 @@ $id = (int) $_REQUEST['id'];
 $convention_id = (int) $_REQUEST['convention_id'];
 $conset_id = (int) $_REQUEST['conset_id'];
 $game_id = (int) $_REQUEST['game_id'];
+$tag = (string) $_REQUEST['tag'];
 $startlocation = [];
 $location_target = FALSE;
 
@@ -44,6 +45,29 @@ if ($id) {
         AND locations.geo IS NOT NULL
     ");
     $location_target = getentryhtml('game', $game_id);
+} elseif ($tag) {
+    $startlocation = getcol("
+        (
+        SELECT DISTINCT locations.id, locations.name
+        FROM tags
+        INNER JOIN gamerun ON tags.game_id = gamerun.game_id
+        INNER JOIN lrel ON gamerun.id = lrel.gamerun_id
+        INNER JOIN locations ON lrel.location_id = locations.id
+        WHERE tag = '" . dbesc($tag) . "'
+        AND locations.geo IS NOT NULL
+        )
+        UNION 
+        (
+        SELECT DISTINCT locations.id, locations.name
+        FROM tags
+        INNER JOIN cgrel ON tags.game_id = cgrel.game_id
+        INNER JOIN lrel ON cgrel.convention_id = lrel.convention_id
+        INNER JOIN locations ON lrel.location_id = locations.id
+        WHERE tag = '" . dbesc($tag) . "'
+        AND locations.geo IS NOT NULL
+        )
+    ");
+    $location_target = getentryhtml('tags', $tag);
 }
 
 $locations = getall("

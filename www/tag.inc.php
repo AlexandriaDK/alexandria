@@ -146,8 +146,30 @@ if ($tag_id) {
 	$awardlist = $html;
 }
 
-// print "<pre>" . htmlspecialchars($awardlist) . "</pre>";
-// exit;
+// Has locations?
+$haslocations = getone("
+	SELECT COUNT(*) FROM (
+		(
+			SELECT DISTINCT locations.id, locations.name
+			FROM tags
+			INNER JOIN gamerun ON tags.game_id = gamerun.game_id
+			INNER JOIN lrel ON gamerun.id = lrel.gamerun_id
+			INNER JOIN locations ON lrel.location_id = locations.id
+			WHERE tag = '" . dbesc($tag) . "'
+			AND locations.geo IS NOT NULL
+		)
+			UNION 
+		(
+			SELECT DISTINCT locations.id, locations.name
+			FROM tags
+			INNER JOIN cgrel ON tags.game_id = cgrel.game_id
+			INNER JOIN lrel ON cgrel.convention_id = lrel.convention_id
+			INNER JOIN locations ON lrel.location_id = locations.id
+			WHERE tag = '" . dbesc($tag) . "'
+			AND locations.geo IS NOT NULL
+		)
+	) x
+");
 
 // List of files
 $filelist = getfilelist($this_id, $this_type);
@@ -169,6 +191,7 @@ $t->assign('tag', $tag);
 $t->assign('internal', $internal);
 $t->assign('pic', $available_pic);
 $t->assign('ogimage', getimageifexists($this_id, $this_type));
+$t->assign('haslocations', $haslocations);
 $t->assign('description', $description);
 $t->assign('slist', $slist);
 $t->assign('award', $awardlist);

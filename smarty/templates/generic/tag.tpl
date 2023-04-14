@@ -2,7 +2,7 @@
 {include file="originalsearch.tpl"}
 
 <article>
-	<h2 class="datatitle">{$tag|escape}</h2>
+	<h2 class="datatitle">{$tag|escape} {if $haslocations}<a href="locations?tag={$tag|rawurlencode}">🗺️</a>{/if}</h2>
 
 {if $pic}
 	<div style="float: right;">
