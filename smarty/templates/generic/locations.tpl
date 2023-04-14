@@ -80,13 +80,13 @@ for(place_id in locations) {
 		if (startlocation.includes(place_id.toString())) {
 			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: highlightIcon}).addTo(map);
 			if (bounds.length == 1) {
-				marker.bindPopup(markerText).openPopup(); // only open if exactly one location
+				marker.bindTooltip(place.data.name).bindPopup(markerText).openPopup(); // only open if exactly one location
 			} else  {
-				marker.bindPopup(markerText);			
+				marker.bindTooltip(place.data.name).bindPopup(markerText);
 			}
 		} else {
 			var marker = L.marker([place.data.latitude, place.data.longitude]).addTo(map);
-			marker.bindPopup(markerText);
+			marker.bindTooltip(place.data.name).bindPopup(markerText);
 		}
 	}
 }

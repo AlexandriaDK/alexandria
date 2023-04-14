@@ -188,7 +188,7 @@ foreach ($q as $rs) {
 	$coninfo = nicedateset($rs['begin'], $rs['end']);
 	$conlist .= "<tr><td>";
 	// Add rerun/cancelled/test icons
-	if ($rs['textsymbol']) { // unicode-ikoner
+	if ($rs['textsymbol']) { // unicode icons
 		$conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\">{$rs['textsymbol']}</span>";
 	} elseif ($rs['iconfile']) {
 		$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" width=\"15\" height=\"15\" /> ";
@@ -201,35 +201,49 @@ foreach ($q as $rs) {
 }
 
 // List of runs
-$runlist = "";
-$q = getall("SELECT begin, end, location, country, description, cancelled FROM gamerun WHERE game_id = '$game' ORDER BY begin, end, id");
-foreach ($q as $rs) {
-	$runlist .= "<span" . ($rs['cancelled'] ? " class=\"cancelled\"" : "") . ">";
-	$runlist .= ucfirst(nicedateset($rs['begin'], $rs['end']));
-	if ($rs['location'] || $rs['description'] || $rs['country']) {
-		if (nicedateset($rs['begin'], $rs['end'])) {
-			$runlist .= ", ";
+$runlist = '';
+$q = getall("
+	SELECT gr.id, gr.begin, gr.end, gr.location, gr.country, gr.description, gr.cancelled, COUNT(DISTINCT l.id) AS haslocations
+	FROM gamerun gr
+	LEFT JOIN lrel ON gr.id = lrel.gamerun_id
+	LEFT JOIN locations l ON lrel.location_id = l.id AND l.geo IS NOT NULL
+	WHERE game_id = '$game'
+	GROUP BY gr.id
+	ORDER BY gr.begin, gr.end, gr.id
+");
+if ($q) { // :TODO: HTML construction should be moved to game.tpl
+	$runlist .= '<table class="gamerun">';
+	foreach ($q as $rs) {
+		$runlist .= '<tr><td class="date">';
+		$runlist .= '<span' . ($rs['cancelled'] ? ' class="cancelled"' : '') . '>';
+		$runlist .= ucfirst(nicedateset($rs['begin'], $rs['end']));
+		$runlist .= '</span></td>';
+		$runlist .= '<td>';
+		if ($rs['haslocations']) {
+			$locationstitle = $rs['haslocations'] . ' ' . ($rs['haslocations'] == 1 ? $t->getTemplateVars('_location') : $t->getTemplateVars('_locations') );
+			$runlist .= '<a href="locations?gamerun_id=' . $rs['id'] . '" title="' . htmlspecialchars($locationstitle) . '">🗺️</a>';
 		}
+		$runlist .= '</td>';
+		$runlist .= '<td>';
 		$runlist .= htmlspecialchars($rs['location']);
 		if ($rs['country']) {
 			if ($rs['location']) {
-				$runlist .= ", ";
+				$runlist .= ', ';
 			}
 			$runlist .= getCountryName($rs['country']);
 		}
+		if (($rs['location'] || $rs['country']) && $rs['description']) {
+			$runlist .= ': ';
+		}
+		if ($rs['description']) {
+			$runlist .= htmlspecialchars($rs['description']);
+		}
+		if ($rs['cancelled']) {
+			$runlist .= ' [' . $t->getTemplateVars('_sce_cancelled') . ']';
+		}
+		$runlist .= '</td></tr>' . PHP_EOL;
 	}
-	if (($rs['location'] || $rs['country']) && $rs['description']) {
-		$runlist .= ": ";
-	}
-	if ($rs['description']) {
-		$runlist .= htmlspecialchars($rs['description']);
-	}
-	$runlist .= "</span>";
-	if ($rs['cancelled']) {
-		// $runlist .= " [aflyst]";
-		$runlist .= " [" . $t->getTemplateVars('_sce_cancelled') . "]";
-	}
-	$runlist .= "<br>\n";
+	$runlist .= '</table>';
 }
 
 // Awards

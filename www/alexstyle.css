@@ -319,6 +319,15 @@ table.conlist {
 	padding: 1px;
 }
 
+table.gamerun {
+	border-spacing: 0px;
+	padding: 1px;
+}
+
+table.gamerun td.date {
+	text-align: right;
+}
+
 table.people {
 	margin-bottom: 1em;
 }

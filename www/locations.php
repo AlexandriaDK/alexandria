@@ -6,6 +6,7 @@ $id = (int) $_REQUEST['id'];
 $convention_id = (int) $_REQUEST['convention_id'];
 $conset_id = (int) $_REQUEST['conset_id'];
 $game_id = (int) $_REQUEST['game_id'];
+$gamerun_id = (int) $_REQUEST['gamerun_id'];
 $tag = (string) $_REQUEST['tag'];
 $startlocation = [];
 $location_target = FALSE;
@@ -33,6 +34,20 @@ if ($id) {
         AND locations.geo IS NOT NULL
     ");
     $location_target = getentryhtml('conset', $conset_id);
+} elseif ($gamerun_id) {
+    $startlocation = getcol("
+        SELECT DISTINCT locations.id
+        FROM locations
+        INNER JOIN lrel ON locations.id = lrel.location_id
+        WHERE gamerun_id = $gamerun_id
+        AND locations.geo IS NOT NULL
+        ORDER BY lrel.id
+    ");
+    $gamerun_data = getrow("SELECT game_id, begin, end FROM gamerun WHERE id = $gamerun_id");
+    $location_target = getentryhtml('game', $gamerun_data['game_id']);
+    if ($nicedate = nicedateset($gamerun_data['begin'], $gamerun_data['end']) ) {
+        $location_target .= " (" . $nicedate . ")";
+    }
 } elseif ($game_id) { // both individual runs and as part of conventions
     $startlocation = getcol("
         SELECT DISTINCT locations.id

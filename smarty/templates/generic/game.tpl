@@ -142,10 +142,7 @@ $( function() {
 	<h3 class="parttitle">
 		{if $conlist == ""}{$_sce_runs}{else}{$_sce_furtherruns}{/if}
 	</h3>
-	<p class="indata">
-		{$runlist}
-	</p>
-
+	{$runlist}
 {/if}
 
 {if $awards}
