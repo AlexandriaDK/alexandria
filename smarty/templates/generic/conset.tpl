@@ -33,7 +33,8 @@
 	<tr>
 		<td>{$con.userdyn}</td>
 		<td>{con dataset=$con}</td>
-                <td style="padding-left: 10px;"{if $con.cancelled} class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$con.place}{if $con.place && $con.country}, {/if}{if $con.country}{$con.country|getCountryNameFallback}{/if}</td>
+		<td style="padding-left: 10px">{if $con.haslocations}<a href="locations?convention_id={$con.id}" title="{$con.haslocations} {if $con.haslocations == 1}{$_location|escape}{else}{$_locations|escape}{/if}">🗺️</a>{/if}
+		<td {if $con.cancelled}class="cancelled" title="{$_sce_cancelled|ucfirst}"{/if}>{$con.place}{if $con.place && $con.country}, {/if}{if $con.country}{$con.country|getCountryNameFallback}{/if}</td>
 	</tr>
 	{/foreach}
 	</table>

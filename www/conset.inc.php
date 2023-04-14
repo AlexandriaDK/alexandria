@@ -17,10 +17,13 @@ if ($r['id'] == 0) {
 $internal = ( ( $_SESSION['user_editor'] ?? FALSE ) ? $r['internal'] : ""); // only set internal if editor
 $showtitle = $cname = ($r['id'] == 40 ? $t->getTemplatevars('_cons_other') : $r['name'] );
 $q = getall("
-	SELECT c.id, c.name, c.begin, c.end, c.year, c.place, c.cancelled, COALESCE(c.country, conset.country) AS country
+	SELECT c.id, c.name, c.begin, c.end, c.year, c.place, c.cancelled, COALESCE(c.country, conset.country) AS country, COUNT(DISTINCT l.id) AS haslocations
 	FROM convention c
-	LEFT JOIN conset ON c.conset_id = conset.id
-	WHERE conset_id = '$conset'
+	INNER JOIN conset ON c.conset_id = conset.id
+	LEFT JOIN lrel ON c.id = lrel.convention_id
+	LEFT JOIN locations l ON lrel.location_id = l.id AND l.geo IS NOT NULL
+	WHERE c.conset_id = '$conset'
+	GROUP BY c.id
 	ORDER BY year, begin, name
 ");
 
@@ -36,7 +39,8 @@ foreach($q AS $rs) {
 		'end' => $rs['end'],
 		'place' => $rs['place'],
 		'country' => $rs['country'],
-		'cancelled' => $rs['cancelled']
+		'cancelled' => $rs['cancelled'],
+		'haslocations' => $rs['haslocations']
 	];
 }
 
