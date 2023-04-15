@@ -11,6 +11,13 @@ function initialize() {
     locationHashChanged();
     window.onhashchange = locationHashChanged;
     $("#search").submit(function (event) {
+        var searchHash = '#search=' + $('#searchtext').val()
+        if(history.pushState) {
+            history.pushState(null, null, searchHash);
+        }
+        else {
+            location.hash = searchHash;
+        }
         search($('#searchtext').val());
         event.preventDefault();
     });
@@ -97,6 +104,10 @@ function locationHashChanged() {
     }
     if (key == 'issue') {
         showIssue(id);
+        return;
+    }
+    if (key == 'search') {
+        search(id);
         return;
     }
     return false;
