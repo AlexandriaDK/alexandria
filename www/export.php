@@ -39,6 +39,8 @@ $exportqueries = [
 	'articles' => "SELECT id, issue_id, page, title, description, articletype, game_id FROM article ORDER BY issue_id, id",
 	'contributors' => "SELECT id, person_id, person_extra, role, article_id FROM contributor ORDER BY id",
 	'article_reference' => "SELECT id, article_id, person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id FROM article_reference ORDER BY id",
+	'locations' => "SELECT id, name, address, city, country, note, ST_X(geo) AS latitude, ST_Y(geo) AS longitude FROM locations ORDER BY id",
+	'location_reference' => "SELECT id, location_id, convention_id, gamerun_id FROM lrel ORDER BY id",
 	'files' => "SELECT id, filename, description, downloadable, inserted, language, indexed, game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id FROM files WHERE downloadable = 1 ORDER BY id",
 ];
 
@@ -75,6 +77,8 @@ if ( $dataset ) {
 	case 'articles':
 	case 'contributors':
 	case 'article_reference':
+	case 'locations':
+	case 'location_reference':
 			$output = getall( $exportqueries[ $dataset ], FALSE );
 		break;
 	case 'all':
@@ -140,6 +144,8 @@ if ( $dataset ) {
 			'articles' => 'Articles in issues',
 			'contributors' => 'Contributors for magazines',
 			'article_reference' => 'References in articles to other data entries',
+			'locations' => 'Geographical locations, used by conventions and game runs',
+			'location_reference' => 'References in locations to conventions and game runs',
 			'files' => 'List of files for scenarios, convents and convention sets at alexandria.dk',
 		],
 		'examples' => [
