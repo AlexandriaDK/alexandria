@@ -106,6 +106,7 @@
 				<a href="tags">{$_top_tags}</a><br>
 				<a href="statistik">{$_top_statistics}</a><br>
 				<br>
+				<a href="locations">{$_top_locations}</a><br>
 				<a href="calendar">{$_top_calendar}</a><br>
 				<a href="feeds">{$_top_blogfeeds}</a><br>
 				<a href="awards">{$_top_awards}</a><br>
