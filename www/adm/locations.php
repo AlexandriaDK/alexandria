@@ -27,7 +27,7 @@ if ($action == "createlocation") {
 
 // Edit location
 if ($action == "updatelocation" && $id) {
-	[$latitude,$longitude] = explode(",",$latlon);
+	[$latitude,$longitude] = explode(",",str_replace('°','',$latlon));
 	$geosql = 'NULL';
 	if (is_numeric($latitude) && is_numeric($longitude)) {
 		$geosql = "ST_GeomFromText('POINT($latitude $longitude)', 4326)";
