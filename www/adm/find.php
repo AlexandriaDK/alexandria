@@ -9,7 +9,7 @@ $find = $_REQUEST['find'] ?? '';
 
 // Lidt kvik-find-kode:
 
-if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i", $find, $regs)) {
+if (preg_match("/^([csgpfatiml#]|cs|sys)(\d+)$/i", $find, $regs)) {
 	$pref = strtolower($regs[1]);
 	$id = $regs[2];
 
@@ -32,7 +32,6 @@ if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i", $find, $regs)) {
 			$url = "magazine.php?magazine_id=" . $id;
 			break;
 
-
 		case "c":
 			$url = "convention.php?con=" . $id;
 			break;
@@ -47,6 +46,10 @@ if (preg_match("/^([csgpfatim#]|cs|sys)(\d+)$/i", $find, $regs)) {
 			$url = "person.php?person=" . $id;
 			break;
 
+		case "l":
+			$url = "locations.php?id=" . $id;
+			break;
+	
 		case "t":
 		case "#":
 			$url = "ticket.php?id=" . $id;
