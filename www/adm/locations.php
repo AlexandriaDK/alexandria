@@ -8,11 +8,11 @@ $this_type = 'locations';
 
 $id = (int) $_REQUEST['id'];
 $action = (string) $_REQUEST['action'];
-$name = (string) $_REQUEST['name'];
-$address = (string) $_REQUEST['address'];
-$city = (string) $_REQUEST['city'];
-$country = (string) $_REQUEST['country'];
-$note = (string) $_REQUEST['note'];
+$name = trim((string) $_REQUEST['name']);
+$address = trim((string) $_REQUEST['address']);
+$city = trim((string) $_REQUEST['city']);
+$country = trim((string) $_REQUEST['country']);
+$note = trim((string) $_REQUEST['note']);
 $latlon = (string) $_REQUEST['latlon'];
 $locationreference = (string) $_REQUEST['locationreference'];
 $relation_id = (int) $_REQUEST['relation_id'];
