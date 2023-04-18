@@ -1,0 +1,1 @@
+var hasLocalFiles = false;
