@@ -44,64 +44,64 @@ $exportqueries = [
 	'files' => "SELECT id, filename, description, downloadable, inserted, language, indexed, game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id FROM files WHERE downloadable = 1 ORDER BY id",
 ];
 
-if ( $dataset ) {
-	switch ( $dataset ) {
-	case 'persons':
-	case 'systems':
-	case 'games':
-	case 'conventionsets':
-	case 'conventions':
-	case 'genres':
-	case 'genre_game_relations':
-	case 'tags':
-	case 'gametags':
-	case 'gameruns':
-	case 'gamedescriptions':
-	case 'titles':
-	case 'presentations':
-	case 'feeds':
-	case 'trivia':
-	case 'links':
-	case 'aliases':
-	case 'files':
-	case 'sitetexts':
-	case 'awards':
-	case 'award_categories':
-	case 'award_nominee_entities':
-	case 'award_nominees':
-	case 'person_game_title_relations':
-	case 'game_convention_presentation_relations':
-	case 'person_convention_relations':
-	case 'magazines':
-	case 'issues':
-	case 'articles':
-	case 'contributors':
-	case 'article_reference':
-	case 'locations':
-	case 'location_reference':
-			$output = getall( $exportqueries[ $dataset ], FALSE );
-		break;
-	case 'all':
-		$output = [];
-		foreach ( $exportqueries AS $table => $query ) {
-			$output[ $table ] = getall( $query, FALSE );
-		}
-		break;
-	default:
-		$data = [
-			"error" => "Unknown dataset"
-		];
-		$output = $data;
+if ($dataset) {
+	switch ($dataset) {
+		case 'persons':
+		case 'systems':
+		case 'games':
+		case 'conventionsets':
+		case 'conventions':
+		case 'genres':
+		case 'genre_game_relations':
+		case 'tags':
+		case 'gametags':
+		case 'gameruns':
+		case 'gamedescriptions':
+		case 'titles':
+		case 'presentations':
+		case 'feeds':
+		case 'trivia':
+		case 'links':
+		case 'aliases':
+		case 'files':
+		case 'sitetexts':
+		case 'awards':
+		case 'award_categories':
+		case 'award_nominee_entities':
+		case 'award_nominees':
+		case 'person_game_title_relations':
+		case 'game_convention_presentation_relations':
+		case 'person_convention_relations':
+		case 'magazines':
+		case 'issues':
+		case 'articles':
+		case 'contributors':
+		case 'article_reference':
+		case 'locations':
+		case 'location_reference':
+			$output = getall($exportqueries[$dataset], FALSE);
+			break;
+		case 'all':
+			$output = [];
+			foreach ($exportqueries as $table => $query) {
+				$output[$table] = getall($query, FALSE);
+			}
+			break;
+		default:
+			$data = [
+				"error" => "Unknown dataset"
+			];
+			$output = $data;
 	}
-} elseif ( $setup === 'sqlstructure' ) { // Order is important due to foreign keys
-	$tables = [ 'person', 'gamesystem', 'game', 'conset', 'convention', 'genre', 'ggrel', 'tag', 'tags', 'gamerun', 'title', 'presentation', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'pgrel', 'cgrel', 'pcrel', 'users', 'loginmap', 'userlog', 'news', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts', 'files', 'filedata' ];
+} elseif ($setup === 'sqlstructure') { // Order is important due to foreign keys
+	$tables = ['person', 'gamesystem', 'game', 'conset', 'convention', 'genre', 'ggrel', 'tag', 'tags', 'gamerun', 'title', 'presentation', 'game_description', 'feeds', 'feedcontent', 'trivia', 'links', 'alias', 'weblanguages', 'pgrel', 'cgrel', 'pcrel', 'users', 'loginmap', 'userlog', 'news', 'awards', 'award_categories', 'award_nominee_entities', 'award_nominees', 'achievements', 'user_achievements', 'log', 'searches', 'updates', 'filedownloads', 'installation', 'magazine', 'issue', 'article', 'contributor', 'article_reference', 'rpgforum_posts', 'files', 'filedata', 'locations', 'lrel'];
 	$tablecreate = [];
-	foreach ( $tables AS $table ) {
-		$create = getrow( "SHOW CREATE TABLE `$table`" );
-		$tablecreate[ $table ] = $create[1];
+	foreach ($tables as $table) {
+		$create = getrow("SHOW CREATE TABLE `$table`");
+		$tablecreate[$table] = $create[1];
 	}
 	$output = $tablecreate;
-} elseif ( $dataset !== '' ) { // unknown dataset
+} elseif ($dataset !== '') { // unknown dataset
 	$data = [
 		"error" => "Unknown dataset"
 	];
@@ -152,8 +152,8 @@ if ( $dataset ) {
 			'export' => 'This overview',
 			'export?setup=sqlstructure' => 'Get SQL structure for tables',
 			'export?dataset=persons' => 'Get all persons',
-//			'export?dataset=persons&data_id=1' => 'Get person with data id 1',
-//			'export?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
+			//			'export?dataset=persons&data_id=1' => 'Get person with data id 1',
+			//			'export?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
 		]
 	];
 	$output = $datasets;
@@ -163,13 +163,13 @@ $timestamp_end = date("c");
 
 $output = [
 	'result' => $output,
-	'request' => [ "received" => $timestamp_start, "finished" => $timestamp_end ],
+	'request' => ["received" => $timestamp_start, "finished" => $timestamp_end],
 	'license' => 'The database is owned by Alexandria.dk and protected by the database rights in Danish law of Copyright ("Ophavsretsloven", § 71). You are allowed to use the API and the data for *non-commercial* purposes. Alexandria.dk must be credited, if possible with a link. Game files are not available through this API.',
 	'access' => 'Access to this API does not require login, tokens or other authentication mechanisms. Access can be restricted for various reasons, e.g. if the server is overloaded or if too many requests are sent in a short time.',
 	'status' => 'ready'
 ];
 
-$json_output = json_encode( $output );
-header( "Content-Type: application/json" );
-header( "Content-Length: " . strlen( $json_output) );
+$json_output = json_encode($output);
+header("Content-Type: application/json");
+header("Content-Length: " . strlen($json_output));
 print $json_output;
