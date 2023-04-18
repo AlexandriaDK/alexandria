@@ -26,7 +26,7 @@ if (startlocation.length > 0) { // Find bbox
 	}
 }
 if (bounds.length > 0) {
-	var map = L.map('map', { fullscreenControl: true} ).fitBounds(bounds);
+	var map = L.map('map', { fullscreenControl: true} ).fitBounds(bounds, { maxZoom: 15 });
 } else {
 	var map = L.map('map', { fullscreenControl: true} ).setView([56, 11], 5);
 }
@@ -89,17 +89,12 @@ for(place_id in locations) {
 		}
 		if (startlocation.includes(place_id.toString())) {
 			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: highlightIcon}).addTo(map);
+			marker.bindTooltip(place.data.name).bindPopup(markerText);
 			if (bounds.length == 1) {
-				marker.bindTooltip(place.data.name).bindPopup(markerText).openPopup(); // only open if exactly one location
-			} else  {
-				marker.bindTooltip(place.data.name).bindPopup(markerText);
+				marker.openPopup(); // only open if exactly one location
 			}
 		} else {
-			if (startlocation.length > 0) {
-				var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon}).addTo(map);
-			} else {
-				var marker = L.marker([place.data.latitude, place.data.longitude]).addTo(map);
-			}
+			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon}).addTo(map);
 			marker.bindTooltip(place.data.name).bindPopup(markerText);
 		}
 	}

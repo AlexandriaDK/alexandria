@@ -12,7 +12,7 @@ function initialize() {
     window.onhashchange = locationHashChanged;
     $("#search").submit(function (event) {
         var searchHash = '#search=' + $('#searchtext').val()
-        if(history.pushState) {
+        if (history.pushState) {
             history.pushState(null, null, searchHash);
         }
         else {
@@ -28,8 +28,8 @@ function loadData() {
     a = [];
     license = data.license;
     access = data.access;
-    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines', 'issues', 'articles', 'award_nominees', 'award_categories'];
-    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference', 'gameruns', 'award_nominee_entities'];
+    categories_with_ids = ['persons', 'conventions', 'systems', 'games', 'conventionsets', 'titles', 'presentations', 'magazines', 'issues', 'articles', 'award_nominees', 'award_categories', 'locations'];
+    categories_without_ids = ['person_game_title_relations', 'game_convention_presentation_relations', 'person_convention_relations', 'tags', 'gametags', 'gamedescriptions', 'files', 'sitetexts', 'links', 'trivia', 'contributors', 'article_reference', 'gameruns', 'award_nominee_entities', 'location_reference'];
     categories_with_ids.forEach(function (category) {
         a[category] = {};
         for (element of data.result[category]) {
@@ -42,13 +42,12 @@ function loadData() {
     $("#startup").hide();
     $("#menu").show();
     $("#currentdatainfo").text("This data set is from the following date: " + niceDate(data.request.received))
-    //    data = null; // Free up memory
     showContent('');
 }
 
 function locationHashChanged() {
     var h = location.hash.substring(1);
-    console.log(h);
+    // Overviews
     if (h == 'persons') {
         showPersons();
         return;
@@ -73,6 +72,11 @@ function locationHashChanged() {
         showMagazines();
         return;
     }
+    if (h == 'locations') {
+        showLocations();
+        return;
+    }
+    // Individual entries
     var [key, id] = h.split('=');
     if (key == 'gamesystem') {
         showGameSystem(id);
@@ -104,6 +108,10 @@ function locationHashChanged() {
     }
     if (key == 'issue') {
         showIssue(id);
+        return;
+    }
+    if (key == 'location') {
+        showLocation(id);
         return;
     }
     if (key == 'search') {
@@ -185,7 +193,7 @@ function showConventions(id) {
     var title = 'Conventions for ' + esc(conset.name);
     var links = a.links.filter(rel => rel.conset_id == id);
     var trivia = a.trivia.filter(rel => rel.conset_id == id);
-    var files = a.files.filter(rel => rel.conest_id == id);
+    var files = a.files.filter(rel => rel.conset_id == id);
     var conlist = ota(category).filter(convention => convention.conset_id == id)
 
     conlist.sort(function (a, b) {
@@ -258,6 +266,12 @@ function showTags() {
 function showMagazines() {
     showCategoryList('Magazines', 'magazines', 'magazine', 'magazine', 'name');
     onlineLink('magazines');
+    return false;
+}
+
+function showLocations() {
+    showCategoryList('Locations', 'locations', 'location', 'location', 'name');
+    onlineLink('locations');
     return false;
 }
 
@@ -650,7 +664,6 @@ function showMagazine(id) {
 
     showContent(html);
     onlineLink('magazines?id=' + id);
-
 }
 
 function showIssue(id) {
@@ -738,7 +751,65 @@ function showIssue(id) {
 
     showContent(html);
     onlineLink('magazines?issue=' + id);
+}
 
+
+function showLocation(id) {
+    // var id = data.target.dataset.id;
+    var location = a.locations[id];
+    // var issues = [];
+    // for (var issue in a.issues) { issues.push(a.issues[issue]); }
+    // issues = issues.filter(i => i.magazine_id == id)
+
+    var html = '';
+    html += '<h2>' + esc(location.name) + '</h2>';
+    html += '<p>';
+    if (location.address) {
+        html += getDescription(esc(location.address), false) + '<br>';
+    }
+    html += getDescription(esc(location.city), false);
+    if (location.city != '' && location.country) {
+        html += ', ';
+    }
+    html += getCountryName(location.country) + '<br>';
+    html += getDescription(location.note, false);
+    html += '</p>';
+    if (location.latitude && location.longitude) {
+        var url = `https://www.openstreetmap.org/?mlat=${location.latitude}&mlon=${location.longitude}#map=16/${location.latitude}/${location.longitude}`;
+        html += `<p><a href="${url}">[Show on map]</a></p>`;
+    }
+
+    var lcons = a.location_reference.filter(rel => rel.location_id == id && rel.convention_id != null && rel.gamerun_id == null);
+    var lgameruns = a.location_reference.filter(rel => rel.location_id == id && rel.convention_id == null && rel.gamerun_id != null);
+
+    if (lcons.length > 0) {
+        html += '<h3>Conventions</h3>';
+        html += '<ul>';
+        for (var con of lcons) {
+            cid = con.convention_id;
+            html += '<li>' + conLink(cid) + '</li>';
+        }
+        html += '</ul>';
+    }
+
+    if (lgameruns.length > 0) {
+        html += '<h3>Games</h3>';
+        html += '<ul>';
+        for (runs of lgameruns) {
+            [run] = a.gameruns.filter(rel => rel.id == runs.gamerun_id);
+            var yearText = '(?)';
+            if (run.begin) {
+                yearText = '(' + run.begin.substring(0, 4) + ')';
+            }
+            html += '<li>';
+            html += gameLink(run.game_id);
+            html += ' ' + yearText;
+            html += '</li>';
+        }
+        html += '</ul>';
+    }
+    showContent(html);
+    onlineLink('locations?id=' + id);
 }
 
 function showSingleData(data) {
@@ -810,7 +881,7 @@ function onlineLink(parturl) {
     $('#onlinelink').html('<a href="' + url + '">Online version of current page</a>');
 }
 
-function ota(category) {
+function ota(category) { // Object to array
     var list = [];
     for (var element in a[category]) {
         list.push(a[category][element]);
@@ -855,13 +926,27 @@ function makeLink(anchor, datatype, elementid, linktext, optional = '', li = tru
 }
 
 function makeFileSection(files, id, category) {
+    var html = '';
     if (files.length == 0) {
         return '';
     }
-    var html = '<h3>Download (from online archive)</h3>';
+    if (hasLocalFiles) {
+        html += '<h3>Download (from local archive)</h3>';
+        html += makeFileSectionPart(files, id, category, true);
+    }
+    html += '<h3>Download (from online website)</h3>';
+    html += makeFileSectionPart(files, id, category, false);
+    return html;
+}
+
+function makeFileSectionPart(files, id, category, localFiles) {
+    if (files.length == 0) {
+        return '';
+    }
+    var html = '';
     html += '<ul>';
     for (file of files) {
-        html += makeFileLink(id, category, file.filename, file.description, file.language)
+        html += makeFileLink(id, category, file.filename, file.description, file.language, localFiles);
     }
     html += '</ul>';
     return html;
@@ -893,7 +978,7 @@ function makeLinkSection(links) {
     return html;
 }
 
-function makeFileLink(data_id, category, filename, description, language) {
+function makeFileLink(data_id, category, filename, description, language, localFiles) {
     var map = {
         'game': 'scenario',
         'convention': 'convent',
@@ -902,7 +987,14 @@ function makeFileLink(data_id, category, filename, description, language) {
         'issue': 'issue',
         'tag': 'tag',
     };
-    var url = 'https://alexandria.dk/download/' + map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
+    var url = '';
+    if (localFiles) {
+        url = 'files/';
+    } else {
+        url = 'https://alexandria.dk/download/';
+    }
+    var linkpart = map[category] + '/' + data_id + '/' + encodeURIComponent(filename);
+    url += linkpart;
     var html = '<li><a href="' + url + '">' + esc(description) + '</a> ' + (language ? '(' + esc(getLanguageName(language)) + ')' : '') + '</li>';
     return html;
 }
@@ -1174,7 +1266,11 @@ function getMagazines() {
     });
 }
 
-
+function getLocations() {
+    return getCache('locations', function (a, b) {
+        return (a.name > b.name ? 1 : -1);
+    });
+}
 function search() {
     var search = $('#searchtext').val()
     if (search === '') {
@@ -1188,6 +1284,7 @@ function search() {
     result.conventions = getConventions().filter(p => (p.name).toUpperCase().includes(searchUpper) || (a.conventionsets[p.conset_id].name + ' ' + p.year).toUpperCase().includes(searchUpper));
     result.systems = getSystems().filter(p => (p.name).toUpperCase().includes(searchUpper));
     result.magazines = getMagazines().filter(p => (p.name).toUpperCase().includes(searchUpper));
+    result.locations = getLocations().filter(p => (p.name).toUpperCase().includes(searchUpper));
     result.tags = [];
     var tagsdefined = getTags().filter(p => (p.tag).toUpperCase().includes(searchUpper));
     var tagsused = getTagsUsed().filter(p => (p.tag).toUpperCase().includes(searchUpper));
@@ -1250,7 +1347,14 @@ function search() {
         }
         html += '</ul>';
     }
-    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length + result.tags.length + result.magazines.length == 0) {
+    if (result.locations.length > 0) {
+        html += '<h3>Locations</h3><ul>';
+        for (element of result.locations) {
+            html += makeLink('location', 'location', element.id, element.name);
+        }
+        html += '</ul>';
+    }
+    if (result.persons.length + result.scenarios.length + result.boardgames.length + result.conventions.length + result.systems.length + result.tags.length + result.magazines.length + result.locations.length == 0) {
         html += 'Nothing found.'
     }
 
