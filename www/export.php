@@ -5,6 +5,7 @@ require("./connect.php");
 require("base.inc.php");
 $dataset = (string) ($_REQUEST['dataset'] ?? '');
 $setup = (string) ($_REQUEST['setup'] ?? '');
+$newestversion = (string) ($_REQUEST['newestversion'] ?? '');
 $data_id = (int) ($_REQUEST['data_id'] ?? 0);
 $output = [];
 
@@ -101,6 +102,15 @@ if ( $dataset ) {
 		$tablecreate[ $table ] = $create[1];
 	}
 	$output = $tablecreate;
+} elseif ( $newestversion ) {
+	switch ($newestversion) {
+		case 'powershellupdater':
+			$output = ['version' => 1];
+			break;
+
+		default:
+			$output = ['error' => 'Unknown software'];
+	}
 } elseif ( $dataset !== '' ) { // unknown dataset
 	$data = [
 		"error" => "Unknown dataset"
@@ -154,6 +164,9 @@ if ( $dataset ) {
 			'export?dataset=persons' => 'Get all persons',
 //			'export?dataset=persons&data_id=1' => 'Get person with data id 1',
 //			'export?dataset=game&data_id=4,7' => 'Get scenarios with data id 4 and 7'
+		],
+		'newestversion' => [
+			'powershellupdater' => 'Get latest version number of Powershell Updater for offline arhchive'
 		]
 	];
 	$output = $datasets;
