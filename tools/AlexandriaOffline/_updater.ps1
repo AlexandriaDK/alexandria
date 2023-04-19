@@ -1,7 +1,9 @@
 $version = 1;
 $client = "usb2023"
+$fileDownloadLimit = 10
 
 $exporturl = "https://alexandria.dk/export?client=$client&version=$version"
+$versionurl = $exporturl + "&newestversion=powershellupdater"
 $staticurl = "https://loot.alexandria.dk/AlexandriaOffline/data/alexandria_content.js"
 $contentFilename = "$PSScriptRoot\data\alexandria_content.js"
 $json = ""
@@ -56,28 +58,6 @@ $Form.Controls.Add($LinkLabel2)
 # Preload information
 # Should be an asynchronous background task
 
-# $export = $null
-# $export = Invoke-WebRequest "$exporturl" -TimeoutSec 5 -UseBasicParsing
-# if ($export.StatusCode -eq 200) {
-#     $fetchtext = "Online"
-#     $fetchcolor = "Green"
-#     $filename = "$PSScriptRoot\4_test_export.json"
-#     # Use IO.File to save file as-is
-#     #Out-File -FilePath  -InputObject $export.Content -Encoding unicode
-#     [IO.File]::WriteAllLines(($filename | Resolve-Path), $export.Content)
-# } else {
-#     $fetchtext = "Offline"
-#     $fetchcolor= "Red"
-# }
-
-# $fetcher = New-Object System.Windows.Forms.Label
-# $fetcher.Text = "Alexandria.dk status: $fetchtext"
-# $fetcher.Location  = New-Object System.Drawing.Point(10,($form.Height - 50))
-# $fetcher.AutoSize = $true
-# $fetcher.Font = New-Object System.Drawing.Font ("Arial", 12)
-# $fetcher.ForeColor = $fetchcolor
-# $form.Controls.Add($fetcher)
-
 # Action buttons
 function updateJSON($json) {
     if (-not $toJS) {
@@ -103,12 +83,16 @@ function startupAction {
     updateStatus("Alexandria Downloader version $version.")
     updateStatus("Checking Alexandria export service.")
     $export = ""
-    $export = Invoke-WebRequest "$exporturl" -TimeoutSec 10 -UseBasicParsing
+    $export = Invoke-WebRequest "$versionurl" -TimeoutSec 10 -UseBasicParsing
     if (-not $export.StatusCode) {
         updateStatus("Service is unavailable. Please try again later.")
         return
     }
-    updateStatus("Service is online.")
+    $result = ConvertFrom-Json $export
+    $newestversion = $result.result.version
+    if ($newestversion -gt $version) {
+        updateStatus("A newer version of the update script is available! (local: $version; newest: $newestversion)")
+    }
     $length = $False
     $length = (Invoke-WebRequest $staticurl -TimeoutSec 5 -UseBasicParsing -Method Head).Headers.'Content-Length'
     if (-not $length) {
@@ -116,6 +100,7 @@ function startupAction {
         return
     }
     updateStatus("Size of online database file: About " + [Math]::Round($length/1024/1024) + " MB.")
+
     updateStatus("Ready for update.")
 }
 
@@ -221,8 +206,7 @@ function filesAction {
     $missingFiles = @()
     $existingCount = 0
     $checkedCount = 0
-#    $json.result.files | Select-Object -first 10 | ForEach-Object {
-    $json.result.files | Select-Object -first 30 | ForEach-Object {
+    $json.result.files | ForEach-Object {
         getPathFromFileData($_.filename, $_.game_id, $_.convention_id, $_.conset_id, $_.gamesystem_id, $_.tag_id, $_.issue_id)
         $filename = $global:filename
         if ($filename) {
@@ -252,8 +236,12 @@ function filesAction {
         return $True
     }
     updateStatus "Beginning download. Be very patient!"
+    if ($missingFiles > $fileDownloadLimit) {
+        updateStatus "(Limit: Only downloading first $fileDownloadLimit files)"
+    }
+    updateStatus ""
     $downloadCount = 0
-    $missingFiles | ForEach-Object {
+    $missingFiles | Select-Object -first $fileDownloadLimit | ForEach-Object {
         $downloadCount += 1
         $outFile = $PSScriptRoot + "\" + $_
         $uri = 'https://download.alexandria.dk/' + $_
@@ -306,9 +294,6 @@ $status.Enabled = $true
 $form.Controls.Add($status)
 
 startupAction
-
-# Check script version
-# ?action=checkupdate&type=powershell&version=$version
 
 # Start up dialog
 
