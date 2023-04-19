@@ -13,23 +13,34 @@ if ($action && ($_SESSION['token'] !== $_POST['token'])) {
 
 function dbmultiinsert($table, $allvalues, $fields = NULL)
 {
-	$replacements = [];
+	// Special case for spatial data
+	if ($table == 'locations') {
+		$fields = ['id', 'name', 'address', 'city', 'country', 'note', 'geo'];
+	}
 	if ($fields == NULL) {
 		$fields = [];
 		foreach ($allvalues[0] as $key => $list) {
-			if ($table != 'game_description') { // Old system, converting game_id to sce_id and person_id to aut_id. Not necessary anymore
-				if (isset($replacements[$key])) {
-					$key = $replacements[$key];
-				}
-			}
 			$fields[] = $key;
 		}
 	}
 	$dataset = $datasets = [];
 	foreach ($allvalues as $list) {
 		$set = [];
-		foreach ($list as $part) {
-			$set[] = (is_null($part) ? 'NULL' : (is_numeric($part) ? $part : "'" . dbesc($part) . "'"));
+		foreach ($list as $key => $part) {
+			if ($table == 'locations' && $key == 'latitude') {
+				$latitude = $longitude = NULL;
+				$latitude = $part;
+				continue;
+			} elseif ($table == 'locations' && $key == 'longitude') {
+				$longitude = $part;
+				if ($latitude && $longitude) {
+					$set[] = "ST_GeomFromText('POINT($latitude $longitude)', 4326)";
+				} else {
+					$set[] = 'NULL';
+				}
+			} else {
+				$set[] = (is_null($part) ? 'NULL' : (is_numeric($part) ? $part : "'" . dbesc($part) . "'"));
+			}
 		}
 		$dataset[] = "(" . implode(", ", $set) . ")";
 		if (count($dataset) >= 1000) {
@@ -146,7 +157,9 @@ if ($action == 'importstructure') {
 			case 'game_convention_presentation_relations':
 			case 'person_convention_relations':
 			case 'genre_game_relations':
-				$tablemap = ['persons' => 'person', 'conventions' => 'convention', 'conventionsets' => 'conset', 'systems' => 'gamesystem', 'genres' => 'genre', 'gameruns' => 'gamerun', 'titles' => 'title', 'presentations' => 'presentation', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor', 'person_game_title_relations' => 'pgrel', 'game_convention_presentation_relations' => 'cgrel', 'person_convention_relations' => 'pcrel', 'genre_game_relations' => 'ggrel', 'games' => 'game', 'gametags' => 'tags'];
+			case 'locations':
+			case 'location_reference':
+				$tablemap = ['persons' => 'person', 'conventions' => 'convention', 'conventionsets' => 'conset', 'systems' => 'gamesystem', 'genres' => 'genre', 'gameruns' => 'gamerun', 'titles' => 'title', 'presentations' => 'presentation', 'aliases' => 'alias', 'sitetexts' => 'weblanguages', 'tags' => 'tag', 'gametags' => 'tags', 'gamedescriptions' => 'game_description', 'magazines' => 'magazine', 'issues' => 'issue', 'articles' => 'article', 'contributors' => 'contributor', 'person_game_title_relations' => 'pgrel', 'game_convention_presentation_relations' => 'cgrel', 'person_convention_relations' => 'pcrel', 'genre_game_relations' => 'ggrel', 'games' => 'game', 'gametags' => 'tags', 'location_reference' => 'lrel'];
 				if (isset($tablemap[$dataset])) {
 					$table = $tablemap[$dataset];
 				} else {
