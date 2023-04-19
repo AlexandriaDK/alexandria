@@ -1,14 +1,15 @@
-$version = 1;
+$version = 1.1;
 $client = "usb2023"
 $fileDownloadLimit = 50
 
 $exporturl = "https://alexandria.dk/export?client=$client&version=$version"
 $versionurl = $exporturl + "&newestversion=powershellupdater"
 $staticurl = "https://loot.alexandria.dk/AlexandriaOffline/data/alexandria_content.js"
+$scriptstaticurl = "https://loot.alexandria.dk/AlexandriaOffline/_updater.ps1"
 $contentFilename = "$PSScriptRoot\data\alexandria_content.js"
 $json = ""
 
-Add-Type -assembly System.Windows.Forms
+Add-Type -AssemblyName System.Windows.Forms,PresentationFramework
 $form = New-Object System.Windows.Forms.Form
 $form.Text ='Alexandria Downloader'
 $form.Width = 600
@@ -55,9 +56,6 @@ $LinkLabel2.Text = "Visit Alexandria USB project page"
 $LinkLabel2.add_Click({[system.Diagnostics.Process]::start("https://alexandria.dk/usb?client=$client&version=$version")})
 $Form.Controls.Add($LinkLabel2)
 
-# Preload information
-# Should be an asynchronous background task
-
 # Action buttons
 function updateJSON($json) {
     if (-not $toJS) {
@@ -91,7 +89,24 @@ function startupAction {
     $result = ConvertFrom-Json $export
     $newestversion = $result.result.version
     if ($newestversion -gt $version) {
-        updateStatus("A newer version of the update script is available! (local: $version; newest: $newestversion)")
+        $doUpdate = [System.Windows.MessageBox]::Show(
+            "A newer version of the update script is available.`r`nDownload newest version?`r`n`r`n(newest version: $newestversion; local version: $version)",
+            "Update available",
+            "YesNo",
+            "Question"
+        )
+        if ($doUpdate -eq 'Yes') {
+            updateStatus("Foo $doUpdate")
+            $outFile = $PSScriptRoot + "\" + '_updater.ps1'
+            Invoke-WebRequest -Uri $scriptstaticurl -Outfile $outFile -UseBasicParsing
+            [System.Windows.MessageBox]::Show(
+                "Download complete. Please restart the script.",
+                "Download complete",
+                "OK",
+                "Information"
+            )
+            Exit
+        }
     }
     $length = $False
     $length = (Invoke-WebRequest $staticurl -TimeoutSec 5 -UseBasicParsing -Method Head).Headers.'Content-Length'
@@ -210,11 +225,9 @@ function filesAction {
         getPathFromFileData($_.filename, $_.game_id, $_.convention_id, $_.conset_id, $_.gamesystem_id, $_.tag_id, $_.issue_id)
         $filename = $global:filename
         if ($filename) {
-#            updateStatus("Checking $filename")
             if (Test-Path -Path ("$PSScriptRoot\$filename") -PathType Leaf) {
                 $existingCount = $existingCount + 1
             } else {
-#                updateStatus("Adding $filename")
                 $missingFiles += $filename
             }
         }
@@ -232,12 +245,12 @@ function filesAction {
     $missingFiles
 
     if ($missingFiles.count -eq 0) {
-        updateStatus ("No downloaded needed!")
+        updateStatus "No downloaded needed!"
         return $True
     }
-    updateStatus ("Beginning download. Be very patient!")
+    updateStatus "Beginning download. Be very patient!"
     if ($missingFiles -gt $fileDownloadLimit) {
-        updateStatus ("(Limit: Only downloading first $fileDownloadLimit files - click ""Download Files"" again to continue)")
+        updateStatus "(Limit: Only downloading first $fileDownloadLimit files)"
     }
     $downloadCount = 0
     $missingFiles | Select-Object -first $fileDownloadLimit | ForEach-Object {
@@ -295,5 +308,4 @@ $form.Controls.Add($status)
 startupAction
 
 # Start up dialog
-
 $result = $form.ShowDialog()
