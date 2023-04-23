@@ -251,7 +251,7 @@ function filesAction {
         return $True
     }
     updateStatus "Beginning download. Be very patient!"
-    if ($missingFiles -gt $fileDownloadLimit) {
+    if ($missingFiles.count -gt $fileDownloadLimit) {
         updateStatus "(Limit: Only downloading first $fileDownloadLimit files)"
     }
     $downloadCount = 0
