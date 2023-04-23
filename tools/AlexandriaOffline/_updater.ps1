@@ -1,6 +1,7 @@
-$version = 1.1;
+$version = 1.2
 $client = "usb2023"
-$fileDownloadLimit = 50
+$fileDownloadLimit = 100
+$ProgressPreference = 'SilentlyContinue'
 
 $exporturl = "https://alexandria.dk/export?client=$client&version=$version"
 $versionurl = $exporturl + "&newestversion=powershellupdater"
@@ -64,7 +65,7 @@ function updateJSON($json) {
         $text = "function loadAlexandria() {`r`ndata = " + $json + "`r`n}`r`n"
     }
     $filename = $contentFilename
-    updateStatus("Filename: $filename")
+    # updateStatus("Filename: $filename")
     $directory = [IO.Path]::GetDirectoryName($filename)
     if (-not [IO.Directory]::Exists($directory)) {
         updateStatus("Creating ""Data"" Folder")
@@ -129,11 +130,11 @@ function updateAction() {
     if ($live) {
         $toJS = $True
         $exporturldata = $exporturl + '&dataset=all'
-        updateStatus("Fetching LIVE data - hang on. This can take several minutes.")
+        updateStatus("Fetching LIVE data - hang on.")
     } else {
         $toJS = $False
         $exporturldata = $staticurl
-        updateStatus("Fetching data - hang on. This can take several minutes.")
+        updateStatus("Fetching data - hang on.")
     }
     $export = $False
     $export = Invoke-WebRequest "$exporturldata" -TimeoutSec 300 -UseBasicParsing
@@ -225,7 +226,8 @@ function filesAction {
         getPathFromFileData($_.filename, $_.game_id, $_.convention_id, $_.conset_id, $_.gamesystem_id, $_.tag_id, $_.issue_id)
         $filename = $global:filename
         if ($filename) {
-            if (Test-Path -Path ("$PSScriptRoot\$filename") -PathType Leaf) {
+            $path = [WildcardPattern]::Escape("$PSScriptRoot\$filename")
+            if (Test-Path -Path $path -PathType Leaf) {
                 $existingCount = $existingCount + 1
             } else {
                 $missingFiles += $filename
@@ -255,10 +257,13 @@ function filesAction {
     $downloadCount = 0
     $missingFiles | Select-Object -first $fileDownloadLimit | ForEach-Object {
         $downloadCount += 1
-        $outFile = $PSScriptRoot + "\" + $_
+        $outfile = $PSScriptRoot + "\" + $_
+        $escapedOutfile = [WildcardPattern]::Escape($outfile)
         $uri = 'https://download.alexandria.dk/' + $_
         updateStatus("Downloading $downloadCount of " + $missingFiles.count + ": $uri")
-        Invoke-WebRequest -Uri $uri -Outfile $outFile -UseBasicParsing
+        Invoke-WebRequest -Uri $uri -Outfile $escapedOutfile -UseBasicParsing
+        # The following is due to outfile containing escaped characters!
+        Move-Item -Force -LiteralPath $escapedOutfile -Destination $outfile
     }
     updateStatus "Done!"
     return $True
