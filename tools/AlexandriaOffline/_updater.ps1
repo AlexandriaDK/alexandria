@@ -247,7 +247,7 @@ function filesAction {
     $missingFiles
 
     if ($missingFiles.count -eq 0) {
-        updateStatus "No downloaded needed!"
+        updateStatus "All files here! No downloaded needed."
         return $True
     }
     updateStatus "Beginning download. Be very patient!"
