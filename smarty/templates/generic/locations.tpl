@@ -20,21 +20,41 @@ var start_id = {$start_id};
 var bounds = [];
 
 {literal}
+var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+
+var wmsOrtoLayer = L.tileLayer.wms('https://api.dataforsyningen.dk/orto_foraar_DAF?service=WMS&token=5d6c5118e3f2ab00b8b2aa21e9140087&', {
+	layers: 'orto_foraar_12_5',
+	attribution: 'Indeholder data fra Styrelsen for Dataforsyning og Infrastruktur, Ortofoto Forår, WMS-tjeneste'
+});
+
 if (startlocation.length > 0) { // Find bbox
 	for (location_id of startlocation) {
 		bounds.push([locations[location_id].data.latitude, locations[location_id].data.longitude]);
 	}
 }
 if (bounds.length > 0) {
-	var map = L.map('map', { fullscreenControl: true} ).fitBounds(bounds, { maxZoom: 15 });
+	var map = L.map('map', {
+		fullscreenControl: true,
+		layers: [osmLayer]
+	}).fitBounds(bounds, { maxZoom: 15 });
 } else {
-	var map = L.map('map', { fullscreenControl: true} ).setView([56, 11], 5);
+	var map = L.map('map', {
+		fullscreenControl: true,
+		center: [56, 11],
+		zoom: 5,
+		layers: [osmLayer]
+	});
 }
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+
+var baseMaps = {
+	"OpenStreetMap": osmLayer,
+	"Aerial imagery (Denmark only)": wmsOrtoLayer,
+}
 L.Control.geocoder({placeholder: 'Search for address...', showResultIcons: true}).addTo(map);
+var layerControl = L.control.layers(baseMaps).addTo(map);
 
 var highlightIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',

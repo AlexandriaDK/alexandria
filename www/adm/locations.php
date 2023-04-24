@@ -154,13 +154,29 @@ function onMapClick(e) {
 	}
 	marker = L.marker(e.latlng).addTo(map);
 }
-	
-var map = L.map('map').setView([$latitude, $longitude], $zoom);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+});
+
+var wmsOrtoLayer = L.tileLayer.wms('https://api.dataforsyningen.dk/orto_foraar_DAF?service=WMS&token=5d6c5118e3f2ab00b8b2aa21e9140087&', {
+	layers: 'orto_foraar_12_5',
+	attribution: 'Indeholder data fra Styrelsen for Dataforsyning og Infrastruktur, Ortofoto Forår, WMS-tjeneste'
+});
+
+var map = L.map('map', {
+	center: [$latitude, $longitude],
+	zoom: $zoom,
+	layers: [osmLayer]
+});
+
+var baseMaps = {
+	"OpenStreetMap": osmLayer,
+	"Aerial imagery (Denmark only)": wmsOrtoLayer,
+}
 L.Control.geocoder().addTo(map);
+var layerControl = L.control.layers(baseMaps).addTo(map);
 map.on('click', onMapClick);
 EOD;
 	if ($marker) {
