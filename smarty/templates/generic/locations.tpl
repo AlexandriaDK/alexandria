@@ -30,6 +30,12 @@ var wmsOrtoLayer = L.tileLayer.wms('https://api.dataforsyningen.dk/orto_foraar_D
 	attribution: 'Indeholder data fra Styrelsen for Dataforsyning og Infrastruktur, Ortofoto Forår, WMS-tjeneste'
 });
 
+var Thunderforest_SpinalMap = L.tileLayer('https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=35178872612640c0abf67975149afa20', {
+	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	apikey: '35178872612640c0abf67975149afa20',
+	maxZoom: 19
+});
+
 if (startlocation.length > 0) { // Find bbox
 	for (location_id of startlocation) {
 		bounds.push([locations[location_id].data.latitude, locations[location_id].data.longitude]);
@@ -52,7 +58,9 @@ if (bounds.length > 0) {
 var baseMaps = {
 	"OpenStreetMap": osmLayer,
 	"Aerial imagery (Denmark only)": wmsOrtoLayer,
+	"Spinal Map": Thunderforest_SpinalMap,
 }
+
 L.Control.geocoder({placeholder: 'Search for address...', showResultIcons: true}).addTo(map);
 var layerControl = L.control.layers(baseMaps).addTo(map);
 
