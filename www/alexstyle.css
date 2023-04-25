@@ -23,23 +23,14 @@ body {
 	float: left;
 	border: 1px solid black;
 	--alpha: 0.6;
-	background: linear-gradient(to bottom,
-			rgba(0, 0, 0, var(--alpha)),
-			rgba(0, 0, 0, var(--alpha)) 12.5%,
-			rgba(120, 79, 22, var(--alpha)) 12.5%,
-			rgba(120, 79, 22, var(--alpha)) 25%,
-			rgba(228, 3, 3, var(--alpha)) 25%,
-			rgba(228, 3, 3, var(--alpha)) 37.5%,
-			rgba(255, 140, 0, var(--alpha)) 37.5%,
-			rgba(255, 140, 0, var(--alpha)) 50%,
-			rgba(255, 237, 0, var(--alpha)) 50%,
-			rgba(255, 237, 0, var(--alpha)) 62.5%,
-			rgba(0, 128, 38, var(--alpha)) 62.5%,
-			rgba(0, 128, 38, var(--alpha)) 75%,
-			rgba(0, 77, 255, var(--alpha)) 75%,
-			rgba(0, 77, 255, var(--alpha)) 87.5%,
-			rgba(117, 7, 135, var(--alpha)) 87.5%,
-			rgba(117, 7, 135, var(--alpha))), url(gfx/textureback.jpg);
+  	background:
+    conic-gradient(at 14% 50%, #0000 221.25deg, white 222deg 318deg, #0000 318.25deg),
+    conic-gradient(at 23% 50%, #0000 221.25deg, #ffa6b9 222deg 318deg, #0000 318.25deg),
+    conic-gradient(at 32% 50%, #0000 221.25deg, #00d2ff 222deg 318deg, #0000 318.25deg),
+    conic-gradient(at 41% 50%, #0000 221.25deg, #753000 222deg 318deg, #0000 318.25deg),
+    conic-gradient(at 50% 50%, #0000 221.25deg, black 222deg 318deg, #0000 318.25deg),
+    linear-gradient(red 0 16.66%, orange 0 33.33%, yellow 0 50%, green 0 66.66%, blue 0 83.33%, indigo 0)
+	, url(gfx/textureback.jpg);
 	background-blend-mode: normal;
 }
 
@@ -899,7 +890,7 @@ table#personarticles .colophon {
 	font-style: italic;
 }
 
-table#personarticles .page {
+table#personarticles .page, .articlereferences .page {
 	white-space: nowrap;
 }
 
