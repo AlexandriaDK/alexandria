@@ -63,6 +63,7 @@ var baseMaps = {
 
 L.Control.geocoder({placeholder: 'Search for address...', showResultIcons: true}).addTo(map);
 var layerControl = L.control.layers(baseMaps).addTo(map);
+L.control.scale().addTo(map);
 
 var highlightIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',

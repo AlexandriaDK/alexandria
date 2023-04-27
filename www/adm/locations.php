@@ -185,6 +185,8 @@ var baseMaps = {
 
 L.Control.geocoder().addTo(map);
 var layerControl = L.control.layers(baseMaps).addTo(map);
+L.control.scale().addTo(map);
+
 map.on('click', onMapClick);
 EOD;
 	if ($marker) {
