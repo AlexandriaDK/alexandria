@@ -36,7 +36,17 @@
 		</table>				
 
 	</div>
-	
+
+	<div class="frontpageevents">
+		<h3 style="margin-bottom: 0;">
+			{$_fp_upcomingevents}
+		</h3>
+		<p style="margin-top: 2px;">
+			{$_fp_bgevents|sprintf:'https://drive.google.com/open?id=1VTnF6jAhuhhMw43fJqzlaH1QFt8-7rzdLyP7muk1VVM&amp;fbclid=IwAR2z9SpFPQXfpmtvdgV52yq9fsSo1GlpTBwAiIr6wwZ-f4B0aFMMYQcgtdc'}
+		</p>
+			{$html_nextevents}		
+	</div>
+
 	<div class="frontpagedownloads">
 		<h3>
 			{$_fp_recentdownload}
@@ -46,18 +56,7 @@
 			<li><a href="data?scenarie={$scenario.id}" class="game" title="{$scenario.origtitle|escape}">{$scenario.title|escape}</a></li>
 		{/foreach}
 		</ul>
-			
-		<h3 style="margin-bottom: 0;">
-			{$_fp_upcomingevents}
-		</h3>
-		<p style="margin-top: 2px;">
-			{$_fp_bgevents|sprintf:'https://drive.google.com/open?id=1VTnF6jAhuhhMw43fJqzlaH1QFt8-7rzdLyP7muk1VVM&amp;fbclid=IwAR2z9SpFPQXfpmtvdgV52yq9fsSo1GlpTBwAiIr6wwZ-f4B0aFMMYQcgtdc'}
-		</p>
-			{$html_nextevents}
-		
-		
 	</div>
-	
 
 </div>
 
