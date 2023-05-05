@@ -140,7 +140,7 @@ $( function() {
 
 {if $runlist != ""}
 	<h3 class="parttitle">
-		{if $conlist == ""}{$_sce_runs}{else}{$_sce_furtherruns}{/if}
+		{if $conlist == ""}{$_sce_runs}{else}{$_sce_furtherruns}{/if}{if $haslocationscount > 0} <a href="locations?game_id={$id}" title="{$haslocationscount} {if $haslocationcount == 1}{$_location}{else}{$_locations}{/if}">🗺️</a>{/if}
 	</h3>
 	{$runlist}
 {/if}

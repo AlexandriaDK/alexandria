@@ -211,6 +211,7 @@ $q = getall("
 	GROUP BY gr.id
 	ORDER BY gr.begin, gr.end, gr.id
 ");
+$haslocationscount = 0;
 if ($q) { // :TODO: HTML construction should be moved to game.tpl
 	$runlist .= '<table class="gamerun">';
 	foreach ($q as $rs) {
@@ -220,6 +221,7 @@ if ($q) { // :TODO: HTML construction should be moved to game.tpl
 		$runlist .= '</span></td>';
 		$runlist .= '<td>';
 		if ($rs['haslocations']) {
+			$haslocationscount += $rs['haslocations'];
 			$locationstitle = $rs['haslocations'] . ' ' . ($rs['haslocations'] == 1 ? $t->getTemplateVars('_location') : $t->getTemplateVars('_locations') );
 			$runlist .= '<a href="locations?gamerun_id=' . $rs['id'] . '" title="' . htmlspecialchars($locationstitle) . '">🗺️</a>';
 		}
@@ -349,6 +351,7 @@ $t->assign('boardgame', $r['boardgame']);
 $t->assign('user_can_edit_participants', $_SESSION['can_edit_participant'][$game] ?? FALSE);
 $t->assign('conlist', $conlist);
 $t->assign('runlist', $runlist);
+$t->assign('haslocationscount', $haslocationscount);
 $t->assign('awards', $awards);
 $t->assign('genre', $genre);
 $t->assign('articlesfrom', $articlesfrom);
