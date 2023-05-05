@@ -96,9 +96,10 @@ if ($action == "addrun") {
 }
 
 $query = "
-	SELECT gamerun.id, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.description, gamerun.cancelled, COUNT(pgrel.person_id) AS personcount
+	SELECT gamerun.id, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.description, gamerun.cancelled, COUNT(DISTINCT pgrel.person_id) AS personcount, COUNT(DISTINCT lrel.id) AS locationcount
 	FROM gamerun
 	LEFT JOIN pgrel ON gamerun.id = pgrel.gamerun_id 
+	LEFT JOIN lrel ON gamerun.id = lrel.gamerun_id 
 	WHERE gamerun.game_id = $id
 	GROUP BY gamerun.id, gamerun.begin, gamerun.end, gamerun.location, gamerun.country, gamerun.description, gamerun.cancelled
 	ORDER BY gamerun.begin, gamerun.end, gamerun.id
@@ -115,6 +116,7 @@ if ($id) {
 		"<tr>\n" .
 		"<th>ID</th>" .
 		"<th>Persons</th>" .
+		"<th>Map</th>" .
 		"<th>Start date</th>" .
 		"<th>End date</th>" .
 		"<th>Location</th>" .
@@ -124,6 +126,24 @@ if ($id) {
 		"</tr>\n";
 
 	foreach ($result as $row) {
+		$gamerun_locations = getall("
+			SELECT l.name, l.city, l.country
+			FROM lrel
+			INNER JOIN locations l ON lrel.location_id = l.id
+			WHERE lrel.gamerun_id = " . $row['id']
+		);
+		$locationlist = [];
+		foreach ($gamerun_locations AS $runlocation) {
+			$label = $runlocation['name'];
+			if ($runlocation['city']) {
+				$label .= ', ' . $runlocation['city'];
+			}
+			if ($runlocation['country']) {
+				$label .= ', ' . getCountryName($runlocation['country']);
+			}
+			$locationlist[] = $label;
+		}
+		$locationtitle = implode("\n",$locationlist);
 		$typebegin = (preg_match('/-00$/', $row['begin']) ? 'text' : 'date');
 		$typeend = (preg_match('/-00$/', $row['end']) ? 'text' : 'date');
 		print '<form action="run.php" method="post">' .
@@ -131,14 +151,15 @@ if ($id) {
 			'<input type="hidden" name="id" value="' . $id . '">' .
 			'<input type="hidden" name="run_id" value="' . $row['id'] . '">';
 		print "<tr>\n" .
-			'<td style="text-align:right;">' . $row['id'] . '</td>' .
-			'<td align="right">' . $row['personcount'] . '</td>' .
+			'<td class="number">' . $row['id'] . '</td>' .
+			'<td style="text-align: center">' . $row['personcount'] . '</td>' .
+			'<td style="text-align: center"><a href="locations.php?gamerun_id=' . $row['id'] . '" title="' . htmlspecialchars($locationtitle) . '">' . $row['locationcount'] . '</a></td>' .
 			'<td><input type="' . $typebegin . '" name="begin" value="' . htmlspecialchars($row['begin']) . '" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typebegin) . '</td>' .
 			'<td><input type="' . $typeend . '" name="end" value="' . htmlspecialchars($row['end']) . '" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typeend) . '</td>' .
 			'<td><input type="text" name="location" value="' . htmlspecialchars($row['location']) . '" size="30" maxlength="80"></td>' .
-			'<td><input type="text" id="country" name="country" value="' . htmlspecialchars($row['country']) . '" placeholder="E.g. se" size="8"></td>' .
+			'<td><input type="text" id="country" name="country" value="' . htmlspecialchars($row['country']) . '" placeholder="E.g. se" size="4"></td>' .
 			'<td><input type="text" name="description" value="' . htmlspecialchars($row['description']) . '" size="30" ></td>' .
-			'<td align="center"><input type="checkbox" name="cancelled" value="yes" ' . ($row['cancelled'] ? 'checked' : '') . '></td>' .
+			'<td style="text-align: center"><input type="checkbox" name="cancelled" value="yes" ' . ($row['cancelled'] ? 'checked' : '') . '></td>' .
 			'<td><input type="submit" name="do" value="Update"></td>' .
 			'<td><input type="submit" name="do" value="Delete"></td>' .
 			"</tr>\n";
@@ -149,12 +170,13 @@ if ($id) {
 		'<input type="hidden" name="action" value="addrun">' .
 		'<input type="hidden" name="id" value="' . $id . '">';
 	print "<tr>\n" .
-		'<td style="text-align:right;">New</td>' .
+		'<td class="number">New</td>' .
+		'<td></td>' .
 		'<td></td>' .
 		'<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>' .
 		'<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>' .
 		'<td><input type="text" name="location" value="" size="30" maxlength="80"></td>' .
-		'<td><input type="text" id="country" name="country" value="" placeholder="E.g. se" size="8"></td>' .
+		'<td><input type="text" id="country" name="country" value="" placeholder="E.g. se" size="4"></td>' .
 		'<td><input type="text" name="description" value="" size="30" ></td>' .
 		'<td align="center"><input type="checkbox" name="cancelled" value="yes"></td>' .
 		'<td colspan=2><input type="submit" name="do" value="Create"></td>' .

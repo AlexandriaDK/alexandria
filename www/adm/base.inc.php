@@ -174,8 +174,9 @@ function changegenre($game_id)
 function changerun($game_id)
 {
 	$numruns = getone("SELECT COUNT(*) FROM gamerun WHERE game_id = '$game_id'");
+	$numlocations = getone("SELECT COUNT(*) FROM gamerun INNER JOIN lrel ON gamerun.id = lrel.gamerun_id WHERE gamerun.game_id = '$game_id'");
 	$html  = "<tr valign=top><td>Runs</td><td>\n";
-	$html .= sprintf("$numruns %s", ($numruns == 1 ? "run" : "runs"));
+	$html .= sprintf("%d %s, %d %s", $numruns, ($numruns == 1 ? "run" : "runs"), $numlocations, ($numlocations == 1 ? "location" : "locations"));
 	$html .= " - <a href=\"run.php?id=$game_id\" accesskey=\"r\">Edit runs</a>";
 	$html .= "</td></tr>\n\n";
 	return $html;

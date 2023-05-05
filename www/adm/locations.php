@@ -16,7 +16,10 @@ $note = trim((string) $_REQUEST['note']);
 $latlon = (string) $_REQUEST['latlon'];
 $locationreference = (string) $_REQUEST['locationreference'];
 $relation_id = (int) $_REQUEST['relation_id'];
+$gamerun_id = (int) $_REQUEST['gamerun_id'];
+$gamerun_locations = (array) $_REQUEST['gamerun_locations'];
 $new = FALSE;
+
 
 if ($action == "createlocation") {
 	doquery("INSERT INTO locations (name, address, city, country, note) VALUES ('','','','','')");
@@ -112,6 +115,25 @@ if ($action == "removerelation" && $id && $relation_id) {
 	chlog($id, $this_type, "Relation removed: $relationstring");
 	$_SESSION['admin']['info'] = "Relation removed! " . dberror();
 	rexit($this_type, ['id' => $id]);
+}
+
+// Update relations for gamerun
+if ($action == "updategamerun" && $gamerun_id) {
+	$game_id = getone("SELECT game.id FROM game INNER JOIN gamerun ON game.id = gamerun.game_id WHERE gamerun.id = $gamerun_id");
+	if (!$game_id) {
+		$_SESSION['admin']['info'] = "Didn't find id in relation! " . dberror();
+		rexit($this_type, ['gamerun_id' => $gamerun_id]);
+	}
+	doquery("DELETE FROM lrel WHERE gamerun_id = $gamerun_id");
+	foreach($gamerun_locations AS $location) {
+		$location_id = intval($location);
+		if ($location_id) {
+			doquery("INSERT INTO lrel (location_id, gamerun_id) VALUES ($location_id, $gamerun_id)");
+		}
+	}
+	chlog($game_id, 'game', "Updating relations");
+	$_SESSION['admin']['info'] = "Locations updated for game run! " . dberror();
+	rexit($this_type, ['gamerun_id' => $gamerun_id]);
 }
 
 $head = '
@@ -211,14 +233,16 @@ function getConnections($id) {
 		WHERE l.location_id = $id
 		ORDER BY starttime
 	");
-	$html .= '<table><thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Noted location</th></tr></thead><tbody>' . PHP_EOL;
+	$html .= '<table><thead><tr><th>ID</th><th>Name</th><th>Date</th><th>Type</th><th>Noted location</th></tr></thead><tbody>' . PHP_EOL;
 	foreach($connections AS $connection) {
 		$type = $name = $editlink = '';
 		if ($connection['convention_id']) {
+			$event_id = 'c' . $connection['convention_id'];
 			$type = 'convention';
 			$name = $connection['name'] . " (" . ($connection['year'] ? yearname($connection['year']) : '?') . ")";
 			$editlink = 'convention.php?con=' . $connection['convention_id'];
 		} elseif ($connection['gamerun_id']) {
+			$event_id = 'gr' . $connection['gamerun_id'];
 			$type = 'gamerun';
 			$name = $connection['title'];
 			$editlink = 'run.php?id=' . $connection['game_id'];
@@ -227,6 +251,7 @@ function getConnections($id) {
 		$deleteurl = 'locations.php?action=removerelation&id=' . $id . '&relation_id=' . $connection['id'];
 
 		$html .= '<tr>' . 
+		'<td>' . $event_id . '</td>' .
 		'<td><a href="' . $editlink . '">' . htmlspecialchars($name) . '</a></td>' . 
 		'<td class="number">' . htmlspecialchars($date) . '</td>' . 			
 		'<td>' . ucfirst($type) . '</td>' . 
@@ -329,15 +354,62 @@ function showLocation($id = NULL) {
 	}
 	$js = generateJSMapHTML($latitude, $longitude, $zoom, $marker);
 	print $js;
-
-
 	return TRUE;
+}
+
+function showGameruns($id) {
+	$game = getrow("
+		SELECT g.id, g.title, gr.id AS gr_id
+		FROM gamerun gr
+		INNER JOIN game g ON gr.game_id = g.id
+		WHERE gr.id = $id
+	");
+	if (!$game) {
+		print "Can't find gamerun id.";
+		return false;
+	}
+	print '<p><a href="locations.php?action=new">[New location]</a></p>';
+	print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '">game run #' . $game['gr_id'] . '</a></p>';
+
+	$gamerun_locations = getall("
+		SELECT lrel.id AS lrel_id, l.id, l.name, l.city, l.country
+		FROM lrel
+		INNER JOIN locations l ON lrel.location_id = l.id
+		WHERE lrel.gamerun_id = " . $id
+	);
+	
+	print '<form action="locations.php" method="post"><input type="hidden" name="action" value="updategamerun"><input type="hidden" name="gamerun_id" value="' . $id . '">' . PHP_EOL;
+	print '<table id="locationstable"><thead><tr><th>ID</th><th>Location</th></tr></thead><tbody>' . PHP_EOL;
+	$gamerun_locations[] = []; // New
+	$rows = 0;
+	foreach($gamerun_locations AS $runlocation) {
+		$rows++;
+		if (!$runlocation['id']) {
+			$label = '';
+		} else {
+			$label = $runlocation['id'] . ' - ' . $runlocation['name'];
+			if ($runlocation['city']) {
+				$label .= ', ' . $runlocation['city'];
+			}
+			if ($runlocation['country']) {
+				$label .= ', ' . getCountryName($runlocation['country']);
+			}
+		}
+		$idlabel = $runlocation['lrel_id'] ?? 'New';
+		$autofocus = $runlocation['lrel_id'] ? '' : 'autofocus';
+		print '<tr><td class="number">' . $idlabel . '</td><td><input type="text" placeholder="Location name" name="gamerun_locations[]" value="' . htmlspecialchars($label) . '" style="width: 500px;" class="gamerunlocation" ' . $autofocus . '></td><td><a href="locations.php?id=' . $runlocation['id'] . '">[show location]</a></td></tr>' . PHP_EOL;
+	}
+	print '<tr><td></td><td><input type="submit" value="Update"></td></tr>';
+	print '</tbody></table></form>' . PHP_EOL;
+
 }
 
 if ($action == 'new') {
 	showLocation();
 } elseif ($id) {
 	showLocation($id);
+} elseif ($gamerun_id) {
+	showGameruns($gamerun_id);
 } else {
 	showLocations();
 }
@@ -366,12 +438,24 @@ $(function() {
 		});
 	});
 
-	$( "input#locationreference" ).autocomplete({
+	$("input#locationreference").autocomplete({
 		source: 'lookup.php?type=locationreference',
 		autoFocus: true,
 		minLength: 3,
 		delay: 100
 	})
+
+	$("input.gamerunlocation" ).autocomplete({
+		source: 'lookup.php?type=locationwithid',
+		autoFocus: true,
+		minLength: 3,
+		delay: 100
+	})
+
+	$("input.gamerunlocation").change(function() {
+		this.parentElement.nextSibling.firstChild.href = 'locations.php?id=' + parseInt(this.value);
+	});
+
 });
 </script>
 

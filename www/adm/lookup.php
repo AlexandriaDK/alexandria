@@ -146,6 +146,34 @@ if ($type == 'locationreference' && $term !== "") {
 	exit;
 }
 
+if ($type == 'locationwithid' && $term !== "") {
+	$escapequery = dbesc($term);
+	$likeescapequery = likeesc($term);
+	$refs = getall("
+		SELECT l.id, l.name, l.city, l.country
+		FROM locations l
+		WHERE l.name LIKE '$likeescapequery%'
+		OR l.city LIKE '$likeescapequery%'
+		OR l.note LIKE '$likeescapequery%'
+		OR l.id = '$escapequery'
+	");
+	$result = [];
+	foreach($refs AS $ref) {
+		$label = $ref['id'] . ' - ' . $ref['name'];
+		if ($ref['city']) {
+			$label .= ', ' . $ref['city'];
+		}
+		if ($ref['country']) {
+			$label .= ', ' . getCountryName($ref['country']);
+		}
+		$result[] = $label;
+	}
+	header("Content-Type: application/json");
+	print json_encode($result);
+	exit;
+	
+}
+
 if ($type == 'addperson' && $label != "") {
 	if ($pid = intval($label)) {
 		resultexit(["new" => false, "error" => false, "id" => $pid, "msg" => "Existing user"]);
