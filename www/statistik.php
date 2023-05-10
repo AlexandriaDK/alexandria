@@ -9,7 +9,7 @@ $cooperation = 35;
 $usedsystem = 50;
 $mostcons = 7;
 $mostauthors = 5;
-$mostscenarios = 35;
+$mostscenarios = 40;
 
 $larp_id = 73;
 

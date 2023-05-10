@@ -146,6 +146,7 @@ if ($id) {
 		$locationtitle = implode("\n",$locationlist);
 		$typebegin = (preg_match('/-00$/', $row['begin']) ? 'text' : 'date');
 		$typeend = (preg_match('/-00$/', $row['end']) ? 'text' : 'date');
+		$mapclass = ($row['locationcount'] == 0 && $row['location'] ? 'nolocations' : '');
 		print '<form action="run.php" method="post">' .
 			'<input type="hidden" name="action" value="changerun">' .
 			'<input type="hidden" name="id" value="' . $id . '">' .
@@ -153,7 +154,7 @@ if ($id) {
 		print "<tr>\n" .
 			'<td class="number">' . $row['id'] . '</td>' .
 			'<td style="text-align: center">' . $row['personcount'] . '</td>' .
-			'<td style="text-align: center"><a href="locations.php?gamerun_id=' . $row['id'] . '" title="' . htmlspecialchars($locationtitle) . '">' . $row['locationcount'] . '</a></td>' .
+			'<td style="text-align: center"><a href="locations.php?gamerun_id=' . $row['id'] . '" title="' . htmlspecialchars($locationtitle) . '" class="' . $mapclass . '">' . $row['locationcount'] . '</a></td>' .
 			'<td><input type="' . $typebegin . '" name="begin" value="' . htmlspecialchars($row['begin']) . '" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typebegin) . '</td>' .
 			'<td><input type="' . $typeend . '" name="end" value="' . htmlspecialchars($row['end']) . '" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange($typeend) . '</td>' .
 			'<td><input type="text" name="location" value="' . htmlspecialchars($row['location']) . '" size="30" maxlength="80"></td>' .

@@ -319,3 +319,7 @@ input.originalarticleid {
 input.page {
 	width: 4em;
 }
+
+.nolocations {
+	font-weight: bold;
+}
