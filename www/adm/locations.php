@@ -445,7 +445,7 @@ function showGameruns($id) {
 		return false;
 	}
 	print '<p><a href="locations.php?action=new">[New location]</a></p>';
-	print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '">game run #' . $game['gr_id'] . '</a></p>';
+	print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '" accesskey="q">game run #' . $game['gr_id'] . '</a></p>';
 
 	$gamerun_locations = getall("
 		SELECT lrel.id AS lrel_id, l.id, l.name, l.city, l.country
