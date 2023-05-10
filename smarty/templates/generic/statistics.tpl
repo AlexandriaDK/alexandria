@@ -58,7 +58,7 @@
 	</td>
 
 	<td>
-	<table class="tablestat tablestartpad">
+	<table class="tablestat tablestartpad" style="margin-bottom: 20px;">
 	<thead>
 	<tr><th colspan="3">{$_stat_consbycountry|nl2br}</th></tr>
 	</thead>
@@ -68,6 +68,19 @@
 	{/foreach}
 	</tbody>
 	</table>
+
+	<table class="tablestat tablestartpad">
+	<thead>
+	<tr><th colspan="3">{$_stat_locationsbycountry|nl2br}</th></tr>
+	</thead>
+	<tbody>
+	{foreach from=$stat_location_country item=$slc}
+	<tr><td class="statnumber">{$slc.placeout}</td><td>{$slc.localecountry|escape}</a></td><td class="statnumber">{$slc.count|nicenumber} </td></tr>
+	{/foreach}
+	</tbody>
+	</table>
+
+
 	</td>
 
 	</tr>

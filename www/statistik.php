@@ -24,34 +24,6 @@ $stat_person_active = '
 	<table class="tablestat">
 ';
 
-/*
-Ryan-forslag:
-
-SELECT
-COUNT(DISTINCT g.id) AS antal,
-p.id,
-CONCAT(p.firstname,' ',p.surname) AS name
-FROM
-person p,
-pgrel,
-game,
-cgrel
-WHERE
-pgrel.person_id = p.id
-AND pgrel.title_id = 1
-AND pgrel.game_id = g.id
-AND g.id = cgrel.game_id
-AND cgrel.presentation_id = 1
-GROUP BY
-pgrel.person_id
-HAVING
-p.id = 1
-ORDER BY
-antal DESC,
-name
-
-*/
-
 // Active authors
 $r = getall("
 	SELECT COUNT(*) AS antal, p.id, CONCAT(p.firstname,' ',p.surname) AS name
@@ -275,6 +247,18 @@ foreach ($r AS $row) {
 	$runcountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country']) ];
 }
 
+// Locations
+$locationscountry = [];
+$place = 0;
+$lastcount = 0;
+$r = getall("SELECT COUNT(*) AS count, country FROM locations WHERE country != '' GROUP BY country ORDER BY count DESC, country");
+foreach ($r AS $row) {
+	$place++;
+	$placeout = ($lastcount != $row['count'] ? "$place." : "");
+	$lastcount = $row['count'];
+	$locationscountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country']) ];
+}
+
 // Description languages
 $descriptionlanguage = [];
 $place = 0;
@@ -316,6 +300,7 @@ $t->assign('stat_con_game', $stat_con_game);
 $t->assign('stat_con_year', $yearstatpart);
 $t->assign('stat_con_country', $concountry);
 $t->assign('stat_run_country', $runcountry);
+$t->assign('stat_location_country', $locationscountry);
 $t->assign('stat_description_language', $descriptionlanguage);
 $t->assign('stat_downloadable_language', $downloadablelanguage);
 
