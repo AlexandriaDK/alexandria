@@ -514,9 +514,10 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	$gm_ids = [];
 	foreach ($persons as $person) {
 		if (trim($person['name'])) {
+			$role_id = $person['role_id'] ?? 1; // Assume author if no role ID
 			$person_ids[] = [
 				'pid' => get_create_person(trim($person['name']), $internal),
-				'role_id' => $person['role_id']
+				'role_id' => $role_id
 			];
 		}
 	}
@@ -602,7 +603,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 
 	foreach ($urls as $url) {
 		if ($url != '' && !getone("SELECT 1 FROM links WHERE game_id = $game_id AND url = '" . dbesc($url) . "'")) {
-			$lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
+			// $lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
+			$lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_links_website}')";
 			doquery($lsql);
 		}
 	}

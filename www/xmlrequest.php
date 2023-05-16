@@ -5,6 +5,7 @@ $output = "";
 
 $action = (string) ($_REQUEST['action'] ?? '');
 $q = (string) ($_REQUEST['q'] ?? '');
+$term = (string) ($_REQUEST['term'] ?? '');
 
 $likesearch = likeesc((string) ($_REQUEST['q'] ?? ''));
 
@@ -35,6 +36,40 @@ if ($action == "lookup") {
 		}
 	}
 	exit;
+} elseif ($action == "titlesearch" && $q) {
+	include("smartfind.inc.php");
+	$match = [];
+	$id_data = [];
+	$result = [];
+	// lots of global variables...
+	category_search($q, "title", "game");
+	foreach($match['game'] AS $game_id) { // array of arrays to preserve order
+		$result[] = [(int) $game_id, $id_data['game'][$game_id]];
+	}
+	$output = $result;
+} elseif ($action == "locationsearch" && $term) {
+	$escapequery = dbesc($term);
+	$likeescapequery = likeesc($term);
+	$refs = getall("
+		SELECT l.id, l.name, l.city, l.country
+		FROM locations l
+		WHERE l.name LIKE '$likeescapequery%'
+		OR l.city LIKE '$likeescapequery%'
+		OR l.note LIKE '$likeescapequery%'
+		OR l.id = '$escapequery'
+	");
+	$result = [];
+	foreach($refs AS $ref) {
+		$label = $ref['id'] . ' - ' . $ref['name'];
+		if ($ref['city']) {
+			$label .= ', ' . $ref['city'];
+		}
+		if ($ref['country']) {
+			$label .= ', ' . getCountryName($ref['country']);
+		}
+		$result[] = $label;
+	}
+	$output = $result;
 } elseif ($action == "adduserlog" && $_SESSION['user_id'] && $_REQUEST['data_id'] && $_REQUEST['category'] && $_REQUEST['type']) {
 	$token = $_REQUEST['token'];
 	if (compare_tokens($token, $_SESSION['token'])) {
@@ -88,5 +123,6 @@ if ($action == "lookup") {
 	}
 }
 if ($output !== "") {
+	header("Content-Type: application/json");
 	print json_encode($output);
 }
