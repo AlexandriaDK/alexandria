@@ -12,27 +12,42 @@ if (!$user_id) {
 	exit;
 }
 
-validatetoken( $token );
+validatetoken($token);
 
 // valid user
 $title = (string) $_REQUEST['title'];
 $persons = (array) $_REQUEST['person'];
-$begindate = (string) $_REQUEST['begindate'];
-$enddate = (string) $_REQUEST['enddate'];
-$location = (string) $_REQUEST['location'];
+$runbegin = (string) $_REQUEST['runbegin'];
+$runend = (string) $_REQUEST['runend'];
+$runlocation = (string) $_REQUEST['runlocation'];
+$rundescription = (string) $_REQUEST['rundescription'];
 $website = (string) $_REQUEST['website'];
 $description = (string) $_REQUEST['description'];
 $notes = (string) $_REQUEST['notes'];
 $larp = (int) (bool) ($_REQUEST['larp'] ?? FALSE);
+$useremail = (string) $_REQUEST['useremail'];
 
 $personlist = "";
-foreach($persons AS $person) {
+foreach ($persons as $person) {
 	if ($person) {
 		$personlist .= $person['name'] . PHP_EOL;
 	}
 }
 
-$internal = "Game created by user $user_id on " . date("Y-m-d H:i:s") . "\n\nPersons:\n$personlist\n\nUser notes:\n=====\n" . $notes . "\n";
+$internal = "Game created by user $user_id on " . date("Y-m-d H:i:s") . "\n\nPersons:\n$personlist\n\n";
+if ($useremail) {
+	$internal .= "User e-mail: $useremail\n\n";
+}
+$internal .= "User notes:\n=====\n" . $notes . "\n";
+
+$runs = [
+	[
+		'begin' => $runbegin,
+		'end' => $runend,
+		'location' => $runlocation,
+		'description' => $rundescription
+	]
+];
 
 if (!$title) {
 	header("Location: ../create");
@@ -46,6 +61,7 @@ $game = [
 	'gamesystem_id' => ($larp ? 73 : NULL),
 	'descriptions' => ['en' => trim($description)],
 	'urls' => [$website],
+	'runs' => $runs,
 	'internal' => $internal
 ];
 $game_id = create_game($game, $internal);

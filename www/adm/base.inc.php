@@ -512,6 +512,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	$participants_extra = $game['participants_extra'] ?? '';
 	$person_ids = [];
 	$gm_ids = [];
+	$runs = $game['runs'] ?? [];
 	foreach ($persons as $person) {
 		if (trim($person['name'])) {
 			$role_id = $person['role_id'] ?? 1; // Assume author if no role ID
@@ -612,6 +613,25 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	foreach ($cons as $con_id) { // assuming premiere
 		$csql = "INSERT INTO cgrel (convention_id, game_id, presentation_id) VALUES ($con_id, $game_id, 1)";
 		doquery($csql);
+	}
+
+	foreach ($runs as $run) {
+		if ($run['begin'] || $run['end'] || $run['location'] || $run['description']) {
+			$location = $run['location'];
+			$location_id = intval($location);
+			if ($location_id) {
+				$location = preg_replace('_^\d+ - _', '', $location);
+			}
+			$runsql = "
+				INSERT INTO gamerun (game_id, begin, end, location, description) 
+				VALUES ($game_id, " . strNullEscape($run['begin']) . ", " . strNullEscape($run['end']) . ", '" . dbesc($location) . "', '" . dbesc($run['description']) . "')
+			";
+			$gamerun_id = doquery($runsql);
+			if ($location_id) {
+				$lrelsql = "INSERT INTO lrel (location_id, gamerun_id) VALUES ($location_id, $gamerun_id)";
+				doquery($lrelsql);
+			}
+		}
 	}
 
 	return $game_id;
