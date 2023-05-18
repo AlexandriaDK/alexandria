@@ -1,4 +1,4 @@
-{assign var="pagetitle" value="USB mirror"}
+{assign var="pagetitle" value="{$_usb_title}"}
 {include file="head.tpl"}
 
 <div id="content">
