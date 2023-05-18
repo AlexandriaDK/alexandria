@@ -3,11 +3,11 @@
 
 <div id="content">
 		<h2 class="pagetitle">
-			USB mirror
+			{$_usb_title}
 		</h2>
 
 		<p>
-			Upcoming page to describe the USB project.
+			{$_usb_description|nl2br}
 		</p>
 
 </div>
