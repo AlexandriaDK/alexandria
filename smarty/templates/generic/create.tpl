@@ -24,7 +24,7 @@
 
 	{if ! isset($user_id)}
 	<p>
-		You are not logged in.
+		<em>You are not logged in.</em>
 	</p>
 	{else}
 
