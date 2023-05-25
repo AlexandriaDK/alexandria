@@ -39,11 +39,18 @@
 				<td id="existingtitles"></td>
 			</tr>
 			<tr>
-				<td>LARP?</td>
-				<td><input type="checkbox" name="larp" checked></td>
+				<td>Type of game</td>
+				<td>
+					<select name="gametype" id="gametype" required>
+						<option value="">== Select type ==</option>
+						<option value="larp">LARP</option>
+						<option value="tabletop">Tabletop role-playing game</option>
+						<option value="boardgame">Board game</option>
+					</select>
+				</td>
 			</tr>
 			<tr>
-				<td>Authors and organizers:</td>
+				<td><span id="text_authors">Authors and organizers</span><span id="text_designers" style="display: none;">Designers</span>:</td>
 				<td><input type="text" name="person[0][name]" class="personinput" placeholder="Name"><br><input
 						type="text" name="person[1][name]" class="personinput" placeholder="Name"><br><input type="text"
 						name="person[2][name]" class="personinput" placeholder="Name"><br><input type="text"
@@ -52,11 +59,11 @@
 			</tr>
 			<tr>
 				<td>Begin date:</td>
-				<td><input type="date" name="runbegin"></td>
+				<td><input type="date" name="runbegin" id="runbegin"></td>
 			</tr>
 			<tr>
 				<td>End date:</td>
-				<td><input type="date" name="runend"></td>
+				<td><input type="date" name="runend" id="runend"></td>
 			</tr>
 			<tr>
 				<td>Run location:</td>
@@ -126,12 +133,29 @@
 			}
 		});
 
+		$("select#gametype").on("change", function() {
+			if (this.value == 'larp' || this.value == 'tabletop') {
+				$("span#text_authors").show();
+				$("span#text_designers").hide();
+			}
+			if (this.value == 'boardgame') {
+				$("span#text_authors").hide();
+				$("span#text_designers").show();
+			}
+		});
+
+		$("input#runbegin").on("change", function() {
+			if ($("input#runend").val() == "") {
+				$("input#runend").val($("input#runbegin").val())
+			}
+		});
+
 		$("input#locationreference").autocomplete({
 			source: 'xmlrequest.php?action=locationsearch',
 			autoFocus: false,
 			minLength: 3,
 			delay: 100
-		})
+		});
 
 		$(".personinput").autocomplete({
 			source: 'ajax.php?type=person',

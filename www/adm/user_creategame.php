@@ -24,12 +24,12 @@ $rundescription = (string) $_REQUEST['rundescription'];
 $website = (string) $_REQUEST['website'];
 $description = (string) $_REQUEST['description'];
 $notes = (string) $_REQUEST['notes'];
-$larp = (int) (bool) ($_REQUEST['larp'] ?? FALSE);
+$gametype = (string) $_REQUEST['gametype'];
 $useremail = (string) $_REQUEST['useremail'];
 
 $personlist = "";
 foreach ($persons as $person) {
-	if ($person) {
+	if ($person["name"]) {
 		$personlist .= $person['name'] . PHP_EOL;
 	}
 }
@@ -39,6 +39,9 @@ if ($useremail) {
 	$internal .= "User e-mail: $useremail\n\n";
 }
 $internal .= "User notes:\n=====\n" . $notes . "\n";
+
+$gamesystem_id = ($gametype == 'larp' ? 73 : NULL);
+$boardgame = ($gametype == 'boardgame');
 
 $runs = [
 	[
@@ -58,10 +61,11 @@ $game = [
 	'title' => $title,
 	'persons' => $persons,
 	'organizer' => $organizer,
-	'gamesystem_id' => ($larp ? 73 : NULL),
+	'gamesystem_id' => $gamesystem_id,
 	'descriptions' => ['en' => trim($description)],
 	'urls' => [$website],
 	'runs' => $runs,
+	'boardgame' => $boardgame,
 	'internal' => $internal
 ];
 $game_id = create_game($game, $internal);

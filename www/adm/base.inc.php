@@ -485,6 +485,9 @@ function get_create_person($name, $internal = "Autoimport")
 {
 	$name = trim($name);
 	preg_match('_(.*) (.*)_', $name, $names);
+	if (!$names) {
+		$names = [1 => $name, 2 => ''];
+	}
 	$person_id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($name) . "'");
 	if (!$person_id) {
 		$sql = "INSERT INTO person (firstname, surname, internal) VALUES ('" . dbesc($names[1]) . "', '" . dbesc($names[2]) . "', '" . dbesc($internal) . "')";
@@ -504,6 +507,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	$tags = $game['tags'] ?? [];
 	$persons = $game['persons'] ?? [];
 	$gms = $game['gms'] ?? [];
+	$boardgame = (int) ($game['boardgame'] ?? 0);
 	$cons = $game['cons'] ?? []; // list of con ids, e.g. [1, 4, 6] - assuming premiere
 	$organizer = $game['organizer'] ?? '';
 	$descriptions = $game['descriptions'] ?? [];
@@ -515,14 +519,14 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	$runs = $game['runs'] ?? [];
 	foreach ($persons as $person) {
 		if (trim($person['name'])) {
-			$role_id = $person['role_id'] ?? 1; // Assume author if no role ID
+			$role_id = $person['role_id'] ?? ($boardgame ? 5 : 1); // If no role ID: Assume designer for boardgame and author for non-boardgame
 			$person_ids[] = [
 				'pid' => get_create_person(trim($person['name']), $internal),
 				'role_id' => $role_id
 			];
 		}
 	}
-
+	
 	foreach ($gms as $gm) {
 		if (trim($gm['name'])) {
 			$gm_ids[] = [
@@ -538,7 +542,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 
 	// insert game
 	$game_id_sql = "INSERT INTO game (title, internal, gamesystem_id, gamesystem_extra, person_extra, players_min, players_max, participants_extra, rlyeh_id, boardgame) " .
-		"VALUES ('" . dbesc($title) . "', '" . dbesc($internal) . "', $gamesystem_id, '" . dbesc($gamesystem_extra) . "', '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, 0)";
+		"VALUES ('" . dbesc($title) . "', '" . dbesc($internal) . "', $gamesystem_id, '" . dbesc($gamesystem_extra) . "', '" . dbesc($organizer) . "', " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', 0, $boardgame)";
 	$game_id = doquery($game_id_sql);
 	if (!$game_id) {
 		return false;
@@ -584,8 +588,10 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 	}
 
 	foreach ($descriptions as $language => $description) {
-		$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
-		doquery($desc_sql);
+		if ($description) {
+			$desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
+			doquery($desc_sql);
+		}
 	}
 
 	foreach ($genres as $gid) {

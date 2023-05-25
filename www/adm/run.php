@@ -174,8 +174,8 @@ if ($id) {
 		'<td class="number">New</td>' .
 		'<td></td>' .
 		'<td></td>' .
-		'<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>' .
-		'<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD">' . typechange('date') . '</td>' .
+		'<td><input type="date" name="begin" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD" id="runbegin">' . typechange('date') . '</td>' .
+		'<td><input type="date" name="end" value="" size="12" maxlength="20" placeholder="YYYY-MM-DD" id="runend">' . typechange('date') . '</td>' .
 		'<td><input type="text" name="location" value="" size="30" maxlength="80"></td>' .
 		'<td><input type="text" id="country" name="country" value="" placeholder="E.g. se" size="4"></td>' .
 		'<td><input type="text" name="description" value="" size="30" ></td>' .
@@ -183,9 +183,18 @@ if ($id) {
 		'<td colspan=2><input type="submit" name="do" value="Create"></td>' .
 		"</tr>\n";
 	print "</form>\n\n";
-
-
 	print "</table>\n";
+	print <<<EOF
+<script>
+$(function() {
+	$("input#runbegin").on("change", function() {
+		if ($("input#runend").val() == "") {
+			$("input#runend").val($("input#runbegin").val())
+		}
+	});
+});
+</script>
+EOF;
 } else {
 	print "Error: No data id provided.";
 }
