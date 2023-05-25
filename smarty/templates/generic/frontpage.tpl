@@ -8,10 +8,9 @@
 
 <div id="contenttext">
 
-	<div id="creategame"
+	<div id="creategame" class="creategame"
 		style="border-radius: 20px; border: 2px solid black; background-color: #ee7; text-align: center; width: 600px; font-size: 1.5em; padding: 5px; margin-bottom: 10px;">
-		Are we missing any LARPs, board games, or tabletop games?<br>
-		<a href="create">Add a game to Alexandria</a>.
+		{$_fp_creategame}
 	</div>
 
 	<div class="latestnews">

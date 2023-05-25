@@ -507,6 +507,17 @@ div.topbanner {
 	top: 50px;
 }
 
+div.creategame {
+	border-radius: 20px;
+	border: 2px solid black;
+	background-color: #ee7;
+	text-align: center;
+	width: 600px;
+	font-size: 1.5em;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
 div.achievement {
 	margin-bottom: 8px;
 	width: 300px;
