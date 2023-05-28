@@ -1,5 +1,4 @@
 <?php
-$admonly = TRUE;
 require "adm.inc.php";
 require "base.inc.php";
 chdir("..");
@@ -107,13 +106,16 @@ foreach($result AS $row) {
 	      '<td style="text-align:right;">'.$row['id'].'</td>'.
 	      '<td>Page:<br />Feed:</td>'.
 	      '<td><input type="text" name="pageurl" value="'.htmlspecialchars($row['pageurl']).'" size=50 maxlength=100><br /><input type="text" name="url" value="'.htmlspecialchars($row['url']).'" size=50 maxlength=100></td>'.
-	      '<td><input type="text" name="owner" value="'.htmlspecialchars($row['owner']).'" size=30 maxlength=100><br /><input type="text" name="person_id" value="'.htmlspecialchars($row['person_id']).'" size=3 maxlength=10></td>'.
+	      '<td><input type="text" name="owner" value="'.htmlspecialchars($row['owner']).'" size=30 maxlength=100><br /><input type="text" name="person_id" value="'.htmlspecialchars($row['person_id']).'" size=4 maxlength=10></td>'.
       '<td><input type="text" name="name" value="'.htmlspecialchars($row['name']).'" size=20 maxlength=100></td>'.
 	      '<td>'.htmlspecialchars($row['count']).'</td>'.
-	      '<td><input type="submit" name="do" value="Update"></td>'.
+	      '<td><input type="submit" name="do" value="Update"></td>';
+	if ($_SESSION['user_admin']) {
+		print 
 	      '<td><input type="submit" name="do" value="Empty"></td>'.
-	      '<td><input type="submit" name="do" value="Delete"></td>'.
-	      "</tr>\n";
+	      '<td><input type="submit" name="do" value="Delete"></td>';
+	}
+	print "</tr>\n";
 	print "</form>\n\n";
 }
 
@@ -123,9 +125,9 @@ print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 print "<tr>\n".
       '<td style="text-align:right;">New</td>'.
       '<td>Page:<br />Feed:</td>'.
-      '<td><input type="text" name="pageurl" value="" size=50 maxlength=100><br /><input type="text" name="url" value="" size=50 maxlength=100></td>'.
-      '<td><input type="text" name="owner" value="" size=20 maxlength=100><br /><input type="text" name="person_id" value="" size=3 maxlength=10></td>'.
-      '<td><input type="text" name="name" value="" size=20 maxlength=100></td>'.
+      '<td><input type="text" name="pageurl" value="" size=50 maxlength=100 placeholder="URL for blog web page"><br /><input type="text" name="url" value="" size=50 maxlength=100 placeholder="Direct URL to RSS"></td>'.
+      '<td><input type="text" name="owner" value="" size=20 maxlength=100 placeholder="Owner name"><br /><input type="text" name="person_id" value="" size=4 maxlength=10 placeholder="User ID (leave blank)"></td>'.
+      '<td><input type="text" name="name" value="" size=20 maxlength=100 placeholder="Name of blog"></td>'.
       '<td></td>'.
       '<td colspan=3><input type="submit" name="do" value="Create"></td>'.
       "</tr>\n";
