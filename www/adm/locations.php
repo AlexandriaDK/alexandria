@@ -160,14 +160,13 @@ function trEdit($label, $attribute, $value, $editable = TRUE, $placeholder = "",
 	return $html;
 }
 
-function generateJSMapHTML($latitude, $longitude, $zoom, $marker, $events) {
-	$eventsjson = json_encode($events);
+function generateJSMapHTML($latitude, $longitude, $zoom, $marker) {
 	$js = <<<EOD
 	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<script>
-var locations = $eventsjson;
 var marker;
+
 function onMapClick(e) {
 	var latlon = '' + e.latlng.lat + ', ' + e.latlng.lng;
 	$("#latlon").val(latlon);
@@ -201,6 +200,8 @@ var map = L.map('map', {
 	layers: [osmLayer]
 });
 
+map.on('click', onMapClick);
+
 var baseMaps = {
 	"OpenStreetMap": osmLayer,
 	"Aerial imagery (Denmark only)": wmsOrtoLayer,
@@ -220,46 +221,49 @@ var smallIcon = new L.Icon({
 	popupAnchor: [1, -17],
 	shadowSize: [21, 21]
 });
-  
-for(place_id in locations) {
-	var place = locations[place_id];
-	if (place.data.hasGeo) {
-		var highlight = false;
-		var markerText = '<a href="locations.php?id=' + place_id + '"><b>' + place.data.name + '</b></a><br>';
-		if (place.data.city) {
-			markerText += place.data.city; // escape!
-		}
-		if (place.data.city && place.data.country) {
-			markerText += ', ';
-		}
-		if (place.data.country) {
-			markerText += place.data.country; // escape!
-		}
-		if (place.data.city || place.data.country) {
-			markerText += '<br>';
-		}
-		markerText += '<br>';
-		for(event of place.events) {
-			var link = (event.type == 'convention' ? 'convention.php?con=' : 'game.php?game=') + event.data_id;
-			var className = (event.type == 'convention' ? 'con' : 'game');
-			var classCancelled = (event.data_cancelled == '1' ? 'cancelled' : '');
-			var div = document.createElement('div');
-			var node = document.createTextNode(event.data_label);
-			div.appendChild(node);
-			markerText += `<a href="\${link}" class="\${className} \${classCancelled}" title="\${event.nicedateset}">\${div.innerHTML}</a><br>`;
-		}
-		if (place.data.note) {
-			var div = document.createElement('div');
-			var node = document.createTextNode(place.data.note);
-			div.appendChild(node);
-			markerText += '<br><span class="locationnote">' + div.innerHTML + '<br> </span>';
-		}
-		var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon}).addTo(map);
-		marker.bindTooltip(place.data.name).bindPopup(markerText);
-	}
-}
 
-map.on('click', onMapClick);
+
+$.getJSON("../xmlrequest.php?action=getlocations", ( locations ) => {
+	for(place_id in locations) {
+		var place = locations[place_id];
+		if (place.data.hasGeo) {
+			var highlight = false;
+			var markerText = '<a href="locations.php?id=' + place_id + '"><b>' + place.data.name + '</b></a><br>';
+			if (place.data.city) {
+				markerText += place.data.city; // escape!
+			}
+			if (place.data.city && place.data.country) {
+				markerText += ', ';
+			}
+			if (place.data.country) {
+				markerText += place.data.country; // escape!
+			}
+			if (place.data.city || place.data.country) {
+				markerText += '<br>';
+			}
+			markerText += '<br>';
+			for(event of place.events) {
+				var link = (event.type == 'convention' ? 'convention.php?con=' : 'game.php?game=') + event.data_id;
+				var className = (event.type == 'convention' ? 'con' : 'game');
+				var classCancelled = (event.data_cancelled == '1' ? 'cancelled' : '');
+				var div = document.createElement('div');
+				var node = document.createTextNode(event.data_label);
+				div.appendChild(node);
+				markerText += `<a href="\${link}" class="\${className} \${classCancelled}" title="\${event.nicedateset}">\${div.innerHTML}</a><br>`;
+			}
+			if (place.data.note) {
+				var div = document.createElement('div');
+				var node = document.createTextNode(place.data.note);
+				div.appendChild(node);
+				markerText += '<br><span class="locationnote">' + div.innerHTML + '<br> </span>';
+			}
+			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon}).addTo(map);
+			marker.bindTooltip(place.data.name).bindPopup(markerText);
+		}
+	}
+});
+
+
 EOD;
 	if ($marker) {
 		$js .= <<<EOD
@@ -390,32 +394,6 @@ function showLocation($id = NULL) {
 		}
 	}
 	// set up map
-	
-	$locations = getall("
-		SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT NULL AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS NULL, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS NULL, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS NULL, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), CONCAT(g.title, ' (', IF(YEAR(gr.begin), YEAR(gr.begin), '?'), ')') ) AS data_label, IF(lrel.gamerun_id IS NULL, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS NULL, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime, COALESCE(c.end, c.year, gr.end) AS data_endtime
-		FROM locations l
-		LEFT JOIN lrel ON l.id = lrel.location_id
-		LEFT JOIN convention c ON lrel.convention_id = c.id
-		LEFT JOIN gamerun gr ON lrel.gamerun_id = gr.id
-		LEFT JOIN game g ON gr.game_id = g.id
-		WHERE geo IS NOT NULL
-		ORDER BY data_starttime
-	", FALSE);
-
-	$events = [];
-	foreach($locations AS $event) {
-		$location_id = $event['id'];
-		if (!isset($events[$location_id])) {
-			$events[$location_id] = [
-				'data' => ['name' => $event['name'], 'address' => $event['address'], 'city' => $event['city'], 'country' => getCountryName($event['country']), 'note' => $event['note'], 'hasGeo' => $event['hasGeo'], 'latitude' => $event['latitude'], 'longitude' => $event['longitude'] ],
-				'events' => []
-			];
-		}
-		if ($event['data_id']) {
-			$events[$location_id]['events'][] = ['type' => $event['type'], 'data_id' => $event['data_id'], 'data_label' => $event['data_label'], 'data_begin' => $event['data_begin'], 'data_starttime' => $event['data_starttime'], 'data_cancelled' => $event['data_cancelled'], 'conset_id' => $event['conset_id'], 'nicedateset' => nicedateset($event['data_starttime'], $event['data_endtime']) ];
-		}
-	}
-
 	print '<h2>Map</h2>' . PHP_EOL;
 	print '<div id="map" style="height: 500px; width: 100%; border: 1px solid black; z-index: 90;"></div>';
 	$longitude = 11;
@@ -424,11 +402,11 @@ function showLocation($id = NULL) {
 	$marker = FALSE;
 	if ($location['geo']) {
 		$longitude = $location['longitude'];
-		$latitude = $location['latitude'];
+		$latitude = $location['latitude'] - 0.0001; // More south = in front of existing marker
 		$zoom = 16;
 		$marker = TRUE;
 	}
-	$js = generateJSMapHTML($latitude, $longitude, $zoom, $marker, $events);
+	$js = generateJSMapHTML($latitude, $longitude, $zoom, $marker);
 	print $js;
 	return TRUE;
 }
