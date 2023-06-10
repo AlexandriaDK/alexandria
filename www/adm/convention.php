@@ -221,8 +221,8 @@ if ($end && $end != "0000-00-00") {
 
 $countryname = getCountryName(($country ? $country : $cscountry ?? ''));
 
-tr("Start date", "begin", $begin, $opta ?? '', "YYYY-MM-DD", "date");
-tr("End date", "end", $end, $optb ?? '', "YYYY-MM-DD", "date");
+tr("Start date", "begin", $begin, $opta ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conbegin");
+tr("End date", "end", $end, $optb ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conend");
 
 tr("Location", "place", $place);
 print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars($country ?? '') . '" placeholder="Two letter ISO code, e.g.: se" size="50"></td><td id="countrynote">' . htmlspecialchars(isset($cscountry) ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
@@ -335,6 +335,7 @@ if ($con) {
 </form>
 
 <script>
+$(function() {
 	$("#country").change(function() {
 		$.get("lookup.php", {
 			type: 'countrycode',
@@ -356,6 +357,13 @@ if ($con) {
 			});
 		}
 	});
+
+	$("input#conbegin").on("blur", function() {
+		if ($("input#conend").val() == "") {
+			$("input#conend").val($("input#conbegin").val())
+		}
+	});
+});
 
 </script>
 

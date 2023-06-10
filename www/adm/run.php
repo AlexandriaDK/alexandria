@@ -187,7 +187,7 @@ if ($id) {
 	print <<<EOF
 <script>
 $(function() {
-	$("input#runbegin").on("change", function() {
+	$("input#runbegin").on("blur", function() {
 		if ($("input#runend").val() == "") {
 			$("input#runend").val($("input#runbegin").val())
 		}

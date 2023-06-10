@@ -68,9 +68,9 @@ function getlabel($category, $data_id, $link = FALSE, $default = "")
 	return $label;
 }
 
-function tr($tekst, $name, $def = "", $opt = "", $placeholder = "", $type = "text", $autofocus = FALSE, $required = FALSE)
+function tr($tekst, $name, $def = "", $opt = "", $placeholder = "", $type = "text", $autofocus = FALSE, $required = FALSE, $id = "")
 {
-	print "<tr valign=top><td>$tekst</td><td><input type=$type name=\"$name\" value=\"" . htmlspecialchars($def ?? '') . "\" placeholder=\"" . htmlspecialchars($placeholder ?? '') . "\" size=50" . ($autofocus ? " autofocus" : "") . ($required ? " required" : "") . "></td><td>$opt</td></tr>\n";
+	print "<tr valign=top><td>$tekst</td><td><input type=\"$type\" name=\"$name\" value=\"" . htmlspecialchars($def ?? '') . "\" placeholder=\"" . htmlspecialchars($placeholder ?? '') . "\" size=50" . ($autofocus ? " autofocus" : "") . ($required ? " required" : "") . ($id ? " id=\"$id\"" : "") . "></td><td>$opt</td></tr>\n";
 }
 
 function tt($tekst, $name, $content = "")
