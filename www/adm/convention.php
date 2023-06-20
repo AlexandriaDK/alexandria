@@ -185,8 +185,9 @@ htmladmstart("Con");
 
 print "<FORM ACTION=\"convention.php\" METHOD=\"post\">\n";
 print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
-if (!$con) print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
-else {
+if (!$con) {
+	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
+} else {
 	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"con\" value=\"$con\">\n";
 }
@@ -219,12 +220,38 @@ if ($end && $end != "0000-00-00") {
 	$optb = "(" . fulldate($end) . " = " . customdateformat(LANG, 'cccc', $end) . ")";
 }
 
-$countryname = getCountryName(($country ? $country : $cscountry ?? ''));
 
 tr("Start date", "begin", $begin, $opta ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conbegin");
 tr("End date", "end", $end, $optb ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conend");
 
-tr("Location", "place", $place);
+if ($place) {
+	$convention_locations = getall("
+		SELECT l.name, l.city, l.country
+		FROM lrel
+		INNER JOIN locations l ON lrel.location_id = l.id
+		WHERE lrel.convention_id = " . $con
+	);
+	$locationcount = count($convention_locations);
+
+	$locationlist = [];
+	foreach ($convention_locations AS $runlocation) {
+		$label = $runlocation['name'];
+		if ($runlocation['city']) {
+			$label .= ', ' . $runlocation['city'];
+		}
+		if ($runlocation['country']) {
+			$label .= ', ' . getCountryName($runlocation['country']);
+		}
+		$locationlist[] = $label;
+	}
+	$locationtitle = implode("\n",$locationlist);
+	$locationmap = 'Map: <a href="locations.php?convention_id=' . $con . '" title="' . htmlspecialchars($locationtitle) . '" class="' . ($locationcount == 0 ? 'nolocations' : '') . '">' . $locationcount . ' ' . ($locationcount == 1 ? 'location' : 'locations') . '</a>';
+} else {
+	$locationmap = '';
+}
+tr("Location", "place", $place, $locationmap);
+
+$countryname = getCountryName(($country ? $country : $cscountry ?? ''));
 print '<tr><td>Country code</td><td><input type="text" id="country" name="country" value="' . htmlspecialchars($country ?? '') . '" placeholder="Two letter ISO code, e.g.: se" size="50"></td><td id="countrynote">' . htmlspecialchars(isset($cscountry) ? $cscountry . " - " . $countryname . " (derived from con series - no need to enter)" : $countryname)  . '</td></tr>';
 
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=80 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";

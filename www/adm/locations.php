@@ -17,7 +17,8 @@ $latlon = (string) $_REQUEST['latlon'];
 $locationreference = (string) $_REQUEST['locationreference'];
 $relation_id = (int) $_REQUEST['relation_id'];
 $gamerun_id = (int) $_REQUEST['gamerun_id'];
-$gamerun_locations = (array) $_REQUEST['gamerun_locations'];
+$convention_id = (int) $_REQUEST['convention_id'];
+$event_locations = (array) $_REQUEST['event_locations'];
 $new = FALSE;
 
 
@@ -118,22 +119,42 @@ if ($action == "removerelation" && $id && $relation_id) {
 }
 
 // Update relations for gamerun
-if ($action == "updategamerun" && $gamerun_id) {
-	$game_id = getone("SELECT game.id FROM game INNER JOIN gamerun ON game.id = gamerun.game_id WHERE gamerun.id = $gamerun_id");
-	if (!$game_id) {
-		$_SESSION['admin']['info'] = "Didn't find id in relation! " . dberror();
-		rexit($this_type, ['gamerun_id' => $gamerun_id]);
+if ($action == "updateevent" && ($gamerun_id || $convention_id) ) {
+	if ($gamerun_id) {
+		$game_id = getone("SELECT game.id FROM game INNER JOIN gamerun ON game.id = gamerun.game_id WHERE gamerun.id = $gamerun_id");
+		if (!$game_id) {
+			$_SESSION['admin']['info'] = "Didn't find id in relation! " . dberror();
+			rexit($this_type, ['gamerun_id' => $gamerun_id]);
+		}
+		doquery("DELETE FROM lrel WHERE gamerun_id = $gamerun_id");
+	} elseif ($convention_id) {
+		$convention_id = getone("SELECT id FROM convention WHERE id = $convention_id");
+		if (!$convention_id) {
+			$_SESSION['admin']['info'] = "Didn't find id in relation! " . dberror();
+			rexit($this_type, ['convention_id' => $convention_id]);
+		}
+		doquery("DELETE FROM lrel WHERE convention_id = $convention_id");
 	}
-	doquery("DELETE FROM lrel WHERE gamerun_id = $gamerun_id");
-	foreach($gamerun_locations AS $location) {
+	foreach($event_locations AS $location) {
 		$location_id = intval($location);
 		if ($location_id) {
-			doquery("INSERT INTO lrel (location_id, gamerun_id) VALUES ($location_id, $gamerun_id)");
+			if ($gamerun_id) {
+				doquery("INSERT INTO lrel (location_id, gamerun_id) VALUES ($location_id, $gamerun_id)");
+			} elseif ($convention_id) {
+				doquery("INSERT INTO lrel (location_id, convention_id) VALUES ($location_id, $convention_id)");
+			}
 		}
 	}
-	chlog($game_id, 'game', "Updating relations");
-	$_SESSION['admin']['info'] = "Locations updated for game run! " . dberror();
-	rexit($this_type, ['gamerun_id' => $gamerun_id]);
+	if ($gamerun_id) {
+		chlog($game_id, 'game', "Updating location relations for game run #$gamerun_id");
+		$_SESSION['admin']['info'] = "Locations updated for game run! " . dberror();
+		rexit($this_type, ['gamerun_id' => $gamerun_id]);
+	} elseif ($convention_id) {
+		chlog($convention_id, 'convention', "Updating location relations");
+		$_SESSION['admin']['info'] = "Locations updated for convention! " . dberror();
+		rexit($this_type, ['convention_id' => $convention_id]);
+	}
+
 }
 
 $head = '
@@ -411,32 +432,62 @@ function showLocation($id = NULL) {
 	return TRUE;
 }
 
-function showGameruns($id) {
-	$game = getrow("
-		SELECT g.id, g.title, gr.id AS gr_id
-		FROM gamerun gr
-		INNER JOIN game g ON gr.game_id = g.id
-		WHERE gr.id = $id
-	");
-	if (!$game) {
-		print "Can't find gamerun id.";
+function showEvent($type, $id) {
+	if ($type == 'gamerun') {
+		$game = getrow("
+			SELECT g.id, g.title, gr.id AS gr_id
+			FROM gamerun gr
+			INNER JOIN game g ON gr.game_id = g.id
+			WHERE gr.id = $id
+		");
+		if (!$game) {
+			print "Can't find gamerun id.";
+			return false;
+		}
+		$event_locations = getall("
+			SELECT lrel.id AS lrel_id, l.id, l.name, l.city, l.country
+			FROM lrel
+			INNER JOIN locations l ON lrel.location_id = l.id
+			WHERE lrel.gamerun_id = " . $id
+		);
+	} elseif ($type == 'convention') {
+		$convention = getrow("
+			SELECT c.id, c.name, c.year
+			FROM convention c
+			WHERE c.id = $id
+		");
+		if (!$convention) {
+			print "Can't find convention id.";
+			return false;
+		}
+		$event_locations = getall("
+			SELECT lrel.id AS lrel_id, l.id, l.name, l.city, l.country
+			FROM lrel
+			INNER JOIN locations l ON lrel.location_id = l.id
+			WHERE lrel.convention_id = " . $id
+		);
+
+	} else {
+		print "Unknown type";
 		return false;
 	}
 	print '<p><a href="locations.php?action=new">[New location]</a></p>';
-	print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '" accesskey="q">game run #' . $game['gr_id'] . '</a></p>';
-
-	$gamerun_locations = getall("
-		SELECT lrel.id AS lrel_id, l.id, l.name, l.city, l.country
-		FROM lrel
-		INNER JOIN locations l ON lrel.location_id = l.id
-		WHERE lrel.gamerun_id = " . $id
-	);
+	if ($type == 'gamerun') {
+		print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '" accesskey="q">game run #' . $game['gr_id'] . '</a></p>';
+	} else {
+		print '<p>Locations for <a href="convention.php?con=' . $convention['id'] . '">' . htmlspecialchars($convention['name'] . ' (' . $convention['year'] . ')') . ' </a></p>';
+	}
 	
-	print '<form action="locations.php" method="post"><input type="hidden" name="action" value="updategamerun"><input type="hidden" name="gamerun_id" value="' . $id . '">' . PHP_EOL;
+	print '<form action="locations.php" method="post"><input type="hidden" name="action" value="updateevent">';
+	if ($type == 'gamerun') {
+		print '<input type="hidden" name="gamerun_id" value="' . $id . '">' . PHP_EOL;
+	} elseif ($type == 'convention') {
+		print '<input type="hidden" name="convention_id" value="' . $id . '">' . PHP_EOL;
+	}
 	print '<table id="locationstable"><thead><tr><th>ID</th><th>Location</th></tr></thead><tbody>' . PHP_EOL;
-	$gamerun_locations[] = []; // New
+	$event_locations[] = []; // New
 	$rows = 0;
-	foreach($gamerun_locations AS $runlocation) {
+	foreach($event_locations AS $runlocation) {
 		$rows++;
 		if (!$runlocation['id']) {
 			$label = '';
@@ -451,7 +502,7 @@ function showGameruns($id) {
 		}
 		$idlabel = $runlocation['lrel_id'] ?? 'New';
 		$autofocus = $runlocation['lrel_id'] ? '' : 'autofocus';
-		print '<tr><td class="number">' . $idlabel . '</td><td><input type="text" placeholder="Location name" name="gamerun_locations[]" value="' . htmlspecialchars($label) . '" style="width: 500px;" class="gamerunlocation" ' . $autofocus . '></td><td><a href="locations.php?id=' . $runlocation['id'] . '">[show location]</a></td></tr>' . PHP_EOL;
+		print '<tr><td class="number">' . $idlabel . '</td><td><input type="text" placeholder="Location name" name="event_locations[]" value="' . htmlspecialchars($label) . '" style="width: 500px;" class="gamerunlocation" ' . $autofocus . '></td><td><a href="locations.php?id=' . $runlocation['id'] . '">[show location]</a></td></tr>' . PHP_EOL;
 	}
 	print '<tr><td></td><td><input type="submit" value="Update"></td></tr>';
 	print '</tbody></table></form>' . PHP_EOL;
@@ -463,7 +514,9 @@ if ($action == 'new') {
 } elseif ($id) {
 	showLocation($id);
 } elseif ($gamerun_id) {
-	showGameruns($gamerun_id);
+	showEvent('gamerun', $gamerun_id);
+} elseif ($convention_id) {
+	showEvent('convention', $convention_id);
 } else {
 	showLocations();
 }
