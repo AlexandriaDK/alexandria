@@ -58,7 +58,7 @@ foreach ($persons as $name => $data) {
 		continue;
 	}
 	$htmlorganizer .= '<details>';
-	$htmlorganizer .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
+	$htmlorganizer .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ') <a href="person.php?firstname=' . rawurlencode($name) . '">[+]</a></summary>';
 	$htmlorganizer .= '<div>';
 	foreach ($data as $row) {
 		$htmlorganizer .= '<a href="organizers.php?category=convention&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
