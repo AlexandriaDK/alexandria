@@ -63,7 +63,7 @@ if ($action == "changeorganizer" && $do == "Delete") {
 }
 
 // Add organizer
-if ($action == "addorganizer" && ( $person_id || $person_extra || $role ) ) {
+if ($action == "addorganizer" && ($person_id || $person_extra || $role)) {
 	$q = "INSERT INTO pcrel " .
 		"(person_id, person_extra, convention_id, role, added_by_user_id) VALUES " .
 		"(" . strNullEscape($person_id) . ", '" . dbesc($person_extra) . "',  $data_id, '" . dbesc($role) . "', " . $_SESSION['user_id'] . ")";
@@ -83,7 +83,7 @@ if ($action == "addorganizer" && ( $person_id || $person_extra || $role ) ) {
 
 if ($data_id) {
 	$cat = 'convention';
-	$q = "SELECT CONCAT(name, ' (', year, ')') FROM convention WHERE id = '$data_id'";
+	$q = "SELECT CONCAT(name, ' (', COALESCE(year,'?'), ')') FROM convention WHERE id = '$data_id'";
 	$mainlink = "convention.php?con=$data_id";
 
 	$title = getone($q);
