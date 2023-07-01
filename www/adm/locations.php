@@ -435,7 +435,7 @@ function showLocation($id = NULL) {
 function showEvent($type, $id) {
 	if ($type == 'gamerun') {
 		$game = getrow("
-			SELECT g.id, g.title, gr.id AS gr_id
+			SELECT g.id, g.title, gr.id AS gr_id, gr.location
 			FROM gamerun gr
 			INNER JOIN game g ON gr.game_id = g.id
 			WHERE gr.id = $id
@@ -452,7 +452,7 @@ function showEvent($type, $id) {
 		);
 	} elseif ($type == 'convention') {
 		$convention = getrow("
-			SELECT c.id, c.name, c.year
+			SELECT c.id, c.name, c.year, c.place AS location
 			FROM convention c
 			WHERE c.id = $id
 		");
@@ -473,9 +473,9 @@ function showEvent($type, $id) {
 	}
 	print '<p><a href="locations.php?action=new">[New location]</a></p>';
 	if ($type == 'gamerun') {
-		print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '" accesskey="q">game run #' . $game['gr_id'] . '</a></p>';
+		print '<p>Locations for <a href="game.php?game=' . $game['id'] . '">' . htmlspecialchars($game['title']) . '</a>, <a href="run.php?id=' . $game['id'] . '" accesskey="q">game run #' . $game['gr_id'] . '</a><br><em>(' . htmlspecialchars($game['location']) . ')</em></p>';
 	} else {
-		print '<p>Locations for <a href="convention.php?con=' . $convention['id'] . '">' . htmlspecialchars($convention['name'] . ' (' . $convention['year'] . ')') . ' </a></p>';
+		print '<p>Locations for <a href="convention.php?con=' . $convention['id'] . '">' . htmlspecialchars($convention['name'] . ' (' . $convention['year'] . ')') . ' </a><br><em>(' . htmlspecialchars($convention['location']) . ')</em></p>';
 	}
 	
 	print '<form action="locations.php" method="post"><input type="hidden" name="action" value="updateevent">';
