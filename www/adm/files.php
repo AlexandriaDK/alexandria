@@ -22,6 +22,7 @@ $remoteurl = (string) ($_REQUEST['remoteurl'] ?? '');
 $pages = (string) ($_REQUEST['pages'] ?? '');
 $allowed_extensions = ["pdf", "txt", "doc", "docx", "zip", "rar", "mp3", "pps", "jpg", "png", "gif", "webp"];
 $allowed_schemes = ['http', 'https', 'ftp', 'ftps'];
+$thumbnailpage = (int) ($_REQUEST['thumbnailpage'] ?? 1);
 
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to ImageMagick escapeshellarg() if imagick is not installed as module
 
@@ -216,7 +217,7 @@ if ($action == "addfile") {
 	} else {
 		$extension = strtolower(substr(strrchr($path, "."), 1));
 		if ($extension == "pdf") {
-			$file = $path . "[0]";
+			$file = $path . '[' . (max(1,$thumbnailpage) - 1) .']';
 		} else {
 			$file = $path;
 		}
@@ -401,7 +402,7 @@ if ($data_id && $category) {
 		$thumbshortcut = FALSE;
 		$basename = mb_basename($file);
 		$extension = strtolower(pathinfo($basename,  PATHINFO_EXTENSION));
-		$createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&amp;data_id=' . $data_id . '&amp;action=thumbnail&amp;filename=' . rawurlencode($basename);
+		$createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&data_id=' . $data_id . '&action=thumbnail&filename=' . rawurlencode($basename);
 		$createcuturl = 'files.php?category=' . htmlspecialchars($category) . '&data_id=' . $data_id . '&action=splitpdf&filename=' . rawurlencode($basename);
 		print '<div class="tooltip">';
 		print '<a href="https://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode($basename) . '" title="Download file">💾</a>&nbsp;';
@@ -409,10 +410,9 @@ if ($data_id && $category) {
 			print '<span class="tooltiptext">Create new PDF<br><br>Pages: <input type="text" name="pdfcutpages" placeholder="1-3 5" style="width: 50px"><br><input type="submit" value="Create" onclick="window.location.href=\'' . $createcuturl . '&pages=\' + encodeURIComponent(this.previousSibling.previousSibling.value)"></span>';
 		}
 		print '</div>&nbsp;' . PHP_EOL;
-		// print '<a href="https://download.alexandria.dk/files/' . getcategorydir($category) . '/' . $data_id . '/' . rawurlencode( $basename ) . '" title="Download file">💾</a>&nbsp;';
 		print '<div class="tooltip">';
 		print '<a ' . $accesskey . ' href="' . $createthumbnailurl . '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
-		print '<span class="tooltiptext"><a href="' . $createthumbnailurl . '" onclick="return confirm(\'Create thumbnail?\');" title="Create thumbnail">Full</a> • <a href="' . $createthumbnailurl . '&amp;section=left" onclick="return confirm(\'Create thumbnail, left half?\');" title="Create thumbnail, use left half of first page">Left</a> • <a href="' . $createthumbnailurl . '&amp;section=right" onclick="return confirm(\'Create thumbnail, right half?\');" title="Create thumbnail, use right half of first page">Right</a></span>';
+		print '<span class="tooltiptext">Create thumbnail<br><br>Page: <input type="text" name="thumbnailpage" value="1" id="thumbnailpage" style="width: 50px"><br><a href="#" onclick="if(confirm(\'Create thumbnail?\')) { location.href=\'' . $createthumbnailurl . '&thumbnailpage=\' + $(\'#thumbnailpage\').val(); }" title="Create thumbnail">Full</a> • <a href="#" onclick="if(confirm(\'Create thumbnail, left half?\')) { location.href=\'' . $createthumbnailurl . '&section=left&thumbnailpage=\' + $(\'#thumbnailpage\').val(); }" title="Create thumbnail, use left half of page">Left</a> • <a href="#" onclick="if(confirm(\'Create thumbnail, right half?\')) { location.href=\'' . $createthumbnailurl . '&section=right&thumbnailpage=\' + $(\'#thumbnailpage\').val(); }" title="Create thumbnail, use right half of page">Right</a></span>';
 		print '</div>&nbsp;' . PHP_EOL;
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
 		print htmlspecialchars($basename);
