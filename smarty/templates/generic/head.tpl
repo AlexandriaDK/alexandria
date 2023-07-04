@@ -309,7 +309,7 @@
 					<a href="magazines" class="magazines">{$_top_magazines|ucfirst}</a>
 				</div>
 				<div class="topmenublockfind">
-					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="search" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input" autofocus></label>
+					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="search" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input" required autofocus></label>
 				</div>
 			</form>
 {/if}
