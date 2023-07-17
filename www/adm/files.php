@@ -217,7 +217,7 @@ if ($action == "addfile") {
 	} else {
 		$extension = strtolower(substr(strrchr($path, "."), 1));
 		if ($extension == "pdf") {
-			$file = $path . '[' . (max(1,$thumbnailpage) - 1) .']';
+			$file = $path . '[' . (max(1, $thumbnailpage) - 1) . ']';
 		} else {
 			$file = $path;
 		}
@@ -414,6 +414,7 @@ if ($data_id && $category) {
 		print '<a ' . $accesskey . ' href="' . $createthumbnailurl . '" title="Create thumbnail" onclick="return confirm(\'Create thumbnail?\');" >📷</a>';
 		print '<span class="tooltiptext">Create thumbnail<br><br>Page: <input type="text" name="thumbnailpage" value="1" id="thumbnailpage" style="width: 50px"><br><a href="#" onclick="if(confirm(\'Create thumbnail?\')) { location.href=\'' . $createthumbnailurl . '&thumbnailpage=\' + $(\'#thumbnailpage\').val(); }" title="Create thumbnail">Full</a> • <a href="#" onclick="if(confirm(\'Create thumbnail, left half?\')) { location.href=\'' . $createthumbnailurl . '&section=left&thumbnailpage=\' + $(\'#thumbnailpage\').val(); }" title="Create thumbnail, use left half of page">Left</a> • <a href="#" onclick="if(confirm(\'Create thumbnail, right half?\')) { location.href=\'' . $createthumbnailurl . '&section=right&thumbnailpage=\' + $(\'#thumbnailpage\').val(); }" title="Create thumbnail, use right half of page">Right</a></span>';
 		print '</div>&nbsp;' . PHP_EOL;
+		print '<span style="width: 60px; display: inline-block;">' . round(filesize($file) / 1024 / 1024, 1) . ' MB</span>' . PHP_EOL;
 		print "<a href=\"#\" onclick=\"document.getElementById('newpath').value=this.innerHTML; document.getElementById('newdescription').value=filenameToDescription(this.innerHTML);\">";
 		print htmlspecialchars($basename);
 		print "</a>";
