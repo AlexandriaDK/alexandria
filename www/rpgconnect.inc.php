@@ -7,6 +7,7 @@ $db_pass = DB_PASS;
 $db_host = DB_HOST;
 $db_connector = DB_CONNECTOR;
 
+mysqli_report(MYSQLI_REPORT_OFF);
 if (!@ ($dblink = mysqli_connect($db_host, $db_user, $db_pass) ) || @$_SERVER['QUERY_STRING'] == "crash") {
 	define('DBERROR',TRUE);
 	header("HTTP/1.1 503 Service Unavailable");
