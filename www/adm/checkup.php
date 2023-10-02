@@ -207,13 +207,9 @@ foreach ($names as $id => $name) {
 print "<p>\n";
 print "<table cellspacing=3 cellpadding=4>" .
 	"<tr valign=\"top\">" .
-	"<td>$htmlloneper</td>" .
-	"<td>$htmlorganizermatch<br><br>$htmlorganizer<br><br>$htmlisocodes</td>" .
-	"<td>$htmlmagazinematch<br><br>$htmlmagazine</td>" .
-	"</tr><tr valign=\"top\">" .
-	"<td>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>" .
-	"<td>$htmlcondate</td>" .
-	"<td>$htmlnames</td>" .
+	"<td>$htmlloneper<br>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>" .
+	"<td>$htmlorganizermatch<br><br>$htmlorganizer<br><br>$htmlisocodes<br><br>$htmlcondate</td>" .
+	"<td>$htmlmagazinematch<br><br>$htmlnames</td><td>$htmlmagazine</td>" .
 	"</tr></table>";
 ?>
 </body>
