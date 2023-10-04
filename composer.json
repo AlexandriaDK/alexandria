@@ -1,0 +1,16 @@
+{
+    "name": "alexandria/alexandria",
+    "description": "Online gaming library Alexandria, containing information about Role-Playing scenarios, LARPs, conventions, board game designers, and much more.",
+    "type": "project",
+    "license": "n/a",
+    "minimum-stability": "stable",
+    "require": {
+        "sentry/sdk": "^3.5",
+        "smarty/smarty": "4.1.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
