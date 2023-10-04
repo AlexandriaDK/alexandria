@@ -7,7 +7,6 @@ $errors = [];
 $required_include_files = [ 'db.auth.php' ];
 $required_php_extensions = [ 'mysqli', 'mbstring', 'intl', 'gd', 'zip' ];
 $required_apache_modules = [ 'mod_rewrite' ];
-$required_smarty = 'smarty-4.1.1/libs/';
 $required_writable_path = __DIR__ . '/../smarty/templates_c';
 
 // Rquired files
@@ -57,12 +56,10 @@ Remember to restart the webserver after enabling the module.
 	}
 }
 
-// Smarty installed? Should be installed with Alexandria, but currently it is not bundled with Alexandria. Currently hardcoded path with version. Eugh :-(
-if ( ! file_exists( __DIR__ . '/../' . $required_smarty ) ) {
+// Smarty installed? Run 'composer install'. No longer version hardcoded. Joy to the world.
+if ( class_exists('Smarty') ) {
 	$setuperror = TRUE;	
-	$errors[] = "PHP template engine Smarty is not installed. This has to be manually installed at the parent dir at the following path:
-	$required_smarty
-";
+	$errors[] = "PHP template engine Smarty is not installed. Have you remembered to run 'composer install'?";
 }
 
 // remember: Writable folder!

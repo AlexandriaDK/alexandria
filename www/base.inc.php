@@ -47,10 +47,9 @@ Locale::setDefault($locale);
 // general
 define('ALEXFILES', '/home/penguin/web/loot.alexandria.dk/files/');
 
-// Smarty 
-//define('SMARTY_DIR', __DIR__ . '/../smarty-4.1.1/libs/');
-//require_once(SMARTY_DIR . 'Smarty.class.php');
-
+// Smarty now loads via Composer.
+// Run 'composer install' if not rendering correctly. 
+// by: thomas@tmertz.com 
 $t = new Smarty;
 $t->template_dir = __DIR__ . '/../smarty/templates/';
 $t->compile_dir =  __DIR__ . '/../smarty/templates_c/';
