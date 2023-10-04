@@ -4,7 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 \Sentry\init([
 	'dsn' => 'https://e009f7274d7b8cf2e303487dd013492b@sentry.int.oddity.industries/3',
 	// Specify a fixed sample rate
-	'traces_sample_rate' => 1.0,
+	//'traces_sample_rate' => 1.0,
 ]);
 
 require("connect.php");
