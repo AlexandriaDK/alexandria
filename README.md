@@ -5,16 +5,10 @@ First online code version of Alexandria.dk, the online gaming library of role-pl
 The project was started in 2000. Some of the code might be from that era.
 
 ## Install
-The code requires PHP 7 or PHP 8. MySQL 5+ is needed as RDBMS.
-
-The code is currently Apache based. The site includes an installer feature for setting up the database and fetching content when accessed the first time.
-
-Please note:
-- Apache directive `AllowOverride all` needs to be set.
-- The web site requires template system Smarty, which is currently not included per default: https://www.smarty.net/
-- Remember to check out the config files under `includes/`. The database file (db.auth.php) is the only crucial file to have configured.
-- Need login through third party sites? Remember to install OAuth for PHP (`sudo apt install php-oauth`)
-- You can install ImageMagick (`sudo apt install php-imagick`) to be able to convert PDFs to thumbnails
+Make sure you have Docker and Docker Compose installed. 
+1. Run `docker compose build`
+2. Run `docker compose up -d`
+3. Open [http://localhost:81/](http://localhost:81/)
 
 ### Cron jobs
 Some scripts located in [tools](tree/master/tools) are meant to be running on a hourly or daily basis. None of these scripts are strictly required just to have the site running.

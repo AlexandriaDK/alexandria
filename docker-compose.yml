@@ -1,0 +1,22 @@
+version: "3.5"
+
+services:
+  php:
+    container_name: alexandria-http
+    build:
+      context: docker/php
+    ports:
+    - 81:80
+    volumes:
+    - ./:/var/www/html
+
+  mariadb:
+    container_name: alexandria-db
+    image: mariadb:10.7
+    ports:
+    - 23306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
