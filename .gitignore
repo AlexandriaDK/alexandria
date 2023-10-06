@@ -1,4 +1,5 @@
 .DS_Store
 .env
+/.nova/
 /vendor/
 /smarty-4.1.1/

@@ -8,7 +8,8 @@ The project was started in 2000. Some of the code might be from that era.
 Make sure you have Docker and Docker Compose installed. 
 1. Run `docker compose build`
 2. Run `docker compose up -d`
-3. Open [http://localhost:81/](http://localhost:81/)
+3. Run `composer install` 
+4. Open [http://localhost:81/](http://localhost:81/)
 
 ### Cron jobs
 Some scripts located in [tools](tree/master/tools) are meant to be running on a hourly or daily basis. None of these scripts are strictly required just to have the site running.

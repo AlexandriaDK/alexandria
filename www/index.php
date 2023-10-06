@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ERROR);
+//error_reporting(E_ERROR);
 require __DIR__ . '/../vendor/autoload.php';
 
 \Sentry\init([
