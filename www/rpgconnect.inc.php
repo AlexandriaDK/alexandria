@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../includes/db.auth.php');
+require_once( BASE_PATH . "/../includes/db.auth.php" );
 
 $db_name = DB_NAME;
 $db_user = DB_USER;

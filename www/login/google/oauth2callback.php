@@ -1,6 +1,6 @@
 <?php
 define('LANGNOREDIRECT', TRUE);
-require_once __DIR__.'/../../../google-api-php-client-2.2.3_PHP54/vendor/autoload.php';
+//require_once __DIR__.'/../../../google-api-php-client-2.2.3_PHP54/vendor/autoload.php';
 
 session_start();
 

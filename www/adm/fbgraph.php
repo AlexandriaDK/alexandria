@@ -11,7 +11,7 @@ if (!$id) exit;
 $graph_id = getone("SELECT siteuserid FROM loginmap WHERE user_id = $id AND site = 'facebook'");
 if (!$graph_id) exit;
 
-require_once __DIR__ . '/../facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
+//require_once __DIR__ . '/../facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
 
 $fb = new Facebook\Facebook([
   'app_id' => '6044298682',

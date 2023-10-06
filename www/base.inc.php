@@ -4,6 +4,14 @@ if (defined('DEBUG')) {
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 }
+error_reporting(E_ERROR);
+require __DIR__ . '/../vendor/autoload.php';
+
+\Sentry\init([
+	'dsn' => 'https://e009f7274d7b8cf2e303487dd013492b@sentry.int.oddity.industries/3',
+	// Specify a fixed sample rate
+	//'traces_sample_rate' => 1.0,
+]);
 
 mb_internal_encoding("UTF-8");
 header("Permissions-Policy: interest-cohort=()");

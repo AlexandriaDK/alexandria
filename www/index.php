@@ -1,15 +1,7 @@
 <?php
-//error_reporting(E_ERROR);
-require __DIR__ . '/../vendor/autoload.php';
-
-\Sentry\init([
-	'dsn' => 'https://e009f7274d7b8cf2e303487dd013492b@sentry.int.oddity.industries/3',
-	// Specify a fixed sample rate
-	//'traces_sample_rate' => 1.0,
-]);
-
-require("connect.php");
-require("base.inc.php");
+define( 'BASE_PATH', realpath( dirname( __FILE__ ) ) );
+require( BASE_PATH . "/connect.php" );
+require( BASE_PATH . "/base.inc.php" );
 
 if (isset($_SESSION['login_after_redirect']) && isset($_SESSION['do_redirect']) ) { // assume valid URL
 	header("Location: " . $_SESSION['login_after_redirect']);

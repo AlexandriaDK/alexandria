@@ -58,8 +58,8 @@ Remember to restart the webserver after enabling the module.
 
 // Smarty installed? Run 'composer install'. No longer version hardcoded. Joy to the world.
 if ( !class_exists('Smarty') ) {
-	$setuperror = TRUE;	
-	$errors[] = "PHP template engine Smarty is not installed. Have you remembered to run 'composer install'?";
+	//$setuperror = TRUE;	
+	//$errors[] = "PHP template engine Smarty is not installed. Have you remembered to run 'composer install'?";
 }
 
 // remember: Writable folder!

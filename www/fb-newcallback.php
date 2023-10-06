@@ -6,7 +6,7 @@ require_once('base.inc.php');
 ini_set("display_errors",TRUE);
 $app_id = 6044298682;
 
-require_once __DIR__ . '/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
+//require_once __DIR__ . '/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
 
 $fb = new Facebook\Facebook([
   'app_id' => '6044298682',
