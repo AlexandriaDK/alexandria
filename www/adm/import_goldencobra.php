@@ -115,7 +115,7 @@ error_reporting(E_ALL);
     <table>
         <tr>
             <td>Year:</td>
-            <td><input type="number" size="4" maxlength="4" name="year" value="<?php print htmlspecialchars($year); ?>"></td>
+            <td><input type="number" size="6" maxlength="4" name="year" value="<?php print htmlspecialchars($year); ?>"></td>
         </tr>
         <tr>
             <td></td>
@@ -169,7 +169,7 @@ foreach (preg_split($outerpattern, $data) as $dataset) {
         $description = html_entity_decode(strip_tags(str_replace("</a>", "</a>\r\n", str_replace("</p>", "</p>\n\n", $fulldescription))));
         $description = preg_replace('_^\(.*?\)_', "\\0\r\n", $description);
         $internal = '';
-        $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'") + getone("SELECT COUNT(*) FROM alias WHERE category = 'game' AND label = '" . dbesc($title) . "'");
+        $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'") + getone("SELECT COUNT(*) FROM alias WHERE game_id IS NOT NULL AND label = '" . dbesc($title) . "'");
         print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing . ' existing">⚠️</a>' : '') . "</p>";
         print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset, $link);
         print "<hr>";
