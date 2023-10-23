@@ -78,6 +78,10 @@ function create_game_form($title, $authors, $organization, $players, $participan
     $descriptionfix = trim($descriptionfix) . "\r\n";
     $descriptionfix = preg_replace('_(\r\n){3,}_', "\r\n\r\n", $descriptionfix); // collapse 3+ newlines into 2
     $url = $link;
+    $tags = '';
+    if (preg_match('_Tags: (.*)_', $descriptionfix, $matches)) {
+        $tags = preg_replace('_,\s*_','#',ucwords($matches[1]));
+    }
     if ($url == '' && preg_match('_a href="(.*?)"_i', $fulldescription, $matches)) {
         $url = $matches[1];
     }
@@ -93,7 +97,7 @@ function create_game_form($title, $authors, $organization, $players, $participan
     $html .= '<tr><td>Description:</td><td><textarea name="description" cols="200" rows="10">' . htmlspecialchars($descriptionfix) . '</textarea></td></tr>';
     $html .= '<tr><td>Internal:</td><td><textarea name="internal" cols="200" rows="3">' . htmlspecialchars($internal) . '</textarea></td></tr>';
     $html .= '<tr><td>URL:</td><td><input type="text" size="100"  name="url" value="' . htmlspecialchars($url) . '"></td></tr>';
-    $html .= '<tr><td>Tags (#):</td><td><input type="text" size="100"  name="tags" value="' . htmlspecialchars($organization) . '"></td></tr>';
+    $html .= '<tr><td>Tags (#):</td><td><input type="text" size="100"  name="tags" value="' . htmlspecialchars($tags) . '"></td></tr>';
     $html .= '<tr><td>Larp?:</td><td><input type="checkbox" name="larp" ' . ($islarp ? 'checked' : '') . '></td></tr>';
     $html .= '<tr><td></td><td><input type="submit"><input type="hidden" name="action" value="creategame"><input type="hidden" name="year" value="' . $year . '"><input type="hidden" name="submitted" value="0"></td></tr>';
     $html .= '<tr><td colspan="2"><pre>' . htmlspecialchars($dataset) . '</pre></td></tr>';
