@@ -34,7 +34,7 @@ function updatestuff($table, $text, $id)
 function linkfix($matches)
 {
 	if ($id = getone("SELECT id FROM game WHERE title = '" . dbesc($matches[1]) . "'")) {
-		$code = '[[[s' . $id . '|' . $matches[1] . ']]]';
+		$code = '[[[g' . $id . '|' . $matches[1] . ']]]';
 		return $code;
 	}
 	if ($id = getone("SELECT id FROM person WHERE CONCAT(firstname, ' ', surname) = '" . dbesc($matches[1]) . "'")) {
