@@ -623,7 +623,7 @@ p.addorganizersyourself {
 
 }
 
-div.allawards h4 {
+div.allawards h4, div.awardcategory h4 {
 	margin-top: 2px;
 	margin-bottom: 0;
 }

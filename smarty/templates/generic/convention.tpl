@@ -99,7 +99,7 @@ $(document).ready(function(){
 	
 		<tr class="listhead"><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="roleplay">
-			{$_scenarios|ucfirst}:
+			{$_scenarios|ucfirst}
 		</h3>
 		</td></tr>
 	{foreach from=$scenlistdata item=$scenarios}
@@ -119,7 +119,7 @@ $(document).ready(function(){
 	{if $boardlistdata}
 		<tr class="listhead"><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="boardgames">
-			{$_boardgames|ucfirst}:
+			{$_boardgames|ucfirst}
 		</h3>
 		</td></tr>
 	{foreach from=$boardlistdata item=$boardgames}
@@ -142,7 +142,7 @@ $(document).ready(function(){
 {/if}
 
 {if $award}
-<h3 id="awards">{$_con_awards}:</h3>
+<h3 id="awards">{$_con_awards}</h3>
 		{$award}
 {/if}
 
