@@ -16,8 +16,6 @@ if (!isset($_SESSION) && isset($_COOKIE[session_name()])) {
 	session_start();
 }
 // detect language
-# $alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
-$alexlanguages = ['da' => 'Dansk', 'de' => 'Deutsch', 'en' => 'English', 'nb' => 'Norsk bokmål', 'sv' => 'Svenska'];
 $lang = "";
 if (preg_match('_^/(da|en|nb|de|sv|es|ru|fr|be|fi|pl|it|ar|zh|ja|he|fo|kl|hi|tl|sa|ta|bn|nv|cr|oj|xx)/_', ($_SERVER["REQUEST_URI"] ?? ""), $matches)) {
 	$lang = $urllang = $matches[1];
@@ -43,6 +41,19 @@ $locale = getLocaleFromLang(LANG);
 
 setlocale(LC_TIME, $locale);
 Locale::setDefault($locale);
+
+# $alexlanguages = [ 'da', 'en', 'nb', 'de', 'sv', 'es', 'ru', 'fr', 'be' ];
+#$showlanguages = ['da' => 'Dansk', 'de' => 'Deutsch', 'en' => 'English', 'nb' => 'Norsk bokmål', 'sv' => 'Svenska'];
+$showlanguages = ['da', 'de', 'en', 'nb', 'sv'];
+$alexlanguages = [];
+
+foreach($showlanguages AS $language) {
+	$localname = getLanguageName($language, $language);
+	$showname = getLanguageName($language, LANG);
+	$combinedname = ($localname == $showname ? $localname : "$localname – $showname");
+	$alexlanguages[$language] = $combinedname;
+}
+
 
 // general
 define('ALEXFILES', '/home/penguin/web/loot.alexandria.dk/files/');
@@ -1386,9 +1397,9 @@ function getTranslationOverview()
 	return $result;
 }
 
-function getLanguageName($isocode)
+function getLanguageName($isocode, $lang = LANG)
 {
-	return Locale::getDisplayLanguage($isocode, LANG);
+	return Locale::getDisplayLanguage($isocode, $lang);
 }
 
 function getCountryName($countrycode)
