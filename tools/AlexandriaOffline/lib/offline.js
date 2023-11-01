@@ -670,6 +670,8 @@ function showIssue(id) {
     var category = 'issue';
 
     // var id = data.target.dataset.id;
+    var files = a.files.filter(rel => rel.issue_id == id);
+
     var issue = a.issues[id];
     var magazinename = a.magazines[issue.magazine_id].name;
     var title = magazinename + ': ' + issue.title + (issue.releasetext ? ', ' + issue.releasetext : '');
@@ -684,6 +686,8 @@ function showIssue(id) {
 
     var html = '';
     html += '<h2>' + esc(title) + '</h2>';
+
+    html += makeFileSection(files, id, 'issue');
 
     if (colophones.length) {
         html += '<h3>Colophon</h3>';
