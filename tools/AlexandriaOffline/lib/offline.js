@@ -1329,7 +1329,7 @@ function search() {
     if (result.systems.length > 0) {
         html += '<h3>RPG Systems</h3><ul>';
         for (element of result.systems) {
-            html += makeLink('system', 'gamesystem', element.id, element.name);
+            html += makeLink('gamesystem', 'gamesystem', element.id, element.name);
         }
         html += '</ul>';
     }
