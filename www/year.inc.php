@@ -1,7 +1,10 @@
 <?php
 $this_type = 'year';
 
-list($startyear, $endyear) = getrow("SELECT MIN(year), MAX(year) FROM convention");
+list($conventionminyear, $conventionmaxyear) = getrow("SELECT MIN(year), MAX(year) FROM convention");
+list($gamerunminyear, $gamerunmaxyear) = getrow("SELECT MIN(YEAR(begin)), MAX(YEAR(begin)) FROM gamerun");
+$startyear = min($conventionminyear, $gamerunminyear);
+$endyear = max($gamerunmaxyear, $gamerunmaxyear);
 
 $yearlist = "";
 
