@@ -20,7 +20,7 @@ $downloadable = (string) ($_REQUEST['downloadable'] ?? '');
 $language = trim((string) ($_REQUEST['language'] ?? ''));
 $remoteurl = (string) ($_REQUEST['remoteurl'] ?? '');
 $pages = (string) ($_REQUEST['pages'] ?? '');
-$allowed_extensions = ["pdf", "txt", "doc", "docx", "zip", "rar", "mp3", "pps", "jpg", "png", "gif", "webp"];
+$allowed_extensions = ["pdf", "txt", "doc", "docx", "zip", "rar", "mp3", "pps", "jpg", "jpeg", "png", "gif", "webp"];
 $allowed_schemes = ['http', 'https', 'ftp', 'ftps'];
 $thumbnailpage = (int) ($_REQUEST['thumbnailpage'] ?? 1);
 
