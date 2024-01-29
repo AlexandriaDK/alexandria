@@ -7,7 +7,11 @@ if (isset($_SESSION['user_id'])) {
 }
 
 $persons_limit = 4;
-$scenlistdata = $boardlistdata = $gamelist = [];
+$gamelistdata = [
+	'scenarios' => [],
+	'boardgames' => [],
+	'fastavaljunior' => [],
+];
 $oo = $_GET['oo'] ?? FALSE; // sort order for organizers
 $edit = $_GET['edit'] ?? FALSE;
 
@@ -49,6 +53,8 @@ if (is_null($convention['id'])) {
 	$t->display('default.tpl');
 	exit;
 }
+$is_fastaval = ($convention['conset_id'] == 1);
+
 $showtitle = $conventname = $convention['name'];
 $internal = (($_SESSION['user_editor'] ?? FALSE) ? $convention['internal'] : ""); // only set internal if editor
 
@@ -96,7 +102,7 @@ if ($convention['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation
+	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation, NOT ISNULL(ggrel.id) AS fastaval_junior
 	FROM cgrel
 	INNER JOIN game g ON g.id = cgrel.game_id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
@@ -106,6 +112,7 @@ $q = getall("
 	LEFT JOIN person p ON p.id = pgrel.person_id 
 	LEFT JOIN alias a ON g.id = a.game_id AND a.language = '" . LANG . "' AND a.visible = 1
 	LEFT JOIN alias a2 ON gs.id = a2.gamesystem_id AND a2.language = '" . LANG . "' AND a2.visible = 1
+	LEFT JOIN ggrel ON g.id = ggrel.game_id AND ggrel.genre_id = 13 -- Fastaval Junior
 	WHERE cgrel.convention_id = $con
 	GROUP BY g.id, pr.id, p.id
 	ORDER BY boardgame, title_translation, p.surname, p.firstname
@@ -114,7 +121,11 @@ $q = getall("
 foreach ($q as $r) {
 	$sid = $r['id'];
 	if (!isset($gamelist[$sid])) {
-		$gamelist[$sid] = ['game' => ['title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['person_extra'] ?? NULL, 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['gamesystem_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['gamesystem_extra'], 'presentation_id' => $r['presentation_id'] ?? NULL, 'pre_event' => $r['event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol']], 'person' => []];
+		$gamelist[$sid] = [
+			'game' => [
+				'title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['person_extra'] ?? NULL, 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['gamesystem_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['gamesystem_extra'], 'presentation_id' => $r['presentation_id'] ?? NULL, 'pre_event' => $r['event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'], 'fastaval_junior' => (int) $r['fastaval_junior']
+			], 'person' => []
+		];
 	}
 	if ($r['person_id']) {
 		$gamelist[$sid]['person'][$r['person_id']] = $r['person_name'];
@@ -178,13 +189,17 @@ foreach ($gamelist as $game_id => $game) {
 		'system_translation' => $game['game']['system_translation'],
 		'system_extra' => $game['game']['system_ext'],
 		'boardgame' => $game['game']['boardgame'],
+		'fastaval_junior' => $game['game']['fastaval_junior'],
 	];
 
-	if ($game['game']['boardgame']) {
-		$boardlistdata[] = $datalistdata;
+	if ($is_fastaval && $game['game']['fastaval_junior']) { // Only create "Fastaval Junior" category for Fastaval
+		$gamelistdata['fastavaljunior'][] = $datalistdata;
+	} elseif ($game['game']['boardgame']) {
+		$gamelistdata['boardgames'][] = $datalistdata;
 	} else {
-		$scenlistdata[] = $datalistdata;
+		$gamelistdata['scenarios'][] = $datalistdata;
 	}
+
 
 	// Count scenarios based on presentation (premiere, re-run, ...)
 	/*
@@ -338,8 +353,7 @@ $t->assign('confirmed', $convention['confirmed']);
 $t->assign('cancelled', $convention['cancelled']);
 $t->assign('description', $convention['description']);
 $t->assign('internal', $internal);
-$t->assign('scenlistdata', $scenlistdata);
-$t->assign('boardlistdata', $boardlistdata);
+$t->assign('gamelistdata', $gamelistdata);
 $t->assign('organizerlist', $organizerlist);
 $t->assign('award', $awardlist);
 $t->assign('trivia', $trivialist);

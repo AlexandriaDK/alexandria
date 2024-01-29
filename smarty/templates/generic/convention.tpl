@@ -92,18 +92,16 @@ $(document).ready(function(){
 
 <p style="text-align: right; margin: 0px; padding: 0px;"><input id="filterSearch" type="text" placeholder="🝖 Filter list"></p>
 -->
-
-{if $scenlistdata || $boardlistdata }
+{if $gamelistdata['scenarios'] || $gamelistdata['boardgames'] || $gamelistdata['fastavaljunior'] }
 	<table class="indata conlist">
-	{if $scenlistdata}
+	{if $gamelistdata['scenarios']}
 	
 		<tr class="listhead"><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="roleplay">
 			{$_scenarios|ucfirst}
 		</h3>
 		</td></tr>
-	{foreach from=$scenlistdata item=$scenarios}
-
+	{foreach from=$gamelistdata['scenarios'] item=$scenarios}
 		<tr>
 		<td>{$scenarios.userdyn.read}</td>
 		<td>{$scenarios.userdyn.gmed}</td>
@@ -116,14 +114,13 @@ $(document).ready(function(){
 		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_translation}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
 	{/foreach}
 	{/if}
-	{if $boardlistdata}
+	{if $gamelistdata['boardgames']}
 		<tr class="listhead"><td colspan="8">
 		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="boardgames">
 			{$_boardgames|ucfirst}
 		</h3>
 		</td></tr>
-	{foreach from=$boardlistdata item=$boardgames}
-
+	{foreach from=$gamelistdata['boardgames'] item=$boardgames}
 		<tr>
 		<td>{$boardgames.userdyn.read}</td>
 		<td></td>
@@ -137,7 +134,26 @@ $(document).ready(function(){
 		</tr>
 	{/foreach}
 	{/if}
-
+	{if $gamelistdata['fastavaljunior']}
+		<tr class="listhead"><td colspan="8">
+		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="fastavaljuniorgames">
+			{$_fastavaljuniorgames|ucfirst}
+		</h3>
+		</td></tr>
+	{foreach from=$gamelistdata['fastavaljunior'] item=$fastavaljuniorgames}
+		<tr>
+		<td>{$fastavaljuniorgames.userdyn.read}</td>
+		<td>{if ! $fastavaljuniorgames.boardgame}{$fastavaljuniorgames.userdyn.gmed}{/if}</td>
+		<td>{$fastavaljuniorgames.userdyn.played}</td>
+		<td style="width: 10px;"></td>
+		<td>{if $fastavaljuniorgames.filescount}<a href="data?scenarie={$fastavaljuniorgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
+		<td>{$fastavaljuniorgames.runsymbol}</td>
+		<td><a href="data?scenarie={$fastavaljuniorgames.id}" class="game">{$fastavaljuniorgames.title|escape}</a></td>
+		<td style="padding-left: 10px">{$fastavaljuniorgames.personhtml}{if $fastavaljuniorgames.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$fastavaljuniorgames.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$fastavaljuniorgames.personextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{$fastavaljuniorgames.systemhtml}</td>
+		</tr>
+	{/foreach}
+	{/if}
 	</table>
 {/if}
 
