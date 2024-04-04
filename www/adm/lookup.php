@@ -62,7 +62,12 @@ if ($type == 'person' && $term !== "") { // including alias
 		UNION
 		SELECT CONCAT(person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
 		UNION
-		SELECT CONCAT(alias.person_id, ' - ', label) AS label FROM alias WHERE label LIKE '$likeescapequery%' AND person_id IS NOT NULL
+		(
+			SELECT CONCAT(alias.person_id, ' - ', alias.label, ' (', person.firstname,' ', person.surname, ')') AS label
+			FROM alias
+			INNER JOIN person ON alias.person_id = person.id
+			WHERE label LIKE '$likeescapequery%'
+		)
 	");
 	header("Content-Type: application/json");
 	print json_encode($refs);
