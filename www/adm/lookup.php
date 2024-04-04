@@ -54,13 +54,15 @@ if ($type == 'locationname' && $label != "") {
 	print $num;
 }
 
-if ($type == 'person' && $term !== "") {
+if ($type == 'person' && $term !== "") { // including alias
 	$escapequery = dbesc($term);
 	$likeescapequery = likeesc($term);
 	$refs = getcol("
 		SELECT CONCAT(person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(firstname,' ',surname) LIKE '$likeescapequery%'
 		UNION
 		SELECT CONCAT(person.id, ' - ', firstname,' ',surname) AS label FROM person WHERE CONCAT(surname,' ',firstname) LIKE '$likeescapequery%'
+		UNION
+		SELECT CONCAT(alias.person_id, ' - ', label) AS label FROM alias WHERE label LIKE '$likeescapequery%' AND person_id IS NOT NULL
 	");
 	header("Content-Type: application/json");
 	print json_encode($refs);
