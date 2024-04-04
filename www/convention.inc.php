@@ -8,12 +8,24 @@ if (isset($_SESSION['user_id'])) {
 
 $persons_limit = 4;
 $gamelistdata = [
-	'scenarios' => [],
-	'boardgames' => [],
-	'fastavaljunior' => [],
+	'scenarios' => ['label' => $t->getTemplateVars('_scenarios'), 'games' => [] ],
+	'boardgames' => ['label' => $t->getTemplateVars('_boardgames'), 'games' => [] ],
+	'fastavaljunior' => ['label' => $t->getTemplateVars('_fastavaljuniorgames'), 'games' => [] ],
+	'scenariowritingcompetition' => ['label' => $t->getTemplateVars('_scenariowritingcompetition'), 'games' => [] ],
+	'gamerush' => ['label' => $t->getTemplateVars('_gamerush'), 'games' => [] ],
 ];
+
 $oo = $_GET['oo'] ?? FALSE; // sort order for organizers
 $edit = $_GET['edit'] ?? FALSE;
+
+// scenariowritingcompetition tags - should not be hardcoded
+$swctags = [
+	'Marathonkonkurrence',
+	'Marathonskrivningskonkurrence',
+	'Scenarieskrivningskonkurrence',
+	'Scenarieskrivningskonkurrencen',
+	'Scenarieskrivningskonkurrence 2024',
+];
 
 /*
 function antaltxt($new, $rerun, $cancelled, $total, $type = 'game')
@@ -102,7 +114,7 @@ if ($convention['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT g.id, g.title, g.boardgame, pr.id AS preid, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation, NOT ISNULL(ggrel.id) AS fastaval_junior
+	SELECT g.id, g.title, g.boardgame, pr.id AS presentation_id, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation, NOT ISNULL(ggrel.id) AS fastaval_junior, JSON_ARRAYAGG(tags.tag) AS tags
 	FROM cgrel
 	INNER JOIN game g ON g.id = cgrel.game_id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
@@ -113,17 +125,20 @@ $q = getall("
 	LEFT JOIN alias a ON g.id = a.game_id AND a.language = '" . LANG . "' AND a.visible = 1
 	LEFT JOIN alias a2 ON gs.id = a2.gamesystem_id AND a2.language = '" . LANG . "' AND a2.visible = 1
 	LEFT JOIN ggrel ON g.id = ggrel.game_id AND ggrel.genre_id = 13 -- Fastaval Junior
+	LEFT JOIN tags ON g.id = tags.game_id
 	WHERE cgrel.convention_id = $con
 	GROUP BY g.id, pr.id, p.id
 	ORDER BY boardgame, title_translation, p.surname, p.firstname
-");
+", FALSE);
+
+$gamecount = count($q);
 
 foreach ($q as $r) {
 	$sid = $r['id'];
 	if (!isset($gamelist[$sid])) {
 		$gamelist[$sid] = [
 			'game' => [
-				'title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['person_extra'] ?? NULL, 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['gamesystem_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['gamesystem_extra'], 'presentation_id' => $r['presentation_id'] ?? NULL, 'pre_event' => $r['event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'], 'fastaval_junior' => (int) $r['fastaval_junior']
+				'title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['person_extra'] ?? NULL, 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['gamesystem_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['gamesystem_extra'], 'presentation_id' => $r['presentation_id'] ?? NULL, 'pre_event' => $r['event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'], 'fastaval_junior' => (int) $r['fastaval_junior'], 'tags' => array_unique(json_decode($r['tags']))
 			], 'person' => []
 		];
 	}
@@ -178,6 +193,7 @@ foreach ($gamelist as $game_id => $game) {
 		'id' => $game_id,
 		'userdyn' => $useroptions,
 		'filescount' => $game['game']['files'],
+		'presentation_id' => $game['game']['presentation_id'],
 		'runsymbol' => $runsymbol,
 		'title' => $game['game']['title_translation'],
 		'personhtml' => $personhtml,
@@ -190,14 +206,19 @@ foreach ($gamelist as $game_id => $game) {
 		'system_extra' => $game['game']['system_ext'],
 		'boardgame' => $game['game']['boardgame'],
 		'fastaval_junior' => $game['game']['fastaval_junior'],
+		'tags' => $game['game']['tags'],
 	];
 
 	if ($is_fastaval && $game['game']['fastaval_junior']) { // Only create "Fastaval Junior" category for Fastaval
-		$gamelistdata['fastavaljunior'][] = $datalistdata;
+		$gamelistdata['fastavaljunior']['games'][] = $datalistdata;
+	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($swctags, $game['game']['tags']) ) { // Only create "Scenario writing competition" category for Fastaval
+		$gamelistdata['scenariowritingcompetition']['games'][] = $datalistdata;
+	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array('Game Rush', $game['game']['tags']) ) { // Only create "Game Rush" category for Fastaval
+		$gamelistdata['gamerush']['games'][] = $datalistdata;
 	} elseif ($game['game']['boardgame']) {
-		$gamelistdata['boardgames'][] = $datalistdata;
+		$gamelistdata['boardgames']['games'][] = $datalistdata;
 	} else {
-		$gamelistdata['scenarios'][] = $datalistdata;
+		$gamelistdata['scenarios']['games'][] = $datalistdata;
 	}
 
 
@@ -354,6 +375,7 @@ $t->assign('cancelled', $convention['cancelled']);
 $t->assign('description', $convention['description']);
 $t->assign('internal', $internal);
 $t->assign('gamelistdata', $gamelistdata);
+$t->assign('gamecount', $gamecount);
 $t->assign('organizerlist', $organizerlist);
 $t->assign('award', $awardlist);
 $t->assign('trivia', $trivialist);

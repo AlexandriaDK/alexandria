@@ -29,7 +29,7 @@
 				{$feedrow.comments}
 			</td>
 			<td style="text-align: right;">
-				{$feedrow.printdate}
+				{$feedrow.printdate|ucfirst}
 			</td>
 			</tr>
 			{/foreach}

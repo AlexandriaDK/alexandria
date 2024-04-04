@@ -92,68 +92,30 @@ $(document).ready(function(){
 
 <p style="text-align: right; margin: 0px; padding: 0px;"><input id="filterSearch" type="text" placeholder="🝖 Filter list"></p>
 -->
-{if $gamelistdata['scenarios'] || $gamelistdata['boardgames'] || $gamelistdata['fastavaljunior'] }
+{if $gamecount > 0}
+
 	<table class="indata conlist">
-	{if $gamelistdata['scenarios']}
-	
+
+	{foreach $gamelistdata AS $gamecategory => $gamedata}
+	{if ! $gamedata.games}{continue}{/if}
 		<tr class="listhead"><td colspan="8">
-		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="roleplay">
-			{$_scenarios|ucfirst}
+		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="{$gamecategory|escape}">
+			{$gamedata.label|ucfirst}
 		</h3>
 		</td></tr>
-	{foreach from=$gamelistdata['scenarios'] item=$scenarios}
+		{foreach $gamedata.games AS $game}
 		<tr>
-		<td>{$scenarios.userdyn.read}</td>
-		<td>{$scenarios.userdyn.gmed}</td>
-		<td>{$scenarios.userdyn.played}</td>
+		<td>{$game.userdyn.read}</td>
+		<td>{if ! $game.boardgame}{$game.userdyn.gmed}{/if}</td>
+		<td>{$game.userdyn.played}</td>
 		<td style="width: 10px;"></td>
-		<td>{if $scenarios.filescount}<a href="data?scenarie={$scenarios.id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-		<td>{$scenarios.runsymbol}</td>
-		<td><a href="data?scenarie={$scenarios.id}" class="game">{$scenarios.title|escape}</a></td>
-		<td style="padding-left: 10px">{$scenarios.personhtml}{if $scenarios.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.personextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_translation}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
+		<td>{if $game.filescount}<a href="data?scenarie={$game.id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+		<td>{$game.runsymbol}</td>
+		<td><a href="data?scenarie={$game.id}" class="game">{$game.title|escape}</a></td>
+		<td style="padding-left: 10px">{$game.personhtml}{if $game.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$game.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$game.personextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{if $game.system_id}<a href="data?system={$game.system_id}" class="system">{$game.system_translation}</a>{if $game.system_extra} {$game.system_extra|escape}{/if}{elseif $game.system_extra}{$game.system_extra|escape}{/if}</td>
+		{/foreach}
 	{/foreach}
-	{/if}
-	{if $gamelistdata['boardgames']}
-		<tr class="listhead"><td colspan="8">
-		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="boardgames">
-			{$_boardgames|ucfirst}
-		</h3>
-		</td></tr>
-	{foreach from=$gamelistdata['boardgames'] item=$boardgames}
-		<tr>
-		<td>{$boardgames.userdyn.read}</td>
-		<td></td>
-		<td>{$boardgames.userdyn.played}</td>
-		<td style="width: 10px;"></td>
-		<td>{if $boardgames.filescount}<a href="data?scenarie={$boardgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
-		<td>{$boardgames.runsymbol}</td>
-		<td><a href="data?scenarie={$boardgames.id}" class="game">{$boardgames.title|escape}</a></td>
-		<td style="padding-left: 10px">{$boardgames.personhtml}{if $boardgames.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardgames.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$boardgames.personextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{$boardgames.systemhtml}</td>
-		</tr>
-	{/foreach}
-	{/if}
-	{if $gamelistdata['fastavaljunior']}
-		<tr class="listhead"><td colspan="8">
-		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="fastavaljuniorgames">
-			{$_fastavaljuniorgames|ucfirst}
-		</h3>
-		</td></tr>
-	{foreach from=$gamelistdata['fastavaljunior'] item=$fastavaljuniorgames}
-		<tr>
-		<td>{$fastavaljuniorgames.userdyn.read}</td>
-		<td>{if ! $fastavaljuniorgames.boardgame}{$fastavaljuniorgames.userdyn.gmed}{/if}</td>
-		<td>{$fastavaljuniorgames.userdyn.played}</td>
-		<td style="width: 10px;"></td>
-		<td>{if $fastavaljuniorgames.filescount}<a href="data?scenarie={$fastavaljuniorgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
-		<td>{$fastavaljuniorgames.runsymbol}</td>
-		<td><a href="data?scenarie={$fastavaljuniorgames.id}" class="game">{$fastavaljuniorgames.title|escape}</a></td>
-		<td style="padding-left: 10px">{$fastavaljuniorgames.personhtml}{if $fastavaljuniorgames.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$fastavaljuniorgames.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$fastavaljuniorgames.personextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{$fastavaljuniorgames.systemhtml}</td>
-		</tr>
-	{/foreach}
-	{/if}
 	</table>
 {/if}
 

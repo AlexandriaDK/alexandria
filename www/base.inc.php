@@ -618,6 +618,8 @@ function getimageifexists($id, $category)
 function pubdateprint($datetime)
 {
 	global $t;
+	$start = fulldatetime($datetime);
+	return $start;
 	$pubdatetime = strtotime($datetime);
 	if (date("Y-m-d", $pubdatetime) == date("Y-m-d")) {
 		$start = htmlspecialchars($t->getTemplateVars('_year_today')) . ", " . date("H:i", $pubdatetime);
@@ -806,7 +808,7 @@ function fulldate($dateString)
 
 function fulldatetime($dateString)
 {
-	$formatter = new IntlDateFormatter(LANG, IntlDateFormatter::LONG, IntlDateFormatter::SHORT);
+	$formatter = new IntlDateFormatter(LANG, IntlDateFormatter::RELATIVE_LONG, IntlDateFormatter::SHORT);
 	$datetime = new DateTime($dateString);
 	$output = $formatter->format($datetime);
 	return $output;
@@ -1546,6 +1548,19 @@ function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE
 		return $label;
 	}
 
+	return false;
+}
+
+/*
+ * Generic PHP
+ */
+
+function in_array_any($needles, $haystack) {
+	foreach ($needles AS $needle) {
+		if (in_array($needle, $haystack) ) {
+			return true;
+		}
+	}
 	return false;
 }
 
