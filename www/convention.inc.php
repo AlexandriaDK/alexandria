@@ -27,6 +27,10 @@ $swctags = [
 	'Scenarieskrivningskonkurrence 2024',
 ];
 
+$bgctags = [
+	'Game Rush',
+];
+
 /*
 function antaltxt($new, $rerun, $cancelled, $total, $type = 'game')
 {
@@ -213,7 +217,7 @@ foreach ($gamelist as $game_id => $game) {
 		$gamelistdata['fastavaljunior']['games'][] = $datalistdata;
 	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($swctags, $game['game']['tags']) ) { // Only create "Scenario writing competition" category for Fastaval
 		$gamelistdata['scenariowritingcompetition']['games'][] = $datalistdata;
-	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array('Game Rush', $game['game']['tags']) ) { // Only create "Game Rush" category for Fastaval
+	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($bgctags, $game['game']['tags']) ) { // Only create "Game Rush" category for Fastaval
 		$gamelistdata['gamerush']['games'][] = $datalistdata;
 	} elseif ($game['game']['boardgame']) {
 		$gamelistdata['boardgames']['games'][] = $datalistdata;

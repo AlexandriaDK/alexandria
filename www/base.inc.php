@@ -1555,9 +1555,9 @@ function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE
  * Generic PHP
  */
 
-function in_array_any($needles, $haystack) {
+function in_array_any($needles, $haystack) { // case insensitive
 	foreach ($needles AS $needle) {
-		if (in_array($needle, $haystack) ) {
+		if (in_array(strtolower($needle), array_map('strtolower',$haystack) ) ) {
 			return true;
 		}
 	}
