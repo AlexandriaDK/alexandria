@@ -193,7 +193,7 @@ if (count($q) > 0) {
 // List of awards
 $awarddata = ['convention' => [], 'tag' => []];
 
-// awards if your are an author (1), organizer (4), or designer (5)
+// awards if your are an author (1), organizer (4), or designer (5) for the game (in general or for the run on the specific convention where the award is related to)
 $q = getall("
 	(
 	SELECT a.id, a.nominationtext, a.winner, a.ranking, a.name AS nomineename, b.name, c.id AS convention_id, c.name AS convent_name, c.year, c.begin, c.conset_id, t.id AS tag_id, t.tag, e.title, COALESCE(f.label,e.title) AS title_translation, COALESCE(b.convention_id, b.tag_id) AS type_id
@@ -201,7 +201,7 @@ $q = getall("
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	LEFT JOIN convention c ON b.convention_id = c.id
 	LEFT JOIN tag t ON b.tag_id = t.id
-	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person
+	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person AND (d.convention_id IS NULL OR d.convention_id = b.convention_id)
 	INNER JOIN game e ON a.game_id = e.id
 	LEFT JOIN alias f ON e.id = f.game_id AND f.language = '" . LANG . "' AND f.visible = 1
 	)
@@ -213,6 +213,7 @@ $q = getall("
 	LEFT JOIN convention c ON b.convention_id = c.id
 	LEFT JOIN tag t ON b.tag_id = t.id
 	INNER JOIN award_nominee_entities d ON a.id = d.award_nominee_id AND d.person_id = $person
+	GROUP BY id
 	)
 	ORDER BY year ASC, begin ASC, convention_id ASC, winner DESC, id ASC
 ");
