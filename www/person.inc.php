@@ -222,6 +222,9 @@ foreach ($q as $rs) {
 	$type = ($rs['convention_id'] ? 'convention' : 'tag');
 	$has_nominationtext = !!$rs['nominationtext'];
 	$awardtext = '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
+	if ($rs['winner']) {
+		$awardtext .= '<span class="winner">';
+	}
 	if ($rs['title_translation']) {
 		$awardtext .= '<span title="' . htmlspecialchars($rs['title']) . '">' . htmlspecialchars($rs['title_translation']) . "</span>: ";
 	}
@@ -232,6 +235,9 @@ foreach ($q as $rs) {
 
 	if ($rs['title'] == '' && $rs['nomineename'] && $rs['nomineename'] != $r['name']) { // personal award, group name
 		$awardtext .= " (" . htmlspecialchars($rs['nomineename']) . ")";
+	}
+	if ($rs['winner']) {
+		$awardtext .= '</span>';
 	}
 	$awardtext .= '</summary>';
 
