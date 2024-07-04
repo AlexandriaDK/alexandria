@@ -3,7 +3,8 @@ require("./connect.php");
 require_once("base.inc.php");
 require_once("smartfind.inc.php");
 
-function getjostid ($name) {
+function getjostid($name)
+{
 	global $id_a, $id_b, $id_data;
 	$id_a = $id_b = $id_data = array();
 	category_search($name, "CONCAT(firstname,' ',surname)", "person");
@@ -45,8 +46,8 @@ if (is_numeric($to)) {
 	if (!$to_id) $to_error = TRUE;
 }
 
-if (isset($from_id)) $from = getentry('person',$from_id);
-if (isset($to_id))	$to = getentry('person',$to_id);
+if (isset($from_id)) $from = getentry('person', $from_id);
+if (isset($to_id))	$to = getentry('person', $to_id);
 
 $mainperson = $from_id ?? 0;
 $subperson = $to_id ?? 0;
@@ -66,25 +67,25 @@ $svg = '';
 if ($mainperson && $subperson) {
 
 	$person = getcolid("SELECT id, CONCAT(firstname,' ',surname) AS name FROM person");
-	
+
 	$title = getcolid("SELECT id, title FROM title");
-	
-	if (!$person[$mainperson]) $error ="Kunne ikke finde personen …";
-	if (!$person[$subperson]) $error = "Kunne ikke finde personen …";
-	
-	if ($mainperson == $subperson) $error = "Vælg venligst to <b>forskellige</b> personer …\n";
+
+	if (!$person[$mainperson]) $error = $t->getTemplateVars('_jostgame_personnotfound');
+	if (!$person[$subperson]) $error = $t->getTemplateVars('_jostgame_personnotfound');
+
+	if ($mainperson == $subperson) $error = $t->getTemplateVars('_jostgame_sameperson');
 
 	if (!isset($error)) {
 		$check[1][] = $subperson;
 		$checked[] = $subperson;
 		$i = 1;
 		$personstotal = 1;
-		
+
 		// Loop!
-		while($check[$i]) {
-		
-			$inlist = join(",",$check[$i]);	
-			$notlist = join(",",$checked);
+		while ($check[$i]) {
+
+			$inlist = join(",", $check[$i]);
+			$notlist = join(",", $checked);
 
 			$query_nocon = "
 			SELECT
@@ -117,7 +118,7 @@ if ($mainperson && $subperson) {
 				t2.title_id,
 				title_translation
 		";
-	
+
 
 
 			$query_con = "
@@ -153,18 +154,18 @@ if ($mainperson && $subperson) {
 					t2.title_id,
 					g.title
 			";
-		
-		// set query
-		
+
+			// set query
+
 			$query = $query_nocon;
-		
+
 			if ($showquery ?? FALSE) $content .= "<br>$query<br>\n";
 			$q = getall($query);
 			print dberror();
 			$qnums++;
-			foreach($q AS $row) {
+			foreach ($q as $row) {
 				$connection[$row['link']] = $row['rlink'];
-		#		$content .= "($qnums) ".$row['link'] . " => " . $row['rlink']."<br>";
+				#		$content .= "($qnums) ".$row['link'] . " => " . $row['rlink']."<br>";
 				$games[$row['link']]['title'] = $row['title_translation'];
 				$games[$row['link']]['origtitle'] = $row['title'];
 				$games[$row['link']]['gameid'] = $row['gameid'];
@@ -174,22 +175,22 @@ if ($mainperson && $subperson) {
 					break 2;
 				}
 				$personstotal++;
-				$check[($i+1)][] = $row['link'];
+				$check[($i + 1)][] = $row['link'];
 				$checked[] = $row['link'];
 			}
 			$i++;
 		}
-				
+
 		if ($found == TRUE) {
-			$content .= sprintf( $t->getTemplateVars( $qnums == 1 ? '_jost_connected' : '_jost_connected_pl' ), $person[$mainperson], $person[$subperson], $qnums );
+			$content .= sprintf($t->getTemplateVars($qnums == 1 ? '_jost_connected' : '_jost_connected_pl'), $person[$mainperson], $person[$subperson], $qnums);
 			if ($qnums >= 6) award_achievement(29);
 			if ($qnums >= 10) award_achievement(30);
 			if ($qnums >= 15) award_achievement(31);
 		} else {
-			$content .= sprintf( $t->getTemplateVars('_jost_notconnected'), $person[$mainperson], $person[$subperson] );
+			$content .= sprintf($t->getTemplateVars('_jost_notconnected'), $person[$mainperson], $person[$subperson]);
 		}
 		$content .= "<br /><br />\n";
-		
+
 		// backtracker
 		if ($found == TRUE) {
 			$map = "<map name=\"jostresult\">\n";
@@ -200,28 +201,28 @@ if ($mainperson && $subperson) {
 				$gametitle = $games[$find]['title'];
 				$gameid = $games[$find]['gameid'];
 				$antal = $games[$find]['antal'];
-				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') ."<br>", $i, $find, htmlspecialchars($person[$find]), $gameid, htmlspecialchars($gametitle), $connection[$find], htmlspecialchars($person[$connection[$find]]) ) );
+				$content .= textlinks(sprintf("%d: " . $t->getTemplateVars('_jost_connectedlist') . "<br>", $i, $find, htmlspecialchars($person[$find]), $gameid, htmlspecialchars($gametitle), $connection[$find], htmlspecialchars($person[$connection[$find]])));
 				// for graph
 				$graph[] = $find;
 				$graph[] = $gameid;
-				$svglist[] = ['type' => 'person','id' => $find, 'label' => $person[$find]];
-				$svglist[] = ['type' => 'game','id' => $gameid, 'label' => $gametitle];
+				$svglist[] = ['type' => 'person', 'id' => $find, 'label' => $person[$find]];
+				$svglist[] = ['type' => 'game', 'id' => $gameid, 'label' => $gametitle];
 				// for ImageMap
-				$y1 = (($i - 0.5)*70) - 15;
-				$y2 = (($i - 0.5)*70) + 15;
-				$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"".htmlspecialchars($person[$find])."\" alt=\"".htmlspecialchars($person[$find])."\"/>\n";
-				$y1 = ($i*70) - 15;
-				$y2 = ($i*70) + 15;
-				$map .= "<area shape=\"rect\" coords=\"100,$y1,240,$y2\" href=\"data?scenarie=$gameid\" title=\"".htmlspecialchars($scen)."\" alt=\"".htmlspecialchars($scen)."\" />\n";
+				$y1 = (($i - 0.5) * 70) - 15;
+				$y2 = (($i - 0.5) * 70) + 15;
+				$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"" . htmlspecialchars($person[$find]) . "\" alt=\"" . htmlspecialchars($person[$find]) . "\"/>\n";
+				$y1 = ($i * 70) - 15;
+				$y2 = ($i * 70) + 15;
+				$map .= "<area shape=\"rect\" coords=\"100,$y1,240,$y2\" href=\"data?scenarie=$gameid\" title=\"" . htmlspecialchars($scen) . "\" alt=\"" . htmlspecialchars($scen) . "\" />\n";
 				// next
 				$find = $connection[$find];
 			}
 			// for graph
 			$graph[] = $find;
-			$svglist[] = ['type' => 'person','id' => $find, 'label' => $person[$find]];
+			$svglist[] = ['type' => 'person', 'id' => $find, 'label' => $person[$find]];
 			// for ImageMap
-			$y1 = (($i + 0.5)*70) - 15;
-			$y2 = (($i + 0.5)*70) + 15;
+			$y1 = (($i + 0.5) * 70) - 15;
+			$y2 = (($i + 0.5) * 70) + 15;
 			$map .= "<area shape=\"rect\" coords=\"10,$y1,150,$y2\" href=\"data?person=$find\" title=\"$person[$subperson]\" alt=\"$person[$subperson]\" />\n";
 			$map .= "</map>\n";
 		}
@@ -229,43 +230,40 @@ if ($mainperson && $subperson) {
 		if ($found == TRUE) {
 			// Requires gd
 			$content .= $map;
-			$content .= "<br /><img src=\"jostgraph.php/sixdegrees_{$mainperson}_{$subperson}.png?".join(',',$graph)."\" usemap=\"#jostresult\" style=\"border: 0;\" alt=\"Graph between users\" />\n";
+			$content .= "<br /><img src=\"jostgraph.php/sixdegrees_{$mainperson}_{$subperson}.png?" . join(',', $graph) . "\" usemap=\"#jostresult\" style=\"border: 0;\" alt=\"Graph between users\" />\n";
 			// Use SVG instead
 			// Graph contains 
 			$svgheight = count($svglist) * 60 + 60;
 			$svg .= '<svg preserveAspectRatio="none" height="' . $svgheight . '" width="350">' . PHP_EOL;
 			$y = 0;
-			foreach($svglist AS $svgentry) {
+			foreach ($svglist as $svgentry) {
 				$cx = $svgentry['type'] == 'person' ? 120 : 220;
 				$cy += 60;
 				$class = $svgentry['type'] == 'person' ? 'person' : 'scenarie';
 				$svg .= '<a href="' . getdatalink($svgentry['type'], $svgentry['id']) . '" class="' . $class . '">' . PHP_EOL;
 				$svg .= '<ellipse cx="' . $cx . '" cy="' . $cy . '" rx="100" ry="50" stroke="black" stroke-width="2" fill="white"/>' . PHP_EOL;
-				$svg .= '<text x="' . ($cx-50) . '" y="' . $cy . '" font-size="12"> ' . htmlspecialchars($svgentry['label']) . '</text>' . PHP_EOL;
+				$svg .= '<text x="' . ($cx - 50) . '" y="' . $cy . '" font-size="12"> ' . htmlspecialchars($svgentry['label']) . '</text>' . PHP_EOL;
 				$svg .= '</a>' . PHP_EOL;
 			}
 			$svg .= '</svg>' . PHP_EOL;
 		}
 	} else {
-		$content .= "<p class=\"finderror\">$error</p>\n";
+		$content .= '<p class="finderror">' . $error . '</p>' . PHP_EOL;
 	}
 }
 
 // people
-$people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM person ORDER BY firstname, surname");	
+$people = getcol("SELECT CONCAT(firstname, ' ', surname) AS id_name FROM person ORDER BY firstname, surname");
 $json_people = json_encode($people);
 
-$t->assign('type','jostgame');
-$t->assign('content',$content);
-$t->assign('intro',$intro);
-$t->assign('from',$from);
-$t->assign('to',$to);
-$t->assign('from_error',$from_error);
-$t->assign('to_error',$to_error);
+$t->assign('type', 'jostgame');
+$t->assign('content', $content);
+$t->assign('intro', $intro);
+$t->assign('from', $from);
+$t->assign('to', $to);
+$t->assign('from_error', $from_error);
+$t->assign('to_error', $to_error);
 #$t->assign('svg', $svg);
 $t->assign('svg', '');
 
 $t->display('jostgame.tpl');
-
-
-?>
