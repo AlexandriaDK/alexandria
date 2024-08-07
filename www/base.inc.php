@@ -1106,6 +1106,7 @@ function getFieldFromCategory($cat, $table = '')
 		'tag' => 'tag_id',
 		'magazine' => 'magazine_id',
 		'issue' => 'issue_id',
+		'locations' => 'location_id'
 	];
 	if ($table == 'alias') {
 		unset($categories['issue']);

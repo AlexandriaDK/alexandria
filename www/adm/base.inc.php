@@ -51,6 +51,12 @@ function getlabel($category, $data_id, $link = FALSE, $default = "")
 			$returl = 'tag.php?tag_id=';
 			break;
 
+		case 'locations':
+			$value = 'name';
+			$url = 'locations?id=';
+			$returl = 'locations.php?id=';
+			break;
+
 		case 'person':
 		default:
 			$value = "CONCAT(firstname,' ',surname)";

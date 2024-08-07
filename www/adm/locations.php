@@ -367,6 +367,7 @@ function showLocations() {
 }
 
 function showLocation($id = NULL) {
+	global $this_type;
 	if ($id) {
 		$location = getrow("
 			SELECT l.id, l.name, l.address, l.city, l.country, l.note, l.geo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, COUNT(lrel.id) AS connections
@@ -399,6 +400,7 @@ function showLocation($id = NULL) {
 	trEdit('Country code', 'country', $location['country'], TRUE, "Two letter ISO code, e.g.: se", "countrynote", $countryname) .
 	trEdit('Coordinate', 'latlon', $latlon, TRUE, "Latitude,Longitude (WGS84)") .
 	trEdit('Note', 'note', $location['note']) .
+	changealias($id, $this_type) . 
 	trEdit('Connections', 'connections', $location['connections'], FALSE) . 
 	'<tr><td></td><td><input type="submit" value="' . $actionlabel . '">' . ($id ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete location?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>' . 
 	'</table>';

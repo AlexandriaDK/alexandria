@@ -157,16 +157,22 @@ if ($type == 'locationwithid' && $term !== "") {
 	$escapequery = dbesc($term);
 	$likeescapequery = likeesc($term);
 	$refs = getall("
-		SELECT l.id, l.name, l.city, l.country
+		SELECT l.id, l.name, l.city, l.country, la.label AS aliasname
 		FROM locations l
+		LEFT JOIN alias la ON l.id = la.location_id
 		WHERE l.name LIKE '$likeescapequery%'
 		OR l.city LIKE '$likeescapequery%'
 		OR l.note LIKE '$likeescapequery%'
 		OR l.id = '$escapequery'
+		OR la.label LIKE '$likeescapequery%'
 	");
 	$result = [];
 	foreach($refs AS $ref) {
-		$label = $ref['id'] . ' - ' . $ref['name'];
+		if ($ref['aliasname']) {
+			$label = $ref['id'] . ' - ' . $ref['aliasname'] . ' (' . $ref['name'] . ')';
+		} else {
+			$label = $ref['id'] . ' - ' . $ref['name'];
+		}
 		if ($ref['city']) {
 			$label .= ', ' . $ref['city'];
 		}
