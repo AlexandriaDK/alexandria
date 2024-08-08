@@ -4,13 +4,14 @@ define("URLSCE","data?scenarie=");
 define("URLSYS","data?system=");
 define("URLCON","data?con=");
 define("URLMAGAZINE","magazines?id=");
+define("URLLOCATION","locations?id=");
 
 function log_search($find, $found="") {
 	$referer = dbesc($_SERVER['HTTP_REFERER'] ?? '');
 	doquery("INSERT INTO searches (find, found, referer, searchtime) VALUES ('" . dbesc($find) . "','$found','" . dbesc($referer) ."',NOW())");
 }
 
-function category_search ($find, $searchfield, $category) {
+function category_search($find, $searchfield, $category) {
 	global $match, $id_data, $link_a, $link_b, $id_a, $id_b;
 	$categoryfind = ($category == 'conventionwithyear' ? 'convention' : $category);
 	$q = getall("SELECT id, $searchfield FROM $categoryfind");
@@ -46,7 +47,12 @@ function category_search ($find, $searchfield, $category) {
 			$linkurl = URLMAGAZINE;
 			$getfunction = "getmagazineidbyname";
 			break;
-	
+
+		case 'locations':
+			$linkurl = URLLOCATION;
+			$getfunction = "getlocationidbyname";
+			break;
+
 		default:
 			$linkurl = URLAUT;
 			$getfunction = "getpersonidbyname";
@@ -98,7 +104,7 @@ function array_larger ($array, $fixedvalue) {
 // $match['b'] are good matches,
 // $match['c'] are mediocre matches
 // $match_all is a unique list of all three matches
-function getalphaidbybeta ($find, $table, $string, $idfield = "id", $search_alias = FALSE) {
+function getalphaidbybeta($find, $table, $string, $idfield = "id", $search_alias = FALSE) {
 	$match = [];
 	$match['a'] = $match['b'] = $match['c'] = [];
 	$listetegn = $listeprocent = [];
@@ -193,19 +199,19 @@ function getalphaidbybeta ($find, $table, $string, $idfield = "id", $search_alia
 }
 
 function getgameidbytitle($find) {
-	return getalphaidbybeta ($find, "game", "title");
+	return getalphaidbybeta($find, "game", "title");
 }
 
 function getpersonidbyname($find) {
-	return getalphaidbybeta ($find, "person", "CONCAT(firstname,' ',surname)");
+	return getalphaidbybeta($find, "person", "CONCAT(firstname,' ',surname)");
 }
 
 function getsysidbyname($find) {
-	return getalphaidbybeta ($find, "gamesystem", "name");
+	return getalphaidbybeta($find, "gamesystem", "name");
 }
 
 function getconidbyname($find) {
-	return getalphaidbybeta ($find, "convention", "name");
+	return getalphaidbybeta($find, "convention", "name");
 }
 
 function getconidbynameandyear($find) {
@@ -236,12 +242,17 @@ function getconidbynameandyear($find) {
 }
 
 function getconsetidbyname($find) {
-	return getalphaidbybeta ($find, "conset", "name");
+	return getalphaidbybeta($find, "conset", "name");
 }
 
 function getmagazineidbyname($find) {
-	return getalphaidbybeta ($find, "magazine", "name");
+	return getalphaidbybeta($find, "magazine", "name");
 }
+
+function getlocationidbyname($find) {
+	return getalphaidbybeta($find, "locations", "name");
+}
+
 
 // And aliases...
 function getidbyalias ($find, $category) {

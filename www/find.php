@@ -23,6 +23,7 @@ $search_players = (int) ($_REQUEST['search_players'] ?? 0);
 $search_no_gm = (string) ($_REQUEST['search_no_gm'] ?? '');
 $search_boardgames = (string) ($_REQUEST['search_boardgames'] ?? '');
 $search_tag = (string) ($_REQUEST['tag'] ?? '');
+$id_data = [];
 
 // achievements
 function check_search_achievements($find)
@@ -171,21 +172,27 @@ function search_tags($find)
 	return $output;
 }
 
-
 function display_result($match, $linkpart, $class, $short)
 {
 	$html = "";
+	$list = [];
 	global $id_data;
 	if ($match) {
 		$html .= "<ul class=\"indatalist\">\n";
 
-		// samler data sammen og sorterer alfabetisk
+		// Collect and sort data
 		foreach ($match as $m_id) {
 			$list[$m_id] = $id_data[$short][$m_id] ?? '';
 		}
 		asort($list);
 		foreach ($list as $key => $value) {
-			$link = ($linkpart != 'magazine' ? "data?$linkpart=$key" : "magazines?id=$key");
+			if ($linkpart == 'magazine') {
+				$link = 'magazines?id=' . $key;
+			} elseif ($linkpart == 'location') {
+				$link = 'locations?id=' . $key;
+			} else {
+				$link = 'data?' . $linkpart . '=' . $key;
+			}
 			$html .= "<li><a href=\"$link\" class=\"$class\">" . htmlspecialchars($value) . "</a></li>\n";
 		}
 		$html .= "</ul>\n";
@@ -200,7 +207,7 @@ check_search_achievements($find);
 // Some quick find code:
 
 if ($find) {
-	if (preg_match("/^([cspfgrmi]|cs)(\d+)$/i", $find, $regs)) {
+	if (preg_match("/^([cspfgrmil]|cs)(\d+)$/i", $find, $regs)) {
 		$pref = strtolower($regs[1]);
 		$id = $regs[2];
 
@@ -241,6 +248,13 @@ if ($find) {
 				header("Location: magazines?issue=$id");
 				exit;
 				break;
+
+			case "l":
+				header("Location: locations?id=$id");
+				exit;
+				break;
+	
+
 		}
 	}
 
@@ -273,6 +287,10 @@ if ($find) {
 
 	if (!$cat || $cat == "magazine") {
 		category_search($find, "name", "magazine");
+	}
+
+	if (!$cat || $cat == "locations") {
+		category_search($find, "name", "locations");
 	}
 
 	// If only one perfect match, redirect user at once
@@ -426,6 +444,7 @@ $t->assign('find_game', display_result($match['game'] ?? FALSE, "scenarie", "sce
 $t->assign('find_convention', display_result($match['convention'] ?? FALSE, "con", "con", "convention"));
 $t->assign('find_gamesystem', display_result($match['gamesystem'] ?? FALSE, "system", "system", "gamesystem"));
 $t->assign('find_magazines', display_result($match['magazine'] ?? FALSE, "magazine", "magazine", "magazine"));
+$t->assign('find_locations', display_result($match['locations'] ?? FALSE, "location", "location", "locations"));
 $t->assign('find_tags', $tagsearch ?? "");
 $t->assign('find_files', $filesearch ?? "");
 $t->assign('find_articles', $articlesearch ?? "");
