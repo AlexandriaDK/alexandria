@@ -2,6 +2,8 @@
 {include file="head.tpl"}
 
 <div id="content">
+{include file="originalsearch.tpl"}
+
 	<h2 class="pagetitle">
 		{$_locations_title}
 	</h2>
