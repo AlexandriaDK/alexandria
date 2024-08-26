@@ -34,7 +34,14 @@ foreach ($countries as $country) {
 	$htmlisocodes .= '<a href="' . ($country['category'] == 'gamerun' ? 'run.php?id=' : ($country['category'] == 'convention' ? 'convention.php?con=' : 'conset.php?conset=')) . $country['id'] . '">';
 	$htmlisocodes .= 'Dataset ' . $country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
-if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
+$locations = getall("
+	SELECT id, name, country FROM locations
+	WHERE country IN('da','sv','nb','uk') OR country REGEXP '^..[a-z]'
+");
+foreach ($locations as $location) {
+	$htmlisocodes .= 'Location <a href="locations.php?id=' . $location['id'] . '">' . htmlspecialchars($location['name']) . "</a> (" . htmlspecialchars($location['country']) . ")<br>";
+}
+if (count($languages) + count($countries) + count($gamedescriptions) + count($locations) === 0) {
 	$htmlisocodes .= "<b>All good!</b>";
 }
 
