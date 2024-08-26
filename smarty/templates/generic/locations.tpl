@@ -90,6 +90,10 @@ for(place_id in locations) {
 	if (place.data.hasGeo) {
 		var highlight = false;
 		var markerText = '<a href="locations?id=' + place_id + '"><b>' + place.data.name + '</b></a><br>';
+		if (place.data.aliases) {
+			console.log(place.data);
+			markerText += '<span class="locationnote">(' + {/literal}'{$_aka|escape}'{literal} + ': ' + place.data.aliases + ')<br></span>'; // escape!
+		}
 		if (place.data.city) {
 			markerText += place.data.city; // escape!
 		}
