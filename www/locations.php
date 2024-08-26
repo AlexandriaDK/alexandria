@@ -99,7 +99,7 @@ $locations = getall("
 $aliases = getcolid("
     SELECT location_id, GROUP_CONCAT(label ORDER BY label SEPARATOR ', ') AS label
     FROM alias
-    WHERE location_id IS NOT NULL
+    WHERE location_id IS NOT NULL AND visible = 1
     GROUP BY location_id
 ");
 
