@@ -85,13 +85,19 @@ var smallIcon = new L.Icon({
   shadowSize: [21, 21]
 });
 
+var markerGroups = {};
+
 for(place_id in locations) {
 	var place = locations[place_id];
 	if (place.data.hasGeo) {
+		var countrycode = place.data.countrycode.toLowerCase() || 'xxx';
+		if (!(countrycode in markerGroups)) {
+			markerGroups[countrycode] = L.markerClusterGroup();
+		}
+		var clusterGroup = markerGroups[countrycode];
 		var highlight = false;
 		var markerText = '<a href="locations?id=' + place_id + '"><b>' + place.data.name + '</b></a><br>';
 		if (place.data.aliases) {
-			console.log(place.data);
 			markerText += '<span class="locationnote">(' + {/literal}'{$_aka|escape}'{literal} + ': ' + place.data.aliases + ')<br></span>'; // escape!
 		}
 		if (place.data.city) {
@@ -129,10 +135,14 @@ for(place_id in locations) {
 				marker.openPopup(); // only open if exactly one location
 			}
 		} else {
-			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon}).addTo(map);
+			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon});
 			marker.bindTooltip(place.data.name).bindPopup(markerText);
+			clusterGroup.addLayer(marker);
 		}
 	}
+}
+for (markerGroup in markerGroups) {
+	map.addLayer(markerGroups[markerGroup]);
 }
 {/literal}
 </script>

@@ -108,7 +108,7 @@ foreach($locations AS $event) {
     $location_id = $event['id'];
     if (!isset($events[$location_id])) {
         $events[$location_id] = [
-            'data' => ['name' => $event['name'], 'address' => $event['address'], 'city' => $event['city'], 'country' => getCountryName($event['country']), 'note' => $event['note'], 'hasGeo' => $event['hasGeo'], 'latitude' => $event['latitude'], 'longitude' => $event['longitude'], 'aliases' => $aliases[$location_id] ?? '' ],
+            'data' => ['name' => $event['name'], 'address' => $event['address'], 'city' => $event['city'], 'countrycode' => $event['country'], 'country' => getCountryName($event['country']), 'note' => $event['note'], 'hasGeo' => $event['hasGeo'], 'latitude' => $event['latitude'], 'longitude' => $event['longitude'], 'aliases' => $aliases[$location_id] ?? '' ],
             'events' => []
         ];
     }
