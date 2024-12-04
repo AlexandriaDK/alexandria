@@ -113,6 +113,7 @@ for(place_id in locations) {
 			markerText += '<br>';
 		}
 		markerText += '<br>';
+		markerText += '<div class="popupeventlist">';
 		for(event of place.events) {
 			var link = (event.type == 'convention' ? 'data?con=' : 'data?scenarie=') + event.data_id;
 			var className = (event.type == 'convention' ? 'con' : 'game');
@@ -122,6 +123,7 @@ for(place_id in locations) {
 			div.appendChild(node);
 			markerText += `<a href="${link}" class="${className} ${classCancelled}" title="${event.nicedateset}">${div.innerHTML}</a><br>`;
 		}
+		markerText += '</div>';
 		if (place.data.note) {
 			var div = document.createElement('div');
 			var node = document.createTextNode(place.data.note);

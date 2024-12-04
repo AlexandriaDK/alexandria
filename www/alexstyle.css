@@ -1055,3 +1055,9 @@ details div.nomtext,
 details div.ranking {
 	margin-left: 1em;
 }
+
+div.popupeventlist {
+	overflow: auto;
+	max-height: 300px;
+	scrollbar-width: thin;
+}
