@@ -3,7 +3,7 @@ param (
     [switch]$download = $false,
     [switch]$exit = $false
  )
-$version = 1.4
+$version = 1.5
 $client = "usb2023"
 $fileDownloadLimit = 100
 $ProgressPreference = 'SilentlyContinue'
@@ -63,22 +63,6 @@ $LinkLabel2.ActiveLinkColor = "RED"
 $LinkLabel2.Text = "Visit Alexandria USB project page"
 $LinkLabel2.add_Click({[system.Diagnostics.Process]::start("https://alexandria.dk/usb?client=$client&version=$version")})
 $LinkLabel2.Anchor = 'Bottom','Right'
-
-$updateButton = New-Object System.Windows.Forms.Button 
-$updateButton.Location = New-Object System.Drawing.Point(15,120) 
-$updateButton.Size = New-Object System.Drawing.Size(200,60)
-$updateButton.Text = 'Update database'
-$updateButton.Font = New-Object System.Drawing.Font ("Arial", 15)
-$updateButton.add_Click($updateClick)
-$updateButton.Anchor = 'Top','Left'
-
-$filesButton = New-Object System.Windows.Forms.Button 
-$filesButton.Location = New-Object System.Drawing.Point(($form.Width - 230),120) 
-$filesButton.Size = New-Object System.Drawing.Size(200,60)
-$filesButton.Text = 'Download files'
-$filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
-$filesButton.add_Click($filesClick)
-$filesButton.Anchor = 'Top','Right'
 
 # Status textbox
 # $status = New-Object System.Windows.Forms.RichTextBox
@@ -354,10 +338,29 @@ $filesClick = {
     $filesButton.Enabled = $true
 }
 
-startupAction
+
+$updateButton = New-Object System.Windows.Forms.Button 
+$updateButton.Location = New-Object System.Drawing.Point(15,120) 
+$updateButton.Size = New-Object System.Drawing.Size(200,60)
+$updateButton.Text = 'Update database'
+$updateButton.Font = New-Object System.Drawing.Font ("Arial", 15)
+$updateButton.add_Click($updateClick)
+$updateButton.Anchor = 'Top','Left'
+
+$filesButton = New-Object System.Windows.Forms.Button 
+$filesButton.Location = New-Object System.Drawing.Point(($form.Width - 230),120) 
+$filesButton.Size = New-Object System.Drawing.Size(200,60)
+$filesButton.Text = 'Download files'
+$filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
+$filesButton.add_Click($filesClick)
+$filesButton.Anchor = 'Top','Right'
 
 # Add objects
 $form.Controls.AddRange(@($header, $description, $updateButton, $filesButton, $LinkLabel, $LinkLabel2, $status))
+
+
+
+startupAction
 
 # Start up dialog
 $form.ShowDialog()
