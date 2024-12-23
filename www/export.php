@@ -105,7 +105,7 @@ if ($dataset) {
 } elseif ( $newestversion ) {
 	switch ($newestversion) {
 		case 'powershellupdater':
-			$output = ['version' => 1.4];
+			$output = ['version' => 1.5];
 			break;
 
 		default:
