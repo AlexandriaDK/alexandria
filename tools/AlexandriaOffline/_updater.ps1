@@ -1,4 +1,9 @@
-$version = 1.2
+param (
+    [switch]$update = $false,
+    [switch]$download = $false,
+    [switch]$exit = $false
+ )
+$version = 1.4
 $client = "usb2023"
 $fileDownloadLimit = 100
 $ProgressPreference = 'SilentlyContinue'
@@ -13,10 +18,12 @@ $json = ""
 Add-Type -AssemblyName System.Windows.Forms,PresentationFramework
 $form = New-Object System.Windows.Forms.Form
 $form.Text ='Alexandria Downloader'
-$form.Width = 600
-$form.Height = 400
+$form.Width = 800
+$form.Height = 600
 $form.AutoSize = $true
 $form.StartPosition = 'CenterScreen'
+#$form.FormBorderStyle = 'Fixed3D'
+#$form.MaximizeBox = $false
 
 # Icon as Base64
 $iconBase64      = 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAHZ3pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjarZhpdt06DoT/cxW9BHEAh+VwAM/pHfTy+wMl2/EQt5N+V7nSFUWBAKpQoOP0P//e7l98QkrZJSk1t5wvPqmlFjo/6nV/7qu/0jmfT3gecf9u3L0+CAxFrvG+zfrM74zL2wslPePj/bgr87FTH0PPgxeD0Va21Z559TEUwz3un3vXnvd6+iWc5zv1jsQ/Rj/ep0IyljAYgwsaGeccbJV4fzvfeM7CJM789jFxTrF8nTv3+vND8l5/fcjd1Z/x+D4V7srPhPwhR8+4l69zdzL0q0f+beV3D0p5JcGn3O296t56R9dTJlPZPUG9hHJ+MXGQynheyxyFr/C7nKNxVEKcILZAc3BM55sPZHv75Jfvfns91+knLqagoXANYYZ4xmosoYUJAJZ8Dr9DiS0uFys4TVCLDIdXX/xZt531pq+svDwzg8eY541Ph/tq8G+OV0N7G3W9v+prrvArGAFxw5CzM7MAxO8np3Lyew73C2+uX4CNICgnzZUA+zVuE0P8G7fiwTkyT67krrs0fFmPAVLE2oIzPoLAlX0Un/1VQijek8cKPh3PQ0xhgIAXCcu7DTYxZsCpwdbmneLP3CDhHkZaAEJijgVoWuyAlZLAn5IqHOoSJTkRyVKkSpOeY05Zcs4lm0b1EksqUnIppZZWeo01Vam5llprq72FFpEwabkV12prrXcW7ZjuvN2Z0fsII440ZORRRh1t9Al9Zpoy8yyzzjb7Cisuyn/lVdyqq62uXqGSJhXNWrRq077h2o47bdl5l1132/0VtQfV96j5D8h9j5p/UDPE0plX3lBjuJQXE97kRAwzEAvJg3gxBCB0MMyu6lMKhpxhdrVAUUgANS8GzvKGGAgm9UG2f8XuDblvcXOS/gi38DvknEH3TyDnDLoHuc+4fYHa6qejxAOQVaHl9IobYWNSD5V/6PHfXx0U4mcco4ehhXh2gickxoty1tGAVXwS//3V/a8JP7uWZr2/j1Vaov1CFyF1pXkG12Kgckf1FrS0LG/t+ndpcNc/kJ93hqLvY4YOA1hTuY9h1Nw3Tbba4znDWGJz8lirf7Lk/s6FHRQabPEGUea+O2+rpzOn257k/XWH1nXgx1J8NaqkDs8a3Apo6iUDG1XJsoPWllWmGt4bvP8IrkxBtVXmdhHaSBhEv0bo24zONkQVuyHKTpGhvJi7cIOVytTBOzp2Ms3Cw5kJCmFTQrQAVrWBQbYRAqriScTAYosy6yqysIBYIIkTy1oOd6n4SK0psj6nOdJhz/ALmH7K5oeMU/HcmUrUw8YxSNMckqfd0WTmBQvZNFokc/JCb9RvE4vdfJEgouQ+DwTD4Oc2WlXxvdZdaStHMferN6PRsqMrp5X7SeLcQk/rHsgO6lqG6wOkdMiOau+YB+a07TJ/eJW6ZXh3oqplWaXrXXFTzQPbgIdVsvmotSFTQEvriTbFqhFFXXuVcDD0DhAMNkAy+pXOXDNyp1OUTMzDCUqWzkxUEezulJKsjTzT0Zfts0cW6V/z+qfXObs6anXFpxxK16sPZRUVK9Te+1yQbCmDw6bUlYdOI94OA8U2WUHrO70fRGM232GQGvgYzjcSkHbA02J12U+NsjKpQheSnuodE5rPdZitNB0Gmhqa1wXfIcW2pqJ3agDAZM/k7zsITWqtMajxudkeYKxmDtkNIVHZO9qERclk4ryod3wlQWMmK9A8rKVfbln/kmWMhxLajcEKq4/SGi+PJOQClqeQmgm0Qnm5udJ4ocf18MjbXKiyabjGmxEflzHqxZh+1HvM3xPTmRsRzYdh7a5dOibrKTsPiHlX5QIS2nJ4oasgty2Y7N6aTHqdUVE7AwF9ChuF4MXjFl7yJ1Rf8Ui65nCqicLVU8ZYXof71LfW4mwoJms2NkNMzWyI6iyzUCoUghy+XLWreQEjhpFBC5Sq64Wa7gNX6baTmr6gRzictNfRidgPlmSBGmJCYuywuMJMar47esxsFrsMK1PUKR6XkqnTjh1MjqgXYdOE4pr8Xe1EbhrYjK3zwJ/7hBrZwyG6lXVWCFSQhjIuoyD9ghqnwRnqDxh5Wz2YYpn+nwgctKLzDf2uke3Y2FvwQkhPTWKsm3tyqIVodgf5qFuLBgAqKe7gXYcFSy2Wso+k+LkYZW9nzh9rbJbouEdl6SeEZi0FxwF3h3Aq8yBuiyN8ho7PY1ar/3x4gB6QPm3rc619q6M7VuMGDPXmtioGrBJW5TFKttlHjhVADehYlh4JL1n1JgHRZqTjkeEyToM0eltSBD26MEHsux1yD4XZJGa2DniWRlieqH+4Ma+D4c4/VEn36QH73eMWwmi7mjL0ZFthmu72ZZP0kMUpge4EWvFMN7HvN1Gol5MsJMSUxZ5uiu0qp4DZdR9Wnc0H3dSpbQn+/02k6dE3E7z5qxtBoRnZf/IU/jSZXTJcu5/v8eDrbFMhZ0vx0hf/oMn+cnV/9eLZX5S7Uc55OrDbKdxOUsxs7/4oNfz1vlcjrP8CIyC6WU1wfwsAAAAGYktHRAAAAAAAAPlDu38AAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAHdElNRQfkAwUEDjCOLMwoAAAF7UlEQVRYw8VXbUjTXxu+fFJEt2mUuPVCFFTay4fZIIxkBJG9UJDsQxmFDEvRZi8sDXuBMJ0ZLkwUk0YfbM4RwoRsrNAIQVoi7ENz2rJmZkthiJPmlm67nk/Pj/94/lH729Nzffpx7vvcv+uc+76vc04CSeL/iMTfEWRwcBDPnj1DKBTCrl27cPr06V+e+6/fQWBqagpFRUW4d+8eJicnMTQ09GcJAMDQ0BCi0Sh8Ph8UCsWfI/D161e8efMG+/fvh8ViQW5uLlasWPHrAbhMVFRUMBQKkSRDoRAbGhrimr/sHcjLy4PH4wEAfP78GT09Pfjw4cPvSYHFYkFZWRnm5uZ+6OP1etHb2wuPxwOVSoWHDx/iyZMnMJvN8afA5/PxwoULrK2t5bFjx9jf30+/30+1Wk2n00mXyxWzfU1NTbRarSTJxcVFer1ekuTHjx9pMBh+KQUxOqDX61FTU4P09HQcP34ca9asQVpaGjIyMtDW1oacnBy0trZCrVZDoVBgw4YNWLduHQAgKSkJer0eEokEbrcb7e3t8acgFAohPT0dAFBeXo7Ozk68e/cONpsNOp0OxcXFqK+vx8DAAAAgNzcX9+/fBwCUlpZiamoKS0tLkMvlEIvF8SuhVCrF6OgoZDIZDhw4gPz8fADAxo0bMT09jbS0NASDQUxOTgIADAYD6uvrQRKrVq0SVn3z5s1fLsKEv54F09PTMJvNCIfD8Pl8uHPnDgDAarXC4/Fg586dePToEUQiEaRSKYLBoOCztLSEpKQkgUB1dTVSU1PjI/BX6HQ67N69GytXrsTWrVuRlpYGl8uFlpYWXLx4EVlZWQCApqYmTExMYH5+HtnZ2UhMTEQ4HEZVVdXy2rC0tBShUAjj4+Oorq4GSUilUgwPD2PLli0AgEAgAJPJhB07dmD16tVYu3Yt9uzZ87c/X1xc/OdK6HQ6efbsWZLktWvXeOLECYZCIZaUlNBoNAp+5eXl9Pl8JMmnT5+yrKyMXV1dtNvtLCkpoVarpdlsjon9QwLDw8M0mUy0WCz0er1sbm4WbM3NzZyZmaHH42EwGBTGu7q62NraSpVKRZvNRpJ0OBysra0VfC5duvRjHfgPotEoOjo6UFpaiomJCej1eshkMsGuVCqRmZkJANBqtRgfH4dEIkF7eztEIhHKy8sFX7lcDqlUGtNpPy3C9vZ2bNu2DUqlEgBQUVGBlJQULCws4P3799i0aRMaGxsxNjYGuVwOv9+PqqoqpKenQ6/XQ6fT4cuXL2hsbERqair27duHgwcPYvPmzbDb7dDr9T+ugRcvXvDKlSusq6sjSUajUUYiETocDhYWFgpyHAwGqVQqhXmDg4M8f/48+/r6SJIPHjzg9u3b6ff7GYlEeOrUKba0tPxXqmMI3Lhxgz09PRwZGWFOTg7z8/OZl5dHv9//t3Wyd+9ehsNhRqNR3rp1ixqNhvPz84K9qKiIdrtdiP3Ts0AsFuPQoUNITk6GyWRCdnY2AODt27fo6+uD2+2GWCxGQUEBbDYbkpOTkZCQAI1Gg+LiYrx+/Rrd3d1Qq9V4+fIl1q9fD6PRiP7+fmRkZPy8DZ8/f86jR4/yyJEjfPz4sTDe2trKV69ekSTdbjfPnTtHlUolrK6trU1ov8HBQZaVldFqtTISify0xWMIGI1GdnZ2cm5ujn6/n4uLixwZGaFGo4lpI6fTydnZWUYiEX7//p0GgyFGD+JBDIHLly8L34FAgCdPnmR3dzfdbjdJ0uv1xvR0XV0d6+vrSZIWi4W3b99eHoGGhgY6HA6SZEdHB0dHR2Ocv337Ro1GI4jP4cOHOTMzI9hramriJhBThJWVlbh69Sp6e3sBAGfOnImpF5FIhOvXr0Or1SIajSIQCAiC9OnTJ+GYjgv/JG9jY2OsrKwkSc7OzlKtVnNhYYEmk4l3797939+Ks7KyIJFIhLuCTCZDSkoKCgsLMTMz82fehikpKairq4PL5RL0AgASE+MLmfA7XscDAwMwGo3IzMyEQqFAQUHBnyWwHPwbu8FNSSNrESwAAAAASUVORK5CYII='
@@ -29,33 +36,60 @@ $header.Text = "Alexandria Downloader"
 $header.Location  = New-Object System.Drawing.Point(10,10)
 $header.AutoSize = $true
 $header.Font = New-Object System.Drawing.Font ("Arial", 30)
-$form.Controls.Add($header)
+$header.Anchor = 'Top','Left'
 
 $description = New-Object System.Windows.Forms.Label
 $description.Text = "Update local content from Alexandria.dk"
 $description.Location  = New-Object System.Drawing.Point(15,70)
 $description.AutoSize = $true
 $description.Font = New-Object System.Drawing.Font ("Arial", 12)
-$form.Controls.Add($description)
+$description.Anchor = 'Top','Left'
 
 # Links
 $LinkLabel = New-Object System.Windows.Forms.LinkLabel
-$LinkLabel.Location  = New-Object System.Drawing.Point(15,($form.Height - 65))
+$LinkLabel.Location  = New-Object System.Drawing.Point(15,($form.Height - 70))
 $LinkLabel.Size = New-Object System.Drawing.Size(200,20)
 $LinkLabel.LinkColor = "BLUE"
 $LinkLabel.ActiveLinkColor = "RED"
 $LinkLabel.Text = "Open offline copy on this computer"
 $LinkLabel.add_Click({[system.Diagnostics.Process]::start("$PSScriptRoot\index.html")})
-$Form.Controls.Add($LinkLabel)
+$LinkLabel.Anchor = 'Bottom','Left'
 
 $LinkLabel2 = New-Object System.Windows.Forms.LinkLabel
-$LinkLabel2.Location  = New-Object System.Drawing.Point(($form.Width - 200),($form.Height - 65))
+$LinkLabel2.Location  = New-Object System.Drawing.Point(($form.Width - 220),($form.Height - 70))
 $LinkLabel2.Size = New-Object System.Drawing.Size(180,20)
 $LinkLabel2.LinkColor = "BLUE"
 $LinkLabel2.ActiveLinkColor = "RED"
 $LinkLabel2.Text = "Visit Alexandria USB project page"
 $LinkLabel2.add_Click({[system.Diagnostics.Process]::start("https://alexandria.dk/usb?client=$client&version=$version")})
-$Form.Controls.Add($LinkLabel2)
+$LinkLabel2.Anchor = 'Bottom','Right'
+
+$updateButton = New-Object System.Windows.Forms.Button 
+$updateButton.Location = New-Object System.Drawing.Point(15,120) 
+$updateButton.Size = New-Object System.Drawing.Size(200,60)
+$updateButton.Text = 'Update database'
+$updateButton.Font = New-Object System.Drawing.Font ("Arial", 15)
+$updateButton.add_Click($updateClick)
+$updateButton.Anchor = 'Top','Left'
+
+$filesButton = New-Object System.Windows.Forms.Button 
+$filesButton.Location = New-Object System.Drawing.Point(($form.Width - 230),120) 
+$filesButton.Size = New-Object System.Drawing.Size(200,60)
+$filesButton.Text = 'Download files'
+$filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
+$filesButton.add_Click($filesClick)
+$filesButton.Anchor = 'Top','Right'
+
+# Status textbox
+# $status = New-Object System.Windows.Forms.RichTextBox
+$status = New-Object System.Windows.Forms.TextBox
+$status.Multiline = $True;
+$status.Location = New-Object System.Drawing.Size(15,200) 
+$status.Size = New-Object System.Drawing.Size(($form.Width - 40),($form.Height - 300))
+$status.Scrollbars = "Vertical" 
+$status.Enabled = $true
+$status.Anchor = 'Top','Bottom','Left','Right'
+
 
 # Action buttons
 function updateJSON($json) {
@@ -74,9 +108,32 @@ function updateJSON($json) {
     [IO.File]::WriteAllLines($filename, $text)
 }
 
-function updateStatus($text) {
-    $status.AppendText("[" + (Get-Date -UFormat "%T") + "] " + $text + "`r`n")
+function updateStatus {
+    param (
+        [string] $text
+    )
+
+    $statusLine = "[" + (Get-Date -UFormat "%T") + "] " + $text
+#    Append-ColoredLine $status Black $statusLine
+    $status.AppendText($statusLine + "`r`n")
 }
+
+function Append-ColoredLine {
+    param( 
+        [Parameter(Mandatory = $true, Position = 0)]
+        [System.Windows.Forms.RichTextBox]$box,
+        [Parameter(Mandatory = $true, Position = 1)]
+        [System.Drawing.Color]$color,
+        [Parameter(Mandatory = $true, Position = 2)]
+        [string]$text
+    )
+    $box.SelectionStart = $box.TextLength
+    $box.SelectionLength = 0
+    $box.SelectionColor = $color
+    $box.AppendText($text)
+    $box.AppendText([Environment]::NewLine)
+}
+
 
 function startupAction {
     updateStatus("Alexandria Downloader version $version.")
@@ -118,6 +175,18 @@ function startupAction {
     updateStatus("Size of online database file: About " + [Math]::Round($length/1024/1024) + " MB.")
 
     updateStatus("Ready for update.")
+
+    # Start up args
+    if ($update) {
+        updateAction
+    }
+    if ($download) {
+        filesAction
+    }
+    if ($exit) {
+        Exit
+    }
+
 }
 
 function updateAction() {
@@ -285,32 +354,12 @@ $filesClick = {
     $filesButton.Enabled = $true
 }
 
-$updateButton = New-Object System.Windows.Forms.Button 
-$updateButton.Location = New-Object System.Drawing.Point(15,120) 
-$updateButton.Size = New-Object System.Drawing.Size(200,60)
-$updateButton.Text = 'Update database'
-$updateButton.Font = New-Object System.Drawing.Font ("Arial", 15)
-$updateButton.add_Click($updateClick)
-$form.Controls.Add($updateButton)
-
-$filesButton = New-Object System.Windows.Forms.Button 
-$filesButton.Location = New-Object System.Drawing.Point(360,120) 
-$filesButton.Size = New-Object System.Drawing.Size(200,60)
-$filesButton.Text = 'Download files'
-$filesButton.Font = New-Object System.Drawing.Font ("Arial", 15)
-$filesButton.add_Click($filesClick)
-$form.Controls.Add($filesButton)
-
-# Status textbox
-$status = New-Object System.Windows.Forms.TextBox 
-$status.Multiline = $True;
-$status.Location = New-Object System.Drawing.Size(15,200) 
-$status.Size = New-Object System.Drawing.Size(($form.Width - 40),130)
-$status.Scrollbars = "Vertical" 
-$status.Enabled = $true
-$form.Controls.Add($status)
-
 startupAction
 
+# Add objects
+$form.Controls.AddRange(@($header, $description, $updateButton, $filesButton, $LinkLabel, $LinkLabel2, $status))
+
 # Start up dialog
-$result = $form.ShowDialog()
+$form.ShowDialog()
+
+$form.Dispose()
