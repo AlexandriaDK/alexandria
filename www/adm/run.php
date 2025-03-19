@@ -70,6 +70,10 @@ if ($action == "changerun" && $do == "Delete") {
 		$_SESSION['admin']['info'] = "Error: There are persons for the game connected to this run!";
 		rexit($this_type, ['id' => $id]);
 	}
+	if (getone("SELECT COUNT(*) FROM lrel WHERE gamerun_id = $run_id")) {
+		$_SESSION['admin']['info'] = "Error: There are map locations connected to this run!";
+		rexit($this_type, ['id' => $id]);
+	}
 	$q = "DELETE FROM gamerun WHERE id = $run_id";
 	$r = doquery($q);
 	if ($r) {
