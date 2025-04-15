@@ -3,7 +3,7 @@ param (
     [switch]$download = $false,
     [switch]$exit = $false
  )
-$version = 1.5
+$version = 1.6020250514
 $client = "usb2023"
 $fileDownloadLimit = 100
 $ProgressPreference = 'SilentlyContinue'
