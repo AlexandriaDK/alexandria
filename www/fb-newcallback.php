@@ -36,8 +36,9 @@ if (! isset($accessToken)) {
     echo "Error Reason: " . $helper->getErrorReason() . "\n";
     echo "Error Description: " . $helper->getErrorDescription() . "\n";
   } else {
-    header('HTTP/1.0 400 Bad Request');
-    echo 'Bad request';
+    header('HTTP/1.0 500 Internal Server Error');
+    echo '<p>Facebook connection is currently unavailable. We are looking into it.</p>';
+    echo '<p>If you previously have logged in with Facebook please log in using another service and <a href="/kontakt">contact us</a> to merge your logins.</p>';
   }
   exit;
 }
