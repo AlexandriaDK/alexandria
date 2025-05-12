@@ -43,8 +43,8 @@ if (stristr($cat,"Content-Type") ||
 	exit;
 }
 
-if (strtolower(trim($_REQUEST['human'])) != "a") {
-	die("Wrong anti-spam code. Type <b>A</b> in the field at the bottom.");
+if (strtolower(trim($_REQUEST['human'])) != "l") {
+	die("Wrong anti-spam code. Type <b>L</b> in the field at the bottom.");
 }
 
 $query = "
