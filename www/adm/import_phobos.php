@@ -128,7 +128,7 @@ print "<pre>";
 // print_r($magazines);
 
 $count = 0;
-$maxcount = 5;
+$maxcount = 50;
 foreach ($magazines as $magazine) {
     $filename = basename($magazine);
     $issue_number = preg_replace('/[^0-9]/', '', $filename);
