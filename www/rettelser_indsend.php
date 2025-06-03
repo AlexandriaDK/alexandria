@@ -49,12 +49,13 @@ if (strtolower(trim($_REQUEST['human'])) != "l") {
 
 $query = "
 	INSERT INTO updates (id, data_id, category, title, description, submittime, user_name, user_email, user_id)
-	VALUES (NULL, '$data_id', '$cat', '".dbesc($data_label)."', '".dbesc($output)."', NOW(), '".dbesc($user_name)."', '".dbesc($user_email)."', '$user_id' )";
+	VALUES (NULL, '".dbesc($data_id)."', '".dbesc($cat)."', '".dbesc($data_label)."', '".dbesc($output)."', NOW(), '".dbesc($user_name)."', '".dbesc($user_email)."', '$user_id' )";
 $last_id = doquery($query);
 
 award_achievement(20);
 
-// send en mail med rettelserne
+// Send mail to admin
+/*
 $email = (strstr($user_email,'@') ? $user_email : $recipient );
 $from = "\"$user_name\" <$email>"; // :TODO: should probably be sanitized
 $link = "https://alexandria.dk/adm/ticket.php?id=$last_id";
@@ -69,7 +70,7 @@ $subject = "[Alexandria] Rettelser (#$last_id)";
 $headers = "From: $from\r\nContent-Type: text/plain; charset=\"utf-8\"";
 $body = "Alexandria-rettelse:\r\n\r\n$label\r\n".wordwrap(stripslashes($mailoutput))."\r\n\r\n$link";
 mail($to,$subject,$body,$headers);
+*/
 
 $t->display('update_thanks.tpl');
-
 ?>
