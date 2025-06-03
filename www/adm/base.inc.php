@@ -4,7 +4,8 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 mb_internal_encoding("UTF-8");
 
-define("DOWNLOAD_PATH", "/home/penguin/web/loot.alexandria.dk/files/");
+// Assume loot.alexandria.dk is two steps up from webroot
+define("DOWNLOAD_PATH", realpath(dirname(__FILE__) . '/../../../loot.alexandria.dk/files/') . '/');
 
 function getlabel($category, $data_id, $link = FALSE, $default = "")
 {
