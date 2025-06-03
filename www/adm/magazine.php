@@ -549,8 +549,6 @@ if ($magazine_id && $issue_id) {
 
 }
 
-print '<p><a href="https://loot.alexandria.dk/files/magazines/">Magazine file storage</p>';
-
 print "</body>\n</html>\n";
 
 ?>
