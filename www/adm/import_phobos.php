@@ -141,7 +141,7 @@ foreach ($magazines as $magazine) {
 
     $issue_id = addissue($issue_number, null, "Phobos #$issue_number", $magazine_id, "Autoimport by Peter, $today", '40'); // 40 = WIP
     print "Issue added: $issue_number (id $issue_id)\n";
-    $file_id = addfile($issue_id, 'issue', $magazine, $description, 1, 'sv');
+    $file_id = addfile($issue_id, 'issue', $magazine, $description, 1, 'nb');
     $count++;
     if ($count >= $maxcount) {
         break; // Limit to first 3 issues for testing
