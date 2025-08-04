@@ -114,6 +114,12 @@ def import_data(data):
             except Exception as e:
                 print(f"Error inserting into {db_table}: {e}\nRow: {row}")
         conn.commit()
+    
+    # Set installation status to 'live' after successful import
+    print("Setting installation status to 'live'...")
+    cursor.execute("INSERT INTO `installation` (`key`, `value`) VALUES ('status', 'live') ON DUPLICATE KEY UPDATE `value` = 'live'")
+    conn.commit()
+    
     cursor.close()
     conn.close()
     print("Import complete.")
