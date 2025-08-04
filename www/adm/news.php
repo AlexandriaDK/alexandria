@@ -86,7 +86,7 @@ if ($id) {
 	print '<p>Online <input type="checkbox" name="online" checked="checked"></p>';
 	print '<p><input type="submit" name="do" value="Create"></p>';
 
-	$result = getall("SELECT id, text, online FROM news ORDER BY id DESC");
+	$result = getall("SELECT id, text, online FROM news ORDER BY published DESC");
 	foreach($result AS $row) {
 		print '<p>';
 		if ($row['online']) print "<b>";

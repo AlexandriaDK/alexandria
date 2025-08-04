@@ -33,13 +33,17 @@ services:
       - db
     volumes:
       - ./tools/dbimport.py:/dbimport.py:ro
+      - ./tools/import_news.py:/import_news.py:ro
     environment:
       DB_HOST: db
       DB_USER: alexuser
       DB_PASS: alexpass
       DB_NAME: alexandria
     command: >
-      sh -c "pip install requests mysql-connector-python && python /dbimport.py"
+      sh -c "pip install requests mysql-connector-python && 
+             python /dbimport.py && 
+             echo 'Data import complete, now importing news...' && 
+             python /import_news.py"
 
 volumes:
   db_data:

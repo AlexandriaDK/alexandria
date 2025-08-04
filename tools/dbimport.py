@@ -35,7 +35,7 @@ def import_data(data):
     # Order is important due to foreign keys - updated based on dependency analysis
     table_order = [
         'persons', 'systems', 'genres', 'conventionsets', 'tags', 'titles', 'presentations', 'feeds',
-        'magazines', 'awards', 'locations', 'games', 'conventions', 'issues', 'gametags', 'gameruns',
+        'magazines', 'awards', 'locations', 'sitetexts', 'games', 'conventions', 'issues', 'gametags', 'gameruns',
         'gamedescriptions', 'trivia', 'links', 'aliases', 'award_categories', 'award_nominees', 
         'award_nominee_entities', 'person_game_title_relations', 'game_convention_presentation_relations',
         'person_convention_relations', 'articles', 'contributors', 'article_reference', 'location_reference',

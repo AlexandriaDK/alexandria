@@ -1300,7 +1300,7 @@ function getlatestfiles($limit = 10)
 
 function getnews(int $limit = 1000)
 {
-	$result = getall("SELECT id, text, published, online FROM news WHERE online = 1 ORDER BY id DESC LIMIT $limit");
+	$result = getall("SELECT id, text, published, online FROM news WHERE online = 1 ORDER BY published DESC LIMIT $limit");
 	return $result;
 }
 
