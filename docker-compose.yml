@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: alexandria
+      MYSQL_USER: alexuser
+      MYSQL_PASSWORD: alexpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./alexandria_tables.sql:/docker-entrypoint-initdb.d/1-structure.sql:ro
+
+  web:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: alexuser
+      DB_PASS: alexpass
+    ports:
+      - "8080:80"
+    restart: always
+
+  dbimport:
+    image: python:3
+    depends_on:
+      - db
+    volumes:
+      - ./tools/dbimport.py:/dbimport.py:ro
+    environment:
+      DB_HOST: db
+      DB_USER: alexuser
+      DB_PASS: alexpass
+      DB_NAME: alexandria
+    command: >
+      sh -c "pip install requests mysql-connector-python && python /dbimport.py"
+
+volumes:
+  db_data:
