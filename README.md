@@ -1,15 +1,67 @@
 # Alexandria
+
 First online code version of Alexandria.dk, the online gaming library of role-playing scenarios, designer boardgames, LARPs, conventions and much more.
 
 ## Caveat
+
 The project was started in 2000. Some of the code might be from that era.
 
-## Install
-The code requires PHP 7 or PHP 8. MySQL 5+ is needed as RDBMS.
+## Quick Start for Developers
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### Getting Started
+
+1. **Configure database settings:**
+
+   Copy the file `includes/default.db.auth.php` to `includes/db.auth.php`.
+
+   The default file already contains the correct values for Docker development:
+
+   ```php
+   <?php
+   define('DB_NAME', 'alexandria');
+   define('DB_USER', 'alexuser');
+   define('DB_PASS', 'alexpass');
+   define('DB_HOST', 'db');
+   define('DB_CONNECTOR', 'mysqli');
+   ?>
+   ```
+
+2. **Start the development environment:**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   This will:
+
+   - Start a MySQL 8.0 database with pre-configured credentials
+   - Build and start the web application (PHP 7.4 + Apache)
+   - Import the database structure automatically
+   - Import sample data and news content
+
+3. **Access the application:**
+
+   - Web application: http://localhost:8080
+
+### Development Notes
+
+- The database data is persisted in a Docker volume (`db_data`)
+- Application files are mounted from your local filesystem for easy development
+- The database is automatically initialized with the structure from `alexandria_tables.sql`
+- Debug mode is enabled by default in the development environment
+
+## Manual Installation (Legacy)
+
+If you prefer not to use Docker, the code requires PHP 7 or PHP 8. MySQL 5+ is needed as RDBMS.
 
 The code is currently Apache based. The site includes an installer feature for setting up the database and fetching content when accessed the first time.
 
 Please note:
+
 - Apache directive `AllowOverride all` needs to be set.
 - The web site requires template system Smarty, which is currently not included per default: https://www.smarty.net/
 - Remember to check out the config files under `includes/`. The database file (db.auth.php) is the only crucial file to have configured.
@@ -17,12 +69,13 @@ Please note:
 - You can install ImageMagick (`sudo apt install php-imagick`) to be able to convert PDFs to thumbnails
 
 ### Cron jobs
+
 Some scripts located in [tools](tree/master/tools) are meant to be running on a hourly or daily basis. None of these scripts are strictly required just to have the site running.
 
-* `feedfetcher.php` fetches RSS content from blogs
-* `update_popularity.php` updates the popularity field for games for sorting purposes
-* `dailystats.php` outputs a CSV line with a count of games, persons, conventions, users and so on.
-* `fileindexer.php` checks uploaded PDF files and indexes them for content search purposes.
+- `feedfetcher.php` fetches RSS content from blogs
+- `update_popularity.php` updates the popularity field for games for sorting purposes
+- `dailystats.php` outputs a CSV line with a count of games, persons, conventions, users and so on.
+- `fileindexer.php` checks uploaded PDF files and indexes them for content search purposes.
 
 An example of crontab entries follows:
 
@@ -35,13 +88,15 @@ An example of crontab entries follows:
 ```
 
 ## TODO
-* Config file
-  * Dynamic domain name
-  * Paths to downloadable files
-* Bulk download of downloadable files
-* More installation checkup for optional modules, correct permissions, etc.
-* And much more ...
+
+- Config file
+  - Dynamic domain name
+  - Paths to downloadable files
+- Bulk download of downloadable files
+- More installation checkup for optional modules, correct permissions, etc.
+- And much more ...
 
 ## Troubleshooting
+
 - Getting the error "attempt to perform an operation not allowed by the security policy PDF" when creating thumbnails on file page at editor section? Remove the line `<policy domain="coder" rights="none" pattern="PDF" />` in /etc/ImageMagick-6/policy.xml
 - Can't upload files in the editor interface? Check the php.ini directive [upload_max_filesize](https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize) and [post_max_size](https://www.php.net/manual/en/ini.core.php#ini.post-max-size). Their default values are only 2M and 8M respectively meaning the maximum file size for an uploaded file is 2 MB. These values ought to be raised drastically to e.g. 128M. The settings have a changeable mode of [PHP_INI_DIR](https://www.php.net/manual/en/configuration.changes.modes.php) meaning they can be set in `php.ini`, `.htaccess`, `httpd.conf` or `.user.ini`.
