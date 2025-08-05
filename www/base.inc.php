@@ -58,23 +58,31 @@ foreach($showlanguages AS $language) {
 // general
 define('ALEXFILES', '/home/penguin/web/loot.alexandria.dk/files/');
 
-// Smarty 
-define('SMARTY_DIR', __DIR__ . '/../smarty-4.1.1/libs/');
-require_once(SMARTY_DIR . 'Smarty.class.php');
+// Composer autoloader
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$t = new Smarty;
-$t->template_dir = __DIR__ . '/../smarty/templates/';
-$t->compile_dir =  __DIR__ . '/../smarty/templates_c/';
-$t->config_dir =   __DIR__ . '/../smarty/configs/';
-$t->cache_dir =    __DIR__ . '/../smarty/cache/';
+// Smarty
+$t = new Smarty\Smarty;
+$t->setTemplateDir(__DIR__ . '/../smarty/templates/');
+$t->setCompileDir(__DIR__ . '/../smarty/templates_c/');
+$t->setConfigDir(__DIR__ . '/../smarty/configs/');
+$t->setCacheDir(__DIR__ . '/../smarty/cache/');
+
+// Register built-in PHP functions as Smarty modifiers
+$t->registerPlugin("modifier", "ucfirst", "ucfirst");
+$t->registerPlugin("modifier", "sprintf", "sprintf");
+$t->registerPlugin("modifier", "rawurlencode", "rawurlencode");
+$t->registerPlugin("modifier", "nicenumber", "nicenumber");
+
+// Register custom function
 $t->registerPlugin("function", "achievements_shown", "achievements_shown");
 
 // language template folder?
 $template_dir = __DIR__ . '/../smarty/templates/';
 if (is_dir($template_dir . LANG)) {
-	$t->template_dir = $template_dir . LANG . '/';
+	$t->setTemplateDir($template_dir . LANG . '/');
 } else {
-	$t->template_dir = $template_dir .  'generic/';
+	$t->setTemplateDir($template_dir .  'generic/');
 }
 
 $searchterm = (string) ($_GET['searchterm'] ?? '');
@@ -793,8 +801,8 @@ function yearname($year)
 function fulldate($dateString)
 {
 	$parts = explode("-", $dateString);
-	if (!checkdate((int) $parts[1], (int) $parts[2], (int) $parts[0])) { //partial date
-		if ((int) $parts[0] && !(int) $parts[1] && !(int) $parts[2]) { //only year
+	if (count($parts) < 3 || !checkdate((int) ($parts[1] ?? 0), (int) ($parts[2] ?? 0), (int) ($parts[0] ?? 0))) { //partial date
+		if ((int) ($parts[0] ?? 0) && !(int) ($parts[1] ?? 0) && !(int) ($parts[2] ?? 0)) { //only year
 			return yearname($parts[0]);
 		}
 		return "";
@@ -928,8 +936,11 @@ function nicedateset($begin, $end)
 		if (is_null($end)) {
 			$end = $begin;
 		}
-		list($y1, $m1, $d1) = explode("-", $begin);
-		list($y2, $m2, $d2) = explode("-", $end);
+		$begin_parts = explode("-", $begin);
+		$end_parts = explode("-", $end);
+		
+		list($y1, $m1, $d1) = array_pad($begin_parts, 3, "00");
+		list($y2, $m2, $d2) = array_pad($end_parts, 3, "00");
 
 		if ($m1 == "00" && $d1 == "00") {
 			$out = sprintf("%d", $y1);

@@ -2,12 +2,12 @@
 require("./connect.php");
 require("base.inc.php");
 
-$id = (int) $_REQUEST['id'];
-$convention_id = (int) $_REQUEST['convention_id'];
-$conset_id = (int) $_REQUEST['conset_id'];
-$game_id = (int) $_REQUEST['game_id'];
-$gamerun_id = (int) $_REQUEST['gamerun_id'];
-$tag = (string) $_REQUEST['tag'];
+$id = (int) ($_REQUEST['id'] ?? 0);
+$convention_id = (int) ($_REQUEST['convention_id'] ?? 0);
+$conset_id = (int) ($_REQUEST['conset_id'] ?? 0);
+$game_id = (int) ($_REQUEST['game_id'] ?? 0);
+$gamerun_id = (int) ($_REQUEST['gamerun_id'] ?? 0);
+$tag = (string) ($_REQUEST['tag'] ?? '');
 $startlocation = [];
 $location_target = FALSE;
 

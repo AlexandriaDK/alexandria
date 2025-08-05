@@ -1,0 +1,27 @@
+# Exclude old vendor directories that should be removed (these are now managed by Composer)
+
+# Standard excludes
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Development files
+*.md
+slides/
+scripts/
+
+# Dependencies that will be installed via Composer
+/vendor/
+composer.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

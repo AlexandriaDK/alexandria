@@ -1,0 +1,32 @@
+{
+  "name": "alexandria/alexandria",
+  "description": "Online gaming library Alexandria, containing information about Role-Playing scenarios, LARPs, conventions, board game designers, and much more.",
+  "type": "project",
+  "license": "n/a",
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.4",
+    "ext-mysqli": "*",
+    "ext-mbstring": "*",
+    "ext-intl": "*",
+    "ext-gd": "*",
+    "ext-zip": "*",
+    "sentry/sdk": "^3.5",
+    "smarty/smarty": "^5.5.1",
+    "league/oauth2-facebook": "^2.2",
+    "facebook/php-sdk-v4": "5.0",
+    "google/apiclient": "^2.2.3"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    },
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Alexandria\\": "src/"
+    }
+  }
+}

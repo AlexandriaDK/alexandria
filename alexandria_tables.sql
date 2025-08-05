@@ -39,7 +39,7 @@ CREATE TABLE `conset` (
   `internal` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
   `country` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=287 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=287 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 -- Table: genre
 CREATE TABLE `genre` (
@@ -293,7 +293,7 @@ CREATE TABLE `users` (
   KEY `last_active` (`last_active`),
   KEY `users_FK` (`person_id`),
   CONSTRAINT `users_FK` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=817 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=817 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 -- Table: issue (depends on: magazine)
 CREATE TABLE `issue` (

@@ -224,7 +224,7 @@
 		<div class="leftmenucontent">
 			{$_top_recentedits}:
 			<div class="longblock">
-			{foreach from=$recentlog item=$log}
+			{foreach $recentlog as $log}
 			{$log.linkhtml}<br>
 			<span class="noteindtast">
 			{$log.note|escape}<br>
@@ -242,7 +242,7 @@
 		<div class="leftmenucontent">
 			{$_top_translationprogress}:
 			<br><br>
-			{foreach from=$translations item=$translation}
+			{foreach $translations as $translation}
 			<a href="adm/language.php?setlang={$translation.isocode|rawurlencode}">{$translation.llanguage|ucfirst|escape}</a>: {$translation.percentagestring}<br>
 			{/foreach}
 		</div>
@@ -252,7 +252,7 @@
 			<div class="leftmenucontent">
 				{$_top_help_sce_no|@nl2br}
 				<br><br>
-				{foreach from=$user_scenario_missing_players item=$usmc}
+				{foreach $user_scenario_missing_players as $usmc}
 				<a href="data?scenarie={$usmc.id}" class="game">{$usmc.title|escape}</a><br>
 				{/foreach}
 				<br>
@@ -264,7 +264,7 @@
 			<div class="leftmenucontent">
 				{$_top_help_sce_tag|@nl2br}
 				<br><br>
-				{foreach from=$user_scenario_missing_tags item=$usmt}
+				{foreach $user_scenario_missing_tags as $usmt}
 				<a href="data?scenarie={$usmt.id}" class="game">{$usmt.title|escape}</a><br>
 				{/foreach}
 				<br>

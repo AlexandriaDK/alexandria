@@ -1,14 +1,12 @@
-version: "3.8"
-
 services:
   db:
-    image: mysql:8.0
-    restart: always
+    image: mariadb:10.7
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: alexandria
-      MYSQL_USER: alexuser
-      MYSQL_PASSWORD: alexpass
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: alexandria
+      MARIADB_USER: alexuser
+      MARIADB_PASSWORD: alexpass
     ports:
       - "3306:3306"
     volumes:
@@ -25,7 +23,12 @@ services:
       DB_PASS: alexpass
     ports:
       - "8080:80"
-    restart: always
+    restart: unless-stopped
+    volumes:
+      # Mount the www directory for live development
+      - ./www:/var/www/html
+      # Mount the smarty templates for live template development
+      - ./smarty:/var/www/smarty
 
   dbimport:
     image: python:3

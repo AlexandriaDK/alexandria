@@ -31,7 +31,7 @@
 	</h3>
 
 	<table class="indata">
-	{foreach from=$slist item=$game}
+	{foreach $slist as $game}
 		<tr>
 			{if $game.read}<td>{$game.read}</td>{/if}
 			{if $game.gmed}<td>{$game.gmed}</td>{/if}
