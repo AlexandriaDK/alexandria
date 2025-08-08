@@ -98,8 +98,6 @@ foreach ($q as $row) {
     $thismonth = $month;
   }
 
-
-
   if ($month != 0) {
     if (substr($row['begin'], 8, 2) == "00") {
       $timeinfo = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
@@ -129,14 +127,11 @@ if ($output) {
 
 $t->assign('pagetitle', $year);
 $t->assign('type', $this_type);
-
 $t->assign('startyear', $startyear);
 $t->assign('endyear', $endyear);
 $t->assign('year', $year);
 $t->assign('yearlist', $yearlist);
 $t->assign('num_cons', $num_cons);
 $t->assign('output', $output);
-#	$t->assign('pagetitle',"$r['name']." ({$r['year']})");
-#	$t->assign('type',$this_type);
 
 $t->display('data.tpl');
