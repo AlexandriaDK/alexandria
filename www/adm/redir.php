@@ -6,46 +6,46 @@ $cat = $_REQUEST['cat'];
 $id = $_REQUEST['data_id'];
 
 switch ($cat) {
-	case 'awards':
-		$returl = 'awards.php?category=convention&data_id=';
-		break;
-	case 'scenarie':
-	case 'game':
-		$returl = 'game.php?game=';
-		break;
-	case 'conset':
-		$returl = 'conset.php?conset=';
-		break;
-	case 'system':
-	case 'gamesystem':
-		$returl = 'gamesystem.php?gamesystem=';
-		break;
-	case 'con':
-	case 'convention':
-		$returl = 'convention.php?con=';
-		break;
-	case 'review':
-		$returl = 'review.php?review_id=';
-		break;
-	case 'locations':
-		$returl = 'locations.php?id=';
-		break;
-	case 'issue':
-		$returl = 'magazine.php?issue_id=';
-		break;
-	case 'magazine':
-		$returl = 'magazine.php?magazine_id=';
-		break;
-	case 'tag':
-		if (ctype_digit($id)) {
-			$returl = 'tag.php?tag_id=';
-		} else {
-			$returl = 'tag.php?tag=';
-		}
-		break;
-	case 'person':
-	default:
-		$returl = 'person.php?person=';
+  case 'awards':
+    $returl = 'awards.php?category=convention&data_id=';
+    break;
+  case 'scenarie':
+  case 'game':
+    $returl = 'game.php?game=';
+    break;
+  case 'conset':
+    $returl = 'conset.php?conset=';
+    break;
+  case 'system':
+  case 'gamesystem':
+    $returl = 'gamesystem.php?gamesystem=';
+    break;
+  case 'con':
+  case 'convention':
+    $returl = 'convention.php?con=';
+    break;
+  case 'review':
+    $returl = 'review.php?review_id=';
+    break;
+  case 'locations':
+    $returl = 'locations.php?id=';
+    break;
+  case 'issue':
+    $returl = 'magazine.php?issue_id=';
+    break;
+  case 'magazine':
+    $returl = 'magazine.php?magazine_id=';
+    break;
+  case 'tag':
+    if (ctype_digit($id)) {
+      $returl = 'tag.php?tag_id=';
+    } else {
+      $returl = 'tag.php?tag=';
+    }
+    break;
+  case 'person':
+  default:
+    $returl = 'person.php?person=';
 }
 
 header("Location: " . $returl . rawurlencode($id));

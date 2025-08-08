@@ -4,7 +4,7 @@ $this_type = 'tag';
 $user_id = (int) ($_SESSION['user_id'] ?? 0);
 $userlog = [];
 if ($user_id) {
-	$userlog = getuserloggames($user_id);
+  $userlog = getuserloggames($user_id);
 }
 
 list($tag_id, $ttag, $description, $internal) = getrow("SELECT id, tag, description, internal FROM tag WHERE tag = '" . dbesc($tag) . "'");
@@ -13,13 +13,13 @@ $internal = (($_SESSION['user_editor'] ?? false) ? $internal : ""); // only set 
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
-	$t->assign('content', $t->getTemplateVars('_nomatch'));
-	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
-	$t->display('default.tpl');
-	exit;
+  $t->assign('content', $t->getTemplateVars('_nomatch'));
+  $t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
+  $t->display('default.tpl');
+  exit;
 }
 if (!$tag) {
-	$tag = $ttag;
+  $tag = $ttag;
 }
 
 // scenarios
@@ -40,53 +40,53 @@ $slist = [];
 $sl = 0;
 
 if (count($q) > 0) {
-	foreach ($q as $rs) {
-		foreach (array('read', 'gmed', 'played') as $type) {
-			$slist[$sl][$type] = $user_id ? getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? false) : '';
-		}
-		$game_id = (int) $rs['id'];
-		// query-i-løkke... skal optimeres!
-		$slist[$sl]['files'] = $rs['files'];
-		$slist[$sl]['link'] = "data?scenarie=" . $rs['id'];
-		$slist[$sl]['title'] = $rs['title_translation'];
-		$slist[$sl]['origtitle'] = $rs['title'];
-		$slist[$sl]['personlist'] = "";
-		$slist[$sl]['cancelled'] = $rs['cancelled'];
+  foreach ($q as $rs) {
+    foreach (array('read', 'gmed', 'played') as $type) {
+      $slist[$sl][$type] = $user_id ? getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? false) : '';
+    }
+    $game_id = (int) $rs['id'];
+    // query-i-løkke... skal optimeres!
+    $slist[$sl]['files'] = $rs['files'];
+    $slist[$sl]['link'] = "data?scenarie=" . $rs['id'];
+    $slist[$sl]['title'] = $rs['title_translation'];
+    $slist[$sl]['origtitle'] = $rs['title'];
+    $slist[$sl]['personlist'] = "";
+    $slist[$sl]['cancelled'] = $rs['cancelled'];
 
-		$personlist = [];
-		$qq = getall("
+    $personlist = [];
+    $qq = getall("
 			SELECT DISTINCT p.id, CONCAT(firstname,' ',surname) AS name
 			FROM person p, pgrel
 			WHERE pgrel.game_id = $game_id AND pgrel.person_id = p.id AND pgrel.title_id IN(1,5)
 			ORDER BY firstname, surname
 		");
-		foreach ($qq as $thisforfatter) {
-			list($forfid, $forfname) = $thisforfatter;
-			$personlist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
-		}
-		if (!$personlist && $rs['person_extra']) {
-			$personlist[] = $rs['person_extra'];
-		}
-		if ($personlist) {
-			$slist[$sl]['personlist'] = join("<br />", $personlist);
-		}
+    foreach ($qq as $thisforfatter) {
+      list($forfid, $forfname) = $thisforfatter;
+      $personlist[] = "<a href=\"data?person={$forfid}\" class=\"person\">$forfname</a>";
+    }
+    if (!$personlist && $rs['person_extra']) {
+      $personlist[] = $rs['person_extra'];
+    }
+    if ($personlist) {
+      $slist[$sl]['personlist'] = join("<br />", $personlist);
+    }
 
-		if ($rs['con_id']) {
-			$coninfo = nicedateset($rs['begin'], $rs['end']);
-			$slist[$sl]['coninfo'] = $coninfo;
-			$slist[$sl]['conlink'] = "data?con=" . $rs['con_id'];
-			$slist[$sl]['conname'] = $rs['name'] . " (" . yearname($rs['year']) . ")";
-		}
+    if ($rs['con_id']) {
+      $coninfo = nicedateset($rs['begin'], $rs['end']);
+      $slist[$sl]['coninfo'] = $coninfo;
+      $slist[$sl]['conlink'] = "data?con=" . $rs['con_id'];
+      $slist[$sl]['conname'] = $rs['name'] . " (" . yearname($rs['year']) . ")";
+    }
 
-		$sl++;
-	}
+    $sl++;
+  }
 }
 
 // Awards - copypasted from convention.inc.php and should probably be a generic function
 // List of awards
 $awardlist = '';
 if ($tag_id) {
-	$award_nominees = getall("
+  $award_nominees = getall("
 		SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.ranking, a.game_id, b.id AS category_id, b.tag_id, b.name AS category_name, t.tag AS tag_name, d.title, COALESCE(e.label,d.title) AS title_translation
 		FROM award_nominees a
 		INNER JOIN award_categories b ON a.award_category_id = b.id
@@ -97,54 +97,54 @@ if ($tag_id) {
 		ORDER BY category_name, a.winner DESC, a.id
 	");
 
-	$awardset = [];
-	$awardnominees = [];
-	$html = "";
-	foreach ($award_nominees as $nominee) {
-		$tid = $nominee['tag_id'];
-		$tag_id = $nominee['tag_id'];
-		$cat_id = $nominee['category_id'];
-		if (!$tid) {
-			$tid = 0;
-		}
-		$awardnominees[$tid][$tag_id]['name'] = $nominee['tag_name'];
-		$awardnominees[$tid][$tag_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
-		$awardnominees[$tid][$tag_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation']];
-	}
+  $awardset = [];
+  $awardnominees = [];
+  $html = "";
+  foreach ($award_nominees as $nominee) {
+    $tid = $nominee['tag_id'];
+    $tag_id = $nominee['tag_id'];
+    $cat_id = $nominee['category_id'];
+    if (!$tid) {
+      $tid = 0;
+    }
+    $awardnominees[$tid][$tag_id]['name'] = $nominee['tag_name'];
+    $awardnominees[$tid][$tag_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
+    $awardnominees[$tid][$tag_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation']];
+  }
 
-	if ($awardnominees) {
-		foreach ((array) $awardnominees[$tid] as $tagid => $atag) {
-			$html .= "<div class=\"awardblock\">" . PHP_EOL;
-			foreach ($atag['categories'] as $category) {
-				$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
-				$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
-				foreach ($category['nominees'] as $nominee) {
-					$has_nominationtext = (bool) $nominee['nominationtext'];
-					$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
-					$html .= '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
-					$html .= "<span class=\"" . $class . "\">";
-					if ($nominee['game_id']) {
-						$html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
-					} else {
-						$html .= htmlspecialchars($nominee['name']);
-					}
-					$html .= "</span>";
-					if ($nominee['ranking']) {
-						$html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
-					}
-					$html .= '</summary>';
-					if ($has_nominationtext) {
-						$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), false) . '</div>' . PHP_EOL;
-					}
+  if ($awardnominees) {
+    foreach ((array) $awardnominees[$tid] as $tagid => $atag) {
+      $html .= "<div class=\"awardblock\">" . PHP_EOL;
+      foreach ($atag['categories'] as $category) {
+        $html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
+        $html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
+        foreach ($category['nominees'] as $nominee) {
+          $has_nominationtext = (bool) $nominee['nominationtext'];
+          $class = ($nominee['winner'] == 1 ? "winner" : "nominee");
+          $html .= '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
+          $html .= "<span class=\"" . $class . "\">";
+          if ($nominee['game_id']) {
+            $html .= getdatahtml('game', $nominee['game_id'], $nominee['title']);
+          } else {
+            $html .= htmlspecialchars($nominee['name']);
+          }
+          $html .= "</span>";
+          if ($nominee['ranking']) {
+            $html .= "<div class=\"ranking\">(" . htmlspecialchars($nominee['ranking']) . ")</div>" . PHP_EOL;
+          }
+          $html .= '</summary>';
+          if ($has_nominationtext) {
+            $html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), false) . '</div>' . PHP_EOL;
+          }
 
-					$html .= "</details>" . PHP_EOL;
-				}
-				$html .= "</div>" . PHP_EOL;
-			}
-			$html .= "</div>" . PHP_EOL;
-		}
-	}
-	$awardlist = $html;
+          $html .= "</details>" . PHP_EOL;
+        }
+        $html .= "</div>" . PHP_EOL;
+      }
+      $html .= "</div>" . PHP_EOL;
+    }
+  }
+  $awardlist = $html;
 }
 
 // Has locations?
@@ -202,7 +202,7 @@ $t->assign('articles', $articles);
 $t->assign('filelist', $filelist);
 $t->assign('filedir', getcategorydir($this_type));
 if (in_array(strtolower($tag), ['lgbtq', 'queer', 'queerness'])) {
-	$t->assign('lgbtmenu', true);
+  $t->assign('lgbtmenu', true);
 }
 
 $t->display('data.tpl');

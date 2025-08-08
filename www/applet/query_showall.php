@@ -2,15 +2,15 @@
 require_once("../../inc/rpgconnect.inc");
 require_once("../base.inc.php");
 
-list($category, $dataid) = explode("_",$_REQUEST['q']);
+list($category, $dataid) = explode("_", $_REQUEST['q']);
 if (!$dataid) $dataid = '1';
 
 $buffer = $visited = array($dataid);
 $dataset = array();
 
 while ($person_id = array_shift($buffer)) {
-	$i++;
-	$query = "
+  $i++;
+  $query = "
 	          SELECT t1.person_id, t2.person_id
 	          FROM pgrel AS t1, pgrel AS t2
 	          WHERE t1.person_id = '$person_id' AND t1.person_id != t2.person_id
@@ -18,32 +18,32 @@ while ($person_id = array_shift($buffer)) {
 						AND t1.title_id = 1 AND t2.title_id = 1
 	          GROUP BY t2.person_id
 		";
-	$result = mysql_query($query) or die("ERROR: ".mysql_error() );
-	while (list($first,$second) = mysql_fetch_row($result)) {
-		$dataset[] = $first."_".$second;
-		$names[$first] = TRUE;
-		$names[$second] = TRUE;
-		if (!in_array($second,$visited)) {
-			$buffer[] = $second;
-			$visited[] = $second;
-		}
-	}
+  $result = mysql_query($query) or die("ERROR: " . mysql_error());
+  while (list($first, $second) = mysql_fetch_row($result)) {
+    $dataset[] = $first . "_" . $second;
+    $names[$first] = TRUE;
+    $names[$second] = TRUE;
+    if (!in_array($second, $visited)) {
+      $buffer[] = $second;
+      $visited[] = $second;
+    }
+  }
 }
 
 // begin output
 header("Content-Type: text/xml");
-print '<?xml version="1.0" encoding="ISO-8859-1"?>'."\n";
+print '<?xml version="1.0" encoding="ISO-8859-1"?>' . "\n";
 print "<TGGB version=\"1.00\">\n";
 
 // EDGESETS
 
 $edgeid = 0;
 print "<EDGESET>\n";
-foreach($dataset AS $data) {
-	list($first, $second) = explode("_",$data);
-// Sortering for at lade pile pege fra forfattere til scenarier
-	$edgeid++;
-	print "<EDGE fromID=\"aut_$first\" toID=\"aut_$second\" linkNumber=\"$edgeid\" length=\"200\" lastEdge=\"false\"/>\n";
+foreach ($dataset as $data) {
+  list($first, $second) = explode("_", $data);
+  // Sortering for at lade pile pege fra forfattere til scenarier
+  $edgeid++;
+  print "<EDGE fromID=\"aut_$first\" toID=\"aut_$second\" linkNumber=\"$edgeid\" length=\"200\" lastEdge=\"false\"/>\n";
 }
 print "</EDGESET>\n\n";
 
@@ -52,16 +52,15 @@ print "</EDGESET>\n\n";
 
 print "<NODESET>\n";
 
-foreach($names AS $person_id => $foo) {
-	$name = getentry('person',$person_id);
-#	$current_hint = htmlspecialchars($datahint[$id]);
-#	$current_hint = str_replace("\n","<br>\n",$current_hint);
-	$current_hint = '';
-	print "<NODE nodeID=\"aut_$person_id\">\n";
-	print "<NODE_LABEL label=\"".htmlspecialchars($name)."\"/>\n";
-	print "<NODE_HINT isHTML=\"true\" hint=\"".htmlspecialchars($current_hint)."\"/>\n";
-	print "</NODE>\n\n";
-
+foreach ($names as $person_id => $foo) {
+  $name = getentry('person', $person_id);
+  #	$current_hint = htmlspecialchars($datahint[$id]);
+  #	$current_hint = str_replace("\n","<br>\n",$current_hint);
+  $current_hint = '';
+  print "<NODE nodeID=\"aut_$person_id\">\n";
+  print "<NODE_LABEL label=\"" . htmlspecialchars($name) . "\"/>\n";
+  print "<NODE_HINT isHTML=\"true\" hint=\"" . htmlspecialchars($current_hint) . "\"/>\n";
+  print "</NODE>\n\n";
 }
 
 // end nodesets

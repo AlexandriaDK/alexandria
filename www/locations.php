@@ -12,10 +12,10 @@ $startlocation = [];
 $location_target = FALSE;
 
 if ($id) {
-    $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT NULL", FALSE);
-    $location_target = getentryhtml('locations', $id);
+  $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT NULL", FALSE);
+  $location_target = getentryhtml('locations', $id);
 } elseif ($convention_id) {
-    $startlocation = getcol("
+  $startlocation = getcol("
         SELECT DISTINCT locations.id
         FROM locations
         INNER JOIN lrel ON locations.id = lrel.location_id
@@ -23,9 +23,9 @@ if ($id) {
         AND locations.geo IS NOT NULL
         ORDER BY lrel.id
     ");
-    $location_target = getentryhtml('convention', $convention_id);
+  $location_target = getentryhtml('convention', $convention_id);
 } elseif ($conset_id) {
-    $startlocation = getcol("
+  $startlocation = getcol("
         SELECT DISTINCT locations.id
         FROM locations
         INNER JOIN lrel ON locations.id = lrel.location_id
@@ -33,9 +33,9 @@ if ($id) {
         WHERE conset_id = $conset_id
         AND locations.geo IS NOT NULL
     ");
-    $location_target = getentryhtml('conset', $conset_id);
+  $location_target = getentryhtml('conset', $conset_id);
 } elseif ($gamerun_id) {
-    $startlocation = getcol("
+  $startlocation = getcol("
         SELECT DISTINCT locations.id
         FROM locations
         INNER JOIN lrel ON locations.id = lrel.location_id
@@ -43,13 +43,13 @@ if ($id) {
         AND locations.geo IS NOT NULL
         ORDER BY lrel.id
     ");
-    $gamerun_data = getrow("SELECT game_id, begin, end FROM gamerun WHERE id = $gamerun_id");
-    $location_target = getentryhtml('game', $gamerun_data['game_id']);
-    if ($nicedate = nicedateset($gamerun_data['begin'], $gamerun_data['end']) ) {
-        $location_target .= " (" . $nicedate . ")";
-    }
+  $gamerun_data = getrow("SELECT game_id, begin, end FROM gamerun WHERE id = $gamerun_id");
+  $location_target = getentryhtml('game', $gamerun_data['game_id']);
+  if ($nicedate = nicedateset($gamerun_data['begin'], $gamerun_data['end'])) {
+    $location_target .= " (" . $nicedate . ")";
+  }
 } elseif ($game_id) { // both individual runs and as part of conventions
-    $startlocation = getcol("
+  $startlocation = getcol("
         SELECT DISTINCT locations.id
         FROM locations
         INNER JOIN lrel ON locations.id = lrel.location_id
@@ -59,9 +59,9 @@ if ($id) {
         WHERE (cgrel.game_id = $game_id OR gamerun.game_id = $game_id)
         AND locations.geo IS NOT NULL
     ");
-    $location_target = getentryhtml('game', $game_id);
+  $location_target = getentryhtml('game', $game_id);
 } elseif ($tag) {
-    $startlocation = getcol("
+  $startlocation = getcol("
         (
         SELECT DISTINCT locations.id, locations.name
         FROM tags
@@ -82,7 +82,7 @@ if ($id) {
         AND locations.geo IS NOT NULL
         )
     ");
-    $location_target = getentryhtml('tags', $tag);
+  $location_target = getentryhtml('tags', $tag);
 }
 
 $locations = getall("
@@ -104,25 +104,24 @@ $aliases = getcolid("
 ");
 
 $events = [];
-foreach($locations AS $event) {
-    $location_id = $event['id'];
-    if (!isset($events[$location_id])) {
-        $events[$location_id] = [
-            'data' => ['name' => $event['name'], 'address' => $event['address'], 'city' => $event['city'], 'countrycode' => $event['country'], 'country' => getCountryName($event['country']), 'note' => $event['note'], 'hasGeo' => $event['hasGeo'], 'latitude' => $event['latitude'], 'longitude' => $event['longitude'], 'aliases' => $aliases[$location_id] ?? '' ],
-            'events' => []
-        ];
-    }
-    if ($event['data_id']) {
-        $events[$location_id]['events'][] = ['type' => $event['type'], 'data_id' => $event['data_id'], 'data_label' => $event['data_label'], 'data_begin' => $event['data_begin'], 'data_starttime' => $event['data_starttime'], 'data_cancelled' => $event['data_cancelled'], 'conset_id' => $event['conset_id'], 'nicedateset' => nicedateset($event['data_starttime'], $event['data_endtime']) ];
-    }
+foreach ($locations as $event) {
+  $location_id = $event['id'];
+  if (!isset($events[$location_id])) {
+    $events[$location_id] = [
+      'data' => ['name' => $event['name'], 'address' => $event['address'], 'city' => $event['city'], 'countrycode' => $event['country'], 'country' => getCountryName($event['country']), 'note' => $event['note'], 'hasGeo' => $event['hasGeo'], 'latitude' => $event['latitude'], 'longitude' => $event['longitude'], 'aliases' => $aliases[$location_id] ?? ''],
+      'events' => []
+    ];
+  }
+  if ($event['data_id']) {
+    $events[$location_id]['events'][] = ['type' => $event['type'], 'data_id' => $event['data_id'], 'data_label' => $event['data_label'], 'data_begin' => $event['data_begin'], 'data_starttime' => $event['data_starttime'], 'data_cancelled' => $event['data_cancelled'], 'conset_id' => $event['conset_id'], 'nicedateset' => nicedateset($event['data_starttime'], $event['data_endtime'])];
+  }
 }
 
 // Smarty
-$t->assign('type','locations');
+$t->assign('type', 'locations');
 $t->assign('locations', json_encode($events));
 $t->assign('startlocation', json_encode($startlocation));
 $t->assign('start_id', $id);
 $t->assign('location_target', $location_target);
 
 $t->display('locations.tpl');
-?>

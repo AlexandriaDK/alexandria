@@ -1,6 +1,6 @@
 
 # Use the official PHP 8.0 image with Apache
-FROM php:8.0-apache
+FROM php:8.4-apache
 
 # Install system dependencies
 RUN apt-get update \

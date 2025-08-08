@@ -1,18 +1,18 @@
 # Alexandria
 
-First online code version of Alexandria.dk, the online gaming library of role-playing scenarios, designer boardgames, LARPs, conventions and much more.
+Alexandria.dk – the online gaming library of role‑playing scenarios, designer board games, LARPs, conventions, and more.
 
 ## Caveat
 
-The project was started in 2000. Some of the code might be from that era.
+The project originated in 2000. Some legacy code remains.
 
-## Quick Start for Developers
+## Quick start (Docker)
 
-### Prerequisites
+Prerequisites:
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Docker Desktop
 
-### Getting Started
+Getting started:
 
 1. **Configure database settings:**
 
@@ -20,64 +20,75 @@ The project was started in 2000. Some of the code might be from that era.
 
    The default file already contains the correct values for Docker development:
 
-   ```php
-   <?php
-   define('DB_NAME', 'alexandria');
-   define('DB_USER', 'alexuser');
-   define('DB_PASS', 'alexpass');
-   define('DB_HOST', 'db');
-   define('DB_CONNECTOR', 'mysqli');
-   ?>
-   ```
+```php
+<?php
+define('DB_NAME', 'alexandria');
+define('DB_USER', 'alexuser');
+define('DB_PASS', 'alexpass');
+define('DB_HOST', 'db');
+define('DB_CONNECTOR', 'mysqli');
+```
 
-2. **Start the development environment:**
+- For a custom setup, copy `includes/default.db.auth.php` to `includes/db.auth.php` and adjust values.
 
-   ```bash
-   docker-compose up -d
-   ```
+2. Start services
 
-   This will:
+```cmd
+docker compose up -d
+```
 
-   - Start a MySQL 8.0 database with pre-configured credentials
-   - Build and start the web application (PHP 7.4 + Apache)
-   - Import the database structure automatically
-   - Import sample data and news content
+What this does:
 
-3. **Access the application:**
+- Starts MariaDB 10.7 with dev credentials
+- Builds and runs the web app on PHP 8.4 + Apache
+- Initializes schema from `alexandria_tables.sql`
+- Imports sample data and news via helper jobs
 
-   - Web application: http://localhost:8080
+3. Open the site
 
-### Development Notes
+- http://localhost:8080
 
-- The database data is persisted in a Docker volume (`db_data`)
-- Application files are mounted from your local filesystem for easy development
-- The database is automatically initialized with the structure from `alexandria_tables.sql`
-- Debug mode is enabled by default in the development environment
+Notes for development:
 
-## Manual Installation (Legacy)
+- `www/` is mounted into the container for live editing
+- Smarty templates (`smarty/templates`) are mounted for live template work
+- Compiled Smarty files live in `smarty/templates_c` (created in the container)
+- Database data persists in the `db_data` Docker volume
 
-If you prefer not to use Docker, the code requires PHP 7 or PHP 8. MySQL 5+ is needed as RDBMS.
+## Manual installation (without Docker)
 
-The code is currently Apache based. The site includes an installer feature for setting up the database and fetching content when accessed the first time.
+Recommended stack:
 
-Please note:
+- PHP 8.0+ (8.1+ recommended) with extensions: mysqli, mbstring, intl, gd, zip
+- MariaDB/MySQL
+- Apache (DocumentRoot should point to the `www/` folder)
 
-- Apache directive `AllowOverride all` needs to be set.
-- The web site requires template system Smarty, which is currently not included per default: https://www.smarty.net/
-- Remember to check out the config files under `includes/`. The database file (db.auth.php) is the only crucial file to have configured.
-- Need login through third party sites? Remember to install OAuth for PHP (`sudo apt install php-oauth`)
-- You can install ImageMagick (`sudo apt install php-imagick`) to be able to convert PDFs to thumbnails
+Steps (outline):
 
-### Cron jobs
+- Copy `includes/default.db.auth.php` to `includes/db.auth.php` and set credentials
+- Install Composer dependencies at the repository root (creates `vendor/`):
 
-Some scripts located in [tools](tree/master/tools) are meant to be running on a hourly or daily basis. None of these scripts are strictly required just to have the site running.
+  - `composer install`
 
-- `feedfetcher.php` fetches RSS content from blogs
-- `update_popularity.php` updates the popularity field for games for sorting purposes
-- `dailystats.php` outputs a CSV line with a count of games, persons, conventions, users and so on.
-- `fileindexer.php` checks uploaded PDF files and indexes them for content search purposes.
+- Ensure Apache has `AllowOverride All` so `.htaccess` works
+- Point your virtual host to the `www/` directory (code expects `vendor/` at repo root)
+- Optional utilities: `php-oauth` (for some OAuth flows), `php-imagick` (PDF thumbnails)
 
-An example of crontab entries follows:
+Notes:
+
+- Smarty 5 is installed via Composer (no manual download needed)
+- The site has an installer/initializer on first run, but importing sample data/news is handled by the Docker helper scripts; outside Docker you can run `tools/dbimport.py` and `tools/import_news.py` manually if desired
+
+## Cron jobs
+
+Scripts in `tools/` can be scheduled (not required just to run the site):
+
+- `feedfetcher.php` – fetch RSS content from blogs
+- `update_popularity.php` – refresh popularity values for sorting
+- `dailystats.php` – output counts of games/persons/conventions/users
+- `fileindexer.php` – index uploaded PDFs for content search
+
+Example crontab:
 
 ```
 # m h  dom mon dow   command

@@ -1,6 +1,6 @@
 <?php
 define('LANGNOREDIRECT', TRUE);
-require_once __DIR__.'/../../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 session_start();
 
@@ -18,7 +18,7 @@ if (! isset($_GET['code'])) {
   chdir('../../');
   require_once('./connect.php');
   require_once('base.inc.php');
-  
+
   $userinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $_SESSION['access_token']['access_token'];
   $userinfo_json = file_get_contents($userinfo_url);
   $userinfo = json_decode($userinfo_json);
@@ -28,8 +28,8 @@ if (! isset($_GET['code'])) {
   $locale = $userinfo->locale;
 
   $user_id = do_google_login($siteuserid, $name);
- 
-  $redirect_uri = get_redirect_url(); 
-#  header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+
+  $redirect_uri = get_redirect_url();
+  #  header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
   header('Location: https://alexandria.dk/login/google/index.php');
 }

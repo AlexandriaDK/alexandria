@@ -4,5 +4,4 @@ require("base.inc.php");
 
 $year = date("Y");
 
-include ("year.inc.php");
-?>
+include("year.inc.php");

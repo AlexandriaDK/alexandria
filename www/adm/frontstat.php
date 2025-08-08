@@ -17,16 +17,15 @@ $result = getall("
 ");
 print "<tr><th colspan=\"4\">Last $days days</th></tr>\n";
 $rows = 0;
-foreach($result AS $row) {
-	$rows++;
-	print "<tr>" .
-	      "<td><a href=\"showlog.php?user_id=" . $row['user_id'] . "\">" . htmlspecialchars($row['name']) . "</a></td>" .
-	      "<td style=\"text-align: right\">" . $row['created'] . "</td>" .
-	      "<td style=\"text-align: right\">" . $row['c'] . "</td>" .
-	      "<td style=\"text-align: right\">" . pubdateprint($row['latest']) . "</td>" .
-	      "</tr>\n";
+foreach ($result as $row) {
+  $rows++;
+  print "<tr>" .
+    "<td><a href=\"showlog.php?user_id=" . $row['user_id'] . "\">" . htmlspecialchars($row['name']) . "</a></td>" .
+    "<td style=\"text-align: right\">" . $row['created'] . "</td>" .
+    "<td style=\"text-align: right\">" . $row['c'] . "</td>" .
+    "<td style=\"text-align: right\">" . pubdateprint($row['latest']) . "</td>" .
+    "</tr>\n";
 }
 if (!$rows) {
-	print "<tr><td colspan=\"5\" style=\"text-align: center; font-style: italic;\">(None)</td></tr>\n";
+  print "<tr><td colspan=\"5\" style=\"text-align: center; font-style: italic;\">(None)</td></tr>\n";
 }
-?>

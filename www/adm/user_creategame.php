@@ -8,8 +8,8 @@ require "base.inc.php";
 $token = $_REQUEST['token'] ?? '';
 $user_id = $_SESSION['user_id'];
 if (!$user_id) {
-	header("Location: ../create");
-	exit;
+  header("Location: ../create");
+  exit;
 }
 
 validatetoken($token);
@@ -29,14 +29,14 @@ $useremail = (string) $_REQUEST['useremail'];
 
 $personlist = "";
 foreach ($persons as $person) {
-	if ($person["name"]) {
-		$personlist .= $person['name'] . PHP_EOL;
-	}
+  if ($person["name"]) {
+    $personlist .= $person['name'] . PHP_EOL;
+  }
 }
 
 $internal = "Game created by user $user_id on " . date("Y-m-d H:i:s") . "\n\nPersons:\n$personlist\n\n";
 if ($useremail) {
-	$internal .= "User e-mail: $useremail\n\n";
+  $internal .= "User e-mail: $useremail\n\n";
 }
 $internal .= "User notes:\n=====\n" . $notes . "\n";
 
@@ -44,29 +44,29 @@ $gamesystem_id = ($gametype == 'larp' ? 73 : NULL);
 $boardgame = ($gametype == 'boardgame');
 
 $runs = [
-	[
-		'begin' => $runbegin,
-		'end' => $runend,
-		'location' => $runlocation,
-		'description' => $rundescription
-	]
+  [
+    'begin' => $runbegin,
+    'end' => $runend,
+    'location' => $runlocation,
+    'description' => $rundescription
+  ]
 ];
 
 if (!$title) {
-	header("Location: ../create");
-	exit;
+  header("Location: ../create");
+  exit;
 }
 
 $game = [
-	'title' => $title,
-	'persons' => $persons,
-	'organizer' => $organizer,
-	'gamesystem_id' => $gamesystem_id,
-	'descriptions' => ['en' => trim($description)],
-	'urls' => [$website],
-	'runs' => $runs,
-	'boardgame' => $boardgame,
-	'internal' => $internal
+  'title' => $title,
+  'persons' => $persons,
+  'organizer' => $organizer,
+  'gamesystem_id' => $gamesystem_id,
+  'descriptions' => ['en' => trim($description)],
+  'urls' => [$website],
+  'runs' => $runs,
+  'boardgame' => $boardgame,
+  'internal' => $internal
 ];
 $game_id = create_game($game, $internal);
 
