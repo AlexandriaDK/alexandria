@@ -4,9 +4,11 @@ define('LANGNOREDIRECT', TRUE);
 require_once('./connect.php');
 require_once('base.inc.php');
 ini_set("display_errors",TRUE);
-$app_id = 6044298682;
 
-require_once __DIR__ . '/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
+// Use the modern League OAuth2 Facebook provider
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use League\OAuth2\Client\Provider\Facebook;
 
 $fb = new Facebook\Facebook([
   'app_id' => '6044298682',

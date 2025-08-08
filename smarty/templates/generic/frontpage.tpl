@@ -22,7 +22,7 @@
 			{$_fp_topnote}
 		</p>
 
-		{foreach from=$newslist item=$news}
+		{foreach $newslist as $news}
 			<p>
 				<a id="{$news.anchor}">{$news.date}</a>:<br>
 				{$news.news}
@@ -78,7 +78,7 @@
 			{$_fp_recentdownload}
 		</h3>
 		<ul>
-			{foreach from=$latest_downloads item=$scenario}
+			{foreach $latest_downloads as $scenario}
 				<li><a href="data?scenarie={$scenario.id}" class="game"
 						title="{$scenario.origtitle|escape}">{$scenario.title|escape}</a></li>
 			{/foreach}

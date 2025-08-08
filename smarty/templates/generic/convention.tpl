@@ -126,21 +126,21 @@ $(document).ready(function(){
 
 <h3 class="parttitle{if ! $organizerlist && ! $editorganizers} organizerhidden{/if}" id="organizers">{$_organizers|ucfirst}</h3>
 	<table class="indata">
-	{foreach from=$organizerlist item=$ol}
+	{foreach $organizerlist as $organizer}
 		<tr>
 		<td style="padding-right: 10px">
-			{$ol.role|escape}
+			{$organizer.role|escape}
 		</td>
 		<td>
-			{if $ol.person_id}
-			<a href="data?person={$ol.person_id}" class="person">{$ol.name|escape}</a>
+			{if $organizer.person_id}
+			<a href="data?person={$organizer.person_id}" class="person">{$organizer.name|escape}</a>
 			{else}
-			{$ol.person_extra|escape}
+			{$organizer.person_extra|escape}
 			{/if}
 		</td>
 		<td style="text-align: center;">
 			{foreach $user_can_edit_organizers AS $pcrel_id => $true}
-			{if $ol.id == $pcrel_id}
+			{if $organizer.id == $pcrel_id}
 				<a href="adm/user_organizers.php?convention={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
 				{break}
 			{/if}

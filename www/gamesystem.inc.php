@@ -2,7 +2,7 @@
 $this_type = 'gamesystem';
 $this_id = $system;
 
-if ($_SESSION['user_id']) {
+if (isset($_SESSION) && isset($_SESSION['user_id'])) {
 	$userlog = getuserloggames($_SESSION['user_id']);
 }
 
@@ -51,10 +51,21 @@ if (count($q) > 0) {
 		}
 	}
 
-	if ($_SESSION['user_id']) {
+	if (isset($_SESSION) && isset($_SESSION['user_id'])) {
 		foreach ($gamelist as $id => $game) {
 			foreach (['read', 'gmed', 'played'] as $type) {
-				$gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? FALSE);
+				$gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? false);
+			}
+		}
+	}
+	// Always provide defaults for template keys
+	foreach ($gamelist as $id => $game) {
+		$gamelist[$id]['userdata']['html'] = $gamelist[$id]['userdata']['html'] ?? ['read' => '', 'gmed' => '', 'played' => ''];
+	}
+	if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+		foreach ($gamelist as $id => $game) {
+			foreach (['read', 'gmed', 'played'] as $type) {
+				$gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? false);
 			}
 		}
 	}

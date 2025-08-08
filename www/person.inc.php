@@ -2,7 +2,7 @@
 $this_type = 'person';
 $this_id = $person;
 
-if ($_SESSION['user_id']) {
+if (isset($_SESSION) && isset($_SESSION['user_id'])) {
 	$userlog = getuserloggames($_SESSION['user_id']);
 }
 
@@ -64,8 +64,8 @@ $q = getall("
 		LEFT JOIN cgrel ON cgrel.game_id = g.id
 		LEFT JOIN convention c ON cgrel.convention_id = c.id
 		LEFT JOIN convention c2 ON pgrel.convention_id = c2.id
-		LEFT JOIN gamerun ON g.id = gamerun.game_id 
-		LEFT JOIN gamerun gr2 ON pgrel.gamerun_id = gr2.id 
+		LEFT JOIN gamerun ON g.id = gamerun.game_id
+		LEFT JOIN gamerun gr2 ON pgrel.gamerun_id = gr2.id
 		LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
 		LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
 		WHERE pgrel.person_id = $person
@@ -84,7 +84,7 @@ $sl = 0;
 
 if (count($q) > 0) {
 	foreach ($q as $rs) {
-		if ($_SESSION['user_id']) {
+		if (isset($_SESSION) && isset($_SESSION['user_id'])) {
 			if ($rs['boardgame']) {
 				$options = getuserlogoptions('boardgame');
 			} else {
@@ -97,6 +97,11 @@ if (count($q) > 0) {
 					$slist[$sl][] = " ";
 				}
 			}
+		} else {
+			// Ensure template keys exist to avoid undefined indexes
+			$slist[$sl]['read'] = '';
+			$slist[$sl]['gmed'] = '';
+			$slist[$sl]['played'] = '';
 		}
 
 		$slist[$sl]['files'] = $rs['files'];
@@ -108,7 +113,7 @@ if (count($q) > 0) {
 		$slist[$sl]['link'] = "data?scenarie=" . $rs['id'];
 		$slist[$sl]['title'] = $rs['title_translation'];
 		$slist[$sl]['origtitle'] = $rs['title'];
-		$slist[$sl]['firstdate'] = $rs['combinedfirstrun'] != '9999-99-99' ? $rs['combinedfirstrun'] : NULL;
+		$slist[$sl]['firstdate'] = $rs['combinedfirstrun'] != '9999-99-99' ? $rs['combinedfirstrun'] : null;
 
 		$game_id = $rs['id'];
 
@@ -161,7 +166,7 @@ if (count($q) > 0) {
 			");
 			foreach ($runs as $qrun) {
 				$rundescription = '';
-				$runinfo = nicedateset($qrun['begin'] ?? NULL, $qrun['end'] ?? NULL);
+				$runinfo = nicedateset($qrun['begin'] ?? null, $qrun['end'] ?? null);
 				if (isset($qrun['location'])) {
 					$rundescription = $qrun['location'];
 				}
@@ -220,7 +225,7 @@ $q = getall("
 
 foreach ($q as $rs) {
 	$type = ($rs['convention_id'] ? 'convention' : 'tag');
-	$has_nominationtext = !!$rs['nominationtext'];
+	$has_nominationtext = (bool) $rs['nominationtext'];
 	$awardtext = '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
 	if ($rs['winner']) {
 		$awardtext .= '<span class="winner">';
@@ -242,10 +247,17 @@ foreach ($q as $rs) {
 	$awardtext .= '</summary>';
 
 	if ($has_nominationtext) {
-		$awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
+		$awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), false) . '</div>' . PHP_EOL;
 	}
 	$awardtext .= '</details>';
-	$name = ($type == 'convention' ? $rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "") : $rs['tag']);
+	if ($type == 'convention') {
+		$name = $rs['convent_name'];
+		if ($rs['year']) {
+			$name .= ' (' . $rs['year'] . ')';
+		}
+	} else {
+		$name = $rs['tag'];
+	}
 	$type_id = $type == 'convention' ? $rs['convention_id'] : $rs['tag_id'];
 	$awarddata[$type][$type_id]['name'] = $name;
 	$awarddata[$type][$type_id]['text'][] = $awardtext;
@@ -279,7 +291,9 @@ $articles = getarticlereferences($this_id, $this_type);
 // Birthday
 $birth = "";
 $age_year = "";
-if ($r['birth'] && $r['birth'] != "0000-00-00" && substr($r['birth'], 0, 4) != "0000") { // no support for birthday without year
+$INVALID_DATE = "0000-00-00";
+$INVALID_YEAR = "0000";
+if ($r['birth'] && $r['birth'] != $INVALID_DATE && substr($r['birth'], 0, 4) != $INVALID_YEAR) { // no support for birthday without year
 	if ($r['death'] && $r['death'] != "0000-00-00") {
 		$birth = fulldate($r['birth']);
 	} else {
@@ -289,8 +303,8 @@ if ($r['birth'] && $r['birth'] != "0000-00-00" && substr($r['birth'], 0, 4) != "
 }
 
 $death = "";
-if ($r['death'] && $r['death'] != "0000-00-00") {
-	if ($r['birth'] && $r['birth'] != "0000-00-00") {
+if ($r['death'] && $r['death'] != $INVALID_DATE) {
+	if ($r['birth'] && $r['birth'] != $INVALID_DATE) {
 		$death = fulldate($r['death']);
 		$age_year = birthage($r['birth'], $r['death']);
 	} else {

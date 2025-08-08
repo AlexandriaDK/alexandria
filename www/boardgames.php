@@ -2,7 +2,7 @@
 require("./connect.php");
 require("base.inc.php");
 
-if ($_SESSION['user_id']) {
+if (isset($_SESSION) && isset($_SESSION['user_id'])) {
 	$userlog = getuserloggames($_SESSION['user_id']);
 }
 
@@ -28,7 +28,7 @@ foreach ($r as $row) {
 	$game_id = $row['id'];
 
 	$scenlist .= "\t<tr class=\"listresult\">\n";
-	if ($_SESSION['user_id']) {
+	if (isset($_SESSION) && isset($_SESSION['user_id'])) {
 		if ($game_id != $last_game_id) {
 			if ($row['boardgame']) {
 				$options = getuserlogoptions('boardgame');
