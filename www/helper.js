@@ -1,6 +1,6 @@
 function changedata(element, action, category, data_id, type, token) {
   if (action == "add" || action == "remove") {
-    let doaction = `${action}userlog`;
+    let doaction = action + "userlog";
     $.getJSON(
       "xmlrequest.php",
       {
@@ -38,7 +38,7 @@ function changedata(element, action, category, data_id, type, token) {
 function switchicon(element, action, category, data_id, type, token) {
   if (action == "add" || action == "remove") {
     let doaction = `${action}userlog`;
-    const img = `${type}_${action == "add" ? "active" : "passive"}.jpg`;
+    const img = type + "_" + (action == "add" ? "active" : "passive") + ".jpg";
     $.getJSON(
       "xmlrequest.php",
       {
@@ -427,7 +427,7 @@ function cleanURLSearchPart() {
     return false;
   }
   params.delete("searchterm");
-  const newpath = `${path}?${params.toString()}`;
+  const newpath = path + "?" + params.toString();
   history.replaceState(null, null, newpath);
 }
 

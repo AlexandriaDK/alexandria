@@ -2,22 +2,20 @@
 # Use the official PHP 8.0 image with Apache
 FROM php:8.4-apache
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update \
-    && apt-get install -y \
-        default-mysql-client \
-        git \
-        libfreetype6-dev \
-        libicu-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libzip-dev \
-        unzip \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install mysqli pdo pdo_mysql intl gd zip
+  && apt-get install -y \
+  default-mysql-client \
+  git \
+  libfreetype6-dev \
+  libicu-dev \
+  libjpeg-dev \
+  libpng-dev \
+  libzip-dev \
+  unzip \
+  && rm -rf /var/lib/apt/lists/* \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-install mysqli pdo pdo_mysql intl gd zip
 
 # Install Composer
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
@@ -42,9 +40,9 @@ COPY ./smarty/templates /var/www/smarty/templates
 
 # Create necessary directories for Smarty and set permissions
 RUN mkdir -p /var/www/smarty/templates_c \
-             /var/www/smarty/cache \
-             /var/www/smarty/configs \
-    && chmod -R 777 /var/www/smarty
+  /var/www/smarty/cache \
+  /var/www/smarty/configs \
+  && chmod -R 777 /var/www/smarty
 
 # Expose port 80
 EXPOSE 80

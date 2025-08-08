@@ -34,7 +34,7 @@ define('DB_CONNECTOR', 'mysqli');
 2. Start services
 
 ```cmd
-docker compose up -d
+docker-compose up -d
 ```
 
 What this does:

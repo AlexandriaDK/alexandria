@@ -5,7 +5,7 @@
   "license": "n/a",
   "minimum-stability": "stable",
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.4",
     "ext-mysqli": "*",
     "ext-mbstring": "*",
     "ext-intl": "*",
