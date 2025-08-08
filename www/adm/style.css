@@ -1,325 +1,336 @@
 body {
-	background-color: #fc9;
-	color: #000;
+  background-color: #fc9;
+  color: #000;
 }
 
 a:link {
-	color: #c03;
+  color: #c03;
 }
 
 a:visited {
-	color: #900;
+  color: #900;
 }
 
 .headlink {
-	font-size: 20pt;
-	font-family: Garamond, Georgia, Times New Roman, Times, Serif;
-	color: #990000;
+  font-size: 20pt;
+  font-family: Garamond, Georgia, Times New Roman, Times, Serif;
+  color: #990000;
 }
 div.headlink form > a {
-	text-decoration: none;
+  text-decoration: none;
 }
 
-table#translations, table#translations tr, table#translations td, table#translations th {
-	border: 1px solid black;
-	padding: 2px;
+table#translations,
+table#translations tr,
+table#translations td,
+table#translations th {
+  border: 1px solid black;
+  padding: 2px;
 }
 
 table#translations {
-	border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 table#translations tr:not(:first-child):hover {
-	background-color: #da7;
+  background-color: #da7;
 }
 
 .personselect {
-	width: 270px;
+  width: 270px;
 }
 
 .flytknap {
-	width: 120px;
-	text-align: left;
+  width: 120px;
+  text-align: left;
 }
 
 .flytknapright {
-	width: 120px;
-	text-align: right;
+  width: 120px;
+  text-align: right;
 }
 
 .ticketlist {
-	font-family: tahoma, verdana, sans-serif;
-	font-size: 80%;
+  font-family: tahoma, verdana, sans-serif;
+  font-size: 80%;
 }
 
 input.delete {
-	border: 1px solid #e00; background: #f77;
+  border: 1px solid #e00;
+  background: #f77;
 }
 
 td.mark {
-	text-align: center;
+  text-align: center;
 }
 
 td.number {
-	text-align: right;
+  text-align: right;
 }
 
 tr.headline th {
-	background-color: #feb;
+  background-color: #feb;
 }
 tr {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 input[type="number"] {
-	text-align: right;
+  text-align: right;
 }
 
-input[type="text"]:disabled, select:disabled {
-	text-decoration: line-through;
+input[type="text"]:disabled,
+select:disabled {
+  text-decoration: line-through;
 }
 
 div.nomtext {
-	font-size: 0.9em;
-	margin-left: 1em;
+  font-size: 0.9em;
+  margin-left: 1em;
 }
 
 span.atoggle {
-	cursor: pointer;
-	user-select: none;
+  cursor: pointer;
+  user-select: none;
 }
 
 option.existing {
-	background-color: #afa;
+  background-color: #afa;
 }
 
 #tabs {
-	background: transparent;
-	border: none;
+  background: transparent;
+  border: none;
 }
 #tabs .ui-widget-header {
-	background: transparent;
-	border: none;
-	border-bottom: 1px solid #000;
-	border-radius: 0px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0px;
 }
 #tabs .ui-tabs-nav .ui-state-default {
-	background: transparent;
-	border: none;
+  background: transparent;
+  border: none;
 }
 #tabs .ui-tabs-nav .ui-state-active {
-	background: transparent;
-	border: none;
+  background: transparent;
+  border: none;
 }
 #tabs .ui-tabs-nav .ui-state-default a {
-	color: #a99;
+  color: #a99;
 }
 #tabs .ui-tabs-nav .ui-state-active a {
-	color: #000;
+  color: #000;
 }
 
 div.nextlanguage {
-	font-size: 1.3em;
+  font-size: 1.3em;
 }
 
 textarea.langfocus {
-	background: #ff9;
+  background: #ff9;
 }
 
 textarea.langfocusde {
-	background: linear-gradient(to bottom, #bbb 0%, #bbb 33.33%, #fbb 0, #fbb 66.66%, #fdb 0);
+  background: linear-gradient(
+    to bottom,
+    #bbb 0%,
+    #bbb 33.33%,
+    #fbb 0,
+    #fbb 66.66%,
+    #fdb 0
+  );
 }
 
 input.personexists:enabled {
-	background-color: #6c6;
+  background-color: #6c6;
 }
 
 input.personunsure:enabled {
-	background-color: #ee3;
+  background-color: #ee3;
 }
 
 input.persondoesnotexist:enabled {
-	background-color: #c66;
+  background-color: #c66;
 }
 
 .ui-autocomplete {
-	max-height: 600px ! important;
-	max-width: 400px ! important;
-	overflow-y: auto ! important;
-	/* prevent horizontal scrollbar */
-	overflow-x: hidden ! important;
-	font-size: 0.8em ! important;
-	margin-right: 30px ! important;
+  max-height: 600px !important;
+  max-width: 400px !important;
+  overflow-y: auto !important;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden !important;
+  font-size: 0.8em !important;
+  margin-right: 30px !important;
 }
 
 .autosearchnote {
-	color: #999;
-	padding-left: 2em;
-	font-size: 0.7em;
+  color: #999;
+  padding-left: 2em;
+  font-size: 0.7em;
 }
 
 div.descriptionexamples {
-	margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 div.descriptionexamples a {
-	cursor: alias;
+  cursor: alias;
 }
 
 div.descriptionexamples span {
-	font-size: 0.8em;
-	color: #321;
-	cursor: copy;
+  font-size: 0.8em;
+  color: #321;
+  cursor: copy;
 }
 
 tr.zerousermap {
-	background-color: #feb;
+  background-color: #feb;
 }
 
 tr.zerousermap td.accounts {
-	font-weight: bold;
-	color: red;
+  font-weight: bold;
+  color: red;
 }
 
 .issuestatus input[type="radio"] {
-	opacity: 0;
-	position: fixed;
-	width: 0;
+  opacity: 0;
+  position: fixed;
+  width: 0;
 }
 
 .issuestatus label {
-    display: inline-block;
-    background-color: #ddd;
-    padding: 4px;
-    font-family: sans-serif, Arial;
-    font-size: 12px;
-	border: 1px solid black;
-	opacity: 0.4;
+  display: inline-block;
+  background-color: #ddd;
+  padding: 4px;
+  font-family: sans-serif, Arial;
+  font-size: 12px;
+  border: 1px solid black;
+  opacity: 0.4;
 }
 
 .issuestatus label.notstarted {
-	background-color: #f00;
+  background-color: #f00;
 }
 
 .issuestatus label.issueuploaded {
-	background-color: #666;
+  background-color: #666;
 }
 
 .issuestatus label.wip {
-	background-color: #f80;
+  background-color: #f80;
 }
 
 .issuestatus label.almostfinished {
-	background-color: #ff0;
+  background-color: #ff0;
 }
 
-.issuestatus label.finishednorefcon, .issuestatus label.finishednoref, .issuestatus label.finishednocon {
-	background-color: #0c0;
+.issuestatus label.finishednorefcon,
+.issuestatus label.finishednoref,
+.issuestatus label.finishednocon {
+  background-color: #0c0;
 }
 
-.issuestatus label.finishedpublished, .issuestatus label.finished {
-	background-color: #0f0;
+.issuestatus label.finishedpublished,
+.issuestatus label.finished {
+  background-color: #0f0;
 }
-
 
 .issuestatus label:hover {
-	opacity: 0.75;
+  opacity: 0.75;
 }
 
 .issuestatus input[type="radio"]:focus + label {
-	opacity: 0.75;
+  opacity: 0.75;
 }
 
 .issuestatus input[type="radio"]:checked + label {
-    /* background-color: #bfb;
+  /* background-color: #bfb;
     border-color: #4c4; */
-	opacity: 1;
+  opacity: 1;
 }
-
-
-
 
 /* Tooltip container */
 .tooltip {
-	position: relative;
-	display: inline-block;
-	border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-}
-  
-/* Tooltip text */
-.tooltip .tooltiptext {
-	visibility: hidden;
-	width: 120px;
-	bottom: 100%;
-	left: 50%;
-	margin-left: -60px;
-	margin-bottom: 4px;
-	background-color: rgb(255, 232, 232);
-	color: rgb(0, 0, 0);
-	text-align: center;
-	padding: 5px 0;
-	border-radius: 6px;
-	border: 1px solid black;
-   
-	/* Position the tooltip text - see examples below! */
-	position: absolute;
-	z-index: 1;
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
-  /* Show the tooltip text when you mouse over the tooltip container */
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  margin-bottom: 4px;
+  background-color: rgb(255, 232, 232);
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  border: 1px solid black;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
-	visibility: visible;
+  visibility: visible;
 }
 
 .tooltip .tooltiptext::after {
-	content: " ";
-	position: absolute;
-	top: 100%; /* At the bottom of the tooltip */
-	left: 50%;
-	margin-left: -5px;
-	border-width: 5px;
-	border-style: solid;
-	border-color: rgb(255, 232, 232) transparent transparent transparent;
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgb(255, 232, 232) transparent transparent transparent;
 }
 
 .highlightarticle {
-	background-color: #cf9;
+  background-color: #cf9;
 }
 
 .languagetabnotice {
-	text-decoration: maroon wavy underline;
+  text-decoration: maroon wavy underline;
 }
 
 .changeTypeCog {
-	cursor: pointer;
-	font-size: 0.8em;
+  cursor: pointer;
+  font-size: 0.8em;
 }
 
 option.cancelled {
-	text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 table#articlelist form:focus-within {
-	background-color: #c96;
+  background-color: #c96;
 }
 
 table#articlelist table tr {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 
 td.articleid {
-	text-align:right;
-	min-width: 2em;
+  text-align: right;
+  min-width: 2em;
 }
 
 input.originalarticleid {
-	width: 7em;
+  width: 7em;
 }
 
 input.page {
-	width: 4em;
+  width: 4em;
 }
 
 .nolocations {
-	font-weight: bold;
+  font-weight: bold;
 }

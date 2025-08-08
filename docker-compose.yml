@@ -33,7 +33,7 @@ services:
       - ./includes:/var/www/includes:ro
 
   dbimport:
-    image: python:3
+    image: python:3-alpine
     depends_on:
       - db
     volumes:

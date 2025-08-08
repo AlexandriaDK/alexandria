@@ -8,4 +8,3 @@ $result = getall($sql);
 
 var_dump($result);
 exit;
-?>

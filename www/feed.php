@@ -4,7 +4,6 @@ require("base.inc.php");
 
 $news = getnews();
 
-foreach($news AS $data) {
-	print $data['published']."\t".textlinks($data['text'],TRUE)."\n";
+foreach ($news as $data) {
+  print $data['published'] . "\t" . textlinks($data['text'], TRUE) . "\n";
 }
-?>

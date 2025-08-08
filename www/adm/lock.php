@@ -1,9 +1,9 @@
 <?php
 require "adm.inc.php";
 if ($con = intval($_REQUEST['con'])) {
-	SetCookie("conlock",$con);
+  SetCookie("conlock", $con);
 } else {
-	SetCookie("conlock");
+  SetCookie("conlock");
 }
 
 

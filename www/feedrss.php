@@ -23,28 +23,26 @@ print '<dc:language>da-DK</dc:language>';
 print "\n<items>\n";
 print "\t<rdf:Seq>\n";
 
-foreach($articles AS $article) {
-	$url = $article['link'];
-	print "\t\t";
-	print '<rdf:li rdf:resource="'.htmlspecialchars($url).'" />';
-	print "\n";
+foreach ($articles as $article) {
+  $url = $article['link'];
+  print "\t\t";
+  print '<rdf:li rdf:resource="' . htmlspecialchars($url) . '" />';
+  print "\n";
 }
 print "\t</rdf:Seq>\n</items>\n";
 print "</channel>\n\n";
 
-foreach($articles AS $article) {
-	$url = $article['link'];
-	print '<item rdf:about="'.$url.'" >';
-	print "\n";
-	print "<title>".htmlspecialchars($article['owner']).": ".htmlspecialchars($article['title'])."</title>\n";
-	print "<link>".$url."</link>\n";
-	print "<description>".htmlspecialchars($article['content'])."</description>\n";
-	print "<author>".htmlspecialchars($article['owner'])."</author>\n";
-	print "<pubDate>".date("r",strtotime($article['pubdate']))."</pubDate>\n";
-	
-	print "</item>\n\n";
+foreach ($articles as $article) {
+  $url = $article['link'];
+  print '<item rdf:about="' . $url . '" >';
+  print "\n";
+  print "<title>" . htmlspecialchars($article['owner']) . ": " . htmlspecialchars($article['title']) . "</title>\n";
+  print "<link>" . $url . "</link>\n";
+  print "<description>" . htmlspecialchars($article['content']) . "</description>\n";
+  print "<author>" . htmlspecialchars($article['owner']) . "</author>\n";
+  print "<pubDate>" . date("r", strtotime($article['pubdate'])) . "</pubDate>\n";
+
+  print "</item>\n\n";
 }
 
 print "</rdf:RDF>\n";
-
-?>
