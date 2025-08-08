@@ -8,11 +8,11 @@ if (isset($_SESSION['user_id'])) {
 
 $persons_limit = 4;
 $gamelistdata = [
-	'scenarios' => ['label' => $t->getTemplateVars('_scenarios'), 'games' => [] ],
-	'boardgames' => ['label' => $t->getTemplateVars('_boardgames'), 'games' => [] ],
-	'fastavaljunior' => ['label' => $t->getTemplateVars('_fastavaljuniorgames'), 'games' => [] ],
-	'scenariowritingcompetition' => ['label' => $t->getTemplateVars('_scenariowritingcompetition'), 'games' => [] ],
-	'gamerush' => ['label' => $t->getTemplateVars('_gamerush'), 'games' => [] ],
+	'scenarios' => ['label' => $t->getTemplateVars('_scenarios'), 'games' => []],
+	'boardgames' => ['label' => $t->getTemplateVars('_boardgames'), 'games' => []],
+	'fastavaljunior' => ['label' => $t->getTemplateVars('_fastavaljuniorgames'), 'games' => []],
+	'scenariowritingcompetition' => ['label' => $t->getTemplateVars('_scenariowritingcompetition'), 'games' => []],
+	'gamerush' => ['label' => $t->getTemplateVars('_gamerush'), 'games' => []],
 ];
 
 $oo = $_GET['oo'] ?? FALSE; // sort order for organizers
@@ -30,28 +30,6 @@ $swctags = [
 $bgctags = [
 	'Game Rush',
 ];
-
-/*
-function antaltxt($new, $rerun, $cancelled, $total, $type = 'game')
-{
-	if ($total == 0) {
-		return "";
-	}
-	$antaltxt = sprintf("%d %s", $total, ($type == 'game' ? ($total == 1 ? "scenarie" : "scenarier") : 'brætspil'));
-	if ($rerun > 0 && $cancelled > 0) {
-		$antaltxt .= sprintf(", heraf %d %s, %d %s og %d %s", $new, ($new == 1 ? "nyt" : "nye"), $rerun, ($rerun == 1 ? "rerun" : "reruns"), $cancelled, ($cancelled == 1 ? "aflyst" : "aflyste"));
-	} elseif ($rerun > 0 && $new > 0) {
-		$antaltxt .= sprintf(", heraf %d %s og %d %s", $new, ($new == 1 ? "nyt" : "nye"), $rerun, ($rerun == 1 ? "rerun" : "reruns"));
-	} elseif ($cancelled > 0 && $new > 0) {
-		$antaltxt .= sprintf(", heraf %d %s og %d %s", $new, ($new == 1 ? "nyt" : "nye"), $cancelled, ($cancelled == 1 ? "aflyst" : "aflyste"));
-	} elseif ($rerun == $total) {
-		$antaltxt .= ", udelukkende reruns";
-	} elseif ($cancelled == $total) {
-		$antaltxt .= ", udelukkende aflysninger";
-	}
-	return $antaltxt;
-}
-*/
 
 // achievements
 if ($con == 26) award_achievement(79); // X-Con
@@ -142,8 +120,24 @@ foreach ($q as $r) {
 	if (!isset($gamelist[$sid])) {
 		$gamelist[$sid] = [
 			'game' => [
-				'title' => $r['title'], 'title_translation' => $r['title_translation'], 'person_extra' => $r['person_extra'] ?? NULL, 'files' => (int) $r['files'], 'boardgame' => (int) $r['boardgame'], 'system_id' => $r['gamesystem_id'], 'system_name' => $r['sys_name'], 'system_translation' => $r['system_translation'], 'system_ext' => $r['gamesystem_extra'], 'presentation_id' => $r['presentation_id'] ?? NULL, 'pre_event' => $r['event'], 'pre_event_label' => $r['event_label'], 'pre_iconfile' => $r['iconfile'], 'pre_textsymbol' => $r['textsymbol'], 'fastaval_junior' => (int) $r['fastaval_junior'], 'tags' => array_unique(json_decode($r['tags']))
-			], 'person' => []
+				'title' => $r['title'],
+				'title_translation' => $r['title_translation'],
+				'person_extra' => $r['person_extra'] ?? NULL,
+				'files' => (int) $r['files'],
+				'boardgame' => (int) $r['boardgame'],
+				'system_id' => $r['gamesystem_id'],
+				'system_name' => $r['sys_name'],
+				'system_translation' => $r['system_translation'],
+				'system_ext' => $r['gamesystem_extra'],
+				'presentation_id' => $r['presentation_id'] ?? NULL,
+				'pre_event' => $r['event'],
+				'pre_event_label' => $r['event_label'],
+				'pre_iconfile' => $r['iconfile'],
+				'pre_textsymbol' => $r['textsymbol'],
+				'fastaval_junior' => (int) $r['fastaval_junior'],
+				'tags' => array_unique(json_decode($r['tags']))
+			],
+			'person' => []
 		];
 	}
 	if ($r['person_id']) {
@@ -153,7 +147,8 @@ foreach ($q as $r) {
 
 foreach ($gamelist as $game_id => $game) {
 	$datalistdata = [];
-	$useroptions = [];
+	// Ensure template-safe defaults even when the user is not logged in
+	$useroptions = ['read' => '', 'gmed' => '', 'played' => ''];
 	if (isset($_SESSION['user_id'])) {
 		if ($game['game']['boardgame']) {
 			$options = getuserlogoptions('boardgame');
@@ -161,8 +156,8 @@ foreach ($gamelist as $game_id => $game) {
 			$options = getuserlogoptions('scenario');
 		}
 		foreach ($options as $type) {
-			if ($type != NULL) {
-				$useroptions[$type] = getdynamicgamehtml($game_id, $type, $userloggames[$game_id][$type] ?? FALSE);
+			if ($type != null) {
+				$useroptions[$type] = getdynamicgamehtml($game_id, $type, $userloggames[$game_id][$type] ?? false);
 			}
 		}
 	}
@@ -203,7 +198,7 @@ foreach ($gamelist as $game_id => $game) {
 		'personhtml' => $personhtml,
 		'personextracount' => count($personlistextra),
 		'personextrahtml' => $personextrahtml ?? '',
-		'systemhtml' => $sysstring ?? FALSE,
+		'systemhtml' => $sysstring ?? false,
 		'system_id' => $game['game']['system_id'],
 		'system_name' => $game['game']['system_name'],
 		'system_translation' => $game['game']['system_translation'],
@@ -215,32 +210,15 @@ foreach ($gamelist as $game_id => $game) {
 
 	if ($is_fastaval && $game['game']['fastaval_junior']) { // Only create "Fastaval Junior" category for Fastaval
 		$gamelistdata['fastavaljunior']['games'][] = $datalistdata;
-	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($swctags, $game['game']['tags']) ) { // Only create "Scenario writing competition" category for Fastaval
+	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($swctags, $game['game']['tags'])) { // Only create "Scenario writing competition" category for Fastaval
 		$gamelistdata['scenariowritingcompetition']['games'][] = $datalistdata;
-	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($bgctags, $game['game']['tags']) ) { // Only create "Game Rush" category for Fastaval
+	} elseif ($is_fastaval && $game['game']['presentation_id'] == 1 && in_array_any($bgctags, $game['game']['tags'])) { // Only create "Game Rush" category for Fastaval
 		$gamelistdata['gamerush']['games'][] = $datalistdata;
 	} elseif ($game['game']['boardgame']) {
 		$gamelistdata['boardgames']['games'][] = $datalistdata;
 	} else {
 		$gamelistdata['scenarios']['games'][] = $datalistdata;
 	}
-
-
-	// Count scenarios based on presentation (premiere, re-run, ...)
-	/*
-	$total = $sce_new + $sce_rerun + $sce_cancelled;
-	$board_total = $board_new + $board_rerun + $board_cancelled;
-
-	$scen_antaltxt = antaltxt($sce_new, $sce_rerun, $sce_cancelled, $total, 'game');
-	$board_antaltxt = antaltxt($board_new, $board_rerun, $board_cancelled, $board_total, 'board');
-
-	if ($scenlist) {
-		$scenlist = "<tr><td colspan=\"8\">$scen_antaltxt</td></tr>\n" . $scenlist;
-	}
-	if ($boardlist) {
-		$boardlist = "<tr><td colspan=\"8\">$board_antaltxt</td></tr>\n" . $boardlist;
-	}
-	*/
 }
 
 // List of awards
@@ -262,7 +240,9 @@ foreach ($award_nominees as $nominee) {
 	$cid = $nominee['conset_id'];
 	$con_id = $nominee['convention_id'];
 	$cat_id = $nominee['category_id'];
-	if (!$cid) $cid = 0;
+	if (!$cid) {
+		$cid = 0;
+	}
 	$awardnominees[$cid][$con_id]['name'] = $nominee['con_name'];
 	$awardnominees[$cid][$con_id]['year'] = $nominee['year'];
 	$awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
@@ -277,7 +257,7 @@ if ($awardnominees) {
 			$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
 			$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
 			foreach ($category['nominees'] as $nominee) {
-				$has_nominationtext = !!$nominee['nominationtext'];
+				$has_nominationtext = (bool) $nominee['nominationtext'];
 				$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
 				$html .= "<div class=\"" . $class . "\">";
 				$html .= '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
@@ -293,7 +273,7 @@ if ($awardnominees) {
 				}
 				$html .= "</summary>";
 				if ($has_nominationtext) {
-					$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
+					$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), false) . '</div>' . PHP_EOL;
 				}
 				$html .= '</details>';
 				$html .= '</div>' . PHP_EOL;
@@ -391,13 +371,13 @@ $t->assign('filedir', getcategorydir($this_type));
 
 $t->assign('editorganizers', $editorganizers);
 $t->assign('editmode', $editmode);
-$t->assign('user_can_edit_organizers', $_SESSION['can_edit_organizers'] ?? FALSE);
+$t->assign('user_can_edit_organizers', $_SESSION['can_edit_organizers'] ?? false);
 
 $t->assign('user_visited', in_array('visited', $userlog));
-$t->assign('users_entries', $users_entries ?? FALSE);
+$t->assign('users_entries', $users_entries ?? false);
 
 if ($con == 504 || $convention['conset_id'] == 117) { // Hardcoded: "Rollespil din Pride" + QueerCon cons
-	$t->assign('lgbtmenu', TRUE);
+	$t->assign('lgbtmenu', true);
 }
 
 $t->display('data.tpl');

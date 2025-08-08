@@ -24,7 +24,7 @@
 <li><a href="#tabslist-{$cc}" title="{$country.countryname|escape}">{$country.countryname|escape} ({$country.cons|count})</a></li>
 {/foreach}
 </ul>
-{foreach name=outer from=$cons_list key=$cc item=$countries}
+{foreach $cons_list as $cc => $countries}
 <div id="tabslist-{$cc}" class="todolist">
 	{foreach $countries.cons as $con}
 		<div>
@@ -48,7 +48,7 @@
 <li><a href="#tabsguide-{$cc}" title="{$country.countryname|escape}">{$country.countryname|escape} ({$country.cons|count})</a></li>
 {/foreach}
 </ul>
-{foreach name=outer from=$cons_content key=$cc item=$countries}
+{foreach $cons_content as $cc => $countries}
 <div id="tabsguide-{$cc}" class="todolist">
 	{foreach $countries.cons as $con}
 		<div>
@@ -72,7 +72,7 @@
 <li><a href="#tabsmissing-{$cc}" title="{$country.countryname|escape}">{$country.countryname|escape} ({$country.cons|count})</a></li>
 {/foreach}
 </ul>
-{foreach name=outer from=$cons_missing key=$cc item=$countries}
+{foreach $cons_missing as $cc => $countries}
 <div id="tabsmissing-{$cc}" class="todolist">
 	{foreach $countries.cons as $con}
 		<div>

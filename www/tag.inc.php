@@ -1,13 +1,15 @@
 <?php
 $this_type = 'tag';
-
-if ($_SESSION['user_id']) {
-	$userlog = getuserloggames($_SESSION['user_id']);
+// Guard session access
+$user_id = (int) ($_SESSION['user_id'] ?? 0);
+$userlog = [];
+if ($user_id) {
+	$userlog = getuserloggames($user_id);
 }
 
 list($tag_id, $ttag, $description, $internal) = getrow("SELECT id, tag, description, internal FROM tag WHERE tag = '" . dbesc($tag) . "'");
 $this_id = $tag_id ?? 0;
-$internal = (($_SESSION['user_editor'] ?? FALSE) ? $internal : ""); // only set internal if editor
+$internal = (($_SESSION['user_editor'] ?? false) ? $internal : ""); // only set internal if editor
 
 $tag = getone("SELECT tag FROM tags WHERE tag = '" . dbesc($tag) . "'");
 if (!$tag && !$tag_id) {
@@ -39,10 +41,8 @@ $sl = 0;
 
 if (count($q) > 0) {
 	foreach ($q as $rs) {
-		if ($_SESSION['user_id']) {
-			foreach (array('read', 'gmed', 'played') as $type) {
-				$slist[$sl][$type] = getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? FALSE);
-			}
+		foreach (array('read', 'gmed', 'played') as $type) {
+			$slist[$sl][$type] = $user_id ? getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? false) : '';
 		}
 		$game_id = (int) $rs['id'];
 		// query-i-løkke... skal optimeres!
@@ -104,9 +104,10 @@ if ($tag_id) {
 		$tid = $nominee['tag_id'];
 		$tag_id = $nominee['tag_id'];
 		$cat_id = $nominee['category_id'];
-		if (!$tid) $tid = 0;
+		if (!$tid) {
+			$tid = 0;
+		}
 		$awardnominees[$tid][$tag_id]['name'] = $nominee['tag_name'];
-		// $awardnominees[$tid][$tag_id]['year'] = $nominee['year'];
 		$awardnominees[$tid][$tag_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
 		$awardnominees[$tid][$tag_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation']];
 	}
@@ -118,7 +119,7 @@ if ($tag_id) {
 				$html .= PHP_EOL . "<div class=\"awardcategory\" data-category=\"" . htmlspecialchars($category['name']) . "\">" . PHP_EOL;
 				$html .= "<h4>" . htmlspecialchars($category['name']) . "</h4>" . PHP_EOL;
 				foreach ($category['nominees'] as $nominee) {
-					$has_nominationtext = !!$nominee['nominationtext'];
+					$has_nominationtext = (bool) $nominee['nominationtext'];
 					$class = ($nominee['winner'] == 1 ? "winner" : "nominee");
 					$html .= '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
 					$html .= "<span class=\"" . $class . "\">";
@@ -133,7 +134,7 @@ if ($tag_id) {
 					}
 					$html .= '</summary>';
 					if ($has_nominationtext) {
-						$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
+						$html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), false) . '</div>' . PHP_EOL;
 					}
 
 					$html .= "</details>" . PHP_EOL;
@@ -158,7 +159,7 @@ $haslocations = getone("
 			WHERE tag = '" . dbesc($tag) . "'
 			AND locations.geo IS NOT NULL
 		)
-			UNION 
+			UNION
 		(
 			SELECT DISTINCT locations.id, locations.name
 			FROM tags
@@ -201,7 +202,7 @@ $t->assign('articles', $articles);
 $t->assign('filelist', $filelist);
 $t->assign('filedir', getcategorydir($this_type));
 if (in_array(strtolower($tag), ['lgbtq', 'queer', 'queerness'])) {
-	$t->assign('lgbtmenu', TRUE);
+	$t->assign('lgbtmenu', true);
 }
 
 $t->display('data.tpl');

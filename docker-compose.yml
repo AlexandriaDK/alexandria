@@ -27,8 +27,10 @@ services:
     volumes:
       # Mount the www directory for live development
       - ./www:/var/www/html
-      # Mount the smarty templates for live template development
-      - ./smarty:/var/www/smarty
+      # Mount only the Smarty templates for live template development
+      - ./smarty/templates:/var/www/smarty/templates
+      # Mount includes so social/login configs are available during development
+      - ./includes:/var/www/includes:ro
 
   dbimport:
     image: python:3

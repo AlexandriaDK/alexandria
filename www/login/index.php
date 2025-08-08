@@ -3,8 +3,8 @@ require("../connect.php");
 require("../base.inc.php");
 
 if ($_REQUEST['remote']) {
-	if ($loginurl = getone("SELECT loginurl FROM remotelogin WHERE site = '".$_REQUEST['remote']."'") ) {
-		header("Location: ".$loginurl);
+	if ($loginurl = getone("SELECT loginurl FROM remotelogin WHERE site = '" . $_REQUEST['remote'] . "'")) {
+		header("Location: " . $loginurl);
 	}
 	exit;
 }
@@ -25,7 +25,7 @@ $site = $_REQUEST['site'];
 if (!$site) $site = "rpgforum";
 
 if ($siteuserid && $hash && $time) {
-	if ($user_id = validate_remote_login($siteuserid,$hash,$time,$site,$name)) {
+	if ($user_id = validate_remote_login($siteuserid, $hash, $time, $site, $name)) {
 
 		// validated user
 		$_SESSION['user_id'] = $user_id;
@@ -41,9 +41,6 @@ if ($siteuserid && $hash && $time) {
 		// invalid login
 		print "Invalid login!";
 	}
-	
 } else { // print directions to login
-	header( "Location: ../" );
+	header("Location: ../");
 }
-
-?>

@@ -34,9 +34,11 @@ COPY composer.json composer.lock* ./
 # Install PHP dependencies (including dev dependencies for development)
 RUN composer install --optimize-autoloader
 
-# Copy includes directory and smarty templates
+# Copy includes directory and Smarty assets (templates/configs)
 COPY ./includes /var/www/includes
-COPY ./smarty /var/www/smarty
+COPY ./smarty/templates /var/www/smarty/templates
+# If you add configs in repo later, uncomment the next line
+# COPY ./smarty/configs /var/www/smarty/configs
 
 # Create necessary directories for Smarty and set permissions
 RUN mkdir -p /var/www/smarty/templates_c \
