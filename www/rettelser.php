@@ -7,10 +7,9 @@ $value = "";
 
 $data_id = (int) ($_REQUEST['data_id'] ?? FALSE);
 $cat = (string) ($_REQUEST['cat'] ?? FALSE);
-$label = getentry($cat,$data_id);
+$label = getentry($cat, $data_id);
 
-$t->assign('category',$cat);
-$t->assign('data_id',$data_id);
-$t->assign('label',$label);
+$t->assign('category', $cat);
+$t->assign('data_id', $data_id);
+$t->assign('label', $label);
 $t->display('update_input.tpl');
-?>

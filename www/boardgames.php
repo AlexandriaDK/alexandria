@@ -2,8 +2,8 @@
 require("./connect.php");
 require("base.inc.php");
 
-if ($_SESSION['user_id']) {
-	$userlog = getuserloggames($_SESSION['user_id']);
+if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+  $userlog = getuserloggames($_SESSION['user_id']);
 }
 
 // Find all games, including persons and cons - restrict to one premiere convention
@@ -25,59 +25,59 @@ $last_game_id = 0;
 $scenlist = "";
 
 foreach ($r as $row) {
-	$game_id = $row['id'];
+  $game_id = $row['id'];
 
-	$scenlist .= "\t<tr class=\"listresult\">\n";
-	if ($_SESSION['user_id']) {
-		if ($game_id != $last_game_id) {
-			if ($row['boardgame']) {
-				$options = getuserlogoptions('boardgame');
-			} else {
-				$options = getuserlogoptions('scenario');
-			}
+  $scenlist .= "\t<tr class=\"listresult\">\n";
+  if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+    if ($game_id != $last_game_id) {
+      if ($row['boardgame']) {
+        $options = getuserlogoptions('boardgame');
+      } else {
+        $options = getuserlogoptions('scenario');
+      }
 
-			foreach ($options as $type) {
-				$scenlist .= "<td>";
-				if ($type != NULL) {
-					$scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? FALSE);
-				}
-				$scenlist .= "</td>";
-			}
-			$scenlist .= "<td style=\"width: 10px;\">&nbsp;</td>";
-		} else {
-			$scenlist .= "<td colspan=\"4\"></td>";
-		}
-	}
+      foreach ($options as $type) {
+        $scenlist .= "<td>";
+        if ($type != NULL) {
+          $scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? FALSE);
+        }
+        $scenlist .= "</td>";
+      }
+      $scenlist .= "<td style=\"width: 10px;\">&nbsp;</td>";
+    } else {
+      $scenlist .= "<td colspan=\"4\"></td>";
+    }
+  }
 
-	if ($game_id != $last_game_id && $row['files'] > 0) {
-		$scenlist .= "<td><span title=\"" . htmlspecialchars($t->getTemplateVars('_sce_bgdownloadable')) . "\"><a href=\"data?scenarie=" . $game_id . "\">💾</a></span></td>";
-	} else {
-		$scenlist .= "<td></td>";
-	}
-	if ($game_id != $last_game_id) {
-		$scenlist .= "\t\t<td><a href=\"data?scenarie=" . $game_id . "\" class=\"game\" title=\"" . htmlspecialchars($row['title']) . "\">" . htmlspecialchars($row['title_translation']) . "</a></td>\n";
-	} else {
-		$scenlist .= "\t\t<td>&nbsp;</td>\n";
-	}
+  if ($game_id != $last_game_id && $row['files'] > 0) {
+    $scenlist .= "<td><span title=\"" . htmlspecialchars($t->getTemplateVars('_sce_bgdownloadable')) . "\"><a href=\"data?scenarie=" . $game_id . "\">💾</a></span></td>";
+  } else {
+    $scenlist .= "<td></td>";
+  }
+  if ($game_id != $last_game_id) {
+    $scenlist .= "\t\t<td><a href=\"data?scenarie=" . $game_id . "\" class=\"game\" title=\"" . htmlspecialchars($row['title']) . "\">" . htmlspecialchars($row['title_translation']) . "</a></td>\n";
+  } else {
+    $scenlist .= "\t\t<td>&nbsp;</td>\n";
+  }
 
-	if ($row['autid']) {
-		$scenlist .= "\t\t<td><a href=\"data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
-	} else {
-		$scenlist .= "\t\t<td>&nbsp;</td>\n";
-	}
+  if ($row['autid']) {
+    $scenlist .= "\t\t<td><a href=\"data?person={$row['autid']}\" class=\"person\">{$row['autname']}</a></td>\n";
+  } else {
+    $scenlist .= "\t\t<td>&nbsp;</td>\n";
+  }
 
-	if ($game_id != $last_game_id && $row['convention_id']) {
-		$class = "con";
-		if ($row['cancelled'] == 1) {
-			$class .= " cancelled";
-		}
-		$scenlist .= "\t\t<td>" . smarty_function_con(['id' => $row['convention_id'], 'name' => $row['convention_name'], 'year' => $row['year'], 'begin' => $row['begin'], 'end' => $row['end'], 'cancelled' => $row['cancelled']]) . "</td>\n";
-	} else {
-		$scenlist .= "\t\t<td>&nbsp;</td>\n";
-	}
+  if ($game_id != $last_game_id && $row['convention_id']) {
+    $class = "con";
+    if ($row['cancelled'] == 1) {
+      $class .= " cancelled";
+    }
+    $scenlist .= "\t\t<td>" . smarty_function_con(['id' => $row['convention_id'], 'name' => $row['convention_name'], 'year' => $row['year'], 'begin' => $row['begin'], 'end' => $row['end'], 'cancelled' => $row['cancelled']]) . "</td>\n";
+  } else {
+    $scenlist .= "\t\t<td>&nbsp;</td>\n";
+  }
 
-	$scenlist .= "\t</tr>\n";
-	$last_game_id = $game_id;
+  $scenlist .= "\t</tr>\n";
+  $last_game_id = $game_id;
 }
 
 $t->assign('scenlist', $scenlist);

@@ -21,85 +21,85 @@ $confirmed = $_REQUEST['confirmed'] ?? '';
 $country = trim((string) ($_REQUEST['country'] ?? ''));
 $cancelled = (int) (bool) ($_REQUEST['cancelled'] ?? '');
 if (!$end || $end == "0000-00-00") {
-	$end = $begin;
+  $end = $begin;
 }
 
 $this_id = $con;
 
 if ($action) {
-	validatetoken($token);
+  validatetoken($token);
 }
 
 if (!$action && $con) {
-	$row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.internal, a.confirmed, a.country, b.country AS cscountry, a.cancelled
+  $row = getrow("SELECT a.id, a.name, a.year, a.begin, a.end, a.place, a.conset_id, a.description, a.internal, a.confirmed, a.country, b.country AS cscountry, a.cancelled
 	FROM convention a
 	LEFT JOIN conset b ON a.conset_id = b.id
 	WHERE a.id = $con
 	");
-	if ($row) {
-		$name = $row['name'];
-		$year = $row['year'];
-		$begin = $row['begin'];
-		$end = $row['end'];
-		$place = $row['place'];
-		$conset_id = $row['conset_id'];
-		$description = $row['description'];
-		$internal = $row['internal'];
-		$confirmed = $row['confirmed'];
-		$country = $row['country'];
-		$cscountry = $row['cscountry'];
-		$cancelled = $row['cancelled'];
-		$qq = getall("
+  if ($row) {
+    $name = $row['name'];
+    $year = $row['year'];
+    $begin = $row['begin'];
+    $end = $row['end'];
+    $place = $row['place'];
+    $conset_id = $row['conset_id'];
+    $description = $row['description'];
+    $internal = $row['internal'];
+    $confirmed = $row['confirmed'];
+    $country = $row['country'];
+    $cscountry = $row['cscountry'];
+    $cancelled = $row['cancelled'];
+    $qq = getall("
 			SELECT id, name, year, begin, end
 			FROM convention 
 			WHERE conset_id = '$conset_id'
 			ORDER BY year, begin, name
 		");
-		$seriedata = [];
-		$seriecount = 0;
-		foreach ($qq as $row) {
-			$seriecount++;
-			$seriedata['id'][$seriecount] = $row['id'];
-			$seriedata['name'][$seriecount] = $row['name'];
-			$seriedata['year'][$seriecount] = $row['year'];
-			$seriedata['begin'][$seriecount] = $row['begin'];
-			$seriedata['end'][$seriecount] = $row['end'];
-			if ($row['id'] == $con) $seriethis = $seriecount;
-		}
-		$con_prev = $seriedata['id'][($seriethis - 1)] ?? '';
-		$con_next = $seriedata['id'][($seriethis + 1)] ?? '';
-	} else {
-		$con = FALSE;
-	}
+    $seriedata = [];
+    $seriecount = 0;
+    foreach ($qq as $row) {
+      $seriecount++;
+      $seriedata['id'][$seriecount] = $row['id'];
+      $seriedata['name'][$seriecount] = $row['name'];
+      $seriedata['year'][$seriecount] = $row['year'];
+      $seriedata['begin'][$seriecount] = $row['begin'];
+      $seriedata['end'][$seriecount] = $row['end'];
+      if ($row['id'] == $con) $seriethis = $seriecount;
+    }
+    $con_prev = $seriedata['id'][($seriethis - 1)] ?? '';
+    $con_next = $seriedata['id'][($seriethis + 1)] ?? '';
+  } else {
+    $con = FALSE;
+  }
 }
 
 if ($action == "edit" && $con) {
-	if (!$name) {
-		$_SESSION['admin']['info'] = "Name is missing!";
-	} else {
-		$year = intval($year);
-		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
-		$q = "UPDATE convention SET " .
-			"name = '" . dbesc($name) . "', " .
-			"year = $year, " .
-			"begin = " . sqlifnull($begin) . ", " .
-			"end = " . sqlifnull($end) . ", " .
-			"place = '" . dbesc($place) . "', " .
-			"description = '" . dbesc($description) . "', " .
-			"internal = '" . dbesc($internal) . "', " .
-			"conset_id = '" . dbesc($conset_id) . "', " .
-			"country = " . sqlifnull($country) . ", " .
-			"cancelled = '" . dbesc($cancelled) . "', " .
-			"confirmed = '" . dbesc($confirmed) . "' " .
-			"WHERE id = '$con'";
-		$r = doquery($q);
-		print dberror();
-		if ($r) {
-			chlog($con, $this_type, "Con edited");
-		}
-		$_SESSION['admin']['info'] = "Con edited! " . dberror();
-		rexit($this_type, ['con' => $con]);
-	}
+  if (!$name) {
+    $_SESSION['admin']['info'] = "Name is missing!";
+  } else {
+    $year = intval($year);
+    $year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
+    $q = "UPDATE convention SET " .
+      "name = '" . dbesc($name) . "', " .
+      "year = $year, " .
+      "begin = " . sqlifnull($begin) . ", " .
+      "end = " . sqlifnull($end) . ", " .
+      "place = '" . dbesc($place) . "', " .
+      "description = '" . dbesc($description) . "', " .
+      "internal = '" . dbesc($internal) . "', " .
+      "conset_id = '" . dbesc($conset_id) . "', " .
+      "country = " . sqlifnull($country) . ", " .
+      "cancelled = '" . dbesc($cancelled) . "', " .
+      "confirmed = '" . dbesc($confirmed) . "' " .
+      "WHERE id = '$con'";
+    $r = doquery($q);
+    print dberror();
+    if ($r) {
+      chlog($con, $this_type, "Con edited");
+    }
+    $_SESSION['admin']['info'] = "Con edited! " . dberror();
+    rexit($this_type, ['con' => $con]);
+  }
 }
 
 //
@@ -107,78 +107,78 @@ if ($action == "edit" && $con) {
 //
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
-	$error = [];
-	if (getCount('cgrel', $this_id, FALSE, $this_type)) $error[] = "game";
-	if (getCount('pcrel', $this_id, FALSE, $this_type)) $error[] = "con (organizer)";
-	if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
-	if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
-	if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
-	if (getCount('files', $this_id, FALSE, $this_type)) $error[] = "files";
-	if (getCount('userlog', $this_id, FALSE, $this_type)) $error[] = "user log (requires admin access)";
-	if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
-	if ($error) {
-		$_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ", $error);
-		rexit($this_type, ['con' => $con]);
-	} else {
-		$name = getone("SELECT CONCAT(name, ' ', year) FROM convention WHERE id = $con");
+  $error = [];
+  if (getCount('cgrel', $this_id, FALSE, $this_type)) $error[] = "game";
+  if (getCount('pcrel', $this_id, FALSE, $this_type)) $error[] = "con (organizer)";
+  if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
+  if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
+  if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
+  if (getCount('files', $this_id, FALSE, $this_type)) $error[] = "files";
+  if (getCount('userlog', $this_id, FALSE, $this_type)) $error[] = "user log (requires admin access)";
+  if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
+  if ($error) {
+    $_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ", $error);
+    rexit($this_type, ['con' => $con]);
+  } else {
+    $name = getone("SELECT CONCAT(name, ' ', year) FROM convention WHERE id = $con");
 
-		$q = "DELETE FROM convention WHERE id = $con";
-		$r = doquery($q);
+    $q = "DELETE FROM convention WHERE id = $con";
+    $r = doquery($q);
 
-		if ($r) {
-			chlog($con, $this_type, "Con deleted: $name");
-		}
-		$_SESSION['admin']['info'] = "Con deleted! " . dberror();
-		rexit($this_type, ['con' => $con]);
-	}
+    if ($r) {
+      chlog($con, $this_type, "Con deleted: $name");
+    }
+    $_SESSION['admin']['info'] = "Con deleted! " . dberror();
+    rexit($this_type, ['con' => $con]);
+  }
 }
 
 
 if ($action == "create") {
-	if (!$name) {
-		$_SESSION['admin']['info'] = "Name is missing!";
-	} else {
-		$year = intval($year);
-		$year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
-		$q = "INSERT INTO convention (id, name, year, begin, end, place, conset_id, description, internal, confirmed, cancelled, country) " .
-			"VALUES (NULL, " .
-			"'" . dbesc($name) . "', " .
-			"$year, " .
-			sqlifnull($begin) . ", " .
-			sqlifnull($end) . ", " .
-			"'" . dbesc($place) . "', " .
-			"'" . dbesc($conset_id) . "', " .
-			"'" . dbesc($description) . "', " .
-			"'" . dbesc($internal) . "', " .
-			"'" . dbesc($confirmed) . "'," .
-			"'" . dbesc($cancelled) . "'," .
-			sqlifnull($country) .
-			")";
-		$r = doquery($q);
-		if ($r) {
-			$con = dbid();
-			chlog($con, $this_type, "Con created");
-		}
-		$_SESSION['admin']['info'] = "Con created " . dberror();
-		rexit($this_type, ['con' => $con]);
-	}
+  if (!$name) {
+    $_SESSION['admin']['info'] = "Name is missing!";
+  } else {
+    $year = intval($year);
+    $year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
+    $q = "INSERT INTO convention (id, name, year, begin, end, place, conset_id, description, internal, confirmed, cancelled, country) " .
+      "VALUES (NULL, " .
+      "'" . dbesc($name) . "', " .
+      "$year, " .
+      sqlifnull($begin) . ", " .
+      sqlifnull($end) . ", " .
+      "'" . dbesc($place) . "', " .
+      "'" . dbesc($conset_id) . "', " .
+      "'" . dbesc($description) . "', " .
+      "'" . dbesc($internal) . "', " .
+      "'" . dbesc($confirmed) . "'," .
+      "'" . dbesc($cancelled) . "'," .
+      sqlifnull($country) .
+      ")";
+    $r = doquery($q);
+    if ($r) {
+      $con = dbid();
+      chlog($con, $this_type, "Con created");
+    }
+    $_SESSION['admin']['info'] = "Con created " . dberror();
+    rexit($this_type, ['con' => $con]);
+  }
 }
 
 unset($conset);
 $q = getall("SELECT id, name FROM conset ORDER BY id != 40, name");
 foreach ($q as $r) {
-	$conset[$r['id']] = $r['name'];
+  $conset[$r['id']] = $r['name'];
 }
 
 $conflist = array(
-	0 => ["label" => "Missing list of games", "level" => 1],
-	1 => ["label" => "List of games available", "level" => 2],
-	2 => ["label" => "Games currently being entered", "level" => 3],
-	3 => ["label" => "Games entered, descriptions available", "level" => 2],
-	4 => ["label" => "Descriptions currently being entered", "level" => 3],
-	5 => ["label" => "Stuff still missing (write under internal note)", "level" => 2],
-	6 => ["label" => "Program data entered", "level" => 4],
-	9 => ["label" => "List confirmed", "level" => 4]
+  0 => ["label" => "Missing list of games", "level" => 1],
+  1 => ["label" => "List of games available", "level" => 2],
+  2 => ["label" => "Games currently being entered", "level" => 3],
+  3 => ["label" => "Games entered, descriptions available", "level" => 2],
+  4 => ["label" => "Descriptions currently being entered", "level" => 3],
+  5 => ["label" => "Stuff still missing (write under internal note)", "level" => 2],
+  6 => ["label" => "Program data entered", "level" => 4],
+  9 => ["label" => "List confirmed", "level" => 4]
 );
 
 htmladmstart("Con");
@@ -186,10 +186,10 @@ htmladmstart("Con");
 print "<FORM ACTION=\"convention.php\" METHOD=\"post\">\n";
 print '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">';
 if (!$con) {
-	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
+  print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"create\">\n";
 } else {
-	print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";
-	print "<INPUT TYPE=\"hidden\" name=\"con\" value=\"$con\">\n";
+  print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"edit\">\n";
+  print "<INPUT TYPE=\"hidden\" name=\"con\" value=\"$con\">\n";
 }
 
 print "<a href=\"convention.php\">New con</a>";
@@ -197,27 +197,27 @@ print "<a href=\"convention.php\">New con</a>";
 print "<table border=0>\n";
 
 if ($con) {
-	print "<tr><td>ID</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Show con page</a> - <a href=\"lock.php?con=$con\">Use con as default con</a>";
-	if ($con_prev) {
-		print " - <a href=\"convention.php?con=" . $con_prev . "\">Previous</a>";
-	}
-	if ($con_next) {
-		print " - <a href=\"convention.php?con=" . $con_next . "\">Next</a>";
-	}
-	if ($viewlog == TRUE) {
-		print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$con\">Show log</a>";
-	}
-	print "\n</td></tr>\n";
+  print "<tr><td>ID</td><td>$con - <a href=\"../data?con=$con\" accesskey=\"q\">Show con page</a> - <a href=\"lock.php?con=$con\">Use con as default con</a>";
+  if ($con_prev) {
+    print " - <a href=\"convention.php?con=" . $con_prev . "\">Previous</a>";
+  }
+  if ($con_next) {
+    print " - <a href=\"convention.php?con=" . $con_next . "\">Next</a>";
+  }
+  if ($viewlog == TRUE) {
+    print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$con\">Show log</a>";
+  }
+  print "\n</td></tr>\n";
 }
 
 tr("Name", "name", $name, "", "", "text", TRUE, TRUE);
 tr("Year", "year", $year, "", "", "number");
 if ($begin && $begin != "0000-00-00") {
-	$opta = "(" . fulldate($begin) . " = " . customdateformat(LANG, 'cccc', $begin) . ")";
+  $opta = "(" . fulldate($begin) . " = " . customdateformat(LANG, 'cccc', $begin) . ")";
 }
 
 if ($end && $end != "0000-00-00") {
-	$optb = "(" . fulldate($end) . " = " . customdateformat(LANG, 'cccc', $end) . ")";
+  $optb = "(" . fulldate($end) . " = " . customdateformat(LANG, 'cccc', $end) . ")";
 }
 
 
@@ -225,29 +225,30 @@ tr("Start date", "begin", $begin, $opta ?? '', "YYYY-MM-DD", "date", FALSE, FALS
 tr("End date", "end", $end, $optb ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conend");
 
 if ($place) {
-	$convention_locations = getall("
+  $convention_locations = getall(
+    "
 		SELECT l.name, l.city, l.country
 		FROM lrel
 		INNER JOIN locations l ON lrel.location_id = l.id
 		WHERE lrel.convention_id = " . $con
-	);
-	$locationcount = count($convention_locations);
+  );
+  $locationcount = count($convention_locations);
 
-	$locationlist = [];
-	foreach ($convention_locations AS $runlocation) {
-		$label = $runlocation['name'];
-		if ($runlocation['city']) {
-			$label .= ', ' . $runlocation['city'];
-		}
-		if ($runlocation['country']) {
-			$label .= ', ' . getCountryName($runlocation['country']);
-		}
-		$locationlist[] = $label;
-	}
-	$locationtitle = implode("\n",$locationlist);
-	$locationmap = 'Map: <a href="locations.php?convention_id=' . $con . '" title="' . htmlspecialchars($locationtitle) . '" class="' . ($locationcount == 0 ? 'nolocations' : '') . '">' . $locationcount . ' ' . ($locationcount == 1 ? 'location' : 'locations') . '</a>';
+  $locationlist = [];
+  foreach ($convention_locations as $runlocation) {
+    $label = $runlocation['name'];
+    if ($runlocation['city']) {
+      $label .= ', ' . $runlocation['city'];
+    }
+    if ($runlocation['country']) {
+      $label .= ', ' . getCountryName($runlocation['country']);
+    }
+    $locationlist[] = $label;
+  }
+  $locationtitle = implode("\n", $locationlist);
+  $locationmap = 'Map: <a href="locations.php?convention_id=' . $con . '" title="' . htmlspecialchars($locationtitle) . '" class="' . ($locationcount == 0 ? 'nolocations' : '') . '">' . $locationcount . ' ' . ($locationcount == 1 ? 'location' : 'locations') . '</a>';
 } else {
-	$locationmap = '';
+  $locationmap = '';
 }
 tr("Location", "place", $place, $locationmap);
 
@@ -262,9 +263,9 @@ print "<td>\n";
 print '<select name="conset_id" id="conset_id">' . PHP_EOL;
 
 foreach ($conset as $id => $name) {
-	print "<option value=$id";
-	if ($id == $conset_id) print " selected";
-	print ">$name\n";
+  print "<option value=$id";
+  if ($id == $conset_id) print " selected";
+  print ">$name\n";
 }
 print "</select>\n";
 print "</td></tr>\n\n";
@@ -274,11 +275,11 @@ print "<td>\n";
 print "<select name=\"confirmed\">\n";
 
 foreach ($conflist as $id => $stage) {
-	$levelcolors = [1 => '#d55', 2 => '#d95', 3 => '#dd5', 4 => '#5d5'];
-	print "<option value=$id";
-	if ($id == $confirmed) print " SELECTED";
-	print " style=\"background-color: " . $levelcolors[$stage['level']] . "\"";
-	print ">" . $stage['label'] . "\n";
+  $levelcolors = [1 => '#d55', 2 => '#d95', 3 => '#dd5', 4 => '#5d5'];
+  print "<option value=$id";
+  if ($id == $confirmed) print " SELECTED";
+  print " style=\"background-color: " . $levelcolors[$stage['level']] . "\"";
+  print ">" . $stage['label'] . "\n";
 }
 print "</select>\n";
 print "</td></tr>\n\n";
@@ -292,29 +293,29 @@ print "</tr>\n\n";
 print '<tr><td>&nbsp;</td><td><input type="submit" value="' . ($con ? "Edit" : "Create") . ' con">' . ($con ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete con?\n\nAs a precaution every relation will be checked.\');" style="border: 1px solid #e00; background: #f77;">' : '') . '</td></tr>';
 
 if ($con) {
-	print changelinks($con, $this_type);
-	print changetrivia($con, $this_type);
-	print changealias($con, $this_type);
-	print changeorganizers($con, $this_type);
-	print changefiles($con, $this_type);
-	print changeawards($con, $this_type);
-	print changeuserlog($con, $this_type);
-	print showpicture($con, $this_type);
-	print showtickets($con, $this_type);
+  print changelinks($con, $this_type);
+  print changetrivia($con, $this_type);
+  print changealias($con, $this_type);
+  print changeorganizers($con, $this_type);
+  print changefiles($con, $this_type);
+  print changeawards($con, $this_type);
+  print changeuserlog($con, $this_type);
+  print showpicture($con, $this_type);
+  print showtickets($con, $this_type);
 
-	$q = getall("SELECT g.id, g.title, p.id AS preid, event FROM game g, cgrel, presentation p WHERE cgrel.convention_id = '$con' AND cgrel.game_id = g.id AND cgrel.presentation_id = p.id ORDER BY title");
-	print dberror();
-	print "<tr valign=top><td>Scenarios connected</td><td>\n";
+  $q = getall("SELECT g.id, g.title, p.id AS preid, event FROM game g, cgrel, presentation p WHERE cgrel.convention_id = '$con' AND cgrel.game_id = g.id AND cgrel.presentation_id = p.id ORDER BY title");
+  print dberror();
+  print "<tr valign=top><td>Scenarios connected</td><td>\n";
 
-	foreach ($q as list($id, $title, $preid, $event)) {
-		if ($title == "") {
-			$title = "(error - no title)";
-		}
-		print "<a href=\"game.php?game=$id\">$title</a>" . PHP_EOL;
-		if ($preid > 1) print " ($event)";
-		print "<br>";
-	}
-	print "</td></tr>\n";
+  foreach ($q as list($id, $title, $preid, $event)) {
+    if ($title == "") {
+      $title = "(error - no title)";
+    }
+    print "<a href=\"game.php?game=$id\">$title</a>" . PHP_EOL;
+    if ($preid > 1) print " ($event)";
+    print "<br>";
+  }
+  print "</td></tr>\n";
 }
 
 
@@ -327,71 +328,70 @@ if ($con) {
 <hr size=1>
 
 <form action="convention.php" method=get>
-	<table>
-		<tr valign=baseline>
-			<td>
-				Select con
-			</td>
+  <table>
+    <tr valign=baseline>
+      <td>
+        Select con
+      </td>
 
-			<td>
-				<!--
+      <td>
+        <!--
 <select name=con onChange="form.submit()">
 -->
-				<select name=con>
+        <select name=con>
 
-					<?php
-					$q = getall("SELECT c.id, c.name, year, conset.name AS setname
+          <?php
+          $q = getall("SELECT c.id, c.name, year, conset.name AS setname
 	FROM convention c
 	LEFT JOIN conset ON c.conset_id = conset.id
 	ORDER BY setname, year, begin, name
 ");
 
-					foreach ($q as $r) {
-						print "<option value=$r[id]";
-						if ($r['id'] == $con) print " SELECTED";
-						print ">$r[name] ($r[year])\n";
-					}
-					?>
-				</select>
-				<br>
-				<input type=submit value="Edit">
+          foreach ($q as $r) {
+            print "<option value=$r[id]";
+            if ($r['id'] == $con) print " SELECTED";
+            print ">$r[name] ($r[year])\n";
+          }
+          ?>
+        </select>
+        <br>
+        <input type=submit value="Edit">
 
-			</td>
-		</tr>
-	</table>
+      </td>
+    </tr>
+  </table>
 </form>
 
 <script>
-$(function() {
-	$("#country").change(function() {
-		$.get("lookup.php", {
-			type: 'countrycode',
-			label: $("#country").val()
-		}, function(data) {
-			$("#countrynote").text(data);
-		});
-	});
+  $(function() {
+    $("#country").change(function() {
+      $.get("lookup.php", {
+        type: 'countrycode',
+        label: $("#country").val()
+      }, function(data) {
+        $("#countrynote").text(data);
+      });
+    });
 
-	$("#conset_id").change(function() {
-		if ($("#country").val() == 0) {
-			$.get("lookup.php", {
-				type: 'consetcountrycode',
-				label: $("#conset_id").val()
-			}, function(data) {
-				if (data) {
-					$("#countrynote").text(data + " (derived from con series - no need to enter)");
-				}
-			});
-		}
-	});
+    $("#conset_id").change(function() {
+      if ($("#country").val() == 0) {
+        $.get("lookup.php", {
+          type: 'consetcountrycode',
+          label: $("#conset_id").val()
+        }, function(data) {
+          if (data) {
+            $("#countrynote").text(data + " (derived from con series - no need to enter)");
+          }
+        });
+      }
+    });
 
-	$("input#conbegin").on("blur", function() {
-		if ($("input#conend").val() == "") {
-			$("input#conend").val($("input#conbegin").val())
-		}
-	});
-});
-
+    $("input#conbegin").on("blur", function() {
+      if ($("input#conend").val() == "") {
+        $("input#conend").val($("input#conbegin").val())
+      }
+    });
+  });
 </script>
 
 </body>

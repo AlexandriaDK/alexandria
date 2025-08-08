@@ -13,7 +13,7 @@ $session = $r->session;
 $intentName = $r->queryResult->intent->displayName;
 $languageCode = $r->queryResult->languageCode;
 
-$json_raw_output ='
+$json_raw_output = '
 {
   "fulfillmentText": "This is a text response.",
   "fulfillmentMessages": [
@@ -76,5 +76,3 @@ print $json_raw_output;
 
 # Log
 doquery("INSERT INTO actions_log (incoming_raw, outgoing_raw, responseid, session, intent, language, logtime) values ('" . dbesc($postdata) . "','" . dbesc($json_raw_output) . "','" . dbesc($responseId) . "','" . dbesc($session) . "','" . dbesc($intentName) . "','" . dbesc($languageCode) . "', NOW() )");
-
-?>

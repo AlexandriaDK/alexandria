@@ -37,11 +37,11 @@ $r = getall("
 
 $placering = 0;
 $lastantal = "";
-foreach($r AS $row) {
-	$placering++;
-	$placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
-	$lastantal = $row['antal'];
-	$stat_person_active .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+foreach ($r as $row) {
+  $placering++;
+  $placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
+  $lastantal = $row['antal'];
+  $stat_person_active .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_person_active .= "</table>\n";
@@ -63,11 +63,11 @@ $r = getall("
 ");
 
 $placering = 0;
-foreach($r AS $row) {
-	$placering++;
-	$placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
-	$lastantal = $row['antal'];
-	$stat_person_exp .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+foreach ($r as $row) {
+  $placering++;
+  $placeringout = ($lastantal != $row['antal'] ? "$placering." : "");
+  $lastantal = $row['antal'];
+  $stat_person_exp .= "<tr><td class=\"statnumber\">$placeringout</td><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 $stat_person_exp .= '
 	</table>
@@ -90,8 +90,8 @@ $r = getall("
 	HAVING antal >= $cooperation
 	ORDER BY antal DESC, name
 ");
-foreach($r AS $row) {
-	$stat_person_workwith .= "<tr><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+foreach ($r as $row) {
+  $stat_person_workwith .= "<tr><td><a href=\"data?person={$row['id']}\" class=\"person\">{$row['name']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_person_workwith .= '
@@ -113,8 +113,8 @@ $r = getall("
 	HAVING antal >= $usedsystem
 	ORDER BY antal DESC, name
 ");
-foreach($r AS $row) {
-	$stat_gamesystem_used .= "<tr><td><a href=\"data?system={$row['id']}\" class=\"system\">".htmlspecialchars($row['name'])."</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+foreach ($r as $row) {
+  $stat_gamesystem_used .= "<tr><td><a href=\"data?system={$row['id']}\" class=\"system\">" . htmlspecialchars($row['name']) . "</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_gamesystem_used .= '
@@ -135,8 +135,8 @@ $r = getall("
 	HAVING antal >= $mostcons
 	ORDER BY antal DESC, title
 ");
-foreach($r AS $row) {
-	$stat_game_replay .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="game" title="' . htmlspecialchars( $row['origtitle']) . '">' . htmlspecialchars( $row['title_translation'] ) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
+foreach ($r as $row) {
+  $stat_game_replay .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="game" title="' . htmlspecialchars($row['origtitle']) . '">' . htmlspecialchars($row['title_translation']) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
 }
 
 $stat_game_replay .= '
@@ -157,9 +157,9 @@ $r = getall("SELECT COUNT(*) AS antal, g.id, g.title AS origtitle, COALESCE(alia
 	HAVING antal >= $mostauthors
 	ORDER BY antal DESC, title
 ");
-foreach($r AS $row) {
-	$stat_game_auts .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="game" title="' . htmlspecialchars( $row['origtitle']) . '">' . htmlspecialchars( $row['title_translation'] ) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
-#	$stat_game_auts .= "<tr><td><a href=\"data?scenarie={$row['id']}\" class=\"game\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
+foreach ($r as $row) {
+  $stat_game_auts .= '<tr><td><a href="data?scenarie=' . $row['id'] . '" class="game" title="' . htmlspecialchars($row['origtitle']) . '">' . htmlspecialchars($row['title_translation']) . '</a></td><td class="statnumber">' . $row['antal'] . '</td></tr>' . PHP_EOL;
+  #	$stat_game_auts .= "<tr><td><a href=\"data?scenarie={$row['id']}\" class=\"game\">{$row['title']}</a>&nbsp;</td><td class=\"statnumber\">{$row['antal']}</td></tr>\n";
 }
 
 $stat_game_auts .= '
@@ -184,11 +184,11 @@ $r = getall("
 ");
 $placering = 0;
 $lastantal = "";
-foreach($r AS $row) {
-	$placering++;
-	$placeringout = ($lastantal != $row['antal'] ? $placering . "." : "");
-	$lastantal = $row['antal'];
-	$stat_con_game .= "<tr><td class=\"statnumber\">$placeringout</td><td>" . smarty_function_con($row) . "</td><td class=\"statnumber\">" . $row['antal'] . "</td></tr>\n";
+foreach ($r as $row) {
+  $placering++;
+  $placeringout = ($lastantal != $row['antal'] ? $placering . "." : "");
+  $lastantal = $row['antal'];
+  $stat_con_game .= "<tr><td class=\"statnumber\">$placeringout</td><td>" . smarty_function_con($row) . "</td><td class=\"statnumber\">" . $row['antal'] . "</td></tr>\n";
 }
 
 $stat_con_game .= '
@@ -204,8 +204,8 @@ $r = getall("
 	HAVING antal >= 1
 	ORDER BY year
 ");
-foreach($r AS $row) {
-	$yearstat[$row['year']]['cons'] = $row['antal'];
+foreach ($r as $row) {
+  $yearstat[$row['year']]['cons'] = $row['antal'];
 }
 
 $r = getall("
@@ -215,12 +215,12 @@ $r = getall("
 	AND cgrel.convention_id = c.id
 	GROUP BY c.year
 ");
-foreach($r AS $row) {
-	$yearstat[$row['year']]['game'] = $row['antal'];
+foreach ($r as $row) {
+  $yearstat[$row['year']]['game'] = $row['antal'];
 }
 
-foreach($yearstat AS $year => $row) {
-	$yearstatpart[] = [ 'year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['game'] ?? 0 ];
+foreach ($yearstat as $year => $row) {
+  $yearstatpart[] = ['year' => $year, 'cons' => (int) $row['cons'], 'games' => $row['game'] ?? 0];
 }
 
 // Countries, cons
@@ -228,11 +228,11 @@ $concountry = [];
 $place = 0;
 $lastcount = 0;
 $r = getall("SELECT COUNT(*) AS count, COALESCE(a.country, b.country) AS ccountry FROM convention a INNER JOIN conset b ON a.conset_id = b.id GROUP BY COALESCE(a.country, b.country) HAVING ccountry IS NOT NULL ORDER BY count DESC, ISNULL(ccountry), ccountry");
-foreach ($r AS $row) {
-	$place++;
-	$placeout = ($lastcount != $row['count'] ? "$place." : "");
-	$lastcount = $row['count'];
-	$concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => getCountryName($row['ccountry']) ];
+foreach ($r as $row) {
+  $place++;
+  $placeout = ($lastcount != $row['count'] ? "$place." : "");
+  $lastcount = $row['count'];
+  $concountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['ccountry'], 'localecountry' => getCountryName($row['ccountry'])];
 }
 
 // Countries, runs
@@ -240,11 +240,11 @@ $runcountry = [];
 $place = 0;
 $lastcount = 0;
 $r = getall("SELECT COUNT(*) AS count, country FROM gamerun WHERE country IS NOT NULL AND country != '' GROUP BY country ORDER BY count DESC, country");
-foreach ($r AS $row) {
-	$place++;
-	$placeout = ($lastcount != $row['count'] ? "$place." : "");
-	$lastcount = $row['count'];
-	$runcountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country']) ];
+foreach ($r as $row) {
+  $place++;
+  $placeout = ($lastcount != $row['count'] ? "$place." : "");
+  $lastcount = $row['count'];
+  $runcountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country'])];
 }
 
 // Locations
@@ -252,11 +252,11 @@ $locationscountry = [];
 $place = 0;
 $lastcount = 0;
 $r = getall("SELECT COUNT(*) AS count, country FROM locations WHERE country != '' GROUP BY country ORDER BY count DESC, country");
-foreach ($r AS $row) {
-	$place++;
-	$placeout = ($lastcount != $row['count'] ? "$place." : "");
-	$lastcount = $row['count'];
-	$locationscountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country']) ];
+foreach ($r as $row) {
+  $place++;
+  $placeout = ($lastcount != $row['count'] ? "$place." : "");
+  $lastcount = $row['count'];
+  $locationscountry[] = ['count' => $row['count'], 'placeout' => $placeout, 'ccode' => $row['country'], 'localecountry' => getCountryName($row['country'])];
 }
 
 // Description languages
@@ -264,11 +264,11 @@ $descriptionlanguage = [];
 $place = 0;
 $lastcount = 0;
 $r = getall("SELECT COUNT(*) AS count, LEFT(language, 2) AS language FROM game_description GROUP BY LEFT(language, 2) ORDER BY count DESC, language");
-foreach ($r AS $row) {
-	$place++;
-	$placeout = ($lastcount != $row['count'] ? "$place." : "");
-	$lastcount = $row['count'];
-	$descriptionlanguage[] = ['count' => $row['count'], 'placeout' => $placeout, 'lcode' => $row['language'], 'localelanguage' => getLanguageName( $row['language'] ) ];
+foreach ($r as $row) {
+  $place++;
+  $placeout = ($lastcount != $row['count'] ? "$place." : "");
+  $lastcount = $row['count'];
+  $descriptionlanguage[] = ['count' => $row['count'], 'placeout' => $placeout, 'lcode' => $row['language'], 'localelanguage' => getLanguageName($row['language'])];
 }
 
 // Downloadable scenarios, languages
@@ -276,14 +276,14 @@ $r = getall("SELECT COUNT(DISTINCT game_id) AS count, language FROM files WHERE 
 
 $place = $lastcount = 0;
 $downloadablelanguage = [];
-foreach ( $r AS $row ) {
-	$languagename = getLanguageName( $row['language'] );
-    if ( $languagename != $row['language'] ) { // only accept known languages
-		$place++;
-		$placeout = ($lastcount != $row['count'] ? "$place." : "");
-		$lastcount = $row['count'];
-        $downloadablelanguage[] = [ 'count' => $row['count'], 'placeout' => $placeout, 'code' => $row['language'], 'localelanguage' => $languagename ];
-    }
+foreach ($r as $row) {
+  $languagename = getLanguageName($row['language']);
+  if ($languagename != $row['language']) { // only accept known languages
+    $place++;
+    $placeout = ($lastcount != $row['count'] ? "$place." : "");
+    $lastcount = $row['count'];
+    $downloadablelanguage[] = ['count' => $row['count'], 'placeout' => $placeout, 'code' => $row['language'], 'localelanguage' => $languagename];
+  }
 }
 
 
@@ -305,4 +305,3 @@ $t->assign('stat_description_language', $descriptionlanguage);
 $t->assign('stat_downloadable_language', $downloadablelanguage);
 
 $t->display('statistics.tpl');
-?>

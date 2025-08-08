@@ -11,14 +11,14 @@ $persons = $_REQUEST['persons'] ?? NULL;
 $internal = "Autoimport from table live_arrangoer /pb";
 
 if ($title) {
-    $person_list = [];
-    foreach (explode(",", $persons) as $person) {
-        $person_list[] = ['name' => $person, 'role_id' => 4];
-    }
-    $game = ['title' => $title, 'persons' => $person_list, 'gamesystem_id' => 73];
-    $game_id = create_game($game, $internal);
-    header("Location: game.php?game=" . $game_id);
-    exit;
+  $person_list = [];
+  foreach (explode(",", $persons) as $person) {
+    $person_list[] = ['name' => $person, 'role_id' => 4];
+  }
+  $game = ['title' => $title, 'persons' => $person_list, 'gamesystem_id' => 73];
+  $game_id = create_game($game, $internal);
+  header("Location: game.php?game=" . $game_id);
+  exit;
 }
 
 htmladmstart("Import live_arrangoer");
@@ -34,15 +34,15 @@ print '
 <tbody>
 ';
 foreach ($lives as $live) {
-    $titel = $live['titel'];
-    $names = $live['names'];
-    $saveurl = 'import_livearrangoer.php?title=' . rawurlencode($titel) . '&persons=' . rawurlencode($names);
-    $searchurl = '/en/find?search_title=' . rawurlencode($titel) . '&search_type=findspec';
-    print '<tr>' .
-        '<td><a href="' . $saveurl . '">[Save]</a>' .
-        '<td><a href="' . $searchurl . '">' . htmlspecialchars($titel) . '</a></td>' .
-        '<td>' . htmlspecialchars($names) . '</td>' .
-        '</tr>';
+  $titel = $live['titel'];
+  $names = $live['names'];
+  $saveurl = 'import_livearrangoer.php?title=' . rawurlencode($titel) . '&persons=' . rawurlencode($names);
+  $searchurl = '/en/find?search_title=' . rawurlencode($titel) . '&search_type=findspec';
+  print '<tr>' .
+    '<td><a href="' . $saveurl . '">[Save]</a>' .
+    '<td><a href="' . $searchurl . '">' . htmlspecialchars($titel) . '</a></td>' .
+    '<td>' . htmlspecialchars($names) . '</td>' .
+    '</tr>';
 }
 print '</tbody></table>';
 

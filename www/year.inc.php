@@ -1,31 +1,64 @@
 <?php
 $this_type = 'year';
 
-list($startyear, $endyear) = getrow("SELECT MIN(year), MAX(year) FROM convention");
+list($conventionminyear, $conventionmaxyear) = getrow("SELECT MIN(year), MAX(year) FROM convention");
+list($gamerunminyear, $gamerunmaxyear) = getrow("SELECT MIN(YEAR(begin)), MAX(YEAR(begin)) FROM gamerun");
+
+// Normalize to integers and handle potential NULL/0 values from the DB
+$cmin = (int) ($conventionminyear ?: 0);
+$gmin = (int) ($gamerunminyear ?: 0);
+$cmax = (int) ($conventionmaxyear ?: 0);
+$gmax = (int) ($gamerunmaxyear ?: 0);
+
+// Compute bounds from whichever source has data
+if ($cmin && $gmin) {
+  $startyear = min($cmin, $gmin);
+} elseif ($cmin) {
+  $startyear = $cmin;
+} else {
+  $startyear = $gmin;
+}
+$endyear = max($cmax, $gmax);
+
+// Clamp to the supported/desired range: from 1970 to the latest year with an event
+$startyear = max(1970, (int) $startyear);
+$endyear = max($startyear, (int) $endyear);
 
 $yearlist = "";
 
 for ($i = $startyear; $i <= $endyear; $i++) {
-	if ($i == $year) $yearlist .= "<b>$i</b>";
-	else $yearlist .= "<a href=\"data?year=$i\">$i</a>";
-	if ($i < $endyear) {
-		if ($i % 10 == 0) {
-			$yearlist .= "<br>";
-		} else {
-			$yearlist .= " - ";
-		}
-	}
+  if ($i == $year) {
+    $yearlist .= "<b>$i</b>";
+  } else {
+    $yearlist .= "<a href=\"data?year=$i\">$i</a>";
+  }
+  if ($i < $endyear) {
+    if ($i % 10 == 0) {
+      $yearlist .= "<br>";
+    } else {
+      $yearlist .= " - ";
+    }
+  }
 }
 
 $yearlist = "<table>\n";
-for ($i = floor(($startyear - 1) / 10) * 10 + 1; $i <= $endyear; $i++) {
-	if (($i - 1) % 10 == 0) $yearlist .= "<tr>";
+$gridStart = 1970; // Show calendar grid from 1970 up to the latest event year
+for ($i = $gridStart; $i <= $endyear; $i++) {
+  if ((($i - 1) % 10) == 0) {
+    $yearlist .= "<tr>";
+  }
 
-	if ($i < $startyear) $yearlist .= "<td></td>";
-	elseif ($i == $year) $yearlist .= "<td>" . yearname($i) . "</td>";
-	else $yearlist .= "<td><a href=\"data?year=$i\" class=\"con\">" . yearname($i) . "</a></td>";
+  if ($i < $startyear) {
+    $yearlist .= "<td></td>";
+  } elseif ($i == $year) {
+    $yearlist .= "<td>" . yearname($i) . "</td>";
+  } else {
+    $yearlist .= "<td><a href=\"data?year=$i\" class=\"con\">" . yearname($i) . "</a></td>";
+  }
 
-	if ($i % 10 == 0 || $i == $endyear) $yearlist .= "</tr>\n";
+  if (($i % 10) == 0 || $i == $endyear) {
+    $yearlist .= "</tr>\n";
+  }
 }
 $yearlist .= "</table>";
 
@@ -51,55 +84,54 @@ $num_cons = count($q);
 $thismonth = -1;
 $timeinfo = "";
 foreach ($q as $row) {
-	$begin = $row['begin'] ?? '';
-	$month = (int) substr($begin, 5, 2);
-	if ($month > $thismonth) {
-		$printmonth = ucfirst(monthname(intval($month)));
-		if ($month == 0) $printmonth = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
-		if ($output) $output .= "</p></div>" . PHP_EOL;
-		$output .= "<div><h3 class=\"calendarhead\">$printmonth</h3>" . PHP_EOL . "<p class=\"calendarmonth\">" . PHP_EOL;
-		$thismonth = $month;
-	}
+  $begin = $row['begin'] ?? '';
+  $month = (int) substr($begin, 5, 2);
+  if ($month > $thismonth) {
+    $printmonth = ucfirst(monthname(intval($month)));
+    if ($month == 0) {
+      $printmonth = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
+    }
+    if ($output) {
+      $output .= "</p></div>" . PHP_EOL;
+    }
+    $output .= "<div><h3 class=\"calendarhead\">$printmonth</h3>" . PHP_EOL . "<p class=\"calendarmonth\">" . PHP_EOL;
+    $thismonth = $month;
+  }
 
-	#		$coninfo = nicedateset($row['begin'],$row['end']);
-	#		$coninfo = intval(substr($row['begin'],8,2)).".-".intval(substr($row['end'],8,2)).".";
-	if ($month != 0) {
-		if (substr($row['begin'], 8, 2) == "00") {
-			$timeinfo = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
-		} elseif ($row['begin'] == $row['end'] || !$row['end']) {
-			$timeinfo = specificdate($row['begin']);
-		} else {
-			$timeinfo = specificdate($row['begin']) . "-" . specificdate($row['end']);
-		}
-		$timeinfo .= " ";
-	}
-	if ($row['cancelled']) {
-		$output .= "<span class=\"cancelled\">";
-	}
-	if ($row['type'] == 'convention') {
-		unset($row['year']);
-		$output .= " " . $timeinfo . smarty_function_con($row) . "<br>\n";
-	} elseif ($row['type'] == 'game') {
-		$output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"game\">{$row['name']}</a><br>\n";
-	}
-	if ($row['cancelled']) {
-		$output .= "</span>";
-	}
+  if ($month != 0) {
+    if (substr($row['begin'], 8, 2) == "00") {
+      $timeinfo = htmlspecialchars($t->getTemplateVars('_year_unknowndate'));
+    } elseif ($row['begin'] == $row['end'] || !$row['end']) {
+      $timeinfo = specificdate($row['begin']);
+    } else {
+      $timeinfo = specificdate($row['begin']) . "-" . specificdate($row['end']);
+    }
+    $timeinfo .= " ";
+  }
+  if ($row['cancelled']) {
+    $output .= "<span class=\"cancelled\">";
+  }
+  if ($row['type'] == 'convention') {
+    unset($row['year']);
+    $output .= " " . $timeinfo . smarty_function_con($row) . "<br>\n";
+  } elseif ($row['type'] == 'game') {
+    $output .= " $timeinfo<a href=\"data?scenarie={$row['id']}\" class=\"game\">{$row['name']}</a><br>\n";
+  }
+  if ($row['cancelled']) {
+    $output .= "</span>";
+  }
 }
 if ($output) {
-	$output .= "</p></div>" . PHP_EOL;
+  $output .= "</p></div>" . PHP_EOL;
 }
 
 $t->assign('pagetitle', $year);
 $t->assign('type', $this_type);
-
 $t->assign('startyear', $startyear);
 $t->assign('endyear', $endyear);
 $t->assign('year', $year);
 $t->assign('yearlist', $yearlist);
 $t->assign('num_cons', $num_cons);
 $t->assign('output', $output);
-#	$t->assign('pagetitle',"$r['name']." ({$r['year']})");
-#	$t->assign('type',$this_type);
 
 $t->display('data.tpl');

@@ -1,6 +1,6 @@
 <?php
 define('LANGNOREDIRECT', TRUE);
-require_once __DIR__.'/../../../google-api-php-client-2.2.3_PHP54/vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 session_start();
 require_once('../../connect.php');
@@ -12,10 +12,10 @@ $client->setAuthConfigFile('../../../includes/client.google.json');
 $client->addScope('https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email');
 
 if ($_GET['logout']) {
-	$client->revokeToken();
-	unset($_SESSION['access_token']);
-	print "Logged out";
-	exit;
+  $client->revokeToken();
+  unset($_SESSION['access_token']);
+  print "Logged out";
+  exit;
 }
 
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {

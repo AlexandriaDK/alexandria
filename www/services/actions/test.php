@@ -14,4 +14,3 @@ $languageCode = $r->queryResult->languageCode;
 
 print $intentName . PHP_EOL;
 print $languageCode . PHP_EOL;
-

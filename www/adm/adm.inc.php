@@ -3,13 +3,13 @@ session_start();
 unset($auth, $authuser, $authusers, $authusernames);
 $useridauthed = false;
 
-if (isset($admonly) && $_SESSION['user_editor'] &&!$_SESSION['user_admin']) {
-	$must_be_admin = TRUE;
+if (isset($admonly) && $_SESSION['user_editor'] && !$_SESSION['user_admin']) {
+  $must_be_admin = TRUE;
 }
 
-if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) && !$_SESSION['user_admin']) ) {
+if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) && !$_SESSION['user_admin'])) {
 
-	print '
+  print '
 <!DOCTYPE html>
 <HTML><HEAD><TITLE>Alexandria - login</TITLE></HEAD>
 
@@ -21,38 +21,35 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
 
 	';
 
-	if ($must_be_admin) {
+  if ($must_be_admin) {
 
-		print '
+    print '
 		<p align="center">
 		(This page requires extended admin privileges)
 		</p>';
+  }
 
-	}
-
-	print '
+  print '
 	<p align="center">
 		Log in with <a href="../fblogin">Facebook</a> - <a href="../../login/google/">Google</a> - <a href="../../login/twitter/">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../../login/twitch/">Twitch</a> - <a href="../../login/discord/">Discord</a>
 	</p>
 	';
-	print '</body></html>';
+  print '</body></html>';
 
-	exit;
+  exit;
 } else {
-// The user is an admin and is allowed to access this section. Check for token!
-	$authuser = $_SESSION['user_name'];
-	$token = $_REQUEST['token'] ?? '';
-	if ( ! $_SESSION['token'] ) {
-		print '
+  // The user is an admin and is allowed to access this section. Check for token!
+  $authuser = $_SESSION['user_name'];
+  $token = $_REQUEST['token'] ?? '';
+  if (! $_SESSION['token']) {
+    print '
 		<p align="center">
 			You are missing a token! Please <a href="../logout">log out</a> and in again.
 		</p>
 	';
-		exit;
-	}
+    exit;
+  }
 
-	// Should the user be allowed to view the log?
-	$viewlog = TRUE;
+  // Should the user be allowed to view the log?
+  $viewlog = TRUE;
 }
-
-?>

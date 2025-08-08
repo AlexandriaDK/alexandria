@@ -1,7 +1,7 @@
 <?php
 $this_type = 'game';
 if ($game) {
-	$scenarie = $game;
+  $scenarie = $game;
 }
 $this_id = $game = $scenarie;
 
@@ -24,19 +24,19 @@ if ($r['ottowinner'] == 1) award_achievement(62); // Otto winner  :TODO: - check
 if ($r['rlyeh_id'] > 0)    award_achievement(12); // R'lyeh scenario  :TODO: - use tag instead
 
 if ($r['id'] == 0) {
-	header("HTTP/1.1 404 Not Found ");
-	$t->assign('content', $t->getTemplateVars('_sce_nomatch'));
-	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
-	$t->display('default.tpl');
-	exit;
+  header("HTTP/1.1 404 Not Found ");
+  $t->assign('content', $t->getTemplateVars('_sce_nomatch'));
+  $t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
+  $t->display('default.tpl');
+  exit;
 }
 $descriptions = getall("SELECT description, language, note FROM game_description WHERE game_id = $game ORDER BY (LEFT(language, 2) = '" . LANG . "') DESC, LENGTH(language), priority, language");
 foreach ($descriptions as $d_id => $description) {
-	list($language) = explode(" ", $description['language']);
-	if (preg_match('/^[a-z]{2}$/', $language)) {
-		$descriptions[$d_id]['langcode'] = $language;
-		$descriptions[$d_id]['langname'] = getLanguageName($language);
-	}
+  list($language) = explode(" ", $description['language']);
+  if (preg_match('/^[a-z]{2}$/', $language)) {
+    $descriptions[$d_id]['langcode'] = $language;
+    $descriptions[$d_id]['langname'] = getLanguageName($language);
+  }
 }
 $internal = (($_SESSION['user_editor'] ?? FALSE) ? $r['internal'] : ""); // only set internal if editor
 
@@ -44,44 +44,44 @@ $internal = (($_SESSION['user_editor'] ?? FALSE) ? $r['internal'] : ""); // only
 $participants = [];
 $gms = $players = "";
 if ($r['gms_min'] !== NULL) {
-	if ($r['gms_min'] == 0 && $r['gms_max'] == 0) {
-		$gms_text = $t->getTemplateVars('_sce_none_gms');
-	} else {
-		$gms_text = $r['gms_min'];
-		if ($r['gms_max'] != $r['gms_min']) {
-			$gms_text .= "-" . $r['gms_max'];
-		}
-		$gms_text .= " " . ($r['gms_min'] == 1 && $r['gms_max'] == 1 ? $t->getTemplateVars('_sce_gm') : $t->getTemplateVars('_sce_gms'));
-	}
-	$participants[] = $gms_text;
-	$gms = ($r['gms_max'] != $r['gms_min'] ? $r['gms_min'] . "-" . $r['gms_max'] : $r['gms_min']);
+  if ($r['gms_min'] == 0 && $r['gms_max'] == 0) {
+    $gms_text = $t->getTemplateVars('_sce_none_gms');
+  } else {
+    $gms_text = $r['gms_min'];
+    if ($r['gms_max'] != $r['gms_min']) {
+      $gms_text .= "-" . $r['gms_max'];
+    }
+    $gms_text .= " " . ($r['gms_min'] == 1 && $r['gms_max'] == 1 ? $t->getTemplateVars('_sce_gm') : $t->getTemplateVars('_sce_gms'));
+  }
+  $participants[] = $gms_text;
+  $gms = ($r['gms_max'] != $r['gms_min'] ? $r['gms_min'] . "-" . $r['gms_max'] : $r['gms_min']);
 }
 if ($r['players_min'] !== NULL) {
-	$players_text = $r['players_min'];
-	if ($r['players_max'] != $r['players_min']) {
-		$players_text .= "-" . $r['players_max'];
-	}
-	$players_text .= " " . ($r['players_min'] == 1 && $r['players_max'] == 1 ? $t->getTemplateVars('_sce_player') : $t->getTemplateVars('_sce_players'));
-	$participants[] = $players_text;
-	$players = ($r['players_max'] != $r['players_min'] ? $r['players_min'] . "-" . $r['players_max'] : $r['players_min']);
+  $players_text = $r['players_min'];
+  if ($r['players_max'] != $r['players_min']) {
+    $players_text .= "-" . $r['players_max'];
+  }
+  $players_text .= " " . ($r['players_min'] == 1 && $r['players_max'] == 1 ? $t->getTemplateVars('_sce_player') : $t->getTemplateVars('_sce_players'));
+  $participants[] = $players_text;
+  $players = ($r['players_max'] != $r['players_min'] ? $r['players_min'] . "-" . $r['players_max'] : $r['players_min']);
 }
 if ($r['participants_extra']) {
-	$participants[] = $r['participants_extra'];
+  $participants[] = $r['participants_extra'];
 }
 $participants = implode(', ', $participants);
 
 // List of aliases, alternative title?
 $alttitle = getcol("SELECT label FROM alias WHERE game_id = '$game' AND language = '$lang' AND visible = 1");
 if (count($alttitle) == 1) {
-	$showtitle = $alttitle[0];
-	$aliaslist = getaliaslist($game, $this_type, $showtitle);
-	if ($aliaslist) {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>, " . $aliaslist;
-	} else {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>";
-	}
+  $showtitle = $alttitle[0];
+  $aliaslist = getaliaslist($game, $this_type, $showtitle);
+  if ($aliaslist) {
+    $aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>, " . $aliaslist;
+  } else {
+    $aliaslist = "<b title=\"" . $t->getTemplateVars("_sce_original_title") . "\">" . htmlspecialchars($gametitle) . "</b>";
+  }
 } else {
-	$aliaslist = getaliaslist($game, $this_type);
+  $aliaslist = getaliaslist($game, $this_type);
 }
 
 // List of files
@@ -101,77 +101,77 @@ $q = getall("
 	ORDER BY COALESCE(gamerun_id, convention_id) IS NULL DESC, begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 foreach ($q as $rs) {
-	$gamerun_id = $rs['gamerun_id'];
-	$convention_id = $rs['convention_id'];
-	$combined_id = $rs['combined_id'];
-	if (!isset($personrungroups[$combined_id])) {
-		$parts = [];
-		// if ($datestring = nicedateset($rs['begin'], $rs['end'])) {
-		if ($datestring = substr($rs['begin'] ?? '', 0, 4)) { // just get the year for now
-			if ($rs['convention_name']) {
-				$datestring = $rs['convention_name'] . " (" . $datestring . ")";
-			}
-			$parts[] = $datestring;
-		} elseif ($rs['convention_name']) {
-			$parts[] = $rs['convention_name'];
-		}
-		if ($rs['location']) {
-			$parts[] = $rs['location'];
-		}
-		if ($rs['country']) {
-			$parts[] = getCountryName($rs['country']);
-		}
-		$personrungroups[$combined_id] = [
-			'label' => implode(', ', $parts),
-			'cancelled' => $rs['cancelled'],
-			'persons' => []
-		];
-	}
-	$title = $t->getTemplateVars("_" . $rs['title_label']);
-	$htmlnote = "";
-	$personhtml = "";
-	if ($rs['note']) {
-		$htmlnote = " (" . textlinks(htmlspecialchars($rs['note'])) . ")";
-	}
-	if (isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id']) {
-		$_SESSION['can_edit_participant'][$game] = TRUE;
-	}
-	$personhtml .= '<tr><td style="text-align: center">';
-	if ($rs['textsymbol']) { // unicode icons
-		$personhtml .= '<span class="titicon" title="' . htmlspecialchars(ucfirst($title)) . '">' . $rs['textsymbol'] . '</span>';
-	} elseif ($rs['iconfile']) {
-		$personhtml .= '<img src="/gfx/' . rawurlencode($rs['iconfile']) . '" alt="' . htmlspecialchars(ucfirst($title)) . '" title="' . htmlspecialchars(ucfirst($title)) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
-	} else {
-		$personhtml .= ' ';
-	}
-	$personhtml .= "</td>";
-	$personhtml .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' . htmlspecialchars($rs['name']) . '</a>' . $htmlnote . '</td>';
-	$personhtml .= "</tr>" . PHP_EOL;
-	$personrungroups[$combined_id]['persons'][] = $personhtml;
+  $gamerun_id = $rs['gamerun_id'];
+  $convention_id = $rs['convention_id'];
+  $combined_id = $rs['combined_id'];
+  if (!isset($personrungroups[$combined_id])) {
+    $parts = [];
+    // if ($datestring = nicedateset($rs['begin'], $rs['end'])) {
+    if ($datestring = substr($rs['begin'] ?? '', 0, 4)) { // just get the year for now
+      if ($rs['convention_name']) {
+        $datestring = $rs['convention_name'] . " (" . $datestring . ")";
+      }
+      $parts[] = $datestring;
+    } elseif ($rs['convention_name']) {
+      $parts[] = $rs['convention_name'];
+    }
+    if ($rs['location']) {
+      $parts[] = $rs['location'];
+    }
+    if ($rs['country']) {
+      $parts[] = getCountryName($rs['country']);
+    }
+    $personrungroups[$combined_id] = [
+      'label' => implode(', ', $parts),
+      'cancelled' => $rs['cancelled'],
+      'persons' => []
+    ];
+  }
+  $title = $t->getTemplateVars("_" . $rs['title_label']);
+  $htmlnote = "";
+  $personhtml = "";
+  if ($rs['note']) {
+    $htmlnote = " (" . textlinks(htmlspecialchars($rs['note'])) . ")";
+  }
+  if (isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id']) {
+    $_SESSION['can_edit_participant'][$game] = TRUE;
+  }
+  $personhtml .= '<tr><td style="text-align: center">';
+  if ($rs['textsymbol']) { // unicode icons
+    $personhtml .= '<span class="titicon" title="' . htmlspecialchars(ucfirst($title)) . '">' . $rs['textsymbol'] . '</span>';
+  } elseif ($rs['iconfile']) {
+    $personhtml .= '<img src="/gfx/' . rawurlencode($rs['iconfile']) . '" alt="' . htmlspecialchars(ucfirst($title)) . '" title="' . htmlspecialchars(ucfirst($title)) . '" width="' . $rs['iconwidth'] . '" height="' . $rs['iconheight'] . '" >';
+  } else {
+    $personhtml .= ' ';
+  }
+  $personhtml .= "</td>";
+  $personhtml .= '<td><a href="data?person=' . $rs['id'] . '" class="person">' . htmlspecialchars($rs['name']) . '</a>' . $htmlnote . '</td>';
+  $personhtml .= "</tr>" . PHP_EOL;
+  $personrungroups[$combined_id]['persons'][] = $personhtml;
 }
 
 $personlist = '';
 if ($personrungroups) { // ugly mix of HTML and non-HTML created above
-	foreach ($personrungroups as $group) {
-		if ($group['label']) {
-			$cancelledcss = $group['cancelled'] ? 'cancelled' : '';
-			$personlist .= '<h4 class="peoplegamerun ' . $cancelledcss . '">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
-		}
-		if ($group['persons']) {
-			$personlist .= '<table class="people indata">' . implode(' ', $group['persons']) . '</table>' . PHP_EOL;
-		}
-	}
+  foreach ($personrungroups as $group) {
+    if ($group['label']) {
+      $cancelledcss = $group['cancelled'] ? 'cancelled' : '';
+      $personlist .= '<h4 class="peoplegamerun ' . $cancelledcss . '">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
+    }
+    if ($group['persons']) {
+      $personlist .= '<table class="people indata">' . implode(' ', $group['persons']) . '</table>' . PHP_EOL;
+    }
+  }
 }
 
 // System
 if ($r['system_translation']) {
-	$syspart = '<a href="data?system=' . $r['gamesystem_id'] . '" class="system">' . htmlspecialchars($r['system_translation']) . '</a>';
-	if ($r['gamesystem_extra']) $syspart .= " " . htmlspecialchars($r['gamesystem_extra']);
-	$sysstring = $syspart;
+  $syspart = '<a href="data?system=' . $r['gamesystem_id'] . '" class="system">' . htmlspecialchars($r['system_translation']) . '</a>';
+  if ($r['gamesystem_extra']) $syspart .= " " . htmlspecialchars($r['gamesystem_extra']);
+  $sysstring = $syspart;
 } elseif ($r['gamesystem_extra']) {
-	$sysstring = htmlspecialchars($r['gamesystem_extra']);
+  $sysstring = htmlspecialchars($r['gamesystem_extra']);
 } else {
-	$sysstring = "";
+  $sysstring = "";
 }
 
 // List of cons, the game has been played at
@@ -185,19 +185,19 @@ $q = getall("
 	ORDER BY c.year, c.begin, p.id, c.name
 ");
 foreach ($q as $rs) {
-	$coninfo = nicedateset($rs['begin'], $rs['end']);
-	$conlist .= "<tr><td>";
-	// Add rerun/cancelled/test icons
-	if ($rs['textsymbol']) { // unicode icons
-		$conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\">{$rs['textsymbol']}</span>";
-	} elseif ($rs['iconfile']) {
-		$conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" width=\"15\" height=\"15\" /> ";
-	} else {
-		$conlist .= " ";
-	}
-	$conlist .= "</td><td>";
-	$conlist .= smarty_function_con(['dataset' => $rs]);
-	$conlist .= "</td></tr>" . PHP_EOL;
+  $coninfo = nicedateset($rs['begin'], $rs['end']);
+  $conlist .= "<tr><td>";
+  // Add rerun/cancelled/test icons
+  if ($rs['textsymbol']) { // unicode icons
+    $conlist .= "<span class=\"preicon\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\">{$rs['textsymbol']}</span>";
+  } elseif ($rs['iconfile']) {
+    $conlist .= "<img src=\"/gfx/{$rs['iconfile']}\" alt=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" title=\"" .  htmlspecialchars(ucfirst($t->getTemplateVars('_' . $rs['event_label']))) . "\" width=\"15\" height=\"15\" /> ";
+  } else {
+    $conlist .= " ";
+  }
+  $conlist .= "</td><td>";
+  $conlist .= smarty_function_con(['dataset' => $rs]);
+  $conlist .= "</td></tr>" . PHP_EOL;
 }
 
 // List of runs
@@ -213,39 +213,39 @@ $q = getall("
 ");
 $haslocationscount = 0;
 if ($q) { // :TODO: HTML construction should be moved to game.tpl
-	$runlist .= '<table class="gamerun">';
-	foreach ($q as $rs) {
-		$runlist .= '<tr><td class="date">';
-		$runlist .= '<span' . ($rs['cancelled'] ? ' class="cancelled"' : '') . '>';
-		$runlist .= ucfirst(nicedateset($rs['begin'], $rs['end']));
-		$runlist .= '</span></td>';
-		$runlist .= '<td>';
-		if ($rs['haslocations']) {
-			$haslocationscount += $rs['haslocations'];
-			$locationstitle = $rs['haslocations'] . ' ' . ($rs['haslocations'] == 1 ? $t->getTemplateVars('_location') : $t->getTemplateVars('_locations') );
-			$runlist .= '<a href="locations?gamerun_id=' . $rs['id'] . '" title="' . htmlspecialchars($locationstitle) . '">🗺️</a>';
-		}
-		$runlist .= '</td>';
-		$runlist .= '<td>';
-		$runlist .= htmlspecialchars($rs['location']);
-		if ($rs['country']) {
-			if ($rs['location']) {
-				$runlist .= ', ';
-			}
-			$runlist .= getCountryName($rs['country']);
-		}
-		if (($rs['location'] || $rs['country']) && $rs['description']) {
-			$runlist .= ': ';
-		}
-		if ($rs['description']) {
-			$runlist .= htmlspecialchars($rs['description']);
-		}
-		if ($rs['cancelled']) {
-			$runlist .= ' [' . $t->getTemplateVars('_sce_cancelled') . ']';
-		}
-		$runlist .= '</td></tr>' . PHP_EOL;
-	}
-	$runlist .= '</table>';
+  $runlist .= '<table class="gamerun">';
+  foreach ($q as $rs) {
+    $runlist .= '<tr><td class="date">';
+    $runlist .= '<span' . ($rs['cancelled'] ? ' class="cancelled"' : '') . '>';
+    $runlist .= ucfirst(nicedateset($rs['begin'], $rs['end']));
+    $runlist .= '</span></td>';
+    $runlist .= '<td>';
+    if ($rs['haslocations']) {
+      $haslocationscount += $rs['haslocations'];
+      $locationstitle = $rs['haslocations'] . ' ' . ($rs['haslocations'] == 1 ? $t->getTemplateVars('_location') : $t->getTemplateVars('_locations'));
+      $runlist .= '<a href="locations?gamerun_id=' . $rs['id'] . '" title="' . htmlspecialchars($locationstitle) . '">🗺️</a>';
+    }
+    $runlist .= '</td>';
+    $runlist .= '<td>';
+    $runlist .= htmlspecialchars($rs['location']);
+    if ($rs['country']) {
+      if ($rs['location']) {
+        $runlist .= ', ';
+      }
+      $runlist .= getCountryName($rs['country']);
+    }
+    if (($rs['location'] || $rs['country']) && $rs['description']) {
+      $runlist .= ': ';
+    }
+    if ($rs['description']) {
+      $runlist .= htmlspecialchars($rs['description']);
+    }
+    if ($rs['cancelled']) {
+      $runlist .= ' [' . $t->getTemplateVars('_sce_cancelled') . ']';
+    }
+    $runlist .= '</td></tr>' . PHP_EOL;
+  }
+  $runlist .= '</table>';
 }
 
 // Awards
@@ -260,32 +260,32 @@ $q = getall("
 	ORDER BY c.year ASC, c.begin ASC, c.id ASC, a.winner DESC, a.id ASC
 ");
 foreach ($q as $rs) {
-	$has_nominationtext = !!$rs['nominationtext'];
-	$type = ($rs['convention_id'] ? 'convention' : 'tag');
-	$awardtext = '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
-	$awardtext .= ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner')) : ucfirst($t->getTemplateVars('_award_nominated'))) . ", " . htmlspecialchars($rs['name']);
-	if ($rs['ranking']) {
-		$awardtext .= " (" . htmlspecialchars($rs['ranking']) . ")";
-	}
-	$awardtext .= '</summary>';
-	if ($has_nominationtext) {
-		$awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
-	}
-	$awardtext .= '</details>';
+  $has_nominationtext = !!$rs['nominationtext'];
+  $type = ($rs['convention_id'] ? 'convention' : 'tag');
+  $awardtext = '<details><summary ' . ($has_nominationtext ? '' : 'class="nonomtext"') . '>';
+  $awardtext .= ($rs['winner'] ? ucfirst($t->getTemplateVars('_award_winner')) : ucfirst($t->getTemplateVars('_award_nominated'))) . ", " . htmlspecialchars($rs['name']);
+  if ($rs['ranking']) {
+    $awardtext .= " (" . htmlspecialchars($rs['ranking']) . ")";
+  }
+  $awardtext .= '</summary>';
+  if ($has_nominationtext) {
+    $awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
+  }
+  $awardtext .= '</details>';
 
-	$awarddata[$type][$rs['type_id']]['name'] = ($type == 'convention' ? ($rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "")) : $rs['tag_name']);
-	$awarddata[$type][$rs['type_id']]['conset_id'] = $rs['conset_id'] ?? '';
-	$awarddata[$type][$rs['type_id']]['text'][] = $awardtext;
+  $awarddata[$type][$rs['type_id']]['name'] = ($type == 'convention' ? ($rs['convent_name'] . ($rs['year'] ? " (" . $rs['year'] . ")" : "")) : $rs['tag_name']);
+  $awarddata[$type][$rs['type_id']]['conset_id'] = $rs['conset_id'] ?? '';
+  $awarddata[$type][$rs['type_id']]['text'][] = $awardtext;
 }
 $awards = [];
 
 foreach ($awarddata['convention'] as $convention_id => $data) {
-	$con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
-	$awards[] = ['type_award_url' => $con_award_url, 'type_name' => $data['name'], 'awards' => implode("" . PHP_EOL, $data['text'])];
+  $con_award_url = "awards?cid=" . $data['conset_id'] . "#con" . $convention_id;
+  $awards[] = ['type_award_url' => $con_award_url, 'type_name' => $data['name'], 'awards' => implode("" . PHP_EOL, $data['text'])];
 }
 foreach ($awarddata['tag'] as $tag_id => $data) {
-	$type_award_url = "awards?tid=" . $tag_id;
-	$awards[] = ['type_award_url' => $type_award_url, 'type_name' => $data['name'], 'awards' => implode("" . PHP_EOL, $data['text'])];
+  $type_award_url = "awards?tid=" . $tag_id;
+  $awards[] = ['type_award_url' => $type_award_url, 'type_name' => $data['name'], 'awards' => implode("" . PHP_EOL, $data['text'])];
 }
 
 // Genre
@@ -298,7 +298,7 @@ $q = getall("
 	ORDER BY g.name
 ");
 foreach ($q as $rs) {
-	$genre[] = '<a href="scenarier?g=' . $rs['id'] . '">' . htmlspecialchars($rs['name']) . '</a>';
+  $genre[] = '<a href="scenarier?g=' . $rs['id'] . '">' . htmlspecialchars($rs['name']) . '</a>';
 }
 $genre = join(", ", $genre);
 
@@ -307,9 +307,9 @@ $linklist = getlinklist($this_id, $this_type);
 $trivialist = gettrivialist($this_id, $this_type);
 $taglist = gettaglist($this_id, $this_type);
 if ($_SESSION['can_edit_participant'][$game] ?? FALSE) {
-	foreach ($taglist as $tag_id => $tag) {
-		$_SESSION['can_edit_tag'][$tag_id] = TRUE;
-	}
+  foreach ($taglist as $tag_id => $tag) {
+    $_SESSION['can_edit_tag'][$tag_id] = TRUE;
+  }
 }
 
 // Articles
@@ -322,8 +322,8 @@ $available_pic = hasthumbnailpic($game, $this_type);
 // Userdata, entries from all users
 $userlog = [];
 if (isset($_SESSION['user_id'])) {
-	$userlog = getuserlog($_SESSION['user_id'], $this_type, $r['id']);
-	$users_entries = getalluserentries('game', $r['id']);
+  $userlog = getuserlog($_SESSION['user_id'], $this_type, $r['id']);
+  $users_entries = getalluserentries('game', $r['id']);
 }
 
 // Smarty
@@ -371,7 +371,7 @@ $t->assign('user_played_html', getdynamicgamehtml($game, 'played', in_array('pla
 $t->assign('users_entries', $users_entries ?? FALSE);
 
 if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist)) {
-	$t->assign('lgbtmenu', TRUE);
+  $t->assign('lgbtmenu', TRUE);
 }
 
 $t->display('data.tpl');

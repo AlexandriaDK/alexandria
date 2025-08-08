@@ -29,7 +29,7 @@
 		{$_conventions|ucfirst}
 	</h3>
 	<table class="conlist">
-	{foreach from=$condata item=$con}
+	{foreach $condata as $con}
 	<tr>
 		<td>{$con.userdyn}</td>
 		<td>{con dataset=$con}</td>

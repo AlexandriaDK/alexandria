@@ -8,9 +8,9 @@ if (!$category) $category = 'person';
 if (!$dataid) $dataid = '1';
 
 if ($category == 'person') {
-	$other_category = 'person';
-	$query_maininfo = "SELECT person.id, CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$dataid'";
-	$query = "
+  $other_category = 'person';
+  $query_maininfo = "SELECT person.id, CONCAT(firstname,' ',surname) AS name FROM person WHERE id = '$dataid'";
+  $query = "
 	          SELECT t2.person_id, CONCAT(firstname,' ',surname) AS name
 	          FROM pgrel AS t1, pgrel AS t2, person p
 	          WHERE t1.person_id = '$dataid' AND t1.game_id = t2.game_id AND t2.person_id != '$dataid' AND t2.person_id = p.id AND t1.title_id = 1 AND t2.title_id = 1
@@ -25,23 +25,23 @@ $main_fromid = $category . '_' . $main_id;
 $dataset = array();
 $result = mysql_query($query) or die("ERROR: " . mysql_error());
 while (list($id, $data) = mysql_fetch_row($result)) {
-	$dataset[$id] = $data;
+  $dataset[$id] = $data;
 }
 
 if (count($dataset) > 0) {
-	$commalist  = array();
-	foreach ($dataset as $key => $value) $commalist[] = $key;
-	$datasetlist = join(",", $commalist);
-	$query = "
+  $commalist  = array();
+  foreach ($dataset as $key => $value) $commalist[] = $key;
+  $datasetlist = join(",", $commalist);
+  $query = "
 	          SELECT t2.person_id, CONCAT(firstname,' ',surname) AS name
 	          FROM pgrel AS t1, pgrel AS t2, person p
 	          WHERE t1.person_id IN ($datasetlist) AND t1.game_id = t2.game_id AND t2.person_id NOT IN ($datasetlist) AND t2.person_id = p.id AND t1.title_id = 1 AND t2.title_id = 1
 	          GROUP BY t2.person_id
 		";
-	$result = mysql_query($query) or die("ERROR: " . mysql_error());
-	while (list($id, $data) = mysql_fetch_row($result)) {
-		#		$dataset[$id] = $data;
-	}
+  $result = mysql_query($query) or die("ERROR: " . mysql_error());
+  while (list($id, $data) = mysql_fetch_row($result)) {
+    #		$dataset[$id] = $data;
+  }
 }
 
 
@@ -55,19 +55,19 @@ print "<TGGB version=\"1.00\">\n";
 $edgeid = 0;
 print "<EDGESET>\n";
 foreach ($dataset as $id => $data) {
-	$toid = $other_category . '_' . $id;
-	// Sortering for at lade pile pege fra forfattere til scenarier
-	if ($category == "aut") {
-		$out_fromid = $main_fromid;
-		$out_toid = $toid;
-	} else {
-		$out_fromid = $toid;
-		$out_toid = $main_fromid;
-	}
-	$edgeid++;
-	print "<EDGE fromID=\"$out_fromid\" toID=\"$out_toid\" linkNumber=\"$edgeid\" length=\"200\" lastEdge=\"false\"/>\n";
-	$edgeid++;
-	print "<EDGE fromID=\"$out_toid\" toID=\"$out_fromid\" linkNumber=\"$edgeid\" length=\"200\" lastEdge=\"false\"/>\n";
+  $toid = $other_category . '_' . $id;
+  // Sortering for at lade pile pege fra forfattere til scenarier
+  if ($category == "aut") {
+    $out_fromid = $main_fromid;
+    $out_toid = $toid;
+  } else {
+    $out_fromid = $toid;
+    $out_toid = $main_fromid;
+  }
+  $edgeid++;
+  print "<EDGE fromID=\"$out_fromid\" toID=\"$out_toid\" linkNumber=\"$edgeid\" length=\"200\" lastEdge=\"false\"/>\n";
+  $edgeid++;
+  print "<EDGE fromID=\"$out_toid\" toID=\"$out_fromid\" linkNumber=\"$edgeid\" length=\"200\" lastEdge=\"false\"/>\n";
 }
 print "</EDGESET>\n\n";
 
@@ -87,13 +87,13 @@ print "</NODE>\n\n";
 // other nodes
 
 foreach ($dataset as $id => $data) {
-	$current_hint = htmlspecialchars($datahint[$id]);
-	$current_hint = str_replace("\n", "<br>\n", $current_hint);
-	$toid = $other_category . '_' . $id;
-	print "<NODE nodeID=\"$toid\">\n";
-	print "<NODE_LABEL label=\"" . htmlspecialchars($data) . "\"/>\n";
-	print "<NODE_HINT isHTML=\"true\" hint=\"" . htmlspecialchars($current_hint) . "\"/>\n";
-	print "</NODE>\n\n";
+  $current_hint = htmlspecialchars($datahint[$id]);
+  $current_hint = str_replace("\n", "<br>\n", $current_hint);
+  $toid = $other_category . '_' . $id;
+  print "<NODE nodeID=\"$toid\">\n";
+  print "<NODE_LABEL label=\"" . htmlspecialchars($data) . "\"/>\n";
+  print "<NODE_HINT isHTML=\"true\" hint=\"" . htmlspecialchars($current_hint) . "\"/>\n";
+  print "</NODE>\n\n";
 }
 
 // end nodesets

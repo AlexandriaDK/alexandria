@@ -2,9 +2,10 @@
 require("./connect.php");
 require("base.inc.php");
 
-
-if ($_SESSION['user_id']) {
-	$userlog = getuserlogconvents($_SESSION['user_id']);
+// Initialize and guard session access
+$userlog = [];
+if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+  $userlog = getuserlogconvents($_SESSION['user_id']);
 }
 
 $result = getall("
@@ -24,30 +25,32 @@ $cons = [];
 $countries = [];
 
 foreach ($result as $c) {
-	$setid = $c['setid'];
-	$conid = $c['id'];
-	if (!isset($cons[$setid])) {
-		$cons[$setid] = [
-			'setname' => $c['conset_translation'],
-			'countries' => [],
-			'cons' => []
-		];
-	}
-	if ($userlog) {
-		$c['userloghtml'] = getdynamicconventionhtml($conid, 'visited', in_array($conid, $userlog));
-	}
-	$cons[$setid]['cons'][$conid] = $c;
-	$cons[$setid]['countries'][$c['country']] = TRUE;
-	if ($c['country']) {
-		if (!isset($countries[$c['country']])) {
-			$countries[$c['country']] = 0;
-		}
-		$countries[$c['country']]++;
-	}
+  $setid = $c['setid'];
+  $conid = $c['id'];
+  if (!isset($cons[$setid])) {
+    $cons[$setid] = [
+      'setname' => $c['conset_translation'],
+      'countries' => [],
+      'cons' => []
+    ];
+  }
+  // Always provide default key so template doesn't warn
+  $c['userloghtml'] = $c['userloghtml'] ?? '';
+  if (!empty($userlog)) {
+    $c['userloghtml'] = getdynamicconventionhtml($conid, 'visited', in_array($conid, $userlog));
+  }
+  $cons[$setid]['cons'][$conid] = $c;
+  $cons[$setid]['countries'][$c['country']] = true;
+  if ($c['country']) {
+    if (!isset($countries[$c['country']])) {
+      $countries[$c['country']] = 0;
+    }
+    $countries[$c['country']]++;
+  }
 }
 // PHP 8.0 Smarty workaround, as implode now requires separator string as first argument
 foreach ($cons as $id => $con) {
-	$cons[$id]['countrieslist'] = array_keys($cons[$id]['countries']);
+  $cons[$id]['countrieslist'] = array_keys($cons[$id]['countries']);
 }
 arsort($countries, SORT_NUMERIC);
 $countries = array_keys($countries);

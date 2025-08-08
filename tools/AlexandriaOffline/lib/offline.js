@@ -670,6 +670,8 @@ function showIssue(id) {
     var category = 'issue';
 
     // var id = data.target.dataset.id;
+    var files = a.files.filter(rel => rel.issue_id == id);
+
     var issue = a.issues[id];
     var magazinename = a.magazines[issue.magazine_id].name;
     var title = magazinename + ': ' + issue.title + (issue.releasetext ? ', ' + issue.releasetext : '');
@@ -684,6 +686,8 @@ function showIssue(id) {
 
     var html = '';
     html += '<h2>' + esc(title) + '</h2>';
+
+    html += makeFileSection(files, id, 'issue');
 
     if (colophones.length) {
         html += '<h3>Colophon</h3>';
@@ -1329,7 +1333,7 @@ function search() {
     if (result.systems.length > 0) {
         html += '<h3>RPG Systems</h3><ul>';
         for (element of result.systems) {
-            html += makeLink('system', 'gamesystem', element.id, element.name);
+            html += makeLink('gamesystem', 'gamesystem', element.id, element.name);
         }
         html += '</ul>';
     }

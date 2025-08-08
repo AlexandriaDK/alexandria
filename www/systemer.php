@@ -10,10 +10,10 @@ $result = getall("
 	ORDER BY translation_name, gamesystem.id
 ");
 $syslist = [];
-foreach($result AS $r) {
-	$syslist[$r['id']] = $r['translation_name'];
+foreach ($result as $r) {
+  $syslist[$r['id']] = $r['translation_name'];
 }
 
 // Smarty
-$t->assign('syslist',$syslist);
+$t->assign('syslist', $syslist);
 $t->display('gamesystems.tpl');

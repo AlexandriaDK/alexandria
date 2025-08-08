@@ -37,7 +37,7 @@
 	<h3 class="parttitle">{$_games|ucfirst}</h3>
 
 	<table class="scenariolist indata">
-	{foreach from=$slist item=$game}
+	{foreach $slist as $game}
 		<tr>
 			{if $game.read}<td>{$game.read}</td>{else}<td></td>{/if}
 			{if isset($game.gmed) && $game.gmed}<td>{$game.gmed}</td>{else}<td></td>{/if}
@@ -63,7 +63,7 @@
 <h3 id="awards">{$_p_awards|ucfirst}</h3>
 {foreach $awards AS $award}
 <h4 class="awardconventhead"><a href="{$award.type_award_url}" class="con" title="{$_allawardsfor|sprintf:$award.type_name|escape}">{$award.type_name|escape}</a></h4>
-<div>
+<div class="awardcategory">
 {$award.awards}
 </div>
 {/foreach}
@@ -72,7 +72,7 @@
 {if $organizerlist}
 <h3 class="parttitle" id="organizer">{$_p_organizerroles}</h3>
 	<table class="organizerlist indata">
-	{foreach from=$organizerlist item=$con}
+	{foreach $organizerlist as $con}
 	<tr>
 	<td style="text-align: right;" {if $con.cancelled}class="cancelled"{/if}>
 		{con id=$con.convention_id name=$con.name begin=$con.begin end=$con.end }

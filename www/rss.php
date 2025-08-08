@@ -20,20 +20,18 @@ print '<description>Rollespilsfortegnelsen Alexandria</description>';
 print '<atom:link href="https://alexandria.dk/rss.php" rel="self" type="application/rss+xml" />';
 print "\n\n";
 
-foreach($news AS $data) {
-	$url = "https://alexandria.dk/#news_".str_replace(array("-",":"," "),"",$data['published'])."_".$data['id'];
-	print '<item>';
-	print "\n";
-	print "<title>".strip_tags(textlinks($data['text']))."</title>\n";
-	print "<description>".htmlspecialchars(textlinks($data['text'],1))."</description>\n";
-	print "<pubDate>". date("r",strtotime($data['published']))."</pubDate>\n";
-	print "<guid isPermaLink=\"false\">".$url."</guid>\n";
-	print "<link>".$url."</link>\n";
-	
-	print "</item>\n\n";
+foreach ($news as $data) {
+  $url = "https://alexandria.dk/#news_" . str_replace(array("-", ":", " "), "", $data['published']) . "_" . $data['id'];
+  print '<item>';
+  print "\n";
+  print "<title>" . strip_tags(textlinks($data['text'])) . "</title>\n";
+  print "<description>" . htmlspecialchars(textlinks($data['text'], 1)) . "</description>\n";
+  print "<pubDate>" . date("r", strtotime($data['published'])) . "</pubDate>\n";
+  print "<guid isPermaLink=\"false\">" . $url . "</guid>\n";
+  print "<link>" . $url . "</link>\n";
+
+  print "</item>\n\n";
 }
 print "</channel>\n";
 
 print "</rss>\n";
-
-?>

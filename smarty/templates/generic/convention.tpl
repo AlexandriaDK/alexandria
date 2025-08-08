@@ -92,77 +92,55 @@ $(document).ready(function(){
 
 <p style="text-align: right; margin: 0px; padding: 0px;"><input id="filterSearch" type="text" placeholder="🝖 Filter list"></p>
 -->
+{if $gamecount > 0}
 
-{if $scenlistdata || $boardlistdata }
 	<table class="indata conlist">
-	{if $scenlistdata}
-	
+
+	{foreach $gamelistdata AS $gamecategory => $gamedata}
+	{if ! $gamedata.games}{continue}{/if}
 		<tr class="listhead"><td colspan="8">
-		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="roleplay">
-			{$_scenarios|ucfirst}:
+		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="{$gamecategory|escape}">
+			{$gamedata.label|ucfirst}
 		</h3>
 		</td></tr>
-	{foreach from=$scenlistdata item=$scenarios}
-
+		{foreach $gamedata.games AS $game}
 		<tr>
-		<td>{$scenarios.userdyn.read}</td>
-		<td>{$scenarios.userdyn.gmed}</td>
-		<td>{$scenarios.userdyn.played}</td>
+		<td>{$game.userdyn.read}</td>
+		<td>{if ! $game.boardgame}{$game.userdyn.gmed}{/if}</td>
+		<td>{$game.userdyn.played}</td>
 		<td style="width: 10px;"></td>
-		<td>{if $scenarios.filescount}<a href="data?scenarie={$scenarios.id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
-		<td>{$scenarios.runsymbol}</td>
-		<td><a href="data?scenarie={$scenarios.id}" class="game">{$scenarios.title|escape}</a></td>
-		<td style="padding-left: 10px">{$scenarios.personhtml}{if $scenarios.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$scenarios.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$scenarios.personextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{if $scenarios.system_id}<a href="data?system={$scenarios.system_id}" class="system">{$scenarios.system_translation}</a>{if $scenarios.system_extra} {$scenarios.system_extra|escape}{/if}{elseif $scenarios.system_extra}{$scenarios.system_extra|escape}{/if}</td>
+		<td>{if $game.filescount}<a href="data?scenarie={$game.id}" alt="Download" title="{$_sce_downloadable|escape}">💾</a>{/if}</td>
+		<td>{$game.runsymbol}</td>
+		<td><a href="data?scenarie={$game.id}" class="game">{$game.title|escape}</a></td>
+		<td style="padding-left: 10px">{$game.personhtml}{if $game.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$game.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$game.personextrahtml}{/if}</td>
+		<td style="padding-left: 10px">{if $game.system_id}<a href="data?system={$game.system_id}" class="system">{$game.system_translation}</a>{if $game.system_extra} {$game.system_extra|escape}{/if}{elseif $game.system_extra}{$game.system_extra|escape}{/if}</td>
+		{/foreach}
 	{/foreach}
-	{/if}
-	{if $boardlistdata}
-		<tr class="listhead"><td colspan="8">
-		<h3 class="parttitle" style="margin: 0px; padding: 0px" id="boardgames">
-			{$_boardgames|ucfirst}:
-		</h3>
-		</td></tr>
-	{foreach from=$boardlistdata item=$boardgames}
-
-		<tr>
-		<td>{$boardgames.userdyn.read}</td>
-		<td></td>
-		<td>{$boardgames.userdyn.played}</td>
-		<td style="width: 10px;"></td>
-		<td>{if $boardgames.filescount}<a href="data?scenarie={$boardgames.id}" alt="Download" title="{$_sce_bgdownloadable|escape}">💾</a>{/if}</td>
-		<td>{$boardgames.runsymbol}</td>
-		<td><a href="data?scenarie={$boardgames.id}" class="game">{$boardgames.title|escape}</a></td>
-		<td style="padding-left: 10px">{$boardgames.personhtml}{if $boardgames.personextracount}<br><span onclick="this.nextSibling.style.display='inline';this.style.display='none';" class="moreauthors" title="{$boardgames.personextracount} {$_con_morepersons}">[…]</span><span class="authorlistextra">{$boardgames.personextrahtml}{/if}</td>
-		<td style="padding-left: 10px">{$boardgames.systemhtml}</td>
-		</tr>
-	{/foreach}
-	{/if}
-
 	</table>
 {/if}
 
 {if $award}
-<h3 id="awards">{$_con_awards}:</h3>
+<h3 id="awards">{$_con_awards}</h3>
 		{$award}
 {/if}
 
 <h3 class="parttitle{if ! $organizerlist && ! $editorganizers} organizerhidden{/if}" id="organizers">{$_organizers|ucfirst}</h3>
 	<table class="indata">
-	{foreach from=$organizerlist item=$ol}
+	{foreach $organizerlist as $organizer}
 		<tr>
 		<td style="padding-right: 10px">
-			{$ol.role|escape}
+			{$organizer.role|escape}
 		</td>
 		<td>
-			{if $ol.person_id}
-			<a href="data?person={$ol.person_id}" class="person">{$ol.name|escape}</a>
+			{if $organizer.person_id}
+			<a href="data?person={$organizer.person_id}" class="person">{$organizer.name|escape}</a>
 			{else}
-			{$ol.person_extra|escape}
+			{$organizer.person_extra|escape}
 			{/if}
 		</td>
 		<td style="text-align: center;">
 			{foreach $user_can_edit_organizers AS $pcrel_id => $true}
-			{if $ol.id == $pcrel_id}
+			{if $organizer.id == $pcrel_id}
 				<a href="adm/user_organizers.php?convention={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
 				{break}
 			{/if}

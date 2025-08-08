@@ -1,4 +1,3 @@
 <?php
-require( BASE_PATH . "/setup.php" ); // make sure the configuration is correct
-require( BASE_PATH . "/rpgconnect.inc.php" );
-?>
+require_once "setup.php"; // make sure the configuration is correct
+require_once "rpgconnect.inc.php";

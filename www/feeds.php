@@ -7,37 +7,21 @@ $articles = getall("SELECT a.owner, a.name, a.person_id, a.podcast, b.title, b.l
 $feeddata = array();
 $feedlist = array();
 
-foreach($articles AS $id => $article) {
-	$feeddata[$id] = $article;
-	if ($feeddata[$id]['title'] == "") {
-//		$feeddata[$id]['title'] = "(uden titel)";
-	}
-	
-	$feeddata[$id]['printdate'] = pubdateprint($article['pubdate']);
+foreach ($articles as $id => $article) {
+  $feeddata[$id] = $article;
+  if ($feeddata[$id]['title'] == "") {
+  }
 
-/*
-	$title = (strlen($article['title']) > 40 ? substr($article['title'],0,40)."...":$article['title']);
-	if ($title === "") {
-		$title = "(ingen titel)";
-	}
-	$content .= '<tr>';
-	$content .= '<td title="'.htmlspecialchars($article['title']).'"><a href="'.htmlspecialchars($article['link']).'">'.htmlspecialchars($title).'</a></td>';
-	$content .= '<td>'.htmlspecialchars($article['owner']).'</td>';
-	$content .= '<td>'.htmlspecialchars($article['pubdate']).'</td>';
-	$content .= '</tr>';
-	$content .= "\n";
-*/
+  $feeddata[$id]['printdate'] = pubdateprint($article['pubdate']);
 }
 
-foreach(getall("SELECT owner, name, pageurl FROM feeds WHERE pauseupdate = 0 ORDER BY owner") AS $id => $data) {
-	$feedlist[$id] = $data;
+foreach (getall("SELECT owner, name, pageurl FROM feeds WHERE pauseupdate = 0 ORDER BY owner") as $id => $data) {
+  $feedlist[$id] = $data;
 }
 
 award_achievement(61);
 
-$t->assign('feeddata',$feeddata);
-$t->assign('feedlist',$feedlist);
+$t->assign('feeddata', $feeddata);
+$t->assign('feedlist', $feedlist);
 
 $t->display('feeds.tpl');
-
-?>

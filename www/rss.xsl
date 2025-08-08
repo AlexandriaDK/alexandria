@@ -1,1 +1,62 @@
-<?xml version="1.0" encoding="ISO-8859-1"?><xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><xsl:output method="html" /> <xsl:variable name="title" select="/rss/channel/title"/><xsl:template match="/">    <html>        <head>            <title>XML Feed fra <xsl:value-of select="$title"/></title>            <link rel="stylesheet" href="/rss.css" type="text/css"/>        </head>	        <xsl:apply-templates select="rss/channel"/>    </html></xsl:template><xsl:template match="channel">    <body>		        <div id="top">            <h1>Hvad er det her?</h1>            <p><strong>Du er havnet på et RSS-feed fra <em><xsl:value-of select="$title"/></em>.</strong></p>            <p>RSS står for Really Simple Syndication, og bruges til at gøre det nemmere at følge med i flowet på ofte opdaterede            websites så som fx weblogs.</p>            <p>Teknologien fungerer på den måde, at et site tilbyder et feed, som består af sitets indhold i en XML-version, som er            specielt indrettet til at forskellige former for nyhedslæsere kan læse den. Ved at sætte en nyhedslæser op til med            jævne mellemrum at besøge sådan et feed og scanne det for ændringer, kan man følge med i opdateringer uden at skulle            besøge sitet selv. Det sætter en i stand til at følge med på et stort antal sites på en gang.</p>            <p>Det, brugeren modtager i sin nyhedslæser, er et kort resume der linker til websitet.            Selve nyhedslæseren kan man som bruger enten have liggende på sin egen computer, eller man kan benytte en            online-nyhedslæsere.</p>            <p>Du kan kende RSS-feeds på dette ikon <img src="http://www.smartlog.dk/img/xml.gif" alt="RSS ikon"/></p>        </div>                <div id="menu">            <div id="leftmenu">                <ul>                    <xsl:apply-templates select="item"/>                </ul>            </div>            <div id="rightmenu">                <h3>Hvordan kan du abonnere på dette feed?</h3>                <p>Du kan abonnere på RSS-feed'et på mange måder. Smartlog anbefaler følgende:</p>                <ul>                    <li><a href="http://www.bloglines.com/">Bloglines.com</a></li>                    <li><a href="http://www.bradsoft.com/feeddemon/">FeedDemon</a></li>                </ul>            </div>        </div>    </body></xsl:template><xsl:template match="item">    <li><a href="{link}" class="item"><xsl:value-of select="title"/></a></li></xsl:template></xsl:stylesheet>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="html" /> 
+<xsl:variable name="title" select="/rss/channel/title"/>
+
+<xsl:template match="/">
+    <html>
+        <head>
+            <title>XML Feed fra <xsl:value-of select="$title"/></title>
+            <link rel="stylesheet" href="/rss.css" type="text/css"/>
+        </head>	
+        <xsl:apply-templates select="rss/channel"/>
+    </html>
+</xsl:template>
+
+<xsl:template match="channel">
+    <body>		
+        <div id="top">
+            <h1>Hvad er det her?</h1>
+            <p><strong>Du er havnet pï¿½ et RSS-feed fra <em><xsl:value-of select="$title"/></em>.</strong></p>
+
+            <p>RSS stï¿½r for Really Simple Syndication, og bruges til at gï¿½re det nemmere at fï¿½lge med i flowet pï¿½ ofte opdaterede
+            websites sï¿½ som fx weblogs.</p>
+
+            <p>Teknologien fungerer pï¿½ den mï¿½de, at et site tilbyder et feed, som bestï¿½r af sitets indhold i en XML-version, som er
+            specielt indrettet til at forskellige former for nyhedslï¿½sere kan lï¿½se den. Ved at sï¿½tte en nyhedslï¿½ser op til med
+            jï¿½vne mellemrum at besï¿½ge sï¿½dan et feed og scanne det for ï¿½ndringer, kan man fï¿½lge med i opdateringer uden at skulle
+            besï¿½ge sitet selv. Det sï¿½tter en i stand til at fï¿½lge med pï¿½ et stort antal sites pï¿½ en gang.</p>
+
+            <p>Det, brugeren modtager i sin nyhedslï¿½ser, er et kort resume der linker til websitet.
+            Selve nyhedslï¿½seren kan man som bruger enten have liggende pï¿½ sin egen computer, eller man kan benytte en
+            online-nyhedslï¿½sere.</p>
+
+            <p>Du kan kende RSS-feeds pï¿½ dette ikon <img src="http://www.smartlog.dk/img/xml.gif" alt="RSS ikon"/></p>
+        </div>
+        
+        <div id="menu">
+            <div id="leftmenu">
+                <ul>
+                    <xsl:apply-templates select="item"/>
+                </ul>
+            </div>
+
+            <div id="rightmenu">
+                <h3>Hvordan kan du abonnere pï¿½ dette feed?</h3>
+                <p>Du kan abonnere pï¿½ RSS-feed'et pï¿½ mange mï¿½der. Smartlog anbefaler fï¿½lgende:</p>
+                <ul>
+                    <li><a href="http://www.bloglines.com/">Bloglines.com</a></li>
+                    <li><a href="http://www.bradsoft.com/feeddemon/">FeedDemon</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </body>
+</xsl:template>
+
+<xsl:template match="item">
+    <li><a href="{link}" class="item"><xsl:value-of select="title"/></a></li>
+</xsl:template>
+
+</xsl:stylesheet>
