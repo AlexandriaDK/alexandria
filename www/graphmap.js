@@ -108,17 +108,17 @@ var nodes = new vis.DataSet();
 var edges = new vis.DataSet();
 
 // create a network
-var container = document.getElementById("myrpggraphnetwork");
-var data = {
+const container = document.getElementById("myrpggraphnetwork");
+const data = {
   nodes: nodes,
   edges: edges,
 };
-var options = {
+const options = {
   interaction: {
     hideEdgesOnDrag: true,
   },
 };
-var network = new vis.Network(container, data, options);
+const network = new vis.Network(container, data, options);
 
 network.on("click", function (params) {
   // todo: "fix click to drag bagground"
