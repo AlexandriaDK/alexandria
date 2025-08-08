@@ -1,7 +1,6 @@
 <?php
 session_start();
 ini_set("display_errors", TRUE);
-// require_once __DIR__ . '/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
 require_once('./connect.php');
 require_once('base.inc.php');
 
