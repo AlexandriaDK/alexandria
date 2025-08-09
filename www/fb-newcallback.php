@@ -3,26 +3,28 @@ session_start();
 define('LANGNOREDIRECT', TRUE);
 require_once('./connect.php');
 require_once('base.inc.php');
-ini_set("display_errors",TRUE);
-$app_id = 6044298682;
+ini_set("display_errors", TRUE);
 
-require_once __DIR__ . '/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
+// Use the modern League OAuth2 Facebook provider
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use League\OAuth2\Client\Provider\Facebook;
 
 $fb = new Facebook\Facebook([
   'app_id' => '6044298682',
   'app_secret' => '1da33fef158dde6bec1c5c520f18ab01',
   'default_graph_version' => 'v2.2',
-  ]);
+]);
 
 $helper = $fb->getRedirectLoginHelper();
 
 try {
   $accessToken = $helper->getAccessToken();
-} catch(Facebook\Exceptions\FacebookResponseException $e) {
+} catch (Facebook\Exceptions\FacebookResponseException $e) {
   // When Graph returns an error
   echo 'Graph returned an error: ' . $e->getMessage();
   exit;
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
+} catch (Facebook\Exceptions\FacebookSDKException $e) {
   // When validation fails or other local issues
   echo 'Facebook SDK returned an error: ' . $e->getMessage();
   exit;
@@ -36,8 +38,9 @@ if (! isset($accessToken)) {
     echo "Error Reason: " . $helper->getErrorReason() . "\n";
     echo "Error Description: " . $helper->getErrorDescription() . "\n";
   } else {
-    header('HTTP/1.0 400 Bad Request');
-    echo 'Bad request';
+    header('HTTP/1.0 500 Internal Server Error');
+    echo '<p>Facebook connection is currently unavailable. We are looking into it.</p>';
+    echo '<p>If you previously have logged in with Facebook please log in using another service and <a href="/kontakt">contact us</a> to merge your logins.</p>';
   }
   exit;
 }
@@ -63,8 +66,8 @@ if (! $accessToken->isLongLived()) {
     exit;
   }
 
-//  echo '<h3>Long-lived</h3>';
-//  var_dump($accessToken->getValue());
+  //  echo '<h3>Long-lived</h3>';
+  //  var_dump($accessToken->getValue());
 }
 
 $_SESSION['fb_access_token'] = (string) $accessToken;
@@ -80,20 +83,19 @@ $_SESSION['fb_access_token'] = (string) $accessToken;
 try {
   // Returns a `Facebook\FacebookResponse` object
   $response = $fb->get('/me?fields=id,name', $_SESSION['fb_access_token']);
-} catch(Facebook\Exceptions\FacebookResponseException $e) {
+} catch (Facebook\Exceptions\FacebookResponseException $e) {
   echo 'Graph returned an error: ' . $e->getMessage();
   exit;
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
+} catch (Facebook\Exceptions\FacebookSDKException $e) {
   echo 'Facebook SDK returned an error: ' . $e->getMessage();
   exit;
 }
 
 $user = $response->getGraphUser();
-$user_id = do_fb_login($user['id'], $user['name'] );
+$user_id = do_fb_login($user['id'], $user['name']);
 $redirect_url = get_redirect_url($_SERVER['HTTP_REFERER']);
 $_SESSION['do_redirect'] = TRUE;
 check_login_achievements();
 
 header("Location: $redirect_url");
 exit;
-?>

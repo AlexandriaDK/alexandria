@@ -22,92 +22,93 @@ use League\OAuth2\Client\Provider\GenericResourceOwner;
 
 class TwitchProvider extends AbstractProvider
 {
-    use BearerAuthorizationTrait;
+  use BearerAuthorizationTrait;
 
-    private $urlAuthorize;
-    private $urlAccessToken;
-    private $urlResourceOwnerDetails;
-    private $accessTokenMethod;
-    private $accessTokenResourceOwnerId;
-    private $scopeSeparator;
-    private $scopes = null;
-    private $responseError = 'error';
-    private $responseCode;
-    private $responseResourceOwnerId;
+  private $urlAuthorize;
+  private $urlAccessToken;
+  private $urlResourceOwnerDetails;
+  private $accessTokenMethod;
+  private $accessTokenResourceOwnerId;
+  private $scopeSeparator;
+  private $scopes = null;
+  private $responseError = 'error';
+  private $responseCode;
+  private $responseResourceOwnerId;
 
-    public function __construct(array $options = [])
-    {
-        $possible   = $this->getConfigurableOptions();
-        $configured = array_intersect_key($options, array_flip($possible));
+  public function __construct(array $options = [])
+  {
+    $possible   = $this->getConfigurableOptions();
+    $configured = array_intersect_key($options, array_flip($possible));
 
-        foreach ($configured as $key => $value) {
-            $this->$key = $value;
-        }
-
-        // Remove all options that are only used locally
-        $options = array_diff_key($options, $configured);
-
-        parent::__construct($options);
+    foreach ($configured as $key => $value) {
+      $this->$key = $value;
     }
 
-    protected function getConfigurableOptions()
-    {
-        return ['accessTokenMethod',
-                'accessTokenResourceOwnerId',
-                'scopeSeparator',
-                'responseError',
-                'responseCode',
-                'responseResourceOwnerId',
-                'scopes',
-        ];
-    }    
+    // Remove all options that are only used locally
+    $options = array_diff_key($options, $configured);
 
-    public function getBaseAuthorizationUrl()
-    {
-        return 'https://api.twitch.tv/kraken/oauth2/authorize';
+    parent::__construct($options);
+  }
+
+  protected function getConfigurableOptions()
+  {
+    return [
+      'accessTokenMethod',
+      'accessTokenResourceOwnerId',
+      'scopeSeparator',
+      'responseError',
+      'responseCode',
+      'responseResourceOwnerId',
+      'scopes',
+    ];
+  }
+
+  public function getBaseAuthorizationUrl()
+  {
+    return 'https://api.twitch.tv/kraken/oauth2/authorize';
+  }
+
+  public function getBaseAccessTokenUrl(array $params)
+  {
+    return 'https://api.twitch.tv/kraken/oauth2/token';
+  }
+
+  public function getResourceOwnerDetailsUrl(AccessToken $token)
+  {
+    return 'https://api.twitch.tv/kraken/user';
+  }
+
+  public function getDefaultScopes()
+  {
+    return $this->scopes;
+  }
+
+  protected function getScopeSeparator()
+  {
+    return ' ';
+  }
+
+  protected function checkResponse(ResponseInterface $response, $data)
+  {
+    if (!empty($data[$this->responseError])) {
+      $error = $data[$this->responseError];
+      $code  = $this->responseCode ? $data[$this->responseCode] : 0;
+      throw new IdentityProviderException($error, $code, $data);
     }
+  }
 
-    public function getBaseAccessTokenUrl(array $params)
-    {
-        return 'https://api.twitch.tv/kraken/oauth2/token';
-    }
+  protected function createResourceOwner(array $response, AccessToken $token)
+  {
+    return new GenericResourceOwner($response, $this->responseResourceOwnerId);
+  }
 
-    public function getResourceOwnerDetailsUrl(AccessToken $token)
-    {
-        return 'https://api.twitch.tv/kraken/user';
-    }
+  protected function getDefaultHeaders()
+  {
+    return ['Client-ID' => $this->clientId, 'Accept' => 'application/vnd.twitchtv.v5+json'];
+  }
 
-    public function getDefaultScopes()
-    {
-        return $this->scopes;
-    }
-
-    protected function getScopeSeparator()
-    {
-        return ' ';
-    }    
-
-    protected function checkResponse(ResponseInterface $response, $data)
-    {
-        if (!empty($data[$this->responseError])) {
-            $error = $data[$this->responseError];
-            $code  = $this->responseCode ? $data[$this->responseCode] : 0;
-            throw new IdentityProviderException($error, $code, $data);
-        }
-    }
-
-    protected function createResourceOwner(array $response, AccessToken $token)
-    {
-        return new GenericResourceOwner($response, $this->responseResourceOwnerId);
-    }
-
-    protected function getDefaultHeaders()
-    {
-        return ['Client-ID' => $this->clientId, 'Accept' => 'application/vnd.twitchtv.v5+json'];
-    }    
-
-    protected function getAuthorizationHeaders($token = NULL)
-    {
-        return ['Authorization' => 'OAuth '.$token];
-    }
+  protected function getAuthorizationHeaders($token = NULL)
+  {
+    return ['Authorization' => 'OAuth ' . $token];
+  }
 }

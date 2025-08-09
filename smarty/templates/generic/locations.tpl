@@ -2,6 +2,8 @@
 {include file="head.tpl"}
 
 <div id="content">
+{include file="originalsearch.tpl"}
+
 	<h2 class="pagetitle">
 		{$_locations_title}
 	</h2>
@@ -83,11 +85,21 @@ var smallIcon = new L.Icon({
   shadowSize: [21, 21]
 });
 
+var markerGroups = {};
+
 for(place_id in locations) {
 	var place = locations[place_id];
 	if (place.data.hasGeo) {
+		var countrycode = place.data.countrycode.toLowerCase() || 'xxx';
+		if (!(countrycode in markerGroups)) {
+			markerGroups[countrycode] = L.markerClusterGroup();
+		}
+		var clusterGroup = markerGroups[countrycode];
 		var highlight = false;
 		var markerText = '<a href="locations?id=' + place_id + '"><b>' + place.data.name + '</b></a><br>';
+		if (place.data.aliases) {
+			markerText += '<span class="locationnote">(' + {/literal}'{$_aka|escape}'{literal} + ': ' + place.data.aliases + ')<br></span>'; // escape!
+		}
 		if (place.data.city) {
 			markerText += place.data.city; // escape!
 		}
@@ -101,6 +113,7 @@ for(place_id in locations) {
 			markerText += '<br>';
 		}
 		markerText += '<br>';
+		markerText += '<div class="popupeventlist">';
 		for(event of place.events) {
 			var link = (event.type == 'convention' ? 'data?con=' : 'data?scenarie=') + event.data_id;
 			var className = (event.type == 'convention' ? 'con' : 'game');
@@ -110,6 +123,7 @@ for(place_id in locations) {
 			div.appendChild(node);
 			markerText += `<a href="${link}" class="${className} ${classCancelled}" title="${event.nicedateset}">${div.innerHTML}</a><br>`;
 		}
+		markerText += '</div>';
 		if (place.data.note) {
 			var div = document.createElement('div');
 			var node = document.createTextNode(place.data.note);
@@ -123,10 +137,14 @@ for(place_id in locations) {
 				marker.openPopup(); // only open if exactly one location
 			}
 		} else {
-			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon}).addTo(map);
+			var marker = L.marker([place.data.latitude, place.data.longitude], {icon: smallIcon});
 			marker.bindTooltip(place.data.name).bindPopup(markerText);
+			clusterGroup.addLayer(marker);
 		}
 	}
+}
+for (markerGroup in markerGroups) {
+	map.addLayer(markerGroups[markerGroup]);
 }
 {/literal}
 </script>

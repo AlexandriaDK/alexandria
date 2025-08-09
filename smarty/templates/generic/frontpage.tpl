@@ -8,9 +8,9 @@
 
 <div id="contenttext">
 
-	<div id="creategame"
+	<div id="creategame" class="creategame"
 		style="border-radius: 20px; border: 2px solid black; background-color: #ee7; text-align: center; width: 600px; font-size: 1.5em; padding: 5px; margin-bottom: 10px;">
-		Are we missing any LARPs? <a href="create">Add a LARP to Alexandria</a>.
+		{$_fp_creategame}
 	</div>
 
 	<div class="latestnews">
@@ -22,7 +22,7 @@
 			{$_fp_topnote}
 		</p>
 
-		{foreach from=$newslist item=$news}
+		{foreach $newslist as $news}
 			<p>
 				<a id="{$news.anchor}">{$news.date}</a>:<br>
 				{$news.news}
@@ -78,7 +78,7 @@
 			{$_fp_recentdownload}
 		</h3>
 		<ul>
-			{foreach from=$latest_downloads item=$scenario}
+			{foreach $latest_downloads as $scenario}
 				<li><a href="data?scenarie={$scenario.id}" class="game"
 						title="{$scenario.origtitle|escape}">{$scenario.title|escape}</a></li>
 			{/foreach}

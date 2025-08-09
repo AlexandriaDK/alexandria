@@ -39,6 +39,13 @@
 	{$find_gamesystem}
 {/if}
 
+{if $find_locations}
+	<h3 class="findhead">
+		{$_locations|ucfirst}
+	</h3>
+	{$find_locations}
+{/if}
+
 {if $find_tags}
 	<h3 class="findhead">
 		{$_tags|ucfirst}
@@ -74,7 +81,7 @@
 	{$find_blogposts}
 {/if}
 
-{if ! $find_person && ! $find_game && ! $find_convention && ! $find_gamesystem && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_articles}
+{if ! $find_person && ! $find_game && ! $find_convention && ! $find_gamesystem && ! $find_files && ! $find_blogposts && ! $find_tags && ! $find_articles && ! $find_locations}
 	<p class="nomatch">
 		{$_find_nomatch}
 	</p>

@@ -10,7 +10,7 @@ htmladmstart("Checkup");
 $htmlisocodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
 $languages = getall("SELECT COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
 foreach ($languages as $language) {
-	$htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">' . $language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
+  $htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">' . $language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
 }
 $gamedescriptions = getall("SELECT gd.game_id, gd.language, g.title
 	FROM game_description gd
@@ -18,7 +18,7 @@ $gamedescriptions = getall("SELECT gd.game_id, gd.language, g.title
 	WHERE gd.language REGEXP('^(dk|se|no)') OR gd.language REGEXP '^..[a-z]'
 ");
 foreach ($gamedescriptions as $gamedescription) {
-	$htmlisocodes .= 'Game description for <a href="game.php?game=' . $gamedescription['game_id'] . '">' . htmlspecialchars($gamedescription['title']) . "</a> (" . htmlspecialchars($gamedescription['language']) . ")<br>";
+  $htmlisocodes .= 'Game description for <a href="game.php?game=' . $gamedescription['game_id'] . '">' . htmlspecialchars($gamedescription['title']) . "</a> (" . htmlspecialchars($gamedescription['language']) . ")<br>";
 }
 $countries = getall("
 	SELECT * FROM (
@@ -31,11 +31,18 @@ $countries = getall("
 	WHERE country IN('da','sv','nb','uk') OR country REGEXP '^..[a-z]'
 ");
 foreach ($countries as $country) {
-	$htmlisocodes .= '<a href="' . ($country['category'] == 'gamerun' ? 'run.php?id=' : ($country['category'] == 'convention' ? 'convention.php?con=' : 'conset.php?conset=')) . $country['id'] . '">';
-	$htmlisocodes .= 'Dataset ' . $country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
+  $htmlisocodes .= '<a href="' . ($country['category'] == 'gamerun' ? 'run.php?id=' : ($country['category'] == 'convention' ? 'convention.php?con=' : 'conset.php?conset=')) . $country['id'] . '">';
+  $htmlisocodes .= 'Dataset ' . $country['category'] . " " . $country['id'] . "</a> (" . htmlspecialchars($country['country']) . ")<br>";
 }
-if (count($languages) + count($countries) + count($gamedescriptions) === 0) {
-	$htmlisocodes .= "<b>All good!</b>";
+$locations = getall("
+	SELECT id, name, country FROM locations
+	WHERE country IN('da','sv','nb','uk') OR country REGEXP '^..[a-z]'
+");
+foreach ($locations as $location) {
+  $htmlisocodes .= 'Location <a href="locations.php?id=' . $location['id'] . '">' . htmlspecialchars($location['name']) . "</a> (" . htmlspecialchars($location['country']) . ")<br>";
+}
+if (count($languages) + count($countries) + count($gamedescriptions) + count($locations) === 0) {
+  $htmlisocodes .= "<b>All good!</b>";
 }
 
 $htmlorganizer = "<b>Organizers without ID:</b>\n";
@@ -50,22 +57,22 @@ $query = "
 $result = getall($query);
 $persons = [];
 foreach ($result as $row) { // create tree
-	$persons[$row['person_extra']][] = $row;
+  $persons[$row['person_extra']][] = $row;
 }
 array_multisort(array_map('count', $persons), SORT_DESC, $persons);
 foreach ($persons as $name => $data) {
-	if (count($data) < 2) {
-		continue;
-	}
-	$htmlorganizer .= '<details>';
-	$htmlorganizer .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
-	$htmlorganizer .= '<div>';
-	foreach ($data as $row) {
-		$htmlorganizer .= '<a href="organizers.php?category=convention&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
-	}
-	$htmlorganizer .= '</div></details>' . PHP_EOL;
+  if (count($data) < 2) {
+    continue;
+  }
+  $htmlorganizer .= '<details>';
+  $htmlorganizer .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ') <a href="person.php?firstname=' . rawurlencode($name) . '">[+]</a></summary>';
+  $htmlorganizer .= '<div>';
+  foreach ($data as $row) {
+    $htmlorganizer .= '<a href="organizers.php?category=convention&data_id=' . $row['id'] . '">' . $row['name'] . ' (' . $row['year'] . ')</a><br>';
+  }
+  $htmlorganizer .= '</div></details>' . PHP_EOL;
 
-	// $htmlorganizer .= "</div>" . PHP_EOL;
+  // $htmlorganizer .= "</div>" . PHP_EOL;
 }
 
 $htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
@@ -73,12 +80,12 @@ $htmlorganizermatch = "<b>Organizers without ID, perhaps existing?</b><br>\n";
 $query = "SELECT COUNT(*) AS antal, GROUP_CONCAT(convention_id ORDER BY convention_id) AS convention_ids, person_extra AS name, p.id AS person_id FROM pcrel INNER JOIN person p ON pcrel.person_extra = CONCAT(p.firstname, ' ', p.surname) WHERE person_extra != '' GROUP BY person_extra ORDER BY antal DESC, name";
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlorganizermatch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['antal']})";
-	foreach (explode(",", $row['convention_ids']) as $convention_id) {
-		$htmlorganizermatch .= " <a href=\"organizers.php?category=convention&data_id=$convention_id\">#$convention_id</a>";
-	}
+  $htmlorganizermatch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['antal']})";
+  foreach (explode(",", $row['convention_ids']) as $convention_id) {
+    $htmlorganizermatch .= " <a href=\"organizers.php?category=convention&data_id=$convention_id\">#$convention_id</a>";
+  }
 
-	$htmlorganizermatch .= "<br>\n";
+  $htmlorganizermatch .= "<br>\n";
 }
 
 $htmlmagazine = "<b>Magazine content providers without ID:</b>\n";
@@ -95,20 +102,20 @@ $query = "
 $result = getall($query);
 $persons = [];
 foreach ($result as $row) { // create tree
-	$persons[$row['person_extra']][] = $row;
+  $persons[$row['person_extra']][] = $row;
 }
 array_multisort(array_map('count', $persons), SORT_DESC, $persons);
 foreach ($persons as $name => $data) {
-	if (count($data) < 2) {
-		continue;
-	}
-	$htmlmagazine .= '<details>';
-	$htmlmagazine .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
-	$htmlmagazine .= '<div>';
-	foreach ($data as $row) {
-		$htmlmagazine .= '<a href="magazine.php?magazine_id=' . $row['magazine_id'] . '&amp;issue_id=' . $row['issue_id'] . '">' . $row['name'] . ', ' . $row['title'] . '</a><br>';
-	}
-	$htmlmagazine .= '</div></details>' . PHP_EOL;
+  if (count($data) < 2) {
+    continue;
+  }
+  $htmlmagazine .= '<details>';
+  $htmlmagazine .= '<summary>' . htmlspecialchars($name) . ' (' . count($data) . ')</summary>';
+  $htmlmagazine .= '<div>';
+  foreach ($data as $row) {
+    $htmlmagazine .= '<a href="magazine.php?magazine_id=' . $row['magazine_id'] . '&amp;issue_id=' . $row['issue_id'] . '">' . $row['name'] . ', ' . $row['title'] . '</a><br>';
+  }
+  $htmlmagazine .= '</div></details>' . PHP_EOL;
 }
 
 $htmlmagazinematch = "<b>Magazine content providers without ID, perhaps existing?</b><br>\n";
@@ -124,12 +131,12 @@ $query = "
 ";
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlmagazinematch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['count']})";
-	foreach (explode(",", $row['issue_ids']) as $issue_id) {
-		$htmlmagazinematch .= " <a href=\"magazine.php?issue_id=$issue_id\">#$issue_id</a>";
-	}
+  $htmlmagazinematch .= "<a href=\"person.php?person={$row['person_id']}\">{$row['name']}</a> ({$row['count']})";
+  foreach (explode(",", $row['issue_ids']) as $issue_id) {
+    $htmlmagazinematch .= " <a href=\"magazine.php?issue_id=$issue_id\">#$issue_id</a>";
+  }
 
-	$htmlmagazinematch .= "<br>\n";
+  $htmlmagazinematch .= "<br>\n";
 }
 
 // RPG SYSTEMS CHECK
@@ -139,7 +146,7 @@ $minantal = 2;
 $query = "SELECT COUNT(*) AS antal, gamesystem_extra FROM game g WHERE (gamesystem_id IS NULL OR gamesystem_id = 0) AND gamesystem_extra != '' GROUP BY gamesystem_extra HAVING antal >= $minantal ORDER BY antal DESC ";
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlgamenotregistered .= $row['gamesystem_extra'] . " ($row[antal])<br>\n";
+  $htmlgamenotregistered .= $row['gamesystem_extra'] . " ($row[antal])<br>\n";
 }
 
 // PERSONS WITHOUT ANY RELATIONS
@@ -158,7 +165,7 @@ $query = "
 
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlloneper .= "<a href=\"person.php?person={$row['id']}\">{$row['name']}</a><br>\n";
+  $htmlloneper .= "<a href=\"person.php?person={$row['id']}\">{$row['name']}</a><br>\n";
 }
 
 // CHECK CONS WITHOUT START DATE
@@ -168,7 +175,7 @@ $query = "SELECT c.id, c.name, year, conset.name AS setname FROM convention c LE
 
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlcondate .= "<a href=\"convention.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
+  $htmlcondate .= "<a href=\"convention.php?con={$row['id']}\">{$row['name']} ({$row['year']})</a><br>\n";
 }
 
 // Authors with most non-downloadable scenarios
@@ -186,35 +193,31 @@ $query = "
 
 $result = getall($query);
 foreach ($result as $row) {
-	$htmlnodownloadaut .= "<a href=\"person.php?person={$row['id']}\">{$row['firstname']} {$row['surname']}</a> ({$row['missing']})<br>\n";
+  $htmlnodownloadaut .= "<a href=\"person.php?person={$row['id']}\">{$row['firstname']} {$row['surname']}</a> ({$row['missing']})<br>\n";
 }
 
 // Same persons?
 $names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM person p ORDER BY name");
 $htmlnames = "<b>Possible duplicate authors (based on middle name):</b><br>\n";
 foreach ($names as $id => $name) {
-	$parts = explode(' ', $name);
-	if (count($parts) > 2) {
-		$newname = $parts[0] . ' ' . $parts[count($parts) - 1];
-		$newid = array_search($newname, $names);
-		if ($newid) {
-			$htmlnames .= '<a href="person.php?person=' . $id . '">' . htmlspecialchars($name) . ' </a> =?= <a href="person.php?person=' . $newid . '">' . htmlspecialchars($newname) . ' </a><br>';
-		}
-	}
+  $parts = explode(' ', $name);
+  if (count($parts) > 2) {
+    $newname = $parts[0] . ' ' . $parts[count($parts) - 1];
+    $newid = array_search($newname, $names);
+    if ($newid) {
+      $htmlnames .= '<a href="person.php?person=' . $id . '">' . htmlspecialchars($name) . ' </a> =?= <a href="person.php?person=' . $newid . '">' . htmlspecialchars($newname) . ' </a><br>';
+    }
+  }
 }
 
 // OUTPUT DATA
 print "<p>\n";
 print "<table cellspacing=3 cellpadding=4>" .
-	"<tr valign=\"top\">" .
-	"<td>$htmlloneper</td>" .
-	"<td>$htmlorganizermatch<br><br>$htmlorganizer<br><br>$htmlisocodes</td>" .
-	"<td>$htmlmagazinematch<br><br>$htmlmagazine</td>" .
-	"</tr><tr valign=\"top\">" .
-	"<td>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>" .
-	"<td>$htmlcondate</td>" .
-	"<td>$htmlnames</td>" .
-	"</tr></table>";
+  "<tr valign=\"top\">" .
+  "<td>$htmlloneper<br>$htmlnodownloadaut<br><br>$htmlgamenotregistered</td>" .
+  "<td>$htmlorganizermatch<br><br>$htmlorganizer<br><br>$htmlisocodes<br><br>$htmlcondate</td>" .
+  "<td>$htmlmagazinematch<br><br>$htmlnames</td><td>$htmlmagazine</td>" .
+  "</tr></table>";
 ?>
 </body>
 

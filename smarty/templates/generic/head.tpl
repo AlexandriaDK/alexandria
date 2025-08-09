@@ -80,16 +80,19 @@
 		</script>
 		{/if}
 		{if isset($type) && $type == 'locations'}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
      crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"
      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
      crossorigin=""></script>
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
 		{/if}
 	</head>
@@ -221,7 +224,7 @@
 		<div class="leftmenucontent">
 			{$_top_recentedits}:
 			<div class="longblock">
-			{foreach from=$recentlog item=$log}
+			{foreach $recentlog as $log}
 			{$log.linkhtml}<br>
 			<span class="noteindtast">
 			{$log.note|escape}<br>
@@ -239,7 +242,7 @@
 		<div class="leftmenucontent">
 			{$_top_translationprogress}:
 			<br><br>
-			{foreach from=$translations item=$translation}
+			{foreach $translations as $translation}
 			<a href="adm/language.php?setlang={$translation.isocode|rawurlencode}">{$translation.llanguage|ucfirst|escape}</a>: {$translation.percentagestring}<br>
 			{/foreach}
 		</div>
@@ -249,7 +252,7 @@
 			<div class="leftmenucontent">
 				{$_top_help_sce_no|@nl2br}
 				<br><br>
-				{foreach from=$user_scenario_missing_players item=$usmc}
+				{foreach $user_scenario_missing_players as $usmc}
 				<a href="data?scenarie={$usmc.id}" class="game">{$usmc.title|escape}</a><br>
 				{/foreach}
 				<br>
@@ -261,7 +264,7 @@
 			<div class="leftmenucontent">
 				{$_top_help_sce_tag|@nl2br}
 				<br><br>
-				{foreach from=$user_scenario_missing_tags item=$usmt}
+				{foreach $user_scenario_missing_tags as $usmt}
 				<a href="data?scenarie={$usmt.id}" class="game">{$usmt.title|escape}</a><br>
 				{/foreach}
 				<br>
@@ -309,7 +312,7 @@
 					<a href="magazines" class="magazines">{$_top_magazines|ucfirst}</a>
 				</div>
 				<div class="topmenublockfind">
-					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="search" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input" autofocus></label>
+					<label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="search" name="find" value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input" required autofocus></label>
 				</div>
 			</form>
 {/if}

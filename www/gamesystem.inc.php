@@ -2,8 +2,8 @@
 $this_type = 'gamesystem';
 $this_id = $system;
 
-if ($_SESSION['user_id']) {
-	$userlog = getuserloggames($_SESSION['user_id']);
+if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+  $userlog = getuserloggames($_SESSION['user_id']);
 }
 
 // achievements
@@ -15,10 +15,10 @@ $r = getrow("SELECT id, name, description FROM gamesystem WHERE id = '$system'")
 $showname = $sysname = $r['name'];
 
 if ($r['id'] == 0) {
-	$t->assign('content', $t->getTemplateVars('_nomatch'));
-	$t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
-	$t->display('default.tpl');
-	exit;
+  $t->assign('content', $t->getTemplateVars('_nomatch'));
+  $t->assign('pagetitle', $t->getTemplateVars('_find_nomatch'));
+  $t->display('default.tpl');
+  exit;
 }
 $q = getall("
 	SELECT g.id, g.title, c.name, c.id AS con_id, c.year, c.begin, c.end, c.cancelled, c.country, person_extra, COUNT(f.id) AS files, p.id AS person_id, CONCAT(p.firstname,' ',p.surname) AS autname, pr.id AS presentation_id, pr.event_label, pr.iconfile, pr.textsymbol, COALESCE(alias.label, g.title) AS title_translation
@@ -38,40 +38,51 @@ $q = getall("
 $gamelist = [];
 
 if (count($q) > 0) {
-	foreach ($q as $rs) { // Put all together
-		#		$game_id = $rs['id'];
-		if (!isset($gamelist[$rs['id']])) {
-			$gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files']], 'person' => [], 'convention' => []];
-		}
-		if ($rs['person_id']) {
-			$gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];
-		}
-		if ($rs['con_id']) {
-			$gamelist[$rs['id']]['convention'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id']];
-		}
-	}
+  foreach ($q as $rs) { // Put all together
+    #		$game_id = $rs['id'];
+    if (!isset($gamelist[$rs['id']])) {
+      $gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files']], 'person' => [], 'convention' => []];
+    }
+    if ($rs['person_id']) {
+      $gamelist[$rs['id']]['person'][$rs['person_id']] = $rs['autname'];
+    }
+    if ($rs['con_id']) {
+      $gamelist[$rs['id']]['convention'][$rs['con_id']] = ['id' => $rs['con_id'], 'name' => $rs['name'], 'year' => $rs['year'], 'begin' => $rs['begin'], 'end' => $rs['end'], 'cancelled' => $rs['cancelled'], 'country' => $rs['country'], 'iconfile' => $rs['iconfile'], 'textsymbol' => $rs['textsymbol'], 'event_label' => $rs['event_label'], 'presentation_id' => $rs['presentation_id']];
+    }
+  }
 
-	if ($_SESSION['user_id']) {
-		foreach ($gamelist as $id => $game) {
-			foreach (['read', 'gmed', 'played'] as $type) {
-				$gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? FALSE);
-			}
-		}
-	}
+  if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+    foreach ($gamelist as $id => $game) {
+      foreach (['read', 'gmed', 'played'] as $type) {
+        $gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? false);
+      }
+    }
+  }
+  // Always provide defaults for template keys
+  foreach ($gamelist as $id => $game) {
+    $gamelist[$id]['userdata']['html'] = $gamelist[$id]['userdata']['html'] ?? ['read' => '', 'gmed' => '', 'played' => ''];
+  }
+  if (isset($_SESSION) && isset($_SESSION['user_id'])) {
+    foreach ($gamelist as $id => $game) {
+      foreach (['read', 'gmed', 'played'] as $type) {
+        $gamelist[$id]['userdata']['html'][$type] = getdynamicgamehtml($id, $type, $userlog[$id][$type] ?? false);
+      }
+    }
+  }
 }
 
 // List of aliases, alternative title?
 $alttitle = getcol("SELECT label FROM alias WHERE gamesystem_id = $system AND language = '$lang' AND visible = 1");
 if (count($alttitle) == 1) {
-	$showname = $alttitle[0];
-	$aliaslist = getaliaslist($system, $this_type, $showname);
-	if ($aliaslist) {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars("_g.original_title") . "\">" . htmlspecialchars($sysname) . "</b>, " . $aliaslist;
-	} else {
-		$aliaslist = "<b title=\"" . $t->getTemplateVars("_g.original_title") . "\">" . htmlspecialchars($sysname) . "</b>";
-	}
+  $showname = $alttitle[0];
+  $aliaslist = getaliaslist($system, $this_type, $showname);
+  if ($aliaslist) {
+    $aliaslist = "<b title=\"" . $t->getTemplateVars("_g.original_title") . "\">" . htmlspecialchars($sysname) . "</b>, " . $aliaslist;
+  } else {
+    $aliaslist = "<b title=\"" . $t->getTemplateVars("_g.original_title") . "\">" . htmlspecialchars($sysname) . "</b>";
+  }
 } else {
-	$aliaslist = getaliaslist($system, $this_type);
+  $aliaslist = getaliaslist($system, $this_type);
 }
 
 // List of files

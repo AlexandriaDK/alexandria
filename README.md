@@ -1,30 +1,94 @@
 # Alexandria
-First online code version of Alexandria.dk, the online gaming library of role-playing scenarios, designer boardgames, LARPs, conventions and much more.
+
+Alexandria.dk – the online gaming library of role‑playing scenarios, designer board games, LARPs, conventions, and more.
 
 ## Caveat
-The project was started in 2000. Some of the code might be from that era.
 
-## Install
-The code requires PHP 7 or PHP 8. MySQL 5+ is needed as RDBMS.
+The project originated in 2000. Some legacy code remains.
 
-The code is currently Apache based. The site includes an installer feature for setting up the database and fetching content when accessed the first time.
+## Quick start (Docker)
 
-Please note:
-- Apache directive `AllowOverride all` needs to be set.
-- The web site requires template system Smarty, which is currently not included per default: https://www.smarty.net/
-- Remember to check out the config files under `includes/`. The database file (db.auth.php) is the only crucial file to have configured.
-- Need login through third party sites? Remember to install OAuth for PHP (`sudo apt install php-oauth`)
-- You can install ImageMagick (`sudo apt install php-imagick`) to be able to convert PDFs to thumbnails
+Prerequisites:
 
-### Cron jobs
-Some scripts located in [tools](tree/master/tools) are meant to be running on a hourly or daily basis. None of these scripts are strictly required just to have the site running.
+- Docker Desktop
 
-* `feedfetcher.php` fetches RSS content from blogs
-* `update_popularity.php` updates the popularity field for games for sorting purposes
-* `dailystats.php` outputs a CSV line with a count of games, persons, conventions, users and so on.
-* `fileindexer.php` checks uploaded PDF files and indexes them for content search purposes.
+Getting started:
 
-An example of crontab entries follows:
+1. **Configure database settings:**
+
+   Copy the file `includes/default.db.auth.php` to `includes/db.auth.php`.
+
+   The default file already contains the correct values for Docker development:
+
+```php
+<?php
+define('DB_NAME', 'alexandria');
+define('DB_USER', 'alexuser');
+define('DB_PASS', 'alexpass');
+define('DB_HOST', 'db');
+define('DB_CONNECTOR', 'mysqli');
+```
+
+- For a custom setup, copy `includes/default.db.auth.php` to `includes/db.auth.php` and adjust values.
+
+2. Start services
+
+```cmd
+docker-compose up -d
+```
+
+What this does:
+
+- Starts MariaDB 10.7 with dev credentials
+- Builds and runs the web app on PHP 8.4 + Apache
+- Initializes schema from `alexandria_tables.sql`
+- Imports sample data and news via helper jobs
+
+3. Open the site
+
+- http://localhost:8080
+
+Notes for development:
+
+- `www/` is mounted into the container for live editing
+- Smarty templates (`smarty/templates`) are mounted for live template work
+- Compiled Smarty files live in `smarty/templates_c` (created in the container)
+- Database data persists in the `db_data` Docker volume
+
+## Manual installation (without Docker)
+
+Recommended stack:
+
+- PHP 8.0+ (8.1+ recommended) with extensions: mysqli, mbstring, intl, gd, zip
+- MariaDB/MySQL
+- Apache (DocumentRoot should point to the `www/` folder)
+
+Steps (outline):
+
+- Copy `includes/default.db.auth.php` to `includes/db.auth.php` and set credentials
+- Install Composer dependencies at the repository root (creates `vendor/`):
+
+  - `composer install`
+
+- Ensure Apache has `AllowOverride All` so `.htaccess` works
+- Point your virtual host to the `www/` directory (code expects `vendor/` at repo root)
+- Optional utilities: `php-oauth` (for some OAuth flows), `php-imagick` (PDF thumbnails)
+
+Notes:
+
+- Smarty 5 is installed via Composer (no manual download needed)
+- The site has an installer/initializer on first run, but importing sample data/news is handled by the Docker helper scripts; outside Docker you can run `tools/dbimport.py` and `tools/import_news.py` manually if desired
+
+## Cron jobs
+
+Scripts in `tools/` can be scheduled (not required just to run the site):
+
+- `feedfetcher.php` – fetch RSS content from blogs
+- `update_popularity.php` – refresh popularity values for sorting
+- `dailystats.php` – output counts of games/persons/conventions/users
+- `fileindexer.php` – index uploaded PDFs for content search
+
+Example crontab:
 
 ```
 # m h  dom mon dow   command
@@ -35,13 +99,15 @@ An example of crontab entries follows:
 ```
 
 ## TODO
-* Config file
-  * Dynamic domain name
-  * Paths to downloadable files
-* Bulk download of downloadable files
-* More installation checkup for optional modules, correct permissions, etc.
-* And much more ...
+
+- Config file
+  - Dynamic domain name
+  - Paths to downloadable files
+- Bulk download of downloadable files
+- More installation checkup for optional modules, correct permissions, etc.
+- And much more ...
 
 ## Troubleshooting
+
 - Getting the error "attempt to perform an operation not allowed by the security policy PDF" when creating thumbnails on file page at editor section? Remove the line `<policy domain="coder" rights="none" pattern="PDF" />` in /etc/ImageMagick-6/policy.xml
 - Can't upload files in the editor interface? Check the php.ini directive [upload_max_filesize](https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize) and [post_max_size](https://www.php.net/manual/en/ini.core.php#ini.post-max-size). Their default values are only 2M and 8M respectively meaning the maximum file size for an uploaded file is 2 MB. These values ought to be raised drastically to e.g. 128M. The settings have a changeable mode of [PHP_INI_DIR](https://www.php.net/manual/en/configuration.changes.modes.php) meaning they can be set in `php.ini`, `.htaccess`, `httpd.conf` or `.user.ini`.

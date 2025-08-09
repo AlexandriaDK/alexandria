@@ -1,0 +1,54 @@
+services:
+  db:
+    image: mariadb:10.7
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: alexandria
+      MARIADB_USER: alexuser
+      MARIADB_PASSWORD: alexpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./alexandria_tables.sql:/docker-entrypoint-initdb.d/1-structure.sql:ro
+
+  web:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: alexuser
+      DB_PASS: alexpass
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      # Mount the www directory for live development
+      - ./www:/var/www/html
+      # Mount only the Smarty templates for live template development
+      - ./smarty/templates:/var/www/smarty/templates
+      # Mount includes so social/login configs are available during development
+      - ./includes:/var/www/includes:ro
+
+  dbimport:
+    image: python:3-alpine
+    depends_on:
+      - db
+    volumes:
+      - ./tools/dbimport.py:/dbimport.py:ro
+      - ./tools/import_news.py:/import_news.py:ro
+    environment:
+      DB_HOST: db
+      DB_USER: alexuser
+      DB_PASS: alexpass
+      DB_NAME: alexandria
+    command: >
+      sh -c "pip install requests mysql-connector-python && 
+             python /dbimport.py && 
+             echo 'Data import complete, now importing news...' && 
+             python /import_news.py"
+
+volumes:
+  db_data:

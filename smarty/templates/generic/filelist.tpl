@@ -1,7 +1,7 @@
 {if $filelist}
 <h3 class="parttitle">{$_download|ucfirst}</h3>
 	<table class="indata">
-	{foreach from=$filelist item=$file}
+	{foreach $filelist as $file}
 	<tr>
 	<td>
 		{if $file.extension == "pdf"}<img src="/gfx/icon_pdf.svg" alt="PDF" title="{$_file_pdf}" width="20" height="20" />{/if}

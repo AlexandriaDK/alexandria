@@ -22,7 +22,7 @@
 }
 
 .dropdown-menu .textcomplete-item.active a {
-  background: #F0F0F0;
+  background: #f0f0f0;
 }
 
 /* Highlighting of the matching part 
@@ -33,10 +33,9 @@
 }
 
 .dropdown-menu .textcomplete-footer {
-  border-top: solid 1px #F0F0F0;
+  border-top: solid 1px #f0f0f0;
   margin-top: 3px;
 }
-
 
 /* ------------------------------------
      Used in 
@@ -57,21 +56,21 @@
   float: left;
 }
 
-  .dropdown-menu .textcomplete-item .picture img {
-    width: 32px;
-  }
+.dropdown-menu .textcomplete-item .picture img {
+  width: 32px;
+}
 
 .dropdown-menu .textcomplete-item .name {
   float: left;
   margin: 5px 0 0 5px;
 }
 
-
 /* ------------------------------------
      Used in 
      rich-html-textarea.html
    ------------------------------------ */
-.tag-item, .tag-item:visited {
+.tag-item,
+.tag-item:visited {
   font-weight: normal;
   padding: 2px 3px;
   -webkit-border-radius: 2px;
@@ -82,27 +81,26 @@
   border: solid 1px #dadada;
 }
 
-  .tag-item:hover {
-    text-decoration: none;
-  }
+.tag-item:hover {
+  text-decoration: none;
+}
 
-  .tag-item .picture-wrapper {
-    border-radius: 2em;
-    -webkit-border-radius: 2em;
-    -moz-border-radius: 2em;
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    position: relative;
-    overflow: hidden;
-    top: 3px;
-  }
+.tag-item .picture-wrapper {
+  border-radius: 2em;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: hidden;
+  top: 3px;
+}
 
-    .tag-item .picture-wrapper img {
-      width: 16px;
-    }
+.tag-item .picture-wrapper img {
+  width: 16px;
+}
 
-  .tag-item .label {
-    color: #181818;
-  }
-
+.tag-item .label {
+  color: #181818;
+}

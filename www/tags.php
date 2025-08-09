@@ -22,18 +22,16 @@ $tags = getall("
 $list = "";
 
 $taglist = [];
-foreach($tags AS $tag) {
-	$url = "data?tag=" . rawurlencode($tag['tag']);
-	$tagname = $tag['tag'];
-	$has_article = in_array($tag['tag'], $articles);
-	$count = $tag['count'];
-	$dataset = ['url' => $url, 'tagname' => $tagname, 'has_article' => $has_article, 'count' => $count];
-	$taglist[] = $dataset;
+foreach ($tags as $tag) {
+  $url = "data?tag=" . rawurlencode($tag['tag']);
+  $tagname = $tag['tag'];
+  $has_article = in_array($tag['tag'], $articles);
+  $count = $tag['count'];
+  $dataset = ['url' => $url, 'tagname' => $tagname, 'has_article' => $has_article, 'count' => $count];
+  $taglist[] = $dataset;
 }
 
 // Smarty
-$t->assign('taglist',$taglist);
+$t->assign('taglist', $taglist);
 
 $t->display('tags.tpl');
-
-?>
