@@ -31,7 +31,7 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
 
   print '
 	<p align="center">
-		Log in with <a href="../fblogin">Facebook</a> - <a href="../../login/google/">Google</a> - <a href="../../login/twitter/">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../../login/twitch/">Twitch</a> - <a href="../../login/discord/">Discord</a>
+		Log in with <a href="../../login/google/">Google</a> - <a href="../../login/twitter/">Twitter</a> - <a href="../steamlogin">Steam</a> - <a href="../../login/twitch/">Twitch</a> - <a href="../../login/discord/">Discord</a>
 	</p>
 	';
   print '</body></html>';

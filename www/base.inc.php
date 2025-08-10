@@ -206,50 +206,6 @@ function set_session_redirect_url()
   return true;
 }
 
-function do_fb_login($siteuserid, $name)
-{ // presume valid fbuserid!
-  $site = 'facebook';
-  $time = time();
-  $login_today_allusers = getone("SELECT COUNT(*) FROM users WHERE last_login >= CURDATE()");
-  if (list($user_id, $logintime) = getrow("SELECT user_id, logintime FROM loginmap WHERE site = '$site' AND siteuserid = '$siteuserid'")) {
-    doquery("UPDATE loginmap SET logintime = '$time' WHERE site = '$site' AND siteuserid = '$siteuserid'");
-    $last_login_days = getone("SELECT DATEDIFF(CURDATE(), last_login) FROM users WHERE id = '$user_id'");
-    doquery("
-      UPDATE users
-      SET login_count = (login_count + 1),
-      login_days_in_row = CASE DATE(last_login) WHEN CURDATE() THEN login_days_in_row WHEN CURDATE() - INTERVAL 1 DAY THEN login_days_in_row + 1 ELSE 0 END,
-      last_login = NOW()
-      WHERE id = '$user_id'
-    ");
-    list($login_days_in_row, $login_count) = getrow("SELECT login_days_in_row, login_count FROM users WHERE id = '$user_id'");
-  } else { // create user
-    doquery("INSERT INTO users (id, created, log, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: " . dbesc($name) . "', '" . dbesc($name) . "', NOW(), 0, 1)");
-    $user_id = dbid();
-    if ($user_id) {
-      doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '" . dbesc($name) . "', '$time')");
-    }
-  }
-
-  // achievements
-  if ($last_login_days >= 7)      award_user_achievement($user_id, 19); // no login in a week
-  if ($login_count >= 25)         award_user_achievement($user_id, 71); // login 25 times
-  if ($login_today_allusers == 0) award_user_achievement($user_id, 76); // first login today
-  award_user_achievement($user_id, 1); // login
-
-  $_SESSION['user_id'] = $user_id;
-  $name = getone("SELECT name FROM users WHERE id = '$user_id'");
-  $_SESSION['user_name'] = $name;
-  $_SESSION['user_site'] = 'Facebook';
-  $_SESSION['user_site_id'] = $siteuserid;
-  $_SESSION['user_author_id'] = (int) getone("SELECT person_id FROM users WHERE id = '$user_id'");
-  $_SESSION['user_editor'] = (bool) getone("SELECT editor FROM users WHERE id = '$user_id'");
-  $_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
-  $_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
-  $_SESSION['token'] = md5('Alex(/FB(!"' . uniqid()); // partially used, move salt to config if implemented
-
-  return $user_id;
-}
-
 function do_twitter_login($siteuserid, $name)
 {
   do_sso_login($siteuserid, $name, 'twitter');
@@ -420,7 +376,6 @@ function check_begin_page_achievements()
     if ($domain == 'ello.co' || $domain == 'mewe.com') award_achievement(42);
     if ($domain == 'jubii.dk') award_achievement(43);
     if ($domain == 'yahoo.com') award_achievement(46);
-    if ($domain == 'facebook.com') award_achievement(58);
   }
   if (count((array)$_SESSION['user_achievements']) >= 10) award_achievement(63); // at least 10 achievements
   if (count((array)$_SESSION['user_achievements']) >= 20) award_achievement(64); // at least 20 achievements

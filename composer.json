@@ -13,7 +13,6 @@
     "ext-zip": "*",
     "sentry/sdk": "^3.5",
     "smarty/smarty": "^5.5.1",
-    "league/oauth2-facebook": "^2.2",
     "google/apiclient": "^2.2.3"
   },
   "config": {

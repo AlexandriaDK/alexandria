@@ -45,9 +45,6 @@ $json_raw_output = '
         ]
       }
     },
-    "facebook": {
-      "text": "Hello, Facebook!"
-    },
     "slack": {
       "text": "This is a text response for Slack."
     }
