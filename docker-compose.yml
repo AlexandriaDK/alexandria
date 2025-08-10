@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:10.7
+    image: mariadb:11.8
     restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: secret
@@ -31,24 +31,6 @@ services:
       - ./smarty/templates:/var/www/smarty/templates
       # Mount includes so social/login configs are available during development
       - ./includes:/var/www/includes:ro
-
-  dbimport:
-    image: python:3-alpine
-    depends_on:
-      - db
-    volumes:
-      - ./tools/dbimport.py:/dbimport.py:ro
-      - ./tools/import_news.py:/import_news.py:ro
-    environment:
-      DB_HOST: db
-      DB_USER: alexuser
-      DB_PASS: alexpass
-      DB_NAME: alexandria
-    command: >
-      sh -c "pip install requests mysql-connector-python && 
-             python /dbimport.py && 
-             echo 'Data import complete, now importing news...' && 
-             python /import_news.py"
 
 volumes:
   db_data:
