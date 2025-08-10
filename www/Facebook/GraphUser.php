@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -116,5 +118,4 @@ class GraphUser extends GraphObject
   {
     return $this->getProperty('location', GraphLocation::className());
   }
-
 }

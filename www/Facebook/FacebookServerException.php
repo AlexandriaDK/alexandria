@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,13 +22,11 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
  * Class FacebookServerException
  * @package Facebook
  */
-class FacebookServerException extends FacebookRequestException
-{
-
-}
+class FacebookServerException extends FacebookRequestException {}

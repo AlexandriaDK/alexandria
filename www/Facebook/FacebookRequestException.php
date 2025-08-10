@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -60,7 +62,9 @@ class FacebookRequestException extends FacebookSDKException
     $this->statusCode = $statusCode;
     $this->responseData = self::convertToArray($responseData);
     parent::__construct(
-      $this->get('message', 'Unknown Exception'), $this->get('code', -1), null
+      $this->get('message', 'Unknown Exception'),
+      $this->get('code', -1),
+      null
     );
   }
 
@@ -129,8 +133,10 @@ class FacebookRequestException extends FacebookSDKException
     }
 
     // OAuth authentication error
-    if (isset($data['error']['type'])
-      and $data['error']['type'] === 'OAuthException') {
+    if (
+      isset($data['error']['type'])
+      and $data['error']['type'] === 'OAuthException'
+    ) {
       return new FacebookAuthorizationException($raw, $data, $statusCode);
     }
 
@@ -218,5 +224,4 @@ class FacebookRequestException extends FacebookSDKException
     }
     return $object;
   }
-
 }

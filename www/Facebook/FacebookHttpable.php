@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -76,5 +78,4 @@ interface FacebookHttpable
    * @return string|boolean Raw response from the server or false on fail
    */
   public function send($url, $method = 'GET', $parameters = array());
-
 }

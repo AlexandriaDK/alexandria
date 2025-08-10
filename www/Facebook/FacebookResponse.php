@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -133,7 +135,8 @@ class FacebookResponse
    *
    * @return mixed
    */
-  public function getGraphObject($type = 'Facebook\GraphObject') {
+  public function getGraphObject($type = 'Facebook\GraphObject')
+  {
     return (new GraphObject($this->responseData))->cast($type);
   }
 
@@ -145,7 +148,8 @@ class FacebookResponse
    *
    * @return mixed
    */
-  public function getGraphObjectList($type = 'Facebook\GraphObject') {
+  public function getGraphObjectList($type = 'Facebook\GraphObject')
+  {
     $out = array();
     $data = $this->responseData->data;
     for ($i = 0; $i < count($data); $i++) {
@@ -183,7 +187,8 @@ class FacebookResponse
    *
    * @return FacebookRequest|null
    */
-  private function handlePagination($direction) {
+  private function handlePagination($direction)
+  {
     if (isset($this->responseData->paging->$direction)) {
       $url = parse_url($this->responseData->paging->$direction);
       parse_str($url['query'], $params);
@@ -198,5 +203,4 @@ class FacebookResponse
       return null;
     }
   }
-
 }

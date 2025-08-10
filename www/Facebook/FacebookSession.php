@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -233,15 +235,19 @@ class FacebookSession
    *
    * @throws FacebookSDKException
    */
-  public static function validateSessionInfo(GraphSessionInfo $tokenInfo,
-                                           $appId = null)
-  {
+  public static function validateSessionInfo(
+    GraphSessionInfo $tokenInfo,
+    $appId = null
+  ) {
     $targetAppId = static::_getTargetAppId($appId);
-    if ($tokenInfo->getAppId() !== $targetAppId
+    if (
+      $tokenInfo->getAppId() !== $targetAppId
       || !$tokenInfo->isValid() || $tokenInfo->getExpiresAt() === null
-      || $tokenInfo->getExpiresAt()->getTimestamp() < time()) {
+      || $tokenInfo->getExpiresAt()->getTimestamp() < time()
+    ) {
       throw new FacebookSDKException(
-        'Session has expired, or is not valid for this app.', 601
+        'Session has expired, or is not valid for this app.',
+        601
       );
     }
     return true;
@@ -256,12 +262,15 @@ class FacebookSession
    *
    * @return FacebookSession
    */
-  public static function newSessionFromSignedRequest($signedRequest,
-                                                     $state = null)
-  {
+  public static function newSessionFromSignedRequest(
+    $signedRequest,
+    $state = null
+  ) {
     $parsedRequest = self::parseSignedRequest($signedRequest, $state);
-    if (isset($parsedRequest['code'])
-      && !isset($parsedRequest['oauth_token'])) {
+    if (
+      isset($parsedRequest['code'])
+      && !isset($parsedRequest['oauth_token'])
+    ) {
       return self::newSessionAfterValidation($parsedRequest);
     }
     return new FacebookSession($parsedRequest['oauth_token'], $parsedRequest);
@@ -283,19 +292,22 @@ class FacebookSession
       'client_id' => self::$defaultAppId,
       'redirect_uri' => '',
       'client_secret' =>
-        self::$defaultAppSecret,
+      self::$defaultAppSecret,
       'code' => $parsedSignedRequest['code']
     );
     $response = (new FacebookRequest(
       self::newAppSession(
-        self::$defaultAppId, self::$defaultAppSecret),
+        self::$defaultAppId,
+        self::$defaultAppSecret
+      ),
       'GET',
       '/oauth/access_token',
       $params
     ))->execute()->getResponse();
     if (isset($response['access_token'])) {
       return new FacebookSession(
-        $response['access_token'], $parsedSignedRequest
+        $response['access_token'],
+        $parsedSignedRequest
       );
     }
     throw FacebookRequestException::create(
@@ -323,11 +335,15 @@ class FacebookSession
       $data = json_decode(self::_base64UrlDecode($encodedData), true);
       if (isset($data['algorithm']) && $data['algorithm'] === 'HMAC-SHA256') {
         $expectedSig = hash_hmac(
-          'sha256', $encodedData, self::$defaultAppSecret, true
+          'sha256',
+          $encodedData,
+          self::$defaultAppSecret,
+          true
         );
         if (strlen($sig) !== strlen($expectedSig)) {
           throw new FacebookSDKException(
-            'Invalid signature on signed request.', 602
+            'Invalid signature on signed request.',
+            602
           );
         }
         $validate = 0;
@@ -336,28 +352,33 @@ class FacebookSession
         }
         if ($validate !== 0) {
           throw new FacebookSDKException(
-            'Invalid signature on signed request.', 602
+            'Invalid signature on signed request.',
+            602
           );
         }
         if (!isset($data['oauth_token']) && !isset($data['code'])) {
           throw new FacebookSDKException(
-            'Invalid signed request, missing OAuth data.', 603
+            'Invalid signed request, missing OAuth data.',
+            603
           );
         }
         if ($state && (!isset($data['state']) || $data['state'] != $state)) {
           throw new FacebookSDKException(
-            'Signed request did not pass CSRF validation.', 604
+            'Signed request did not pass CSRF validation.',
+            604
           );
         }
         return $data;
       } else {
         throw new FacebookSDKException(
-          'Invalid signed request, using wrong algorithm.', 605
+          'Invalid signed request, using wrong algorithm.',
+          605
         );
       }
     } else {
       throw new FacebookSDKException(
-        'Malformed signed request.', 606
+        'Malformed signed request.',
+        606
       );
     }
   }
@@ -404,11 +425,13 @@ class FacebookSession
    *
    * @throws FacebookSDKException
    */
-  public static function _getTargetAppId($appId = null) {
+  public static function _getTargetAppId($appId = null)
+  {
     $target = ($appId ?: self::$defaultAppId);
     if (!$target) {
       throw new FacebookSDKException(
-        'You must provide or set a default application id.', 700
+        'You must provide or set a default application id.',
+        700
       );
     }
     return $target;
@@ -424,11 +447,13 @@ class FacebookSession
    *
    * @throws FacebookSDKException
    */
-  public static function _getTargetAppSecret($appSecret = null) {
+  public static function _getTargetAppSecret($appSecret = null)
+  {
     $target = ($appSecret ?: self::$defaultAppSecret);
     if (!$target) {
       throw new FacebookSDKException(
-        'You must provide or set a default application secret.', 701
+        'You must provide or set a default application secret.',
+        701
       );
     }
     return $target;
@@ -444,7 +469,8 @@ class FacebookSession
    *
    * @return string The decoded string
    */
-  public static function _base64UrlDecode($input) {
+  public static function _base64UrlDecode($input)
+  {
     return base64_decode(strtr($input, '-_', '+/'));
   }
 
@@ -467,5 +493,4 @@ class FacebookSession
   {
     return static::$useAppSecretProof;
   }
-
 }

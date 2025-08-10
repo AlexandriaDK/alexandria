@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -111,5 +113,4 @@ class GraphSessionInfo extends GraphObject
   {
     return $this->getProperty('user_id');
   }
-
 }

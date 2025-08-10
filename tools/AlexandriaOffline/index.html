@@ -1,52 +1,72 @@
 <!DOCTYPE html>
 <!-- Offline edition of Alexandria -->
 <html>
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/offlinestyle.css" />
     <title>Alexandria - offline edition</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>Alexandria - offline edition</h1>
-    <h2 id="startup" style="display: none;">Loading ...</h2>
-    <h2 id="missingfiles">Something went wrong: <span id="missingfiledataerror"></span> - Please extract the entire .zip
-        file instead of only the HTML file.</h2>
+    <h2 id="startup" style="display: none">Loading ...</h2>
+    <h2 id="missingfiles">
+      Something went wrong: <span id="missingfiledataerror"></span> - Please
+      extract the entire .zip file instead of only the HTML file.
+    </h2>
     <form id="search">
-        <ul id="menu" style="display: none;">
-            <li><a href="#persons">Persons</a></li>
-            <li><a href="#scenarios">Scenarios</a></li>
-            <li><a href="#boardgames">Board games</a></li>
-            <li><a href="#conventionsets">Convention sets</a></li>
-            <li><a href="#gamesystems">RPG Systems</a></li>
-            <li><a href="#tags">Tags</a></li>
-            <li><a href="#magazines">Magazines</a></li>
-            <li><a href="#locations">Locations</a></li>
-            <li><input type="text" name="search" placeholder="Search" id="searchtext" accesskey="s"
-                    title="Shortcut: Hotkey+S (Shift+Alt+S on Windows)"></li>
-        </ul>
+      <ul id="menu" style="display: none">
+        <li><a href="#persons">Persons</a></li>
+        <li><a href="#scenarios">Scenarios</a></li>
+        <li><a href="#boardgames">Board games</a></li>
+        <li><a href="#conventionsets">Convention sets</a></li>
+        <li><a href="#gamesystems">RPG Systems</a></li>
+        <li><a href="#tags">Tags</a></li>
+        <li><a href="#magazines">Magazines</a></li>
+        <li><a href="#locations">Locations</a></li>
+        <li>
+          <input
+            type="text"
+            name="search"
+            placeholder="Search"
+            id="searchtext"
+            accesskey="s"
+            title="Shortcut: Hotkey+S (Shift+Alt+S on Windows)"
+          />
+        </li>
+      </ul>
     </form>
 
     <div id="content"></div>
 
     <div id="onlinelink"></div>
 
-    <div id="signout">This is the offline edition of role-playing and board gaming library <a
-            href="https://alexandria.dk">Alexandria.dk</a>. <span id="currentdatainfo"></span></div>
+    <div id="signout">
+      This is the offline edition of role-playing and board gaming library
+      <a href="https://alexandria.dk">Alexandria.dk</a>.
+      <span id="currentdatainfo"></span>
+    </div>
     <script>
-        var data, a, license, access;
-        document.getElementById('missingfiles').style.display = 'none';
-        function showLoadError(missing) {
-            document.getElementById('missingfiles').style.display = 'block';
-            document.getElementById('missingfiledataerror').innerText = "Can't load " + missing;
-        }
+      var data, a, license, access;
+      document.getElementById("missingfiles").style.display = "none";
+      function showLoadError(missing) {
+        document.getElementById("missingfiles").style.display = "block";
+        document.getElementById("missingfiledataerror").innerText =
+          "Can't load " + missing;
+      }
     </script>
-    <script src="lib/jquery-3.6.0.min.js" onerror="showLoadError('jquery')"></script>
-    <script src="lib/settings.js" onerror="showLoadError('settings.js')"></script>
+    <script
+      src="lib/jquery-3.6.0.min.js"
+      onerror="showLoadError('jquery')"
+    ></script>
+    <script
+      src="lib/settings.js"
+      onerror="showLoadError('settings.js')"
+    ></script>
     <script src="lib/offline.js" onerror="showLoadError('offline.js')"></script>
-    <script src="data/alexandria_content.js" onerror="showLoadError('data')"></script>
-
-</body>
-
+    <script
+      src="data/alexandria_content.js"
+      onerror="showLoadError('data')"
+    ></script>
+  </body>
 </html>

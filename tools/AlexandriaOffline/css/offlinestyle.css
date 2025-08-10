@@ -1,140 +1,150 @@
-h1, h2, h3, h4, p, div, li {
-    font-family: sans-serif;
-    margin-bottom: 0;
+h1,
+h2,
+h3,
+h4,
+p,
+div,
+li {
+  font-family: sans-serif;
+  margin-bottom: 0;
 }
 
 #status {
-    background-color: rgb(92, 233, 252);
-    border: 1px solid black;
-    padding: 5px;
-    text-align: center;
-    display: none;
+  background-color: rgb(92, 233, 252);
+  border: 1px solid black;
+  padding: 5px;
+  text-align: center;
+  display: none;
 }
 
 #menu {
-    list-style-type: none;
-    background-color: #ebd7a2;
+  list-style-type: none;
+  background-color: #ebd7a2;
 }
 
 #menu li {
-    display: inline-block;
-    padding: 10px 5px 10px 0px;
+  display: inline-block;
+  padding: 10px 5px 10px 0px;
 }
 
 ul {
-    margin: 0;
+  margin: 0;
 }
 
-#signout, #onlinelink {
-    margin-top: 2em;
-    font-size: 0.7em;
+#signout,
+#onlinelink {
+  margin-top: 2em;
+  font-size: 0.7em;
 }
 
 .datalist {
-    columns: 2;
+  columns: 2;
 }
 
 .indata {
-    font-size: 0.8em;
-    margin-left: 10px;
-    margin-top: 3px;
-    margin-bottom: 12px;
+  font-size: 0.8em;
+  margin-left: 10px;
+  margin-top: 3px;
+  margin-bottom: 12px;
 }
 
 h3.cancelnotice {
-	text-align: center;
-	color: #e22;
-	border: 3px dashed red;
-	border-radius: 20px;
-	width: fit-content;
-	padding: 8px;
+  text-align: center;
+  color: #e22;
+  border: 3px dashed red;
+  border-radius: 20px;
+  width: fit-content;
+  padding: 8px;
 }
 
 .cancelled {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 a.game:link {
-	color: #c60;
+  color: #c60;
 }
 
 a.game:visited {
-	color: #930;
+  color: #930;
 }
 
 a.person:link {
-	color: #b01;
+  color: #b01;
 }
 
 a.person:visited {
-	color: #800;
+  color: #800;
 }
 
-a.convention:link, a.conventionset:link {
-	color: #090;
+a.convention:link,
+a.conventionset:link {
+  color: #090;
 }
 
-a.convention:visited, a.conventionset:visited {
-	color: #060;
+a.convention:visited,
+a.conventionset:visited {
+  color: #060;
 }
 
 a.gamesystem:link {
-	color: #30c;
+  color: #30c;
 }
 
 a.gamesystem:visited {
-	color: #009;
+  color: #009;
 }
 
-
-a.magazine:link, a.magazine:visited {
-	color: #808;
+a.magazine:link,
+a.magazine:visited {
+  color: #808;
 }
 
 tr {
-    vertical-align: top;
+  vertical-align: top;
 }
 
 table.personorganizerroles tr td:first-child {
-    text-align: right;
+  text-align: right;
 }
 
 td {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 
 a.tag {
-	background-color: #ddd;
-	border-radius: 4px;
-	padding: 3px;
-	font-size: 0.8em;
-	color: black;
-    text-decoration: none;
+  background-color: #ddd;
+  border-radius: 4px;
+  padding: 3px;
+  font-size: 0.8em;
+  color: black;
+  text-decoration: none;
 }
 a.tag::before {
-	content: "🏷️ ";
+  content: "🏷️ ";
 }
 
-.page, .issuerole {
-    text-align: right;
-    padding-right: 1em;
-    white-space: nowrap;
+.page,
+.issuerole {
+  text-align: right;
+  padding-right: 1em;
+  white-space: nowrap;
 }
 
 .articlefullcontributor {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .articledescription {
-    font-size: 0.8em;
-    font-style: italic;
+  font-size: 0.8em;
+  font-style: italic;
 }
 
 .references a {
-    border: 1px solid black;
-    border-radius: 1em;
-    padding: 2px 4px 2px 4px;
-    font-size: 0.8em;
-    white-space: nowrap;
-    text-decoration: none;
+  border: 1px solid black;
+  border-radius: 1em;
+  padding: 2px 4px 2px 4px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  text-decoration: none;
 }

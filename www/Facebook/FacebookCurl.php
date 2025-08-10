@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -40,7 +42,8 @@ class FacebookCurl
   /**
    * Make a new curl reference instance
    */
-  public function init() {
+  public function init()
+  {
     $this->curl = curl_init();
   }
 
@@ -50,7 +53,8 @@ class FacebookCurl
    * @param $key
    * @param $value
    */
-  public function setopt($key, $value) {
+  public function setopt($key, $value)
+  {
     curl_setopt($this->curl, $key, $value);
   }
 
@@ -59,7 +63,8 @@ class FacebookCurl
    *
    * @param array $options
    */
-  public function setopt_array(array $options) {
+  public function setopt_array(array $options)
+  {
     curl_setopt_array($this->curl, $options);
   }
 
@@ -68,7 +73,8 @@ class FacebookCurl
    *
    * @return mixed
    */
-  public function exec() {
+  public function exec()
+  {
     return curl_exec($this->curl);
   }
 
@@ -77,7 +83,8 @@ class FacebookCurl
    *
    * @return int
    */
-  public function errno() {
+  public function errno()
+  {
     return curl_errno($this->curl);
   }
 
@@ -86,7 +93,8 @@ class FacebookCurl
    *
    * @return string
    */
-  public function error() {
+  public function error()
+  {
     return curl_error($this->curl);
   }
 
@@ -97,7 +105,8 @@ class FacebookCurl
    *
    * @return mixed
    */
-  public function getinfo($type) {
+  public function getinfo($type)
+  {
     return curl_getinfo($this->curl, $type);
   }
 
@@ -106,15 +115,16 @@ class FacebookCurl
    *
    * @return array
    */
-  public function version() {
+  public function version()
+  {
     return curl_version();
   }
 
   /**
    * Close the resource connection to curl
    */
-  public function close() {
+  public function close()
+  {
     curl_close($this->curl);
   }
-
 }
