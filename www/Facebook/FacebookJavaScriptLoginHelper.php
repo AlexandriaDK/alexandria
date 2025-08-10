@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -47,7 +49,8 @@ class FacebookJavaScriptLoginHelper
     $this->appId = FacebookSession::_getTargetAppId($appId);
     if (!$this->appId) {
       throw new FacebookSDKException(
-        'You must provide or set a default application id.', 700
+        'You must provide or set a default application id.',
+        700
       );
     }
   }
@@ -78,5 +81,4 @@ class FacebookJavaScriptLoginHelper
     }
     return null;
   }
-
 }

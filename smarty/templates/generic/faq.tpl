@@ -3,11 +3,11 @@
 
 <div id="contenttext">
 
-		<h2 class="pagetitle">
-			{$_about_welcome}
-		</h2>
+  <h2 class="pagetitle">
+    {$_about_welcome}
+  </h2>
 
-			{$_about_content}
+  {$_about_content}
 
 </div>
 

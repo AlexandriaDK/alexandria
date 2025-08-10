@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -101,5 +103,4 @@ class GraphLocation extends GraphObject
   {
     return $this->getProperty('longitude');
   }
-
 }

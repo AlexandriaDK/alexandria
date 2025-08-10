@@ -18,7 +18,7 @@ Getting started:
 
    Copy the file `includes/default.db.auth.php` to `includes/db.auth.php`.
 
-   The default file already contains the correct values for Docker development:
+   Here is an example of default values that align with the docker-compose file. If you want to change your setup, it should be changed in db.auth.php and in the docker-compose as well.
 
 ```php
 <?php
@@ -28,8 +28,6 @@ define('DB_PASS', 'alexpass');
 define('DB_HOST', 'db');
 define('DB_CONNECTOR', 'mysqli');
 ```
-
-- For a custom setup, copy `includes/default.db.auth.php` to `includes/db.auth.php` and adjust values.
 
 2. Start services
 

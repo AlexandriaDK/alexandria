@@ -14,157 +14,158 @@
  * 20: OCR'ed, ready to be indexed
  */
 
-chdir( __DIR__ . "/../www/");
+chdir(__DIR__ . "/../www/");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
 $limit = intval($_SERVER['argv']['1'] ?? 1); // How many files should this script check in one run
 
-define('ALEXFILEPATH','../loot.alexandria.dk/files/');
-if (! is_dir(ALEXFILEPATH) ) {
-	die("Directory does not exist: " . ALEXFILEPATH);
+define('ALEXFILEPATH', '../loot.alexandria.dk/files/');
+if (! is_dir(ALEXFILEPATH)) {
+  die("Directory does not exist: " . ALEXFILEPATH);
 }
 
-function checkArchiveFile($path) {
-	if (substr($path, -1) == '/') return false; // directory
-	if (substr($path, 0, 9) == '__MACOSX/') return false; // Mac resource forks
-	if (substr($path, -9) == '.DS_Store') return false; // Mac custom attributes
-	return true;
+function checkArchiveFile($path)
+{
+  if (substr($path, -1) == '/') return false; // directory
+  if (substr($path, 0, 9) == '__MACOSX/') return false; // Mac resource forks
+  if (substr($path, -9) == '.DS_Store') return false; // Mac custom attributes
+  return true;
 }
 
-function indexFile($file, $archivefile = NULL, $tmpfile = NULL) {
-	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
-	if ($tmpfile) {
-		$filepathoriginal = $filepath;
-		$filepath = $tmpfile;
-	}
-	$extension = strtolower( substr( strrchr( ($archivefile ? $archivefile : $filepath), "." ), 1 ) );
-	print "Checking " . ($archivefile ? $filepathoriginal . ' -> ' . $archivefile : $filepath ) . PHP_EOL;
-	if ( ! file_exists($filepath) ) {
-		print "File did not exist, skipping." . PHP_EOL;
-		return 5;
-	}
-	if ($extension == "pdf") {
-		$command = "pdftotext ".escapeshellarg($filepath)." -";
-		$content = `$command`;
-	} elseif ($extension == "doc") {
-		$command = "antiword ".escapeshellarg($filepath);
-		$content = `$command`;
-	} elseif ($extension == "docx") {
-		$command = "docx2txt ".escapeshellarg($filepath) . " -";
-		$content = `$command`;
-	} elseif ($extension == "txt") {
-		$content = file_get_contents($filepath);
-	} elseif ($extension == "zip" && $archivefile == NULL) { // Only descent one level into zip files
-		$zip = new ZipArchive;
-		$list = $zip->open($filepath);
-		if ($list !== TRUE) {
-			print "Can't read zip file (error: " . $list . "). Skipping." . PHP_EOL;
-			return 3;
-		}
-		for($i = 0; $i < $zip->numFiles; $i++) {
-			$archivefile = $zip->getNameIndex($i);
-			if (!checkArchiveFile($archivefile)) {
-				continue;
-			}
-			$tmpfile = tempnam( sys_get_temp_dir(), 'alexandria_fileindex_');
-			copy("zip://".$filepath."#".$archivefile, $tmpfile);
-			indexFile($file, $archivefile, $tmpfile);
-			unlink($tmpfile);
-		}
-		return 1;
-
-	} else {
-		print "File is not PDF, DOC, DOCX, TXT, ZIP. Skipping." . PHP_EOL;
-		return 3;
-	}
-	// make sure content is UTF-8
-	$encoding = mb_detect_encoding($content, 'UTF-8,ISO-8859-1');
-	if ($encoding != 'UTF-8') {
-		$content = mb_convert_encoding($content,"UTF-8","ISO-8859-1");
-	}
-	$pages = explode("\x0c",$content); // Split by Form feed control character
-	$numpages = 0;
-	foreach($pages AS $page => $text) {
-		if ($text) {
-			$text = preg_replace('/\s+/u',' ',$text);
-			$numpages++;
-			$archivefilevalue = ($archivefile ? "'" . dbesc($archivefile) . "'" : 'NULL' );
-			$label = ($page + 1);
-			$sql = "INSERT INTO filedata (files_id, label, content, archivefile) VALUES (" . $file['id'] . ", '" . $label . "', '".dbesc($text)."', $archivefilevalue)";
-			doquery($sql);
-			$error = dberror();
-			if ( $error ) {
-				print "Page error: " . $page . ", " . $error . PHP_EOL;
-			}
-		}
-	}
-	print "File indexed! ($numpages pages) " . dberror() . PHP_EOL;
-	return 1;
+function indexFile($file, $archivefile = NULL, $tmpfile = NULL)
+{
+  $filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+  if ($tmpfile) {
+    $filepathoriginal = $filepath;
+    $filepath = $tmpfile;
+  }
+  $extension = strtolower(substr(strrchr(($archivefile ? $archivefile : $filepath), "."), 1));
+  print "Checking " . ($archivefile ? $filepathoriginal . ' -> ' . $archivefile : $filepath) . PHP_EOL;
+  if (! file_exists($filepath)) {
+    print "File did not exist, skipping." . PHP_EOL;
+    return 5;
+  }
+  if ($extension == "pdf") {
+    $command = "pdftotext " . escapeshellarg($filepath) . " -";
+    $content = `$command`;
+  } elseif ($extension == "doc") {
+    $command = "antiword " . escapeshellarg($filepath);
+    $content = `$command`;
+  } elseif ($extension == "docx") {
+    $command = "docx2txt " . escapeshellarg($filepath) . " -";
+    $content = `$command`;
+  } elseif ($extension == "txt") {
+    $content = file_get_contents($filepath);
+  } elseif ($extension == "zip" && $archivefile == NULL) { // Only descent one level into zip files
+    $zip = new ZipArchive;
+    $list = $zip->open($filepath);
+    if ($list !== TRUE) {
+      print "Can't read zip file (error: " . $list . "). Skipping." . PHP_EOL;
+      return 3;
+    }
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+      $archivefile = $zip->getNameIndex($i);
+      if (!checkArchiveFile($archivefile)) {
+        continue;
+      }
+      $tmpfile = tempnam(sys_get_temp_dir(), 'alexandria_fileindex_');
+      copy("zip://" . $filepath . "#" . $archivefile, $tmpfile);
+      indexFile($file, $archivefile, $tmpfile);
+      unlink($tmpfile);
+    }
+    return 1;
+  } else {
+    print "File is not PDF, DOC, DOCX, TXT, ZIP. Skipping." . PHP_EOL;
+    return 3;
+  }
+  // make sure content is UTF-8
+  $encoding = mb_detect_encoding($content, 'UTF-8,ISO-8859-1');
+  if ($encoding != 'UTF-8') {
+    $content = mb_convert_encoding($content, "UTF-8", "ISO-8859-1");
+  }
+  $pages = explode("\x0c", $content); // Split by Form feed control character
+  $numpages = 0;
+  foreach ($pages as $page => $text) {
+    if ($text) {
+      $text = preg_replace('/\s+/u', ' ', $text);
+      $numpages++;
+      $archivefilevalue = ($archivefile ? "'" . dbesc($archivefile) . "'" : 'NULL');
+      $label = ($page + 1);
+      $sql = "INSERT INTO filedata (files_id, label, content, archivefile) VALUES (" . $file['id'] . ", '" . $label . "', '" . dbesc($text) . "', $archivefilevalue)";
+      doquery($sql);
+      $error = dberror();
+      if ($error) {
+        print "Page error: " . $page . ", " . $error . PHP_EOL;
+      }
+    }
+  }
+  print "File indexed! ($numpages pages) " . dberror() . PHP_EOL;
+  return 1;
 }
 
-function OCRFile($file) {
-	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
-	$languages = [
-		'da' => 'dan',
-		'en' => 'eng',
-		'sv' => 'swe',
-		'nb' => 'nor',
-		'nn' => 'nor',
-		'da,en' => 'dan+eng',
-		'it' => 'ita',
-		'fr' => 'fra',
-		'fi' => 'fin',
-		'de' => 'deu',
-	];
+function OCRFile($file)
+{
+  $filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+  $languages = [
+    'da' => 'dan',
+    'en' => 'eng',
+    'sv' => 'swe',
+    'nb' => 'nor',
+    'nn' => 'nor',
+    'da,en' => 'dan+eng',
+    'it' => 'ita',
+    'fr' => 'fra',
+    'fi' => 'fin',
+    'de' => 'deu',
+  ];
 
-	$extension = strtolower(pathinfo($filepath)['extension']);
-	print "OCR'ing " . ($filepath ) . PHP_EOL;
-	if ($extension != 'pdf') { // We are not OCR'ing ZIP files yet
-		print "File is not PDF. Skipping." . PHP_EOL;
-		return 3;
-	}
+  $extension = strtolower(pathinfo($filepath)['extension']);
+  print "OCR'ing " . ($filepath) . PHP_EOL;
+  if ($extension != 'pdf') { // We are not OCR'ing ZIP files yet
+    print "File is not PDF. Skipping." . PHP_EOL;
+    return 3;
+  }
 
-	$lang = $languages[$file['language']] ?? 'eng';
-	$langparm = "-l $lang";
-	$filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
-	$command = "ocrmypdf -s $langparm " . escapeshellarg($filepath) . " " . escapeshellarg($filepath) . " 2>&1";
-	print "Command: " . $command . PHP_EOL;
-	$result = `$command`;
-	print $result . PHP_EOL;
-	doquery("DELETE FROM filedata WHERE files_id = " . $file['id']); // clean up old possible content
-	return 20;
+  $lang = $languages[$file['language']] ?? 'eng';
+  $langparm = "-l $lang";
+  $filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
+  $command = "ocrmypdf -s $langparm " . escapeshellarg($filepath) . " " . escapeshellarg($filepath) . " 2>&1";
+  print "Command: " . $command . PHP_EOL;
+  $result = `$command`;
+  print $result . PHP_EOL;
+  doquery("DELETE FROM filedata WHERE files_id = " . $file['id']); // clean up old possible content
+  return 20;
 }
 
 // OCR queue
 $files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename, language FROM files WHERE indexed = 11 LIMIT $limit");
-if ( $files ) {
-	$ids = [];
-	foreach ($files AS $file) {
-		$ids[] = $file['id'];
-	}
-	doquery("UPDATE files SET indexed = 12 WHERE id IN(" . implode( ",", $ids ) . ")");
-	foreach ($files AS $file) {
-		$indexed = OCRFile($file);
-		doquery("UPDATE files SET indexed = $indexed WHERE id = " .$file['id']);
-	}	
-	exit; // Don't OCR and index in the same run
+if ($files) {
+  $ids = [];
+  foreach ($files as $file) {
+    $ids[] = $file['id'];
+  }
+  doquery("UPDATE files SET indexed = 12 WHERE id IN(" . implode(",", $ids) . ")");
+  foreach ($files as $file) {
+    $indexed = OCRFile($file);
+    doquery("UPDATE files SET indexed = $indexed WHERE id = " . $file['id']);
+  }
+  exit; // Don't OCR and index in the same run
 }
 
 $files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename FROM files WHERE indexed IN(0,20) AND downloadable = 1 LIMIT $limit");
-if ( ! $files) {
-	exit;
+if (! $files) {
+  exit;
 }
 $ids = [];
-foreach ($files AS $file) {
-	$ids[] = $file['id'];
+foreach ($files as $file) {
+  $ids[] = $file['id'];
 }
-doquery("UPDATE files SET indexed = 2 WHERE id IN(" . implode( ",", $ids ) . ")");
+doquery("UPDATE files SET indexed = 2 WHERE id IN(" . implode(",", $ids) . ")");
 
 
 // File by file
-foreach ($files AS $file) {
-	$indexed = indexFile($file);
-	doquery("UPDATE files SET indexed = $indexed WHERE id = " .$file['id']);
+foreach ($files as $file) {
+  $indexed = indexFile($file);
+  doquery("UPDATE files SET indexed = $indexed WHERE id = " . $file['id']);
 }
-?>

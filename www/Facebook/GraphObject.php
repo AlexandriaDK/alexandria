@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -73,7 +75,8 @@ class GraphObject
       return new $type($this->backingData);
     } else {
       throw new FacebookSDKException(
-        'Cannot cast to an object that is not a GraphObject subclass', 620
+        'Cannot cast to an object that is not a GraphObject subclass',
+        620
       );
     }
   }
@@ -129,8 +132,10 @@ class GraphObject
     $target = array();
     if (isset($this->backingData[$name]['data'])) {
       $target = $this->backingData[$name]['data'];
-    } else if (isset($this->backingData[$name])
-      && !is_scalar($this->backingData[$name])) {
+    } else if (
+      isset($this->backingData[$name])
+      && !is_scalar($this->backingData[$name])
+    ) {
       $target = $this->backingData[$name];
     }
     $out = array();
@@ -163,5 +168,4 @@ class GraphObject
   {
     return get_called_class();
   }
-
 }

@@ -7,15 +7,13 @@ exit;
 
 session_start();
 $_SESSION = [
-	'user_id' => 1,
-	'user_author_id' => 1,
-	'user_site' => 'Admin Service',
-	'user_name' => 'User Admin',
-	'user_editor' => TRUE,
-	'user_admin' => TRUE,
-	'token' => md5(rand())
+  'user_id' => 1,
+  'user_author_id' => 1,
+  'user_site' => 'Admin Service',
+  'user_name' => 'User Admin',
+  'user_editor' => TRUE,
+  'user_admin' => TRUE,
+  'token' => md5(rand())
 ];
 header("Content-Type: text/plain");
 var_dump($_SESSION);
-
-?>

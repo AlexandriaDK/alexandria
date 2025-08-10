@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -135,7 +137,7 @@ class FacebookRedirectLoginHelper
         'client_id' => FacebookSession::_getTargetAppId($this->appId),
         'redirect_uri' => $this->redirectUrl,
         'client_secret' =>
-          FacebookSession::_getTargetAppSecret($this->appSecret),
+        FacebookSession::_getTargetAppSecret($this->appSecret),
         'code' => $this->getCode()
       );
       $response = (new FacebookRequest(
@@ -159,7 +161,7 @@ class FacebookRedirectLoginHelper
   protected function isValidRedirect()
   {
     return $this->getCode() && isset($_GET['state'])
-        && $_GET['state'] == $this->state;
+      && $_GET['state'] == $this->state;
   }
 
   /**
@@ -183,10 +185,13 @@ class FacebookRedirectLoginHelper
    */
   protected function storeState($state)
   {
-    if ($this->checkForSessionStatus === true
-      && session_status() !== PHP_SESSION_ACTIVE) {
+    if (
+      $this->checkForSessionStatus === true
+      && session_status() !== PHP_SESSION_ACTIVE
+    ) {
       throw new FacebookSDKException(
-        'Session not active, could not store state.', 720
+        'Session not active, could not store state.',
+        720
       );
     }
     $_SESSION[$this->sessionPrefix . 'state'] = $state;
@@ -203,10 +208,13 @@ class FacebookRedirectLoginHelper
    */
   protected function loadState()
   {
-    if ($this->checkForSessionStatus === true
-      && session_status() !== PHP_SESSION_ACTIVE) {
+    if (
+      $this->checkForSessionStatus === true
+      && session_status() !== PHP_SESSION_ACTIVE
+    ) {
       throw new FacebookSDKException(
-        'Session not active, could not load state.', 721
+        'Session not active, could not load state.',
+        721
       );
     }
     if (isset($_SESSION[$this->sessionPrefix . 'state'])) {
@@ -223,5 +231,4 @@ class FacebookRedirectLoginHelper
   {
     $this->checkForSessionStatus = false;
   }
-
 }

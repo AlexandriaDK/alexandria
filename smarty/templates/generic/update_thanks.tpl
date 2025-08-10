@@ -3,13 +3,13 @@
 
 <div id="contenttext">
 
-	<h2 class="pagetitle">
-		{$_update_thanks_head}
-	</h2>
+  <h2 class="pagetitle">
+    {$_update_thanks_head}
+  </h2>
 
-		<p>
-			{$_update_thanks_text|nl2br}
-		</p>
+  <p>
+    {$_update_thanks_text|nl2br}
+  </p>
 
 </div>
 

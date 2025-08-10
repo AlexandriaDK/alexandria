@@ -3,34 +3,34 @@
 
 $mainurl = 'https://www.spillfestival.no/arcon36/program.php';
 $tournamenturl = 'https://www.spillfestival.no/arcon36/turnering.php';
-$mainpath = pathinfo( $mainurl );
+$mainpath = pathinfo($mainurl);
 $tmp = 'tmp/' . $mainpath['basename'];
 
-function savecache( $url ) {
-	$path = pathinfo( $url );
-	$tmp = 'tmp/' . $path['basename'];
-	if ( ! file_exists( $tmp ) ) {
-		$html = file_get_contents( $url );
-		file_put_contents( $tmp, $html );
-	} else {
-		$html = file_get_contents($tmp);
-	}
-	return $html;
+function savecache($url)
+{
+  $path = pathinfo($url);
+  $tmp = 'tmp/' . $path['basename'];
+  if (! file_exists($tmp)) {
+    $html = file_get_contents($url);
+    file_put_contents($tmp, $html);
+  } else {
+    $html = file_get_contents($tmp);
+  }
+  return $html;
 }
 
-if ( ! file_exists( $tmp ) ) {
-	$html = file_get_contents($mainurl);
-	file_put_contents( $tmp, $html );
+if (! file_exists($tmp)) {
+  $html = file_get_contents($mainurl);
+  file_put_contents($tmp, $html);
 } else {
-	$html = file_get_contents($tmp);
+  $html = file_get_contents($tmp);
 }
 
-if ( preg_match_all( '_' . $tournamenturl . '\?id=\d+_', $html, $urls) ) {
-	foreach ( $urls[0] AS $url ) {
-		print "Fetching $url" . PHP_EOL;
-		savecache( $url );
-	}
+if (preg_match_all('_' . $tournamenturl . '\?id=\d+_', $html, $urls)) {
+  foreach ($urls[0] as $url) {
+    print "Fetching $url" . PHP_EOL;
+    savecache($url);
+  }
 } else {
-	print "No matches!" . PHP_EOL;
+  print "No matches!" . PHP_EOL;
 }
-?>

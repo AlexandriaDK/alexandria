@@ -1,6 +1,6 @@
 <?php
 // Output CSV with daily stats
-chdir( __DIR__ . "/../www/");
+chdir(__DIR__ . "/../www/");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
@@ -20,6 +20,4 @@ $articles = getone("SELECT COUNT(*) FROM article");
 $references = getone("SELECT COUNT(*) FROM article_reference");
 $locations = getone("SELECT COUNT(*) FROM locations");
 
-print implode(",", [ $date, $scenarios, $persons, $conventions, $rpgsystems, $downloads, $boardgames, $conseries, $users, $editors, $magazines, $issues, $articles, $references, $locations ] ) . PHP_EOL;
-
-?>
+print implode(",", [$date, $scenarios, $persons, $conventions, $rpgsystems, $downloads, $boardgames, $conseries, $users, $editors, $magazines, $issues, $articles, $references, $locations]) . PHP_EOL;

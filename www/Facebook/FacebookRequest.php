@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -21,6 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+
 namespace Facebook;
 
 /**
@@ -167,7 +169,12 @@ class FacebookRequest
    * @param string|null $etag
    */
   public function __construct(
-    $session, $method, $path, $parameters = null, $version = null, $etag = null
+    $session,
+    $method,
+    $path,
+    $parameters = null,
+    $version = null,
+    $etag = null
   ) {
     $this->session = $session;
     $this->method = $method;
@@ -180,12 +187,16 @@ class FacebookRequest
     $this->etag = $etag;
 
     $params = ($parameters ?: array());
-    if ($session
-      && !isset($params["access_token"])) {
+    if (
+      $session
+      && !isset($params["access_token"])
+    ) {
       $params["access_token"] = $session->getToken();
     }
-    if (FacebookSession::useAppSecretProof()
-      && !isset($params["appsecret_proof"])) {
+    if (
+      FacebookSession::useAppSecretProof()
+      && !isset($params["appsecret_proof"])
+    ) {
       $params["appsecret_proof"] = $this->getAppSecretProof(
         $params["access_token"]
       );
@@ -198,7 +209,8 @@ class FacebookRequest
    *
    * @return string
    */
-  protected function getRequestURL() {
+  protected function getRequestURL()
+  {
     return static::BASE_GRAPH_URL . '/' . $this->version . $this->path;
   }
 
@@ -210,7 +222,8 @@ class FacebookRequest
    * @throws FacebookSDKException
    * @throws FacebookRequestException
    */
-  public function execute() {
+  public function execute()
+  {
     $url = $this->getRequestURL();
     $params = $this->getParameters();
 
@@ -296,5 +309,4 @@ class FacebookRequest
 
     return $path . '?' . http_build_query($params);
   }
-
 }
