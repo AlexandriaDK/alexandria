@@ -15,6 +15,7 @@ Redirect /gfx/english /gfx/scenarie/english
 
 # redirects for convenience
 Redirect /otto /awards?cid=1
+Redirect 301 /oss.php /about.php
 
 RedirectPermanent /dk /da
 RedirectPermanent /se /sv
