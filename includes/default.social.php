@@ -13,4 +13,3 @@ define('TWITCH_CLIENT_SECRET', '');
 
 define('DISCORD_CLIENT_ID', '');
 define('DISCORD_CLIENT_SECRET', '');
-?>
