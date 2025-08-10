@@ -5,7 +5,7 @@
       <tr>
         <td>{if isset($article.game_id)}<a
             href="data?scenarie={$article.game_id}">{$article.title|escape}</a>{else}{$article.title|escape}
-            {/if}</td>
+          {/if}</td>
         <td class="page">{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
         <td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a>{if $article.releasetext}
           ({$article.releasetext|escape}){/if}</td>

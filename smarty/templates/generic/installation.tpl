@@ -72,16 +72,22 @@
 <script>
   $.getJSON("https://alexandria.dk/en/export", function(data) {
       if (data.status == 'ready') {
-        $('#checkserver').fadeOut(function() { $(this).html('Service is <b>ready</b>.').css("color", "green")
-        .fadeIn(); });
+        $('#checkserver').fadeOut(function() {
+          $(this).html('Service is <b>ready</b>.').css("color", "green")
+            .fadeIn();
+        });
       } else {
-        $('#checkserver').fadeOut(function() { $(this).html('Service is <b>not ready</b>.').css("color", "red")
-            .fadeIn(); });
+        $('#checkserver').fadeOut(function() {
+          $(this).html('Service is <b>not ready</b>.').css("color", "red")
+            .fadeIn();
+        });
       }
     })
     .fail(function() {
-      $('#checkserver').fadeOut(function() { $(this).html('Service is <b>not ready</b>!').css("color", "red")
-      .fadeIn(); });
+      $('#checkserver').fadeOut(function() {
+        $(this).html('Service is <b>not ready</b>!').css("color", "red")
+          .fadeIn();
+      });
     });
 </script>
 

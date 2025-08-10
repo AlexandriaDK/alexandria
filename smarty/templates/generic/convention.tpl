@@ -124,75 +124,75 @@ $(document).ready(function(){
             <td style="padding-left: 10px">{if $game.system_id}<a href="data?system={$game.system_id}"
                   class="system">{$game.system_translation}</a>{if $game.system_extra}
                 {$game.system_extra|escape}{/if}
-                {elseif $game.system_extra}{$game.system_extra|escape}
-                {/if}</td>
-            {/foreach}
+              {elseif $game.system_extra}{$game.system_extra|escape}
+              {/if}</td>
           {/foreach}
-      </table>
-    {/if}
+        {/foreach}
+    </table>
+  {/if}
 
-    {if $award}
-      <h3 id="awards">{$_con_awards}</h3>
-      {$award}
-    {/if}
+  {if $award}
+    <h3 id="awards">{$_con_awards}</h3>
+    {$award}
+  {/if}
 
-    <h3 class="parttitle{if ! $organizerlist && ! $editorganizers} organizerhidden{/if}" id="organizers">
-      {$_organizers|ucfirst}</h3>
-    <table class="indata">
-      {foreach $organizerlist as $organizer}
-        <tr>
-          <td style="padding-right: 10px">
-            {$organizer.role|escape}
+  <h3 class="parttitle{if ! $organizerlist && ! $editorganizers} organizerhidden{/if}" id="organizers">
+    {$_organizers|ucfirst}</h3>
+  <table class="indata">
+    {foreach $organizerlist as $organizer}
+      <tr>
+        <td style="padding-right: 10px">
+          {$organizer.role|escape}
+        </td>
+        <td>
+          {if $organizer.person_id}
+            <a href="data?person={$organizer.person_id}" class="person">{$organizer.name|escape}</a>
+          {else}
+            {$organizer.person_extra|escape}
+          {/if}
+        </td>
+        <td style="text-align: center;">
+          {foreach $user_can_edit_organizers AS $pcrel_id => $true}
+            {if $organizer.id == $pcrel_id}
+              <a
+                href="adm/user_organizers.php?convention={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
+              {break}
+            {/if}
+          {/foreach}
+        </td>
+      </tr>
+    {/foreach}
+
+    {if $user_id}
+      <form action="adm/user_organizers.php" method="post">
+        <input type="hidden" name="convention" value="{$id}">
+        <input type="hidden" name="token" value="{$token}">
+        <input type="hidden" name="action" value="add">
+        <tr style="vertical-align: top" {if ! $editorganizers}class="organizerhidden" {/if}>
+          <td style="padding-bottom: 250px">
+            <input type="text" name="role" id="neworganizer" placeholder="{$_con_organizerrole|escape}" autofocus>
           </td>
           <td>
-            {if $organizer.person_id}
-              <a href="data?person={$organizer.person_id}" class="person">{$organizer.name|escape}</a>
-            {else}
-              {$organizer.person_extra|escape}
-            {/if}
+            <input type="text" name="person_text" value="" placeholder="{$_name|escape}" class="peopletags"
+              style="width: 250px;">
           </td>
-          <td style="text-align: center;">
-            {foreach $user_can_edit_organizers AS $pcrel_id => $true}
-              {if $organizer.id == $pcrel_id}
-                <a
-                  href="adm/user_organizers.php?convention={$id}&amp;pcrel_id={$pcrel_id}&amp;action=delete&amp;token={$token}">[{$_remove}]</a>
-                {break}
-              {/if}
-            {/foreach}
+          <td>
+            <input type="submit" value="{$_add|escape}">
           </td>
         </tr>
-      {/foreach}
-
-      {if $user_id}
-        <form action="adm/user_organizers.php" method="post">
-          <input type="hidden" name="convention" value="{$id}">
-          <input type="hidden" name="token" value="{$token}">
-          <input type="hidden" name="action" value="add">
-          <tr style="vertical-align: top" {if ! $editorganizers}class="organizerhidden" {/if}>
-            <td style="padding-bottom: 250px">
-              <input type="text" name="role" id="neworganizer" placeholder="{$_con_organizerrole|escape}" autofocus>
-            </td>
-            <td>
-              <input type="text" name="person_text" value="" placeholder="{$_name|escape}" class="peopletags"
-                style="width: 250px;">
-            </td>
-            <td>
-              <input type="submit" value="{$_add|escape}">
-            </td>
-          </tr>
-        </form>
-      {/if}
-    </table>
-
-    {if $organizerlist && isset($user_id)}
-      <p class="addorganizersyourself">
-        <a href="#neworganizer">{$_con_addorganizers}</a>
-      </p>
+      </form>
     {/if}
+  </table>
 
-    {include file="articlereference.tpl"}
-    {include file="trivialink.tpl"}
-    {include file="internal.tpl"}
-    {include file="updatelink.tpl"}
+  {if $organizerlist && isset($user_id)}
+    <p class="addorganizersyourself">
+      <a href="#neworganizer">{$_con_addorganizers}</a>
+    </p>
+  {/if}
 
-  </div>
+  {include file="articlereference.tpl"}
+  {include file="trivialink.tpl"}
+  {include file="internal.tpl"}
+  {include file="updatelink.tpl"}
+
+</div>

@@ -19,7 +19,7 @@
     <p>
       {$_award_overview1} {if $cid}<a href="data?conset={$cid}" class="con">
         {elseif $tid}<a href="data?tag={$type_name|escape}" class="tag">
-        {else}<a href="/">
+          {else}<a href="/">
             {/if}{$type_name|escape}</a>.
           {$_award_overview2}
     </p>

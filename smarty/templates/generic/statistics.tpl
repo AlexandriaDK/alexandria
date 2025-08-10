@@ -76,7 +76,7 @@
             <tr>
               <td>{if $scy.year}<a href="data?year={$scy.year}"
                   class="con">{$scy.year|yearname}</a>{else}{$scy.year|yearname}
-                  {/if}</td>
+                {/if}</td>
               <td class="statnumber">{$scy.cons|nicenumber} </td>
               <td>{if $scy.cons == 1}{$_convention}{else}{$_conventions}{/if}&nbsp;</td>
               <td class="statnumber">{$scy.games|nicenumber}</td>

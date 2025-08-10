@@ -28,121 +28,123 @@
         {/if}
         {if $arrowset.next.active}
           <a href="magazines?issue={$arrowset.next.id}"
-            title="{$arrowset.next.title|escape}{if $arrowset.next.releasetext} - {$arrowset.next.releasetext|escape}{/if}"" rel="
+            title="{$arrowset.next.title|escape}{if $arrowset.next.releasetext} - {$arrowset.next.releasetext|escape}{/if}"
+            rel="
     next">→</a>
-      {else}
-      <span class="inactive">→</span>
+        {else}
+          <span class="inactive">→</span>
+        {/if}
+      </div>
+
+      {include file="filelist.tpl"}
+
+      {if $colophon}
+        <h4>{$_magazines_colophon}</h4>
+        <table>
+          <tbody>
+            {foreach $colophon as $row}
+              <tr>
+                <td style="padding-right: 10px; text-align: right;">
+                  {$row.role|escape}
+                </td>
+                <td>
+                  {if $row.person_id}
+                    <a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
+                  {else}
+                    {$row.person_extra|escape|nl2br}
+                  {/if}
+                </td>
+              </tr>
+            {/foreach}
+          </tbody>
+        </table>
       {/if}
-    </div>
 
-    {include file="filelist.tpl"}
-
-    {if $colophon}
-    <h4>{$_magazines_colophon}</h4>
-    <table>
-      <tbody>
-        {foreach $colophon as $row}
-        <tr>
-          <td style="padding-right: 10px; text-align: right;">
-            {$row.role|escape}
-          </td>
-          <td>
-            {if $row.person_id}
-            <a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
-            {else}
-            {$row.person_extra|escape|nl2br}
-            {/if}
-          </td>
-        </tr>
-        {/foreach}
-      </tbody>
-    </table>
-    {/if}
-
-    {if $issue_articles}
-    <h4>{$_magazines_content}</h4>
-    <table class="magazinecontent">
-      <tbody>
-        {foreach $issue_articles as $row}
-        <tr>
-          {if not isset($lastid) || $row.id != $lastid}
-          <td class="page">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
-          <td>{$row.articletype|escape}</td>
-          <td {if $row.contributorcount > 1} rowspan="{$row.contributorcount}" {/if}>
-            {if $row.game_id}<a href="data?scenarie={$row.game_id}"
-              class="game">{$row.title|escape}</a>{else}{$row.title|escape}{/if}
-            {if $row.description}<br><span class="description">{$row.description|escape|textlinks|nl2br}</span>{/if}
-            {if $row.references}<br>
-            <div class="references">
-              {foreach $row.references AS $reference}{$reference} {/foreach}</div>
-          </td>
-          {/if}
-          {else}
-          <td colspan="2"></td>
-          {/if}
-          <td class="contributor">
-            {if $row.person_id}
-            <a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
-            {else}
-            {$row.person_extra|escape}
-            {/if}
-          </td>
-          <td class="role">{$row.role|escape}</td>
-        </tr>
-        {assign "lastid" $row.id}
-        {/foreach}
-      </tbody>
-    </table>
-    {/if}
-    {include file="articlereference.tpl"}
+      {if $issue_articles}
+        <h4>{$_magazines_content}</h4>
+        <table class="magazinecontent">
+          <tbody>
+            {foreach $issue_articles as $row}
+              <tr>
+                {if not isset($lastid) || $row.id != $lastid}
+                  <td class="page">{if $row.page}{$_file_page} {$row.page|escape}{/if}</td>
+                  <td>{$row.articletype|escape}</td>
+                  <td {if $row.contributorcount > 1} rowspan="{$row.contributorcount}" {/if}>
+                    {if $row.game_id}<a href="data?scenarie={$row.game_id}"
+                      class="game">{$row.title|escape}</a>{else}{$row.title|escape}
+                    {/if}
+                    {if $row.description}<br><span class="description">{$row.description|escape|textlinks|nl2br}</span>{/if}
+                    {if $row.references}<br>
+                      <div class="references">
+                        {foreach $row.references AS $reference}{$reference} {/foreach}</div>
+                    </td>
+                  {/if}
+                {else}
+                  <td colspan="2"></td>
+                {/if}
+                <td class="contributor">
+                  {if $row.person_id}
+                    <a href="data?person={$row.person_id}" class="person">{$row.name|escape}</a>
+                  {else}
+                    {$row.person_extra|escape}
+                  {/if}
+                </td>
+                <td class="role">{$row.role|escape}</td>
+              </tr>
+              {assign "lastid" $row.id}
+            {/foreach}
+          </tbody>
+        </table>
+      {/if}
+      {include file="articlereference.tpl"}
 
     {elseif $magazineid}
-    <h2 class="pagetitle">
-      {$magazinename|escape}
-    </h2>
-    {if $magazinedescription}
-    <p>
-      {$magazinedescription|escape|textlinks|nl2br}
-    </p>
-    {/if}
-    <div class="issuegrid">
-      {foreach $issues as $issue}
-      <div>
-        <div>
-          <a href="magazines?issue={$issue.id}">
-            {if $issue.thumbnail}
-            <img src="/gfx/issue/s_{$issue.id}.jpg" alt="{$magazinename|escape}, {$issue.title}">
-            {else}
-            {if isset($magazinename)}<h3>{$magazinename|escape}</h3>{/if}
-            {if isset($issue.title)}<h4>{$issue.title|escape}</h4>{/if}
-            {if $issue.releasetext}<h4>{$issue.releasetext|escape}</h4>{/if}
-            {/if}
-          </a>
-        </div>
-        <a
-          href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext}<br>{$issue.releasetext|escape}{/if}</a>
+      <h2 class="pagetitle">
+        {$magazinename|escape}
+      </h2>
+      {if $magazinedescription}
+        <p>
+          {$magazinedescription|escape|textlinks|nl2br}
+        </p>
+      {/if}
+      <div class="issuegrid">
+        {foreach $issues as $issue}
+          <div>
+            <div>
+              <a href="magazines?issue={$issue.id}">
+                {if $issue.thumbnail}
+                  <img src="/gfx/issue/s_{$issue.id}.jpg" alt="{$magazinename|escape}, {$issue.title}">
+                {else}
+                  {if isset($magazinename)}<h3>{$magazinename|escape}</h3>{/if}
+                  {if isset($issue.title)}<h4>{$issue.title|escape}</h4>{/if}
+                  {if $issue.releasetext}<h4>{$issue.releasetext|escape}</h4>{/if}
+                {/if}
+              </a>
+            </div>
+            <a
+              href="magazines?issue={$issue.id}">{$issue.title|escape}{if $issue.releasetext}<br>{$issue.releasetext|escape}{/if}</a>
+          </div>
+        {/foreach}
       </div>
-      {/foreach}
-    </div>
-    {include file="articlereference.tpl"}
+      {include file="articlereference.tpl"}
 
     {else}
-    <h2 class="pagetitle">
-      {$_magazines_list}
-    </h2>
-    <p>
-      {$_magazines_description}
-    </p>
-    <div id="magazinelist">
-      {foreach $magazines as $magazine}
-      <div>
-        <h3><a href="magazines?id={$magazine.id}">{$magazine.name|escape}</a> ({$magazine.issuecount})</h3>
-        <blockquote>
-          {$magazine.description|escape|textlinks|nl2br}
-        </blockquote>
+      <h2 class="pagetitle">
+        {$_magazines_list}
+      </h2>
+      <p>
+        {$_magazines_description}
+      </p>
+      <div id="magazinelist">
+        {foreach $magazines as $magazine}
+          <div>
+            <h3><a href="magazines?id={$magazine.id}">{$magazine.name|escape}</a> ({$magazine.issuecount})</h3>
+            <blockquote>
+              {$magazine.description|escape|textlinks|nl2br}
+            </blockquote>
+          </div>
+        {/foreach}
       </div>
-      {/foreach}
-    </div>
 
     {/if}
   </div>
@@ -150,13 +152,13 @@
   {include file="internal.tpl"}
 
   {if $issueid}
-  {assign "id" $issueid}
-  {assign "type" "issue"}
+    {assign "id" $issueid}
+    {assign "type" "issue"}
   {elseif $magazineid}
-  {assign "id" $magazineid}
-  {assign "type" "magazine"}
+    {assign "id" $magazineid}
+    {assign "type" "magazine"}
   {else}
-  {assign "type" "magazine"}
+    {assign "type" "magazine"}
   {/if}
   {include file="updatelink.tpl"}
 </div>

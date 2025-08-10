@@ -99,8 +99,8 @@
         <tr>
           <td>{if $article.game_id}<a href="data?scenarie={$article.game_id}"
               class="game">{$article.title|escape}</a>{elseif $article.title != ''}{$article.title|escape}
-              {else}<span
-              class="colophon">{$_magazines_colophon|escape}</span>{/if}</td>
+            {else}<span class="colophon">{$_magazines_colophon|escape}</span>
+            {/if}</td>
           <td>{$article.role|escape}</td>
           <td class="page">{if $article.page}{$_file_page} {$article.page|escape}{/if}</td>
           <td><a href="magazines?issue={$article.issue_id}">{$article.issuetitle|escape}</a>{if $article.releasetext}
