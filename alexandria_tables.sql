@@ -404,7 +404,7 @@ CREATE TABLE `userlog` (
 
 -- Table: loginmap
 CREATE TABLE `loginmap` (
-  `site` enum('rpgforum','liveforum','digisign','facebook','alexandria','twitter','steam','twitch','spotify','google','discord') CHARACTER SET utf8mb3 COLLATE utf8mb3_danish_ci NOT NULL,
+  `site` enum('rpgforum','liveforum','digisign','alexandria','steam','spotify','google','discord') CHARACTER SET utf8mb3 COLLATE utf8mb3_danish_ci NOT NULL,
   `siteuserid` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_danish_ci NOT NULL,
   `user_id` int NOT NULL,
   `name` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_danish_ci NOT NULL,

@@ -1,1 +1,0 @@
-<h1 style="font-size: 300px; font-family: sans-serif;">YOU ARE NOT LOGGED IN!</h1>

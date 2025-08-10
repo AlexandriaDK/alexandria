@@ -44,14 +44,9 @@
   </p>
 
   <div class="accounts">
-    <div class="{if $userloginmap['facebook']}linked{else}unlinked{/if}">Facebook</div>
     <div class="{if $userloginmap['google']}linked{else}unlinked{/if}">Google</div>
-    <div class="{if $userloginmap['twitter']}linked{else}unlinked{/if}">Twitter</div>
     <div class="{if $userloginmap['steam']}linked{else}unlinked{/if}">Steam</div>
-    <div class="{if $userloginmap['twitch']}linked{else}unlinked{/if}">Twitch</div>
     <div class="{if $userloginmap['discord']}linked{else}unlinked{/if}">Discord</div>
-    <div class="{if $userloginmap['foobar']}linked{else}unlinked{/if}">Foobar</div>
-
   </div>
 
 </div>

@@ -128,9 +128,7 @@
             {$_top_login}:
           </span>
           <ul class="remotelogin">
-            <li><a href="fblogin" accesskey="l">[Facebook]</a></li>
             <li><a href="../login/google/" accesskey="g">[Google]</a></li>
-            <li><a href="../login/twitter/" accesskey="t">[Twitter]</a></li>
             <li><a href="../login/steam/" accesskey="e">[Steam]</a></li>
             <li><a href="../login/discord/" accesskey="d">[Discord]</a></li>
           </ul>
