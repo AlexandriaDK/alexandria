@@ -1,5 +1,5 @@
 <?php
-define('LANGNOREDIRECT', TRUE);
+define('LANGNOREDIRECT', true);
 require("./connect.php");
 require("base.inc.php");
 
@@ -19,7 +19,7 @@ if (file_exists($fileondisk)) {
     award_achievement(60); // download a scenario
   }
 
-  if ($category == 'game' && ($_SESSION['user_author_id'] ?? FALSE)) {
+  if ($category == 'game' && ($_SESSION['user_author_id'] ?? false)) {
     $is_author = getone("SELECT 1 FROM pgrel WHERE game_id = '$data_id' AND title_id IN (1,4) AND person_id = '" . $_SESSION['user_author_id'] . "'");
     if ($is_author) {
       award_achievement(85); // download own scenario

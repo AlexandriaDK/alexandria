@@ -192,7 +192,7 @@ if ($type == 'addperson' && $label != "") {
   }
   $result = [];
   $name = $label;
-  if (strpos($name, " ") === FALSE) {
+  if (strpos($name, " ") === false) {
     resultexit(["new" => false, "error" => true, "msg" => "No space in name"]);
   }
   $pos = strrpos($name, " ");

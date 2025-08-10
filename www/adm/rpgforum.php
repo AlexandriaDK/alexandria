@@ -5,7 +5,7 @@ chdir("..");
 require "rpgconnect.inc.php";
 require "base.inc.php";
 
-$postid = (int) ($_GET['postid'] ?? FALSE);
+$postid = (int) ($_GET['postid'] ?? false);
 $search = trim((string) ($_GET['search'] ?? ''));
 $author = trim((string) ($_GET['author'] ?? ''));
 $order = (string) ($_GET['order'] ?? '');

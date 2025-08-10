@@ -51,7 +51,7 @@ $views = 0;
 
 $lines = 0;
 $postcount = 0;
-while (($line = fgets($fp)) != FALSE) {
+while (($line = fgets($fp)) != false) {
   $lines++;
   if (! $title) {
     if (preg_match('_^<h1>(.*?)</h1>_', $line, $match)) {

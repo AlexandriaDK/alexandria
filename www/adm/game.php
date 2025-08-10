@@ -7,26 +7,26 @@ require "base.inc.php";
 
 $this_type = 'game';
 
-$action = $_REQUEST['action'] ?? FALSE;
-$jsenabled = $_REQUEST['jsenabled'] ?? FALSE;
+$action = $_REQUEST['action'] ?? false;
+$jsenabled = $_REQUEST['jsenabled'] ?? false;
 
 if ($action) {
   validatetoken($token);
 }
 
-$game = (int) ($_REQUEST['game'] ?? FALSE);
+$game = (int) ($_REQUEST['game'] ?? false);
 $title = trim((string) ($_REQUEST['title'] ?? ''));
 $descriptions = (array) ($_REQUEST['descriptions'] ?? []);
 $langlock = $_COOKIE['langlock'] ?? LANG;
 if (!$descriptions) {
   $descriptions = [1 => ['id' => 1, 'language' => $langlock, 'description' => '', 'note' => '']];
 }
-$internal = $_REQUEST['internal'] ?? FALSE;
-$gamesystem_id = (int) ($_REQUEST['gamesystem_id'] ?? FALSE);
+$internal = $_REQUEST['internal'] ?? false;
+$gamesystem_id = (int) ($_REQUEST['gamesystem_id'] ?? false);
 $gamesystem_extra = $_REQUEST['gamesystem_extra'] ?? '';
 $person_extra = $_REQUEST['person_extra'] ?? '';
-$con = $_REQUEST['con'] ?? FALSE;
-$boardgame = (int) (bool) ($_REQUEST['boardgame'] ?? FALSE);
+$con = $_REQUEST['con'] ?? false;
+$boardgame = (int) (bool) ($_REQUEST['boardgame'] ?? false);
 $person = (array) ($_REQUEST['person'] ?? []);
 
 $gms = (string) ($_REQUEST['gms'] ?? '');
@@ -93,7 +93,7 @@ if (!$action && $game) {
     $gms = ($gms_max != $gms_min ? $gms_min . "-" . $gms_max : $gms_min);
     $players = ($players_max != $players_min ? $players_min . "-" . $players_max : $players_min);
   } else {
-    $game = FALSE;
+    $game = false;
   }
 }
 
@@ -170,18 +170,18 @@ if ($action == "update" && $game) {
 // Delete game
 if ($action == "Delete" && $game) { // should check if game exists
   $error = [];
-  if (getCount('pgrel', $this_id, FALSE, $this_type)) $error[] = "person";
-  if (getCount('cgrel', $this_id, FALSE, $this_type)) $error[] = "con";
-  if (getCount('ggrel', $this_id, FALSE, $this_type)) $error[] = "genre";
-  if (getCount('gamerun', $this_id, FALSE, $this_type)) $error[] = "run";
-  if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
-  if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
-  if (getCount('files', $this_id, FALSE, $this_type)) $error[] = "file";
-  if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
-  if (getCount('tags', $this_id, FALSE, $this_type)) $error[] = "tags";
-  if (getCount('article', $this_id, FALSE, $this_type)) $error[] = "article";
-  if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
-  if (getCount('userlog', $this_id, FALSE, $this_type)) $error[] = "user log (requires admin)";
+  if (getCount('pgrel', $this_id, false, $this_type)) $error[] = "person";
+  if (getCount('cgrel', $this_id, false, $this_type)) $error[] = "con";
+  if (getCount('ggrel', $this_id, false, $this_type)) $error[] = "genre";
+  if (getCount('gamerun', $this_id, false, $this_type)) $error[] = "run";
+  if (getCount('trivia', $this_id, false, $this_type)) $error[] = "trivia";
+  if (getCount('links', $this_id, false, $this_type)) $error[] = "link";
+  if (getCount('files', $this_id, false, $this_type)) $error[] = "file";
+  if (getCount('alias', $this_id, false, $this_type)) $error[] = "alias";
+  if (getCount('tags', $this_id, false, $this_type)) $error[] = "tags";
+  if (getCount('article', $this_id, false, $this_type)) $error[] = "article";
+  if (getCount('article_reference', $this_id, false, $this_type)) $error[] = "article reference";
+  if (getCount('userlog', $this_id, false, $this_type)) $error[] = "user log (requires admin)";
   if ($error) {
     $_SESSION['admin']['info'] = "Can't delete. The game still has the following references: " . implode(", ", $error);
     rexit($this_type, ['game' => $game]);
@@ -536,7 +536,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
   printinfo();
 
-  function titleoptions($titles, $count, $default = FALSE)
+  function titleoptions($titles, $count, $default = false)
   {
     $html = '<select name="person[' . $count . '][title]">';
     foreach ($titles as $id => $title) {
@@ -546,14 +546,14 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
     return $html;
   }
 
-  function eventoptions($events, $count, $convention_default = FALSE, $gamerun_default = FALSE)
+  function eventoptions($events, $count, $convention_default = false, $gamerun_default = false)
   {
     if ($convention_default) {
       $default = 'c_' . $convention_default;
     } elseif ($gamerun_default) {
       $default = 'r_' . $gamerun_default;
     } else {
-      $default = NULL;
+      $default = null;
     }
     if (!$events) {
       return '';
@@ -593,7 +593,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 
   if ($game) {
     print "<tr><td>ID</td><td>$game - <a href=\"../data?scenarie=$game\" accesskey=\"q\">Show game page</a>";
-    if ($viewlog == TRUE) {
+    if ($viewlog == true) {
       print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$game\">Show log</a>";
     }
     print "\n</td></tr>\n";
@@ -798,7 +798,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
     print "</td></tr>";
 
     print "<tr><td>Reviews:</td><td>";
-    if ($reviews ?? FALSE) {
+    if ($reviews ?? false) {
       foreach ($reviews as $rid => $title) {
         print '<a href="review.php?review_id=' . $rid . '">' . ($title !== "" ? htmlspecialchars($title) : "(unknown)") . '</a><br>';
       }

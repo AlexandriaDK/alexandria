@@ -38,8 +38,8 @@ foreach ($r as $row) {
 
       foreach ($options as $type) {
         $scenlist .= "<td>";
-        if ($type != NULL) {
-          $scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? FALSE);
+        if ($type != null) {
+          $scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? false);
         }
         $scenlist .= "</td>";
       }
@@ -81,5 +81,5 @@ foreach ($r as $row) {
 }
 
 $t->assign('scenlist', $scenlist);
-$t->assign('boardgamesonly', TRUE);
+$t->assign('boardgamesonly', true);
 $t->display('games.tpl');

@@ -99,8 +99,8 @@ foreach ($scenarios as $scenario_id => $scenario) {
 
     foreach ($options as $type) {
       $xscenlist .= "<td>";
-      if ($type != NULL) {
-        $xscenlist .= getdynamicgamehtml($scenario_id, $type, $userlog[$scenario_id][$type] ?? FALSE);
+      if ($type != null) {
+        $xscenlist .= getdynamicgamehtml($scenario_id, $type, $userlog[$scenario_id][$type] ?? false);
       }
       $xscenlist .= "</td>";
     }

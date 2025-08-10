@@ -1,6 +1,6 @@
 <?php
 // Denne side scraper internal igennem efter spiller- og spilleder-antal
-$admonly = TRUE;
+$admonly = true;
 require "adm.inc.php";
 require "base.inc.php";
 chdir("..");

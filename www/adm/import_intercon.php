@@ -180,7 +180,7 @@ if ($type == 1) { // HTML scraper
       print "<hr>";
     } else {
       // for manual checks, e.g. special events
-      if (strpos($dataset, '<h3>') !== FALSE) {
+      if (strpos($dataset, '<h3>') !== false) {
         print "<pre>" . htmlspecialchars($dataset) . "</pre><hr>";
       }
     }

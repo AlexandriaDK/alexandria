@@ -115,7 +115,7 @@ if ($conventions) {
   foreach ($conventions as $convention) {
     $spanid = "convent_" . $convention['id'] . "_visited";
     $content_myconvents .= "<tr>";
-    $content_myconvents .= "<td>" . getdynamicconventionhtml($convention['id'], 'visited', TRUE) . "</td>";
+    $content_myconvents .= "<td>" . getdynamicconventionhtml($convention['id'], 'visited', true) . "</td>";
     $content_myconvents .= "<td>" . getdatahtml('convention', $convention['id'], $convention['name']) . "</td>";
     $content_myconvents .= "<td style=\"text-align: left\">" . $convention['conset_name'] . "</td>";
     $content_myconvents .= "<td style=\"text-align: right\">" . yearname($convention['year']) . "</td>";

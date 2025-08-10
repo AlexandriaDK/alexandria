@@ -1,5 +1,5 @@
 <?php
-$admonly = TRUE;
+$admonly = true;
 require "adm.inc.php";
 require "base.inc.php";
 chdir("..");

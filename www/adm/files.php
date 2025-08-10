@@ -273,17 +273,17 @@ if ($action == "addfile") {
   rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
 } elseif ($action == 'deletethumbnail') {
   $folder = getcategorythumbdir($category);
-  $deleted = FALSE;
+  $deleted = false;
   // Ingen ../ idet vi har chdir()'et et trin ud fra adm-mappen
   $path_large = "gfx/$folder/l_" . $data_id . ".jpg";
   $path_small = "gfx/$folder/s_" . $data_id . ".jpg";
   if (file_exists($path_large)) {
     unlink($path_large);
-    $deleted = TRUE;
+    $deleted = true;
   }
   if (file_exists($path_small)) {
     unlink($path_small);
-    $deleted = TRUE;
+    $deleted = true;
   }
   if ($deleted) {
     $_SESSION['admin']['info'] = "Thumbnail deleted! ";
@@ -297,7 +297,7 @@ if ($action == "addfile") {
 if ($data_id && $category) {
   $data_id = intval($data_id);
   $data_field = getFieldFromCategory($category);
-  $linktitle = getlabel($category, $data_id, TRUE);
+  $linktitle = getlabel($category, $data_id, true);
 
   $query = "
 		SELECT COUNT(fd.id) AS pages, f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
@@ -367,7 +367,7 @@ if ($data_id && $category) {
       '<td>' .
       htmlspecialchars($row['filename']) .
       (file_exists($path) ? '' : ' <span style="color: #c00" title="File does not exist">⚠</span>') .
-      (strpos($path, '#') === FALSE ? '' : ' <span style="color: #c00" title="File contains # character - please rename">⚠</span>') .
+      (strpos($path, '#') === false ? '' : ' <span style="color: #c00" title="File contains # character - please rename">⚠</span>') .
       '</td>' .
       '<td ><input type="text" name="description" value="' . htmlspecialchars($row['description']) . '" size="40"></td>' .
       '<td style="text-align: center"><input type="checkbox" name="downloadable" ' . $selected . '></td>' .
@@ -396,10 +396,10 @@ if ($data_id && $category) {
 
   print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
-  $thumbshortcut = TRUE;
+  $thumbshortcut = true;
   foreach (glob(DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") as $file) {
     $accesskey = ($thumbshortcut ? 'accesskey="t"' : '');
-    $thumbshortcut = FALSE;
+    $thumbshortcut = false;
     $basename = mb_basename($file);
     $extension = strtolower(pathinfo($basename,  PATHINFO_EXTENSION));
     $createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&data_id=' . $data_id . '&action=thumbnail&filename=' . rawurlencode($basename);
@@ -471,7 +471,7 @@ if ($data_id && $category) {
     }
   }
 
-  if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
+  if (($path = getthumbnailpath($data_id, $category)) !== false) {
     print '<form action="files.php" method="post" onsubmit="return confirm(\'Delete thumbnail?\');">' .
       '<input type="hidden" name="action" value="deletethumbnail">' .
       '<input type="hidden" name="category" value="' . htmlspecialchars($category) . '">' .

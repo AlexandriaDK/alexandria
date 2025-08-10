@@ -364,7 +364,7 @@ if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
     print '<table id="articlelist">';
 
     foreach ($articles as $article) {
-      $article_id = $article['id'] ?? FALSE;
+      $article_id = $article['id'] ?? false;
       $new = ! (bool) $article_id;
       $contributors = $references = [];
       $references_html = "";
@@ -396,18 +396,18 @@ if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
         '<input type="hidden" name="magazine_id" value="' . $magazine_id . '">' .
         '<input type="hidden" name="issue_id" value="' . $issue_id . '">' .
         '<input type="hidden" name="article_id" value="' . $article_id . '">';
-      $person = (($article['person_id'] ?? FALSE) ? $article['person_id'] . " - " . $article['personname'] : $article['person_extra'] ?? '');
-      $game = (($article['game_id'] ?? FALSE) ? $article['game_id'] . " - " . $article['gametitle'] : '');
+      $person = (($article['person_id'] ?? false) ? $article['person_id'] . " - " . $article['personname'] : $article['person_extra'] ?? '');
+      $game = (($article['game_id'] ?? false) ? $article['game_id'] . " - " . $article['gametitle'] : '');
       print "<table>";
       print '<tr valign="top">' .
-        '<td class="articleid' . (($article['id'] ?? FALSE)  && $highlight_article_id == $article['id'] ? ' highlightarticle"' : '') . '">' . ($article['id'] ?? 'New') . '</td>' .
+        '<td class="articleid' . (($article['id'] ?? false)  && $highlight_article_id == $article['id'] ? ' highlightarticle"' : '') . '">' . ($article['id'] ?? 'New') . '</td>' .
         '<td><input placeholder="Title" type="text" name="title" value="' . htmlspecialchars($article['title'] ?? '') . '" size=30 maxlength=150 ' . ($new ? 'autofocus' : '') . '></td>' .
         '<td><input placeholder="Page" type="number" min="1" name="page" value="' . htmlspecialchars($article['page'] ?? '') . '" class="page"></td>';
       print '<td data-count="' . count($contributors) . '">';
       $pcount = 0;
       foreach ($contributors as $contributor) {
         $pcount++;
-        $person = (($contributor['person_id'] ?? FALSE) ? $contributor['person_id'] . ' - ' . $contributor['name'] : $contributor['person_extra'] ?? '');
+        $person = (($contributor['person_id'] ?? false) ? $contributor['person_id'] . ' - ' . $contributor['name'] : $contributor['person_extra'] ?? '');
         print '<input type="text" placeholder="Person" name="contributors[' . $pcount . '][person]" class="peopletags" size=30 maxlength=150 value="' . htmlspecialchars($person ?? '') . '">';
         print '<input type="text" placeholder="Role" name="contributors[' . $pcount . '][role]" class="peopleroles" size=30 maxlength=150 value="' . htmlspecialchars($contributor['role'] ?? '') . '">';
         if ($pcount == 1) {
@@ -478,7 +478,7 @@ if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
       $statushtml = '<div class="issuestatus">';
       foreach ($statuslist as $statusid => $status) {
         $radioid = 'radio' . $status['label'] . '_' . (int) ($issue['id'] ?? 0);
-        $statushtml .= '<input type="radio" name="status" value="' . $statusid . '" id="' . $radioid . '" ' . ($statusid == ($issue['status'] ?? FALSE) ? 'checked' : '') . '>';
+        $statushtml .= '<input type="radio" name="status" value="' . $statusid . '" id="' . $radioid . '" ' . ($statusid == ($issue['status'] ?? false) ? 'checked' : '') . '>';
         $statushtml .= '<label for="' . $radioid . '" title="' . htmlspecialchars($status['text']) . '" class="' . htmlspecialchars($status['label']) . '" >' . htmlspecialchars($status['short']) . '</label>' . PHP_EOL;
       }
       $statushtml .= '</div>';

@@ -13,16 +13,16 @@ $do = (string) ($_REQUEST['do'] ?? '');
 $name = trim((string) ($_REQUEST['name'] ?? ''));
 $description = (string) ($_REQUEST['description'] ?? '');
 $nominationtext = trim((string) ($_REQUEST['nominationtext'] ?? ''));
-$id = (int) ($_REQUEST['id'] ?? FALSE);
-$game_id = (int) ($_REQUEST['game_id'] ?? FALSE);
+$id = (int) ($_REQUEST['id'] ?? false);
+$game_id = (int) ($_REQUEST['game_id'] ?? false);
 if (!$game_id) {
-  $game_id = NULL;
+  $game_id = null;
 }
 $award_nominee_entity = (int) ($_REQUEST['award_nominee_entity'] ?? '');
 $award_nominee_entity_extra = $_REQUEST['award_nominee_entity'] ?? '';
-$data_id = (int) ($_REQUEST['data_id'] ?? FALSE);
-$convention_id = (int) ($_REQUEST['convention_id'] ?? FALSE);
-$tag_id = (int) ($_REQUEST['tag_id'] ?? FALSE);
+$data_id = (int) ($_REQUEST['data_id'] ?? false);
+$convention_id = (int) ($_REQUEST['convention_id'] ?? false);
+$tag_id = (int) ($_REQUEST['tag_id'] ?? false);
 $winner = (int) isset($_REQUEST['winner']);
 $ranking = (string) ($_REQUEST['ranking'] ?? '');
 
@@ -298,8 +298,8 @@ if ($action == 'deletenomineeentity') {
         $html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;tag_id=' . $tag_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
         if ($entity['category']) {
           $name = getentry($entity['category'], $entity['data_id']);
-          $link = getdatalink($entity['category'], $entity['data_id'], TRUE);
-          $linkhtml = getdatahtml($entity['category'], $entity['data_id'], $name, TRUE);
+          $link = getdatalink($entity['category'], $entity['data_id'], true);
+          $linkhtml = getdatahtml($entity['category'], $entity['data_id'], $name, true);
           $html_entity .= $linkhtml;
         } else {
           $html_entity .= $entity['label'];

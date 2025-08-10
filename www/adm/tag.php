@@ -28,10 +28,10 @@ if (!$action && $tag_id) {
 
 if ($action == "Remove" && $tag_id) {
   $error = [];
-  if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
-  if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
-  if (getCount('files', $this_id, FALSE, $this_type)) $error[] = "files";
-  if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
+  if (getCount('trivia', $this_id, false, $this_type)) $error[] = "trivia";
+  if (getCount('links', $this_id, false, $this_type)) $error[] = "link";
+  if (getCount('files', $this_id, false, $this_type)) $error[] = "files";
+  if (getCount('article_reference', $this_id, false, $this_type)) $error[] = "article reference";
   if ($error) {
     $_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ", $error);
     rexit($this_type, ['tag_id' => $tag_id]);
@@ -103,13 +103,13 @@ print "<table border=0>\n";
 if ($tag_id) {
   $tag = getone("SELECT tag FROM tag WHERE id = $tag_id");
   print "<tr><td>ID</td><td>$tag_id - <a href=\"../data?tag=" . rawurlencode($tag) . "\" accesskey=\"q\">Show tag page</a>";
-  if ($viewlog == TRUE) {
+  if ($viewlog == true) {
     print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$tag_id\">Show log</a>";
   }
   print "\n</td></tr>\n";
 }
 
-tr("Tag", "tag", $tag, "", "", "text", TRUE, TRUE);
+tr("Tag", "tag", $tag, "", "", "text", true, true);
 print "<tr valign=top><td>Description</td><td><textarea name=\"description\" cols=100 rows=15>\n" . htmlspecialchars($description) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=\"internal\" cols=100 rows=10>\n" . htmlspecialchars($internal) . "</textarea></td></tr>\n";
 

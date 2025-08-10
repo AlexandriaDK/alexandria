@@ -80,12 +80,12 @@ if ($dataset) {
     case 'article_reference':
     case 'locations':
     case 'location_reference':
-      $output = getall($exportqueries[$dataset], FALSE);
+      $output = getall($exportqueries[$dataset], false);
       break;
     case 'all':
       $output = [];
       foreach ($exportqueries as $table => $query) {
-        $output[$table] = getall($query, FALSE);
+        $output[$table] = getall($query, false);
       }
       break;
     default:

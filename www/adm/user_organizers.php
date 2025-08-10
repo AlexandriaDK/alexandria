@@ -31,7 +31,7 @@ $person_id = (int) $person_text;
 $person_extra = "";
 if (!$person_id) {
   $person_extra = $person_text;
-  $person_id = NULL;
+  $person_id = null;
 }
 
 if (getone("SELECT 1 FROM convention WHERE id = $convention") != 1) { // check if congress exists
@@ -46,7 +46,7 @@ if ($action == 'add' && ($person_id || $person_extra)) {
 		VALUES (" . strNullEscape($person_id) . ", $convention, '" . dbesc($person_extra) . "', '" . dbesc($role) . "', $user_id)
 	");
   if ($pcrel_id = dbid()) {
-    $_SESSION['can_edit_organizers'][$pcrel_id] = TRUE;
+    $_SESSION['can_edit_organizers'][$pcrel_id] = true;
     award_achievement(91);
     chlog($convention, 'convention', 'Organizer added: ' . ($person_id ? $person_id : $person_extra));
   }

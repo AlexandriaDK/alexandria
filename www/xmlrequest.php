@@ -131,7 +131,7 @@ if ($action == "lookup") {
 		LEFT JOIN game g ON gr.game_id = g.id
 		WHERE geo IS NOT NULL
 		ORDER BY data_starttime
-	", FALSE);
+	", false);
 
   $events = [];
   foreach ($locations as $event) {

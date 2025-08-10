@@ -1,5 +1,5 @@
 <?php
-define('LANGNOREDIRECT', TRUE);
+define('LANGNOREDIRECT', true);
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 session_start();

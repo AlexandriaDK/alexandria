@@ -33,7 +33,7 @@ function checkArchiveFile($path)
   return true;
 }
 
-function indexFile($file, $archivefile = NULL, $tmpfile = NULL)
+function indexFile($file, $archivefile = null, $tmpfile = null)
 {
   $filepath = ALEXFILEPATH . getcategorydir($file['category']) . '/' . $file['data_id'] . '/' . $file['filename'];
   if ($tmpfile) {
@@ -57,10 +57,10 @@ function indexFile($file, $archivefile = NULL, $tmpfile = NULL)
     $content = `$command`;
   } elseif ($extension == "txt") {
     $content = file_get_contents($filepath);
-  } elseif ($extension == "zip" && $archivefile == NULL) { // Only descent one level into zip files
+  } elseif ($extension == "zip" && $archivefile == null) { // Only descent one level into zip files
     $zip = new ZipArchive;
     $list = $zip->open($filepath);
-    if ($list !== TRUE) {
+    if ($list !== true) {
       print "Can't read zip file (error: " . $list . "). Skipping." . PHP_EOL;
       return 3;
     }

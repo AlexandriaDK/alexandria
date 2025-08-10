@@ -8,18 +8,18 @@ require "base.inc.php";
 $this_type = 'organizers';
 $category = 'convention';
 
-$action = $_REQUEST['action'] ?? FALSE;
-$do = $_REQUEST['do'] ?? FALSE;
+$action = $_REQUEST['action'] ?? false;
+$do = $_REQUEST['do'] ?? false;
 $role = trim((string) ($_REQUEST['role'] ?? ''));
 $person_text = trim((string) ($_REQUEST['person_text'] ?? ''));
-$person_id = (int) ($person_text ?? FALSE);
+$person_id = (int) ($person_text ?? false);
 $person_extra = "";
 if (!$person_id) {
   $person_extra = $person_text;
-  $person_id = NULL;
+  $person_id = null;
 }
 
-$id = $_REQUEST['id'] ?? FALSE;
+$id = $_REQUEST['id'] ?? false;
 $data_id = (int) ($_REQUEST['data_id'] ?? '');
 
 $user_id = $_SESSION['user_id'];

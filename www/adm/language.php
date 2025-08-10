@@ -6,7 +6,7 @@ require "rpgconnect.inc.php";
 require "base.inc.php";
 $this_type = 'language';
 
-$admin = ($_SESSION['user_admin'] ?? FALSE);
+$admin = ($_SESSION['user_admin'] ?? false);
 $langlock = (string) ($_COOKIE['langlock'] ?? '');
 $setlang = (string) ($_REQUEST['setlang'] ?? '');
 $action = (string) ($_REQUEST['action'] ?? '');
@@ -90,7 +90,7 @@ foreach ($alltext as $text) {
     $languagecount[$text['language']] = 0;
   }
   $languagecount[$text['language']]++;
-  $languages[$text['language']] = TRUE;
+  $languages[$text['language']] = true;
 }
 ksort($languages);
 $labelcount = count($overview);
@@ -111,12 +111,12 @@ htmladmstart("Translations");
 <?php
 
 // Edit?
-$begin = $nextlabel = FALSE;
+$begin = $nextlabel = false;
 foreach ($overview as $mylabel => $string) {
   if ($label == '') {
-    $begin = TRUE;
+    $begin = true;
   }
-  if ($begin == TRUE) {
+  if ($begin == true) {
     foreach ($languages as $language => $dummy) {
       if ($langlock && $language != $langlock) {
         continue;
@@ -128,14 +128,14 @@ foreach ($overview as $mylabel => $string) {
     }
   }
   if ($mylabel == $label) {
-    $begin = TRUE;
+    $begin = true;
   }
-  if ($nextlabel != FALSE) {
+  if ($nextlabel != false) {
     break;
   }
 }
 
-if ($do == "next" && $nextlabel != FALSE) {
+if ($do == "next" && $nextlabel != false) {
   header("Location: language.php?label=" . rawurlencode($nextlabel));
   exit;
 }
@@ -161,7 +161,7 @@ if ($label) {
 } elseif ($admin) {
   print "<form action=\"language.php\"><div>New label: <input type=\"text\" name=\"label\" autofocus><input type=\"submit\"></div></form>";
 }
-if ($nextlabel != FALSE) {
+if ($nextlabel != false) {
   print "<div class=\"nextlanguage\"><a href=\"language.php?label=" . rawurlencode($nextlabel) . "\">Go to next label with missing translation</a></div>";
 }
 
@@ -182,7 +182,7 @@ if ($admin) {
   print "</tr>";
 }
 foreach ($overview as $label => $string) {
-  if (!$filter || ($filter && strpos($label, $filter) !== FALSE)) {
+  if (!$filter || ($filter && strpos($label, $filter) !== false)) {
     print "<tr onclick=\"location.href=this.firstChild.firstChild.href\">";
     print "<td><a href=\"language.php?label=" . rawurlencode($label) . "\" id=\"label_" . rawurlencode($label) . "\">" . $label . "</a></td>";
     foreach ($languages as $language => $dummy) {

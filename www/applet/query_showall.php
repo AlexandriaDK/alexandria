@@ -21,8 +21,8 @@ while ($person_id = array_shift($buffer)) {
   $result = mysql_query($query) or die("ERROR: " . mysql_error());
   while (list($first, $second) = mysql_fetch_row($result)) {
     $dataset[] = $first . "_" . $second;
-    $names[$first] = TRUE;
-    $names[$second] = TRUE;
+    $names[$first] = true;
+    $names[$second] = true;
     if (!in_array($second, $visited)) {
       $buffer[] = $second;
       $visited[] = $second;

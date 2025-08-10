@@ -36,7 +36,7 @@ $result = getall($query);
 $dataset = [];
 foreach ($result as $row) {
   $dataset[$row['user_id']]['name'] = $row['name'];
-  $dataset[$row['user_id']]['data'][$row['type']] = TRUE;
+  $dataset[$row['user_id']]['data'][$row['type']] = true;
 }
 
 htmladmstart("User log");
@@ -56,11 +56,11 @@ foreach ($dataset as $user) {
   print "<tr>";
   print "<td>" . $user['name'] . "</td>";
   if ($category == "game") {
-    print "<td class=\"mark\">" . ($user['data']['read'] ?? FALSE ? "✔" : "") . "</td>";
-    print "<td class=\"mark\">" . ($user['data']['gmed'] ?? FALSE ? "✔" : "") . "</td>";
-    print "<td class=\"mark\">" . ($user['data']['played'] ?? FALSE ? "✔" : "") . "</td>";
+    print "<td class=\"mark\">" . ($user['data']['read'] ?? false ? "✔" : "") . "</td>";
+    print "<td class=\"mark\">" . ($user['data']['gmed'] ?? false ? "✔" : "") . "</td>";
+    print "<td class=\"mark\">" . ($user['data']['played'] ?? false ? "✔" : "") . "</td>";
   } else {
-    print "<td class=\"mark\">" . ($user['data']['visited'] ?? FALSE ? "✔" : "") . "</td>";
+    print "<td class=\"mark\">" . ($user['data']['visited'] ?? false ? "✔" : "") . "</td>";
   }
   print "</tr>" . PHP_EOL;
 }

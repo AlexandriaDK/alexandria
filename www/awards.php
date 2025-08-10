@@ -100,9 +100,9 @@ if (!$type_id) {
   $categories = [];
   if ($type == 'convention') {
     foreach ($awardnominees[$cid] as $convention) {
-      $years[$convention['year'] ?? 1] = TRUE;
+      $years[$convention['year'] ?? 1] = true;
       foreach ($convention['categories'] as $category) {
-        $categories[$category['name']] = TRUE;
+        $categories[$category['name']] = true;
       }
     }
     $html .= "<ul class=\"awardlist\">";
@@ -151,7 +151,7 @@ if (!$type_id) {
         }
         $html .= "</summary>";
         if ($has_nominationtext) {
-          $html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
+          $html .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($nominee['nominationtext'])), false) . '</div>' . PHP_EOL;
         }
         $html .= '</details>';
         $html .= "</div>" . PHP_EOL;

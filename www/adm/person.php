@@ -25,7 +25,7 @@ if (!$action && $person) {
   if ($r) {
     list($firstname, $surname, $internal, $birth, $death) = $r;
   } else {
-    $person = FALSE;
+    $person = false;
   }
 }
 
@@ -52,14 +52,14 @@ if ($action == "ret" && $person) {
 // Delete person
 if ($action == "Delete" && $person) { // Should check if $person id exists
   $error = [];
-  if (getCount('pgrel', $this_id, FALSE, $this_type)) $error[] = "scenario";
-  if (getCount('pcrel', $this_id, FALSE, $this_type)) $error[] = "con (organizer roles)";
-  if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
-  if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
-  if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
-  if (getCount('users', $this_id, FALSE, $this_type)) $error[] = "user";
-  if (getCount('contributor', $this_id, FALSE, $this_type)) $error[] = "article (magazine)";
-  if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
+  if (getCount('pgrel', $this_id, false, $this_type)) $error[] = "scenario";
+  if (getCount('pcrel', $this_id, false, $this_type)) $error[] = "con (organizer roles)";
+  if (getCount('trivia', $this_id, false, $this_type)) $error[] = "trivia";
+  if (getCount('links', $this_id, false, $this_type)) $error[] = "link";
+  if (getCount('alias', $this_id, false, $this_type)) $error[] = "alias";
+  if (getCount('users', $this_id, false, $this_type)) $error[] = "user";
+  if (getCount('contributor', $this_id, false, $this_type)) $error[] = "article (magazine)";
+  if (getCount('article_reference', $this_id, false, $this_type)) $error[] = "article reference";
   if ($error) {
     $_SESSION['admin']['info'] = "Can't delete. The person still has the following references: " . implode(", ", $error);
     rexit($this_type, ['person' => $person]);
@@ -80,7 +80,7 @@ if ($action == "Delete" && $person) { // Should check if $person id exists
 if ($action == "create") {
   $firstname = trim($firstname);
   $surname = trim($surname);
-  if (strpos($firstname, " ") !== FALSE && $surname === "") { // extract surname from firstname
+  if (strpos($firstname, " ") !== false && $surname === "") { // extract surname from firstname
     $pos = strrpos($firstname, " ");
     $surname = substr($firstname, $pos + 1);
     $firstname = substr($firstname, 0, $pos);
@@ -119,13 +119,13 @@ print "<table border=0>\n";
 
 if ($person) {
   print "<tr><td>ID</td><td>$person - <a href=\"../data?person=$person\" accesskey=\"q\">Show page for person</a>";
-  if ($viewlog == TRUE) {
+  if ($viewlog == true) {
     print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$person\">Show log</a>";
   }
   print "</td></tr>\n";
 }
 
-tr("First name", "firstname", $firstname, "", "", "text", TRUE);
+tr("First name", "firstname", $firstname, "", "", "text", true);
 tr("Surname", "surname", $surname);
 print "<tr valign=\"top\"><td>Internal note</td><td><textarea name=\"internal\" cols=50 rows=8 wrap=\"virtual\">\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
 tr("Date of birth", "birth", $birth, "", "YYYY-MM-DD", (invaliddate($birth) ? "text" : "date"));

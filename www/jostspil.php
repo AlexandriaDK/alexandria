@@ -29,21 +29,21 @@ $from = (string) ($_REQUEST['from'] ?? '');
 $to = (string) ($_REQUEST['to'] ?? '');
 
 // Prepare for errors
-$from_error = $to_error = FALSE;
+$from_error = $to_error = false;
 
 // Numbers are ID's - otherwise get people from name
 if (is_numeric($from)) {
   $from_id = intval($from);
 } elseif ($from) {
   $from_id = getjostid($from);
-  if (!$from_id) $from_error = TRUE;
+  if (!$from_id) $from_error = true;
 }
 
 if (is_numeric($to)) {
   $to_id = intval($to);
 } elseif ($to) {
   $to_id = getjostid($to);
-  if (!$to_id) $to_error = TRUE;
+  if (!$to_id) $to_error = true;
 }
 
 if (isset($from_id)) $from = getentry('person', $from_id);
@@ -159,7 +159,7 @@ if ($mainperson && $subperson) {
 
       $query = $query_nocon;
 
-      if ($showquery ?? FALSE) $content .= "<br>$query<br>\n";
+      if ($showquery ?? false) $content .= "<br>$query<br>\n";
       $q = getall($query);
       print dberror();
       $qnums++;
@@ -171,7 +171,7 @@ if ($mainperson && $subperson) {
         $games[$row['link']]['gameid'] = $row['gameid'];
         $games[$row['link']]['antal'] = $row['antal'];
         if ($row['link'] == $mainperson) {
-          $found = TRUE;
+          $found = true;
           break 2;
         }
         $personstotal++;
@@ -181,7 +181,7 @@ if ($mainperson && $subperson) {
       $i++;
     }
 
-    if ($found == TRUE) {
+    if ($found == true) {
       $content .= sprintf($t->getTemplateVars($qnums == 1 ? '_jost_connected' : '_jost_connected_pl'), $person[$mainperson], $person[$subperson], $qnums);
       if ($qnums >= 6) award_achievement(29);
       if ($qnums >= 10) award_achievement(30);
@@ -192,7 +192,7 @@ if ($mainperson && $subperson) {
     $content .= "<br /><br />\n";
 
     // backtracker
-    if ($found == TRUE) {
+    if ($found == true) {
       $map = "<map name=\"jostresult\">\n";
       $i = 0;
       $find = $mainperson;
@@ -227,7 +227,7 @@ if ($mainperson && $subperson) {
       $map .= "</map>\n";
     }
 
-    if ($found == TRUE) {
+    if ($found == true) {
       // Requires gd
       $content .= $map;
       $content .= "<br /><img src=\"jostgraph.php/sixdegrees_{$mainperson}_{$subperson}.png?" . join(',', $graph) . "\" usemap=\"#jostresult\" style=\"border: 0;\" alt=\"Graph between users\" />\n";

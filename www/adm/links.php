@@ -70,7 +70,7 @@ if ($action == "addlink") {
 if ($data_id && $category) {
   $data_id = intval($data_id);
   $data_field = getFieldFromCategory($category);
-  $linktitle = getlabel($category, $data_id, TRUE);
+  $linktitle = getlabel($category, $data_id, true);
 
   $query = "SELECT id, url, description FROM links WHERE `$data_field` = '$data_id' ORDER BY id";
   $result = getall($query);

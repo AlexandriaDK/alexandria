@@ -38,7 +38,7 @@ function paddate($datestring)
     $datestring .= "-00"; // add blank date
   }
   if ($datestring == "" || $datestring == '0000-00-00') {
-    $datestring = NULL;
+    $datestring = null;
   }
   return $datestring;
 }

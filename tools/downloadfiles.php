@@ -27,7 +27,7 @@ foreach ($files as $file) {
       print "Error: File is empty." . PHP_EOL;
     } else {
       $saved = file_put_contents($filepath, $filedata);
-      if ($saved === FALSE) {
+      if ($saved === false) {
         print "Error: Could not save file." . PHP_EOL;
       }
     }

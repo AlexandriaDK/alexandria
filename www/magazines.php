@@ -4,25 +4,25 @@ require("base.inc.php");
 
 $this_type = 'issue';
 
-$id = NULL;
+$id = null;
 $magazineid = (int) ($_GET['id'] ?? 0);
 $issueid = (int) ($_GET['issue'] ?? 0);
-$error = FALSE;
+$error = false;
 $magazinename = $magazinedescription = '';
 $issue = $issues = $articles = $colophon = $arrows = [];
-$available_pic = $picpath = $picid = FALSE;
+$available_pic = $picpath = $picid = false;
 $internal = '';
 $filelist = [];
 $articles = [];
-$issue_articles = FALSE;
-$ogimage = FALSE;
+$issue_articles = false;
+$ogimage = false;
 
 if ($magazineid) {
   $id = $magazineid;
   list($magazinename, $magazinedescription, $internal) = getrow("SELECT name, description, internal FROM magazine WHERE id = $magazineid");
-  $internal = (($_SESSION['user_editor'] ?? FALSE) ? $internal : ''); // only set internal if editor
+  $internal = (($_SESSION['user_editor'] ?? false) ? $internal : ''); // only set internal if editor
   if (! $magazinename) {
-    $error = TRUE;
+    $error = true;
   } else {
     $issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = $magazineid ORDER BY releasedate, id");
     foreach ($issues as $key => $issue) {
@@ -49,7 +49,7 @@ if ($magazineid) {
   if ($issue['magazineid'] == 1) { // Fønix achievement
     award_achievement(104);
   }
-  $internal = (($_SESSION['user_editor'] ?? FALSE) ? $issue['internal'] : ''); // only set internal if editor
+  $internal = (($_SESSION['user_editor'] ?? false) ? $issue['internal'] : ''); // only set internal if editor
   // two lookups with and without page being NULL could be combined to one
   // No need to create article tree with authors as subset. Template already handles that.
   $colophon = getall("
@@ -72,7 +72,7 @@ if ($magazineid) {
 		AND (page IS NOT NULL OR article.title != '')
 		ORDER BY page, article.id
 	");
-  $lastarticleid = $lastid = FALSE;
+  $lastarticleid = $lastid = false;
   // Adding contributor count to create rowspan for title and description
   foreach ($issue_articles as $articleid => $article) {
     if ($lastarticleid !== $article['id']) {
@@ -93,7 +93,7 @@ if ($magazineid) {
   $issues = getall("SELECT id, title, releasedate, releasetext FROM issue WHERE magazine_id = " . $issue['magazineid'] . " ORDER BY releasedate, id");
   $seriecount = 0;
   $seriedata = [];
-  $seriethis = FALSE;
+  $seriethis = false;
   foreach ($issues as $row) {
     $seriecount++;
     $seriedata[$seriecount]['id'] = $row['id'];
@@ -104,15 +104,15 @@ if ($magazineid) {
     if ($seriethis) {
       if (isset($seriedata[($seriethis - 1)])) {
         $arrows['prev'] = $seriedata[($seriethis - 1)];
-        $arrows['prev']['active'] = TRUE;
+        $arrows['prev']['active'] = true;
       } else {
-        $arrows['prev']['active'] = FALSE;
+        $arrows['prev']['active'] = false;
       }
       if (isset($seriedata[($seriethis + 1)])) {
         $arrows['next'] = $seriedata[($seriethis + 1)];
-        $arrows['next']['active'] = TRUE;
+        $arrows['next']['active'] = true;
       } else {
-        $arrows['next']['active'] = FALSE;
+        $arrows['next']['active'] = false;
       }
     }
   }

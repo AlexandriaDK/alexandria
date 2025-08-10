@@ -28,14 +28,14 @@ htmladmstart("Genre");
 $result = getall("SELECT g.id, g.name, g.genre, ggrel.game_id FROM genre g LEFT JOIN ggrel ON g.id = ggrel.genre_id AND game_id = '$id' ORDER BY g.genre DESC, g.name");
 
 if ($id) {
-  $genre = TRUE;
+  $genre = true;
   print "<form action=\"genre.php\" method=\"post\">\n";
   print "<table align=\"center\">" .
     "<tr><th colspan=2>Set genres for: <a href=\"game.php?game=$id\" accesskey=\"q\">$title</a></th></tr>\n";
 
   foreach ($result as $row) {
-    if ($genre == TRUE && $row['genre'] == 0) {
-      $genre = FALSE;
+    if ($genre == true && $row['genre'] == 0) {
+      $genre = false;
       print '<tr><td colspan="2">&nbsp;</td></tr>';
     }
     print "<tr>";

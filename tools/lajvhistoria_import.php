@@ -10,7 +10,7 @@ function chlog($data_id, $category, $note = "")
 {
   $user = 'Peter Brodersen';
   $authuserid = 4;
-  $data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
+  $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
   $note = dbesc($note);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
@@ -38,7 +38,7 @@ function cleanname($name)
   return $name;
 }
 
-function create_game($game, $persons, $organizations, $multiple_runs = FALSE, $existing_game_id = FALSE)
+function create_game($game, $persons, $organizations, $multiple_runs = false, $existing_game_id = false)
 {
   $genre_lajv_alexandria_map = [
     1 => 3,
@@ -185,7 +185,7 @@ function import_games($games)
 
     foreach ($names as $name) {
       $name = cleanname($name);
-      if (in_array($name, $known_organizations) || (strpos($name, " ", 0) === FALSE)) {
+      if (in_array($name, $known_organizations) || (strpos($name, " ", 0) === false)) {
         $organizations[] = $name;
       } else {
         if (isset($orgmap[$name])) {

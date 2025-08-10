@@ -103,7 +103,7 @@ print "<table border=0>\n";
 
 if ($review_id) {
   print "<tr><td>ID</td><td>$review_id - <a href=\"../data?review=$review_id\" accesskey=\"q\">Show public review</a>";
-  if ($viewlog == TRUE) {
+  if ($viewlog == true) {
     print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$review_id\">Show log</a>";
   }
   print "\n</td></tr>\n";

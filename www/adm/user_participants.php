@@ -37,7 +37,7 @@ doquery("UPDATE game SET gms_min = " . strNullEscape($gms_min) . ", gms_max = " 
 chlog($scenarie, 'game', 'Participants updated');
 award_achievement(82);
 
-$_SESSION['can_edit_participant'][$scenarie] = TRUE;
+$_SESSION['can_edit_participant'][$scenarie] = true;
 
 header("Location: ../data?scenarie=$scenarie");
 exit;

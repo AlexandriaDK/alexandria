@@ -1,10 +1,10 @@
 <?php
 // redirect, hvis resultatet sandsynligvis findes?
-$redirect = TRUE;
+$redirect = true;
 $rredirect = $_REQUEST['redirect'] ?? '';
-if ($rredirect == 'no') $redirect = FALSE;
+if ($rredirect == 'no') $redirect = false;
 
-$debug = FALSE;
+$debug = false;
 
 require("./connect.php");
 require("base.inc.php");
@@ -30,7 +30,7 @@ function check_search_achievements($find)
 {
   if (!$find) return false;
   if (strtolower($find) == strrev(strtolower($find)) && strlen($find) > 1) award_achievement(48); // palindrome
-  if ((strpos(strtolower($find), 'drop table')) !== FALSE) award_achievement(44); // sql injection
+  if ((strpos(strtolower($find), 'drop table')) !== false) award_achievement(44); // sql injection
 }
 
 function search_articles($find)
@@ -50,7 +50,7 @@ function search_articles($find)
   $output = "<ul>" . PHP_EOL;
   foreach ($articles as $article) {
     $output .= "<li>" .
-      getdatahtml('issue', $article['issueid'], getentry('issue', $article['issueid'], FALSE, TRUE)) .
+      getdatahtml('issue', $article['issueid'], getentry('issue', $article['issueid'], false, true)) .
       "<ul><li>" . preg_replace('/' . preg_quote($find, '/') . '/i', '<b>$0</b>', textlinks(htmlspecialchars($article['title'] . ($article['description'] ? ' - ' . $article['description'] : '')))) .
       ($article['page'] ? " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($article['page']) . ')' : '') .
       '</li></ul>' .
@@ -88,7 +88,7 @@ function search_files($find, $category = '')
         $output .= "</ul></li>";
       }
       $output .= "<li>" .
-        getdatahtml($row['category'], $row['data_id'], getentry($row['category'], $row['data_id'], FALSE, ($row['category'] == 'issue'))) .
+        getdatahtml($row['category'], $row['data_id'], getentry($row['category'], $row['data_id'], false, ($row['category'] == 'issue'))) .
         "<ul>";
       $last_id = $row['data_id'];
     }
@@ -111,7 +111,7 @@ function search_files($find, $category = '')
       $languagetext .
       $archivefiletext .
       " (" . $t->getTemplateVars('_file_page') . " " . htmlspecialchars($page) . ")";
-    if ((stripos($row['content'], $find)) !== FALSE) {
+    if ((stripos($row['content'], $find)) !== false) {
       $output .= "<br />" .
         "&nbsp;&nbsp;.. " . preg_replace('/^.*?\s(.{0,40})(' . preg_quote($find, '/') . ')(.{0,40})\s.*$/si', '$1<span class="highlightsearch">$2</span>$3', htmlspecialchars($row['content'])) . " ..";
     }
@@ -143,7 +143,7 @@ function search_blogposts($find)
     $output .= "<li><a href=\"" . $row['link'] . "\">" . htmlspecialchars($row['title']) . "</a> (" . fulldate(date("Y-m-d", strtotime($row['pubdate']))) . ")";
     $output .= "<ul><li>";
     $output .= sprintf($t->getTemplateVars('_find_blogposthit'), '<i>' . htmlspecialchars($row['name']) . '</i>', htmlspecialchars($row['owner']));
-    if ((stripos($row['content'], $find)) !== FALSE) {
+    if ((stripos($row['content'], $find)) !== false) {
       $output .= "<br />" .
         "&nbsp;&nbsp;.. " . preg_replace('/^.*?\s(.{0,40})(' . preg_quote($find, '/') . ')(.{0,40})\s.*$/si', '$1<span class="highlightsearch">$2</span>$3', htmlspecialchars($row['content'])) . " ..";
     }
@@ -292,7 +292,7 @@ if ($find) {
   }
 
   // If only one perfect match, redirect user at once
-  if ($redirect == TRUE) {
+  if ($redirect == true) {
     if (count($link_a) == 1) {
       $link = array_shift($link_a);
       log_search($find, $link);
@@ -330,7 +330,7 @@ if ($find) {
   } elseif ($search_title && !($match['game'])) { // title searched, but no match
     $match['game'] = [];
   } else {
-    if ($match['game'] ?? FALSE) { // found specific titles
+    if ($match['game'] ?? false) { // found specific titles
       $where[] = "id IN (" . implode(",", $match['game']) . ")";
     }
     if ($search_system) {
@@ -439,12 +439,12 @@ if ($debug) {
 }
 
 // Smarty
-$t->assign('find_person', display_result($match['person'] ?? FALSE, "person", "person", "person"));
-$t->assign('find_game', display_result($match['game'] ?? FALSE, "scenarie", "scenarie", "game"));
-$t->assign('find_convention', display_result($match['convention'] ?? FALSE, "con", "con", "convention"));
-$t->assign('find_gamesystem', display_result($match['gamesystem'] ?? FALSE, "system", "system", "gamesystem"));
-$t->assign('find_magazines', display_result($match['magazine'] ?? FALSE, "magazine", "magazine", "magazine"));
-$t->assign('find_locations', display_result($match['locations'] ?? FALSE, "location", "location", "locations"));
+$t->assign('find_person', display_result($match['person'] ?? false, "person", "person", "person"));
+$t->assign('find_game', display_result($match['game'] ?? false, "scenarie", "scenarie", "game"));
+$t->assign('find_convention', display_result($match['convention'] ?? false, "con", "con", "convention"));
+$t->assign('find_gamesystem', display_result($match['gamesystem'] ?? false, "system", "system", "gamesystem"));
+$t->assign('find_magazines', display_result($match['magazine'] ?? false, "magazine", "magazine", "magazine"));
+$t->assign('find_locations', display_result($match['locations'] ?? false, "location", "location", "locations"));
 $t->assign('find_tags', $tagsearch ?? "");
 $t->assign('find_files', $filesearch ?? "");
 $t->assign('find_articles', $articlesearch ?? "");

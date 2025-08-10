@@ -1,8 +1,8 @@
 <?php
 // Check if everything is set up correctly before calling functions and doing random stuff
-$ignoreerrors = FALSE;
+$ignoreerrors = false;
 
-$setuperror = FALSE;
+$setuperror = false;
 $errors = [];
 $required_include_files = ['db.auth.php'];
 $required_php_extensions = ['mysqli', 'mbstring', 'intl', 'gd', 'zip'];
@@ -13,7 +13,7 @@ $required_writable_path = __DIR__ . '/../smarty/templates_c';
 foreach ($required_include_files as $file) {
   $filepath = __DIR__ . '/../includes/' . $file;
   if (! file_exists($filepath)) {
-    $setuperror = TRUE;
+    $setuperror = true;
     $errors[] = "
 Configuration file not found. Make sure the following file exists:
 	includes/" . $file . "
@@ -25,7 +25,7 @@ A template file is provied. You can copy content from this file and fill out the
 
 // PHP Extensions
 if ($missing_php_extensions = array_diff($required_php_extensions, get_loaded_extensions())) {
-  $setuperror = TRUE;
+  $setuperror = true;
   $errors[] = "
 The following required PHP extensions are not installed or enabled: " . implode(" ", $missing_php_extensions) . "
 
@@ -43,7 +43,7 @@ Remember to restart the webserver after installing the extension.
 // Check Apache setup - if running under Apache
 if (function_exists('apache_get_modules')) {
   if ($missing_apache_modules = array_diff($required_apache_modules, apache_get_modules())) {
-    $setuperror = TRUE;
+    $setuperror = true;
     $errors[] = "
 The following required Apache modules are not installed or enabled: " . implode(" ",  $missing_apache_modules) . "
 
@@ -59,7 +59,7 @@ Remember to restart the webserver after enabling the module.
 
 // Check vendor directory and Composer autoloader
 if (! file_exists(__DIR__ . '/../vendor/autoload.php')) {
-  $setuperror = TRUE;
+  $setuperror = true;
   $errors[] = "Composer dependencies are not installed. Please run:
 	composer install
 ";
@@ -67,7 +67,7 @@ if (! file_exists(__DIR__ . '/../vendor/autoload.php')) {
 
 // remember: Writable folder!
 if (! is_writable($required_writable_path)) {
-  $setuperror = TRUE;
+  $setuperror = true;
   $errors[] = "Smarty compiled template folder is not writable. Give full write permission to the following directory:
 	smarty/templates_c/
 ";
@@ -75,7 +75,7 @@ if (! is_writable($required_writable_path)) {
 // should also check if  AllowOverride all  is set for the directory. Or whatever value mod_rewrite requires.
 // mod_rewrite requires  FileInfo  to be enabled.
 
-if ($setuperror === TRUE && $ignoreerrors != TRUE) {
+if ($setuperror === true && $ignoreerrors != true) {
   header("HTTP/1.1 503 Service Unavailable ");
   header("Content-Type: text/plain");
   print "Installation of Alexandria RPG database:

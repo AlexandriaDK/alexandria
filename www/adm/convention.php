@@ -69,7 +69,7 @@ if (!$action && $con) {
     $con_prev = $seriedata['id'][($seriethis - 1)] ?? '';
     $con_next = $seriedata['id'][($seriethis + 1)] ?? '';
   } else {
-    $con = FALSE;
+    $con = false;
   }
 }
 
@@ -108,14 +108,14 @@ if ($action == "edit" && $con) {
 
 if ($action == "Delete" && $con) { // burde tjekke om kongres findes
   $error = [];
-  if (getCount('cgrel', $this_id, FALSE, $this_type)) $error[] = "game";
-  if (getCount('pcrel', $this_id, FALSE, $this_type)) $error[] = "con (organizer)";
-  if (getCount('trivia', $this_id, FALSE, $this_type)) $error[] = "trivia";
-  if (getCount('links', $this_id, FALSE, $this_type)) $error[] = "link";
-  if (getCount('alias', $this_id, FALSE, $this_type)) $error[] = "alias";
-  if (getCount('files', $this_id, FALSE, $this_type)) $error[] = "files";
-  if (getCount('userlog', $this_id, FALSE, $this_type)) $error[] = "user log (requires admin access)";
-  if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
+  if (getCount('cgrel', $this_id, false, $this_type)) $error[] = "game";
+  if (getCount('pcrel', $this_id, false, $this_type)) $error[] = "con (organizer)";
+  if (getCount('trivia', $this_id, false, $this_type)) $error[] = "trivia";
+  if (getCount('links', $this_id, false, $this_type)) $error[] = "link";
+  if (getCount('alias', $this_id, false, $this_type)) $error[] = "alias";
+  if (getCount('files', $this_id, false, $this_type)) $error[] = "files";
+  if (getCount('userlog', $this_id, false, $this_type)) $error[] = "user log (requires admin access)";
+  if (getCount('article_reference', $this_id, false, $this_type)) $error[] = "article reference";
   if ($error) {
     $_SESSION['admin']['info'] = "Can't delete. The congress still has relations: " . implode(", ", $error);
     rexit($this_type, ['con' => $con]);
@@ -204,13 +204,13 @@ if ($con) {
   if ($con_next) {
     print " - <a href=\"convention.php?con=" . $con_next . "\">Next</a>";
   }
-  if ($viewlog == TRUE) {
+  if ($viewlog == true) {
     print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$con\">Show log</a>";
   }
   print "\n</td></tr>\n";
 }
 
-tr("Name", "name", $name, "", "", "text", TRUE, TRUE);
+tr("Name", "name", $name, "", "", "text", true, true);
 tr("Year", "year", $year, "", "", "number");
 if ($begin && $begin != "0000-00-00") {
   $opta = "(" . fulldate($begin) . " = " . customdateformat(LANG, 'cccc', $begin) . ")";
@@ -221,8 +221,8 @@ if ($end && $end != "0000-00-00") {
 }
 
 
-tr("Start date", "begin", $begin, $opta ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conbegin");
-tr("End date", "end", $end, $optb ?? '', "YYYY-MM-DD", "date", FALSE, FALSE, "conend");
+tr("Start date", "begin", $begin, $opta ?? '', "YYYY-MM-DD", "date", false, false, "conbegin");
+tr("End date", "end", $end, $optb ?? '', "YYYY-MM-DD", "date", false, false, "conend");
 
 if ($place) {
   $convention_locations = getall(

@@ -58,7 +58,7 @@ $cons_list    = conListByConfirmedGroup(1);
 $cons_content = conListByConfirmedGroup(3);
 $cons_missing = conListByConfirmedGroup(0);
 
-$t->assign('todo_tabs', TRUE);
+$t->assign('todo_tabs', true);
 $t->assign('cons_list', $cons_list);
 $t->assign('cons_content', $cons_content);
 $t->assign('cons_missing', $cons_missing);

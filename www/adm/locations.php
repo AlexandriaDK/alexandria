@@ -19,14 +19,14 @@ $relation_id = (int) $_REQUEST['relation_id'];
 $gamerun_id = (int) $_REQUEST['gamerun_id'];
 $convention_id = (int) $_REQUEST['convention_id'];
 $event_locations = (array) $_REQUEST['event_locations'];
-$new = FALSE;
+$new = false;
 
 
 if ($action == "createlocation") {
   doquery("INSERT INTO locations (name, address, city, country, note) VALUES ('','','','','')");
   $id = dbid();
   $action = "updatelocation";
-  $new = TRUE;
+  $new = true;
 }
 
 // Edit location
@@ -57,7 +57,7 @@ if ($action == "updatelocation" && $id) {
 // Delete location
 if ($action == "Delete" && $id) {
   $error = [];
-  if (getCount('lrel', $id, FALSE, 'location')) $error[] = "convention/game run";
+  if (getCount('lrel', $id, false, 'location')) $error[] = "convention/game run";
   if ($error) {
     $_SESSION['admin']['info'] = "Can't delete. The location still has the following references: " . implode(", ", $error);
     rexit($this_type, ['id' => $id]);
@@ -81,7 +81,7 @@ if ($action == "createrelation" && $id) {
     $_SESSION['admin']['info'] = "Didn't find id in relation! " . dberror();
     rexit($this_type, ['id' => $id]);
   }
-  $convention_id = $gamerun_id = NULL;
+  $convention_id = $gamerun_id = null;
   if ($matches['1'] == 'c') {
     $convention_id = $matches[2];
   } elseif ($matches['1'] == 'gr') {
@@ -167,7 +167,7 @@ $head = '
 
 htmladmstart("Locations", $head);
 
-function trEdit($label, $attribute, $value, $editable = TRUE, $placeholder = "", $extra_field_id = "", $extra_field_value = "")
+function trEdit($label, $attribute, $value, $editable = true, $placeholder = "", $extra_field_id = "", $extra_field_value = "")
 {
   $html = '<tr>' .
     '<td>' . htmlspecialchars($label) . '</td>';
@@ -368,7 +368,7 @@ function showLocations()
   print '</tbody></table>';
 }
 
-function showLocation($id = NULL)
+function showLocation($id = null)
 {
   global $this_type;
   if ($id) {
@@ -397,14 +397,14 @@ function showLocation($id = NULL)
   print '<div><a href="locations.php?action=new">New location</a> - <a href="locations.php" accesskey="w">All locations</a></div>';
   print '<form action="locations.php" method="post"><input type="hidden" name="action" value="' . $action . '"><input type="hidden" name="id" value="' . $location['id'] . '">';
   print '<table><tr><td>ID</td><td>' . $location['id'] . ($location['id'] ? ' - <a href="../locations?id=' . $location['id'] . '" accesskey="q">Show location page</a> - <a href="showlog.php?category=locations&data_id=' . $location['id'] . '">Show log</a>' : '') .
-    trEdit('Name', 'name', $location['name'], TRUE, '', 'namenote', '') .
+    trEdit('Name', 'name', $location['name'], true, '', 'namenote', '') .
     trEdit('Address', 'address', $location['address']) .
     trEdit('City', 'city', $location['city']) .
-    trEdit('Country code', 'country', $location['country'], TRUE, "Two letter ISO code, e.g.: se", "countrynote", $countryname) .
-    trEdit('Coordinate', 'latlon', $latlon, TRUE, "Latitude,Longitude (WGS84)") .
+    trEdit('Country code', 'country', $location['country'], true, "Two letter ISO code, e.g.: se", "countrynote", $countryname) .
+    trEdit('Coordinate', 'latlon', $latlon, true, "Latitude,Longitude (WGS84)") .
     trEdit('Note', 'note', $location['note']) .
     changealias($id, $this_type) .
-    trEdit('Connections', 'connections', $location['connections'], FALSE) .
+    trEdit('Connections', 'connections', $location['connections'], false) .
     '<tr><td></td><td><input type="submit" value="' . $actionlabel . '">' . ($id ? ' <input type="submit" name="action" value="Delete" onclick="return confirm(\'Delete location?\n\nAs a safety mecanism it will be checked if all references are removed.\');" class="delete">' : '') . '</td></tr>' .
     '</table>';
   print '</form>' . PHP_EOL;
@@ -425,16 +425,16 @@ function showLocation($id = NULL)
   $longitude = 11;
   $latitude = 56;
   $zoom = 7;
-  $marker = FALSE;
+  $marker = false;
   if ($location['geo']) {
     $longitude = $location['longitude'];
     $latitude = $location['latitude'] - 0.0001; // More south = in front of existing marker
     $zoom = 16;
-    $marker = TRUE;
+    $marker = true;
   }
   $js = generateJSMapHTML($latitude, $longitude, $zoom, $marker);
   print $js;
-  return TRUE;
+  return true;
 }
 
 function showEvent($type, $id)

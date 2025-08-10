@@ -38,7 +38,7 @@ foreach ($files as $file) {
   // print "Opening $filepath" . PHP_EOL;
   $zip = new ZipArchive;
   $list = $zip->open($filepath);
-  if ($list !== TRUE) {
+  if ($list !== true) {
     print "Can't read zip file (error: " . $list . "). Skipping." . PHP_EOL;
     continue;
   }

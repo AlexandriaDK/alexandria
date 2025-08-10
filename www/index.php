@@ -22,7 +22,7 @@ foreach (getnews(10) as $data) {
 // for admins
 $recentlog = $translations = [];
 #if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
-if ($_SESSION['user_editor'] ?? FALSE) {
+if ($_SESSION['user_editor'] ?? false) {
   $recentlog = getrecentlog(10);
   $translations = getTranslationOverview();
 }

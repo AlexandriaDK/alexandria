@@ -1,5 +1,5 @@
 <?php
-$admonly = TRUE;
+$admonly = true;
 require "adm.inc.php";
 require "base.inc.php";
 chdir("..");
@@ -15,12 +15,12 @@ print "</pre>";
 
 print "<h1>Cookie:</h1>";
 print "<pre>";
-print htmlspecialchars(print_r($_COOKIE, TRUE));
+print htmlspecialchars(print_r($_COOKIE, true));
 print "</pre>";
 
 print "<h1>Session:</h1>";
 print "<pre>";
-print htmlspecialchars(print_r($_SESSION, TRUE));
+print htmlspecialchars(print_r($_SESSION, true));
 print "</pre>";
 
 

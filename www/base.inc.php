@@ -96,8 +96,8 @@ if ($searchterm !== '') {
 }
 
 // Check if SQL structure even exists
-if (!defined('DBERROR') && (getone("SHOW tables LIKE 'installation'") === NULL || getone("SELECT `value` FROM installation WHERE `key` = 'status'") != 'live')) { // Table does not exist!
-  define("INSTALLNOW", TRUE);
+if (!defined('DBERROR') && (getone("SHOW tables LIKE 'installation'") === null || getone("SELECT `value` FROM installation WHERE `key` = 'status'") != 'live')) { // Table does not exist!
+  define("INSTALLNOW", true);
   require("installation.php");
   exit;
 };
@@ -112,13 +112,13 @@ if (!defined('DBERROR')) {
 
   if (isset($_SESSION['user_id'])) {
     $t->assign('user_id', $_SESSION['user_id']);
-    $t->assign('user_author_id', $_SESSION['user_author_id'] ?? FALSE);
-    $t->assign('user_site', $_SESSION['user_site'] ?? FALSE);
-    $t->assign('user_site_id', $_SESSION['user_site_id'] ?? FALSE);
-    $t->assign('user_name', $_SESSION['user_name'] ?? FALSE);
-    $t->assign('user_editor', $_SESSION['user_editor'] ?? FALSE);
-    $t->assign('user_admin', $_SESSION['user_admin'] ?? FALSE);
-    $t->assign('user_achievements_to_display', get_achievements_to_display());
+    $t->assign('user_author_id', $_SESSION['user_author_id'] ?? false);
+    $t->assign('user_site', $_SESSION['user_site'] ?? false);
+    $t->assign('user_site_id', $_SESSION['user_site_id'] ?? false);
+    $t->assign('user_name', $_SESSION['user_name'] ?? false);
+    $t->assign('user_editor', $_SESSION['user_editor'] ?? false);
+    $t->assign('user_admin', $_SESSION['user_admin'] ?? false);
+    $t->assign('user_achievements_to_display', getAchievementsToDisplay());
     $t->assign('token', $_SESSION['token'] ?? '');
   }
   $t->assign('ALEXLANGUAGES', $alexlanguages);
@@ -131,7 +131,7 @@ if (!defined('DBERROR')) {
   }
   $t->assign('ip', $_SERVER['REMOTE_ADDR'] ?? "");
 } else {
-  $t->assign('dberror', TRUE);
+  $t->assign('dberror', true);
 }
 
 // Import language strings
@@ -155,7 +155,7 @@ if (!defined('DBERROR')) {
     last_active = NOW()
     WHERE id = " . $_SESSION['user_id']
     );
-    if ($_SESSION['user_author_id'] ?? FALSE) {
+    if ($_SESSION['user_author_id'] ?? false) {
       $scenario_missing_participants = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) INNER JOIN cgrel c ON a.id = c.game_id AND c.presentation_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
       $scenario_missing_tags = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) LEFT JOIN tags c ON a.id = c.game_id AND c.tag != 'English' WHERE c.game_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
       if ($scenario_missing_participants && $scenario_missing_tags) {
@@ -261,7 +261,7 @@ function do_sso_login($siteuserid, $name, $site)
   $_SESSION['user_admin'] = (bool) getone("SELECT admin FROM users WHERE id = '$user_id'");
   $_SESSION['user_achievements'] = getcol("SELECT achievement_id FROM user_achievements WHERE user_id = '$user_id'");
   $_SESSION['token'] = md5('Alex(/(!"' . $site . uniqid()); // partially used, move salt to config if implemented
-  $_SESSION['do_redirect'] = TRUE;
+  $_SESSION['do_redirect'] = true;
   check_login_achievements();
 
   return $user_id;
@@ -315,7 +315,7 @@ function award_user_achievement($user_id, $achievement_id, $shown = 0)
   if (!$id) {
     $id = doquery("INSERT INTO user_achievements (user_id, achievement_id, completed, shown) VALUES ($user_id, $achievement_id, NOW(), $shown)");
     // update current list
-    $t->assign('user_achievements_to_display', get_achievements_to_display());
+    $t->assign('user_achievements_to_display', getAchievementsToDisplay());
     return $id;
   } else {
     return false;
@@ -328,11 +328,11 @@ function check_login_achievements()
   $time = date("H:i");
   if ($time == '13:37') award_achievement(47);
   //	if ($date == '04-01') award_achievement(50); // april fool's... should first show the day after?
-  if ($_SESSION['user_editor'] == TRUE) award_achievement(22); // editor
-  if ($_SESSION['user_admin'] == TRUE) award_achievement(23); // admin
+  if ($_SESSION['user_editor']) award_achievement(22); // editor
+  if ($_SESSION['user_admin']) award_achievement(23); // admin
 }
 
-function get_achievements_to_display()
+function getAchievementsToDisplay()
 {
   $user_id = (int) $_SESSION['user_id'];
   doquery("SET @c = 0");
@@ -344,7 +344,7 @@ function check_begin_page_achievements()
 {
   // user agent achievements
   $user_agent = $_SERVER['HTTP_USER_AGENT'];
-  if (strpos($user_agent, ' Edge/') !== FALSE) award_achievement(90);
+  if (strpos($user_agent, ' Edge/') !== false) award_achievement(90);
 
   // referer achievements
   $referer = $_SERVER['HTTP_REFERER'] ?? NULL;
@@ -387,7 +387,7 @@ function check_begin_page_achievements()
 
 function achievements_shown()
 {
-  $user_id = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : FALSE;
+  $user_id = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : false;
   if (!$user_id) return false;
   doquery("UPDATE user_achievements SET shown = 1 WHERE user_id = $user_id");
 }
@@ -546,7 +546,7 @@ function getcategorythumbdir($category)
 
 function hasthumbnailpic($id, $category)
 {
-  $available_pic = FALSE;
+  $available_pic = false;
 
   $folder = getcategorythumbdir($category);
   // create thumbnail if large image exists
@@ -557,7 +557,7 @@ function hasthumbnailpic($id, $category)
   }
 
   if (file_exists($path_small)) {
-    $available_pic = TRUE;
+    $available_pic = true;
   }
   return $available_pic;
 }
@@ -569,7 +569,7 @@ function getimageifexists($id, $category)
   if (file_exists($path)) {
     return $path;
   }
-  return FALSE;
+  return false;
 }
 
 function pubdateprint($datetime)
@@ -660,7 +660,7 @@ function _textlink($string, $absolute_url = 0)
     if ($cat == "tag") {
       // Ugly hack to prevent cases with double html escaping; we do an escape further down when creating the link and text
       $text = html_entity_decode($text);
-      if (strpos($text, '|') !== FALSE) {
+      if (strpos($text, '|') !== false) {
         list($taglink, $text) = explode("|", $text, 2);
       } else {
         $taglink = $text;
@@ -949,12 +949,12 @@ function getalluserentries($category, $data_id)
   return $result;
 }
 
-function getentryhtml($cat, $data_id, $admin = FALSE)
+function getentryhtml($cat, $data_id, $admin = false)
 {
   return getdatahtml($cat, $data_id, getentry($cat, $data_id), $admin);
 }
 
-function getdatahtml($cat, $data_id, $text, $admin = FALSE)
+function getdatahtml($cat, $data_id, $text, $admin = false)
 {
   $link = getdatalink($cat, $data_id, $admin);
 
@@ -1008,7 +1008,7 @@ function getrecentlog($limit = 10)
 }
 
 
-function getdatalink($cat, $data_id, $admin = FALSE)
+function getdatalink($cat, $data_id, $admin = false)
 {
   switch ($cat) {
     case 'person':
@@ -1168,7 +1168,7 @@ function gettaglist($data_id, $cat)
   return $tags;
 }
 
-function getalltags($count = FALSE)
+function getalltags($count = false)
 {
   if (!$count) {
     $tags = getcol("SELECT DISTINCT tag FROM tags ORDER BY tag");
@@ -1230,7 +1230,7 @@ function getarticlereferences($data_id, $category)
   return $articles;
 }
 
-function getorganizerlist($data_id, $category, $order = FALSE)
+function getorganizerlist($data_id, $category, $order = false)
 {
   $organizerlist = [];
   if ($category == 'convention') {
@@ -1419,9 +1419,9 @@ function getLocaleFromLang($lang)
 }
 
 // MySQL lookup:
-function getentry($cat, $data_id, $with_category = FALSE, $with_magazine = FALSE)
+function getentry($cat, $data_id, $with_category = false, $with_magazine = false)
 {
-  $value = $label = FALSE;
+  $value = $label = false;
   $data_id_orig = $data_id;
   $data_id = (int) $data_id;
 
@@ -1542,7 +1542,7 @@ function getone($query)
   return $data;
 }
 
-function getrow($query, $array = TRUE)
+function getrow($query, $array = true)
 {
   global $dblink;
   $result = mysqli_query($dblink, $query);
@@ -1589,7 +1589,7 @@ function getcolid($query)
   return $data;
 }
 
-function getallid($query, $array = TRUE)
+function getallid($query, $array = true)
 {
   global $dblink;
   $result = mysqli_query($dblink, $query);
@@ -1612,7 +1612,7 @@ function getallid($query, $array = TRUE)
   return $data;
 }
 
-function getall($query, $array = TRUE)
+function getall($query, $array = true)
 {
   global $dblink;
   $result = mysqli_query($dblink, $query);
@@ -1703,7 +1703,7 @@ function image_rescale_save($source, $destination, $max_width, $max_height)
 function smarty_function_con($con)
 {
   $html  = "";
-  if (is_array($con['dataset'] ?? FALSE)) {
+  if (is_array($con['dataset'] ?? false)) {
     $con = $con['dataset'];
   }
   $id = $con['id'] ?? 0;
