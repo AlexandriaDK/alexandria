@@ -1,7 +1,4 @@
 <?php
-// Alexandria DB and news import script (PHP CLI)
-// Usage: php db_and_news_import.php
-
 ini_set('memory_limit', '1G');
 set_time_limit(0);
 
@@ -12,10 +9,12 @@ $DB_NAME = getenv('DB_NAME') ?: 'alexandria';
 $ALEXANDRIA_URL = getenv('ALEXANDRIA_URL') ?: 'https://alexandria.dk/en/export?dataset=all';
 $RSS_URL = getenv('RSS_URL') ?: 'https://alexandria.dk/rss.php';
 
-function wait_for_mysql($mysqli)
+function waitForMysql($mysqli)
 {
   for ($i = 0; $i < 60; $i++) {
-    if ($mysqli->connect_errno === 0) return;
+    if ($mysqli->connect_errno === 0) {
+      return;
+    }
     echo "Waiting for MySQL...\n";
     sleep(2);
   }
@@ -23,7 +22,7 @@ function wait_for_mysql($mysqli)
   exit(1);
 }
 
-function fetch_json($url)
+function fetchJson($url)
 {
   echo "Downloading data from $url\n";
   $json = file_get_contents($url);
@@ -39,7 +38,7 @@ function fetch_json($url)
   return $data['result'];
 }
 
-function fetch_rss($url)
+function fetchRss($url)
 {
   echo "Downloading RSS from $url\n";
   $rss = file_get_contents($url);
@@ -50,18 +49,20 @@ function fetch_rss($url)
   return $rss;
 }
 
-function parse_rss_date($date_str)
+function parseRssDate($date_str)
 {
   $parts = explode(' ', $date_str);
   if (count($parts) >= 5) {
     $date_part = implode(' ', array_slice($parts, 1, 4));
     $dt = DateTime::createFromFormat('d M Y H:i:s', $date_part);
-    if ($dt) return $dt->format('Y-m-d H:i:s');
+    if ($dt) {
+      return $dt->format('Y-m-d H:i:s');
+    }
   }
   return date('Y-m-d H:i:s');
 }
 
-function import_data($mysqli, $data)
+function importData($mysqli, $data)
 {
   $table_order = [
     'persons',
@@ -132,7 +133,9 @@ function import_data($mysqli, $data)
     'genre_game_relations' => 'ggrel'
   ];
   foreach ($table_order as $table) {
-    if (empty($data[$table])) continue;
+    if (empty($data[$table])) {
+      continue;
+    }
     $db_table = $table_map[$table] ?? $table;
     echo "Importing $table -> $db_table (" . count($data[$table]) . " rows)\n";
     $mysqli->begin_transaction();
@@ -182,15 +185,17 @@ function import_data($mysqli, $data)
   echo "Import complete.\n";
 }
 
-function import_news($mysqli, $rss_content)
+function importNews($mysqli, $rss_content)
 {
-  if (!$rss_content) return;
+  if (!$rss_content) {
+    return;
+  }
   $xml = new SimpleXMLElement($rss_content);
   $imported = 0;
   $skipped = 0;
   foreach ($xml->channel->item as $item) {
     $desc = html_entity_decode((string)$item->description, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    $pubdate = parse_rss_date((string)$item->pubDate);
+    $pubdate = parseRssDate((string)$item->pubDate);
     // Check for duplicates
     $stmt = $mysqli->prepare("SELECT id FROM news WHERE text = ? AND published = ?");
     $stmt->bind_param('ss', $desc, $pubdate);
@@ -233,8 +238,8 @@ if ($mysqli->connect_errno !== 0) {
 $res = $mysqli->query("SELECT COUNT(*) FROM person");
 $row = $res->fetch_row();
 if ($row[0] == 0) {
-  $data = fetch_json($ALEXANDRIA_URL);
-  import_data($mysqli, $data);
+  $data = fetchJson($ALEXANDRIA_URL);
+  importData($mysqli, $data);
 } else {
   echo "Database already populated ($row[0] rows in person table). Skipping main import.\n";
 }
@@ -243,8 +248,8 @@ if ($row[0] == 0) {
 $res = $mysqli->query("SELECT COUNT(*) FROM news");
 $row = $res->fetch_row();
 if ($row[0] == 0) {
-  $rss_content = fetch_rss($RSS_URL);
-  import_news($mysqli, $rss_content);
+  $rss_content = fetchRss($RSS_URL);
+  importNews($mysqli, $rss_content);
 } else {
   echo "News table already populated ($row[0] rows). Skipping news import.\n";
 }
