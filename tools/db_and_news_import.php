@@ -2,48 +2,61 @@
 ini_set('memory_limit', '1G');
 set_time_limit(0);
 
-$DB_HOST = getenv('DB_HOST') ?: 'db';
-$DB_USER = getenv('DB_USER') ?: 'alexuser';
-$DB_PASS = getenv('DB_PASS') ?: 'alexpass';
-$DB_NAME = getenv('DB_NAME') ?: 'alexandria';
-$ALEXANDRIA_URL = getenv('ALEXANDRIA_URL') ?: 'https://alexandria.dk/en/export?dataset=all';
-$RSS_URL = getenv('RSS_URL') ?: 'https://alexandria.dk/rss.php';
+// --- Configuration ---
+define('DB_HOST', getenv('DB_HOST') ?: 'db');
+define('DB_USER', getenv('DB_USER') ?: 'alexuser');
+define('DB_PASS', getenv('DB_PASS') ?: 'alexpass');
+define('DB_NAME', getenv('DB_NAME') ?: 'alexandria');
+define('ALEXANDRIA_URL', getenv('ALEXANDRIA_URL') ?: 'https://alexandria.dk/en/export?dataset=all');
+define('RSS_URL', getenv('RSS_URL') ?: 'https://alexandria.dk/rss.php');
 
-function waitForMysql($mysqli)
+// --- Utility Functions ---
+
+define('PREPARE_FAILED_MSG', 'Prepare failed: ');
+function logMsg($msg, $isError = false)
 {
-  for ($i = 0; $i < 60; $i++) {
+  $prefix = $isError ? '[ERROR] ' : '[INFO] ';
+  fwrite($isError ? STDERR : STDOUT, $prefix . $msg . "\n");
+}
+
+function exitWithError($msg, $code = 1)
+{
+  logMsg($msg, true);
+  exit($code);
+}
+
+function waitForMysql($mysqli, $maxTries = 60, $sleepSec = 2)
+{
+  for ($i = 0; $i < $maxTries; $i++) {
     if ($mysqli->connect_errno === 0) {
-      return;
+      return true;
     }
-    echo "Waiting for MySQL...\n";
-    sleep(2);
+    logMsg("Waiting for MySQL...");
+    sleep($sleepSec);
   }
-  echo "MySQL not ready after 2 minutes, exiting.\n";
-  exit(1);
+  exitWithError("MySQL not ready after " . ($maxTries * $sleepSec / 60) . " minutes, exiting.");
 }
 
 function fetchJson($url)
 {
-  echo "Downloading data from $url\n";
-  $json = file_get_contents($url);
+  logMsg("Downloading data from $url");
+  $json = @file_get_contents($url);
   if ($json === false) {
-    echo "Error: Failed to download JSON from $url\n";
-    exit(1);
+    exitWithError("Failed to download JSON from $url");
   }
   $data = json_decode($json, true);
   if (!$data || !isset($data['result'])) {
-    echo "Error: Invalid JSON\n";
-    exit(1);
+    exitWithError("Invalid JSON from $url");
   }
   return $data['result'];
 }
 
 function fetchRss($url)
 {
-  echo "Downloading RSS from $url\n";
-  $rss = file_get_contents($url);
+  logMsg("Downloading RSS from $url");
+  $rss = @file_get_contents($url);
   if ($rss === false) {
-    echo "Warning: Failed to download RSS from $url. Skipping news import.\n";
+    logMsg("Failed to download RSS from $url. Skipping news import.", true);
     return null;
   }
   return $rss;
@@ -60,6 +73,74 @@ function parseRssDate($date_str)
     }
   }
   return date('Y-m-d H:i:s');
+}
+
+function prepareLocationRow(array $row)
+{
+  if (isset($row['latitude'], $row['longitude'])) {
+    $lat = $row['latitude'];
+    $lon = $row['longitude'];
+    if ($lat !== null && $lon !== null) {
+      $row['geo'] = "ST_GeomFromText('POINT($lat $lon)', 4326)";
+    }
+  }
+  unset($row['latitude'], $row['longitude']);
+  return $row;
+}
+
+function buildInsertStatement($db_table, array $row)
+{
+  $keys = array_keys($row);
+  $fields = '`' . implode('`,`', $keys) . '`';
+  $placeholders = [];
+  $values = [];
+  foreach ($keys as $k) {
+    if ($k === 'geo' && strpos($row[$k], 'ST_GeomFromText') === 0) {
+      $placeholders[] = $row[$k];
+    } else {
+      $placeholders[] = '?';
+      $values[] = $row[$k];
+    }
+  }
+  $values_clause = implode(',', $placeholders);
+  $sql = "INSERT IGNORE INTO `$db_table` ($fields) VALUES ($values_clause)";
+  return [$sql, $values];
+}
+
+function insertRow($mysqli, $sql, $values)
+{
+  $stmt = $mysqli->prepare($sql);
+  if (!$stmt) {
+    logMsg(PREPARE_FAILED_MSG . $mysqli->error, true);
+    return false;
+  }
+  if ($values) {
+    $types = str_repeat('s', count($values));
+    $stmt->bind_param($types, ...$values);
+  }
+  if (!$stmt->execute()) {
+    logMsg("Execute failed: " . $stmt->error, true);
+    $stmt->close();
+    return false;
+  }
+  $stmt->close();
+  return true;
+}
+
+function importTable($mysqli, $table, $db_table, $rows)
+{
+  logMsg("Importing $table -> $db_table (" . count($rows) . " rows)");
+  $mysqli->begin_transaction();
+  foreach ($rows as $row) {
+    if ($table === 'locations') {
+      $row = prepareLocationRow($row);
+    }
+    list($sql, $values) = buildInsertStatement($db_table, $row);
+    if (!insertRow($mysqli, $sql, $values)) {
+      logMsg("Error preparing SQL for $db_table: " . $mysqli->error . " Row: " . json_encode($row), true);
+    }
+  }
+  $mysqli->commit();
 }
 
 function importData($mysqli, $data)
@@ -133,56 +214,16 @@ function importData($mysqli, $data)
     'genre_game_relations' => 'ggrel'
   ];
   foreach ($table_order as $table) {
-    if (empty($data[$table])) {
-      continue;
+    if (!empty($data[$table])) {
+      $db_table = $table_map[$table] ?? $table;
+      importTable($mysqli, $table, $db_table, $data[$table]);
     }
-    $db_table = $table_map[$table] ?? $table;
-    echo "Importing $table -> $db_table (" . count($data[$table]) . " rows)\n";
-    $mysqli->begin_transaction();
-    foreach ($data[$table] as $row) {
-      // Geometry for locations
-      if ($table === 'locations') {
-        if (isset($row['latitude'], $row['longitude'])) {
-          $exported_lat = $row['latitude'];
-          $exported_lon = $row['longitude'];
-          if ($exported_lat !== null && $exported_lon !== null) {
-            $row['geo'] = "ST_GeomFromText('POINT($exported_lat $exported_lon)', 4326)";
-          }
-        }
-        unset($row['latitude'], $row['longitude']); // Always remove, even if not set
-      }
-      $keys = array_keys($row);
-      $fields = '`' . implode('`,`', $keys) . '`';
-      $placeholders = [];
-      $values = [];
-      foreach ($keys as $k) {
-        if ($k === 'geo' && strpos($row[$k], 'ST_GeomFromText') === 0) {
-          $placeholders[] = $row[$k]; // raw SQL
-        } else {
-          $placeholders[] = '?';
-          $values[] = $row[$k];
-        }
-      }
-      $values_clause = implode(',', $placeholders);
-      $sql = "INSERT IGNORE INTO `$db_table` ($fields) VALUES ($values_clause)";
-      $stmt = $mysqli->prepare($sql);
-      if ($stmt) {
-        if ($values) {
-          $stmt->bind_param(str_repeat('s', count($values)), ...$values);
-        }
-        $stmt->execute();
-        $stmt->close();
-      } else {
-        echo "Error preparing SQL for $db_table: " . $mysqli->error . "\nRow: " . json_encode($row) . "\n";
-      }
-    }
-    $mysqli->commit();
   }
   // Set installation status to 'live'
   if (!$mysqli->query("INSERT INTO `installation` (`key`, `value`) VALUES ('status', 'live') ON DUPLICATE KEY UPDATE `value` = 'live'")) {
-    echo "Error setting installation status: " . $mysqli->error . "\n";
+    logMsg("Error setting installation status: " . $mysqli->error, true);
   }
-  echo "Import complete.\n";
+  logMsg("Import complete.");
 }
 
 function importNews($mysqli, $rss_content)
@@ -190,7 +231,11 @@ function importNews($mysqli, $rss_content)
   if (!$rss_content) {
     return;
   }
-  $xml = new SimpleXMLElement($rss_content);
+  $xml = @simplexml_load_string($rss_content);
+  if (!$xml || !isset($xml->channel->item)) {
+    logMsg("Invalid RSS XML. Skipping news import.", true);
+    return;
+  }
   $imported = 0;
   $skipped = 0;
   foreach ($xml->channel->item as $item) {
@@ -198,6 +243,10 @@ function importNews($mysqli, $rss_content)
     $pubdate = parseRssDate((string)$item->pubDate);
     // Check for duplicates
     $stmt = $mysqli->prepare("SELECT id FROM news WHERE text = ? AND published = ?");
+    if (!$stmt) {
+      logMsg(PREPARE_FAILED_MSG . $mysqli->error, true);
+      continue;
+    }
     $stmt->bind_param('ss', $desc, $pubdate);
     $stmt->execute();
     $stmt->store_result();
@@ -208,50 +257,50 @@ function importNews($mysqli, $rss_content)
     }
     $stmt->close();
     $stmt = $mysqli->prepare("INSERT INTO news (text, published, online) VALUES (?, ?, 1)");
+    if (!$stmt) {
+      logMsg(PREPARE_FAILED_MSG . $mysqli->error, true);
+      continue;
+    }
     $stmt->bind_param('ss', $desc, $pubdate);
-    $stmt->execute();
+    if ($stmt->execute()) {
+      $imported++;
+      logMsg("Imported: " . substr($desc, 0, 50) . "... ($pubdate)");
+    } else {
+      logMsg("Insert failed: " . $stmt->error, true);
+    }
     $stmt->close();
-    $imported++;
-    echo "Imported: " . substr($desc, 0, 50) . "... ($pubdate)\n";
   }
-  echo "\nImport complete: $imported imported, $skipped skipped\n";
+  logMsg("Import complete: $imported imported, $skipped skipped");
 }
 
-// Main
-$maxTries = 60;
-$tries = 0;
-do {
-  $mysqli = @new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
-  if ($mysqli->connect_errno === 0) {
-    break;
-  }
-  echo "Waiting for MySQL...\n";
-  sleep(2);
-  $tries++;
-} while ($tries < $maxTries);
-if ($mysqli->connect_errno !== 0) {
-  echo "MySQL not ready after $maxTries tries, exiting.\n";
-  exit(1);
-}
+// --- Main Execution ---
+$mysqli = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+waitForMysql($mysqli);
 
 // Main DB import if empty
 $res = $mysqli->query("SELECT COUNT(*) FROM person");
+if (!$res) {
+  exitWithError("Failed to query person table: " . $mysqli->error);
+}
 $row = $res->fetch_row();
 if ($row[0] == 0) {
-  $data = fetchJson($ALEXANDRIA_URL);
+  $data = fetchJson(ALEXANDRIA_URL);
   importData($mysqli, $data);
 } else {
-  echo "Database already populated ($row[0] rows in person table). Skipping main import.\n";
+  logMsg("Database already populated ($row[0] rows in person table). Skipping main import.");
 }
 
 // News import if empty
 $res = $mysqli->query("SELECT COUNT(*) FROM news");
+if (!$res) {
+  exitWithError("Failed to query news table: " . $mysqli->error);
+}
 $row = $res->fetch_row();
 if ($row[0] == 0) {
-  $rss_content = fetchRss($RSS_URL);
+  $rss_content = fetchRss(RSS_URL);
   importNews($mysqli, $rss_content);
 } else {
-  echo "News table already populated ($row[0] rows). Skipping news import.\n";
+  logMsg("News table already populated ($row[0] rows). Skipping news import.");
 }
 
 $mysqli->close();
