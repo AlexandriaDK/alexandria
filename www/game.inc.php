@@ -153,11 +153,11 @@ foreach ($q as $rs) {
 $personlist = '';
 if ($personrungroups) { // ugly mix of HTML and non-HTML created above
   foreach ($personrungroups as $group) {
-    if ($group['label']) {
-      $cancelledcss = $group['cancelled'] ? 'cancelled' : '';
+    if (is_array($group) && !empty($group['label'])) {
+      $cancelledcss = !empty($group['cancelled']) ? 'cancelled' : '';
       $personlist .= '<h4 class="peoplegamerun ' . $cancelledcss . '">' . htmlspecialchars($group['label']) . '</h4>' . PHP_EOL;
     }
-    if ($group['persons']) {
+    if (is_array($group) && !empty($group['persons'])) {
       $personlist .= '<table class="people indata">' . implode(' ', $group['persons']) . '</table>' . PHP_EOL;
     }
   }
