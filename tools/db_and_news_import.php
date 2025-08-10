@@ -25,11 +25,12 @@ function exitWithError($msg, $code = 1)
   exit($code);
 }
 
-function waitForMysql($mysqli, $maxTries = 60, $sleepSec = 2)
+function waitForMysql($host, $user, $pass, $db, $maxTries = 60, $sleepSec = 2)
 {
   for ($i = 0; $i < $maxTries; $i++) {
+    $mysqli = @new mysqli($host, $user, $pass, $db);
     if ($mysqli->connect_errno === 0) {
-      return true;
+      return $mysqli;
     }
     logMsg("Waiting for MySQL...");
     sleep($sleepSec);
@@ -274,8 +275,7 @@ function importNews($mysqli, $rss_content)
 }
 
 // --- Main Execution ---
-$mysqli = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-waitForMysql($mysqli);
+$mysqli = waitForMysql(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 // Main DB import if empty
 $res = $mysqli->query("SELECT COUNT(*) FROM person");
