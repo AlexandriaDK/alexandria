@@ -206,16 +206,6 @@ function set_session_redirect_url()
   return true;
 }
 
-function do_twitter_login($siteuserid, $name)
-{
-  do_sso_login($siteuserid, $name, 'twitter');
-}
-
-function do_twitch_login($siteuserid, $name)
-{
-  do_sso_login($siteuserid, $name, 'twitch');
-}
-
 function do_discord_login($siteuserid, $name)
 {
   do_sso_login($siteuserid, $name, 'discord');
@@ -370,7 +360,6 @@ function check_begin_page_achievements()
     // check
     if ($domain == 'google.com') award_achievement(37);
     if ($domain == 'bing.com') award_achievement(38);
-    if ($domain == 'twitter.com') award_achievement(39);
     if ($domain == 'youtube.com') award_achievement(40);
     if ($domain == 'blogspot.com') award_achievement(41);
     if ($domain == 'ello.co' || $domain == 'mewe.com') award_achievement(42);
