@@ -26,21 +26,18 @@
 
 /*------------------------------------------------------------------------------ 
   Custon media
-    @s
-    @m
-    @sm
-    @l
+    @md 4
+    @l 75
     @xl
-    @lxl
+
 ------------------------------------------------------------------------------*/
-@custom-media --small (max-width: 40em);
 
-@custom-media --medium (min-width: 40em) and (max-width: 48em);
+@custom-media --medium (min-width: 40rem) and (max-width: 48rem);
 
-@custom-media --small-medium (max-width: 48em);
+@custom-media --small-medium (max-width: 48rem);
 
-@custom-media --large (min-width: 48em) and (max-width: 75em);
+@custom-media --large (min-width: 48rem) and (max-width: 75rem);
 
-@custom-media --largexl (min-width: 48em);
+@custom-media --largexl (min-width: 48rem);
 
-@custom-media --xl (min-width: 75em);
+@custom-media --xl (min-width: 75rem);
