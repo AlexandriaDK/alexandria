@@ -7,9 +7,24 @@ body {
   font-size: 2rem;
 }
 
-h1 {
-  font-size: 10rem;
+.header {
+  background-color: var(--grey-darker);
+  color: var(--grey-lighter);
+  font-size: var(--font-sm);
 }
-h2 {
-  font-size: 6rem;
+
+.header a {
+  color: var(--grey-lighter);
+  text-decoration: none;
+}
+.header__title {
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+.header__logo {
+  text-decoration: none;
+  font-size: 10rem;
+  color: var(--grey-dark);
+  font-family: Georgia, "Times New Roman", Times, serif;
 }

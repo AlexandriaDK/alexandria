@@ -73,4 +73,4 @@
 
 </div>
 
-{include file="end.tpl"}
+{include file="footer.tpl"}

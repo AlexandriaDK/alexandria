@@ -157,4 +157,4 @@
     {assign "id" $start_id}
   {/if}
   {include file="updatelink.tpl"}
-{include file="end.tpl"}
+{include file="footer.tpl"}

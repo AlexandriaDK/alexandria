@@ -18,26 +18,13 @@
   --error: red;
   --warning: yellow;
 
-  --hover: blue;
+  --link: blue;
+  --link-hover: blue;
 
-  --headerheight: 6rem;
-  --headerheight-mobile: 3rem;
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-xxl: 1.5rem;
 }
-
-/*------------------------------------------------------------------------------ 
-  Custon media
-    @md 4
-    @l 75
-    @xl
-
-------------------------------------------------------------------------------*/
-
-@custom-media --medium (min-width: 40rem) and (max-width: 48rem);
-
-@custom-media --small-medium (max-width: 48rem);
-
-@custom-media --large (min-width: 48rem) and (max-width: 75rem);
-
-@custom-media --largexl (min-width: 48rem);
-
-@custom-media --xl (min-width: 75rem);

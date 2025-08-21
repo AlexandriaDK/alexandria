@@ -162,4 +162,4 @@
   {/if}
   {include file="updatelink.tpl"}
 </div>
-{include file="end.tpl"}
+{include file="footer.tpl"}

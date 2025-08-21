@@ -16,4 +16,4 @@
 {elseif $type eq "review"}
   {include file="review.tpl"}
 {/if}
-{include file="end.tpl"}
+{include file="footer.tpl"}
