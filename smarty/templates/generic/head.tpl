@@ -12,9 +12,12 @@
   {else}
     <meta property="og:image" content="https://alexandria.dk/gfx/alexandria_logo_og_crush.png" />
   {/if}
+
   <meta property="fb:admins" content="745283070">
-  <link rel="stylesheet" type="text/css" href="/alexstyle.css" />
+  <link rel="stylesheet" type="text/css" href="/alexstyle__.css" />
   <link rel="stylesheet" type="text/css" href="/uistyle.css" />
+  <link rel="stylesheet" type="text/css" href="/css/alex.css?2" />
+  
   <link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
   <link rel="icon" type="image/png" href="/gfx/favicon_ti.png">
   <link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
@@ -96,9 +99,12 @@
 </head>
 
 <body>
-  {* Logo: Traditional Arabic, 30px, bold *}
-  <div id="{if not isset($lgbtmenu)}leftmenu{else}leftmenulgbtq{/if}">
+
+{* Sidebar  *}
+{* Logo: Traditional Arabic, 30px, bold *}
+<div id="{if not isset($lgbtmenu)}leftmenu{else}leftmenulgbtq{/if}" class="leftmenu">
     <p>
+    ALEXANDRIA
       <a href="./" accesskey="q"><img src="/gfx/texture_logo.gif" alt="Alexandria" title="Alexandria" width="151"
           height="28" id="alexandrialogo"></a>
     </p>
@@ -119,7 +125,7 @@
       <br>
       <a href="kontakt">{$_top_contact}</a><br>
       <a href="privacy">{$_top_privacy}</a><br>
-    </div>
+  </div>
 
     {if ! isset($dberror) && ! isset($installation) }
       <div class="leftmenucontent">
@@ -292,45 +298,18 @@
           </div>
         {/if}
 
-      </div>
+</div>
+{* /Sidebar  *}
 
 
-      <nav>
-        <div id="topmenu" itemscope itemtype="http://schema.org/WebSite">
-          <meta itemprop="url" content="https://alexandria.dk/" />
-          <form action="find" itemprop="potentialAction" itemscope itemtype="http://schema.org/SearchAction">
-            {literal}
-              <meta itemprop="target" content="https://alexandria.dk/find?find={find}" />
-            {/literal}
-            <div class="topmenublock">
-              <a href="personer" class="person">{$_persons|ucfirst}</a>
-            </div>
-            <div class="topmenublock">
-              <a href="scenarier" class="game">{$_scenarios|ucfirst}</a>
-            </div>
-            <div class="topmenublock">
-              <a href="boardgames" class="game">{$_boardgames|ucfirst}</a>
-            </div>
-            <div class="topmenublock">
-              <a href="cons" class="con">{$_conventions|ucfirst}</a>
-            </div>
-            <div class="topmenublock">
-              <a href="systemer" class="system">{$_rpgsystems|ucfirst}</a>
-            </div>
-            <div class="topmenublock">
-              <a href="magazines" class="magazines">{$_top_magazines|ucfirst}</a>
-            </div>
-            <div class="topmenublockfind">
-              <label for="ffind" accesskey="s">{$_search|ucfirst}: <input id="ffind" type="search" name="find"
-                  value="{if isset($find)}{$find|escape}{/if}" size="15" class="find" itemprop="query-input" required
-                  autofocus></label>
-            </div>
-          </form>
-        {/if}
-      </div>
-    </nav>
+{include file="menu-top.tpl"}
 
-    <div id="resultbox">
-    </div>
 
-  <div class="clear"></div>
+
+  {/if}
+  {* cliser hvad ? *}
+</div>
+</nav>
+<div id="resultbox"></div>
+
+  

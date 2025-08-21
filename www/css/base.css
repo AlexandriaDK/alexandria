@@ -1,0 +1,15 @@
+/*
+colors
+*/
+body {
+  font-family: sans-serif;
+  background-color: var(--white);
+  font-size: 2rem;
+}
+
+h1 {
+  font-size: 10rem;
+}
+h2 {
+  font-size: 6rem;
+}

@@ -1,0 +1,255 @@
+/* -----------------------------------------------------------------------------
+Table 
+----------------------------------------------------------------------------- */
+table {
+  border: 1px solid var(--grey-light);
+}
+caption {
+  color: var(--primary);
+}
+th {
+  color: var(--grey-dark);
+  background-color: var(--grey-lighter);
+  border-bottom: 1px solid var(--grey);
+}
+tr:nth-child(even) {
+  background-color: var(--grey-lightest);
+}
+tr:nth-child(odd) {
+  background-color: var(--white);
+}
+
+.table-responsive tbody td {
+  border-bottom: 1px solid var(--primary);
+}
+
+.table-responsive tbody td:nth-child(even) {
+  background-color: var(--primary);
+}
+
+.table-responsive tbody td:before {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.table-responsive tbody tr td:first-child {
+  background: var(--primary);
+  color: var(--white);
+  font-weight: bold;
+}
+
+.table-responsive tbody td:first-child:before {
+  color: var(--white);
+}
+
+/* -----------------------------------------------------------------------------
+ form 
+----------------------------------------------------------------------------- */
+label:hover {
+  color: var(--grey-darker);
+}
+
+fieldset {
+  border: 1px solid var(--grey-darker);
+}
+
+input::placeholder {
+  color: var(--grey);
+}
+
+input[type="checkbox"] + label::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: normal;
+  content: "\f0c8";
+}
+input[type="checkbox"]:checked + label::before {
+  content: "\f14a";
+}
+input[type="checkbox"] + label:hover {
+  color: var(--grey);
+}
+
+input[disabled] {
+  color: var(--grey);
+  background-color: var(--grey-lightest);
+}
+
+input[required] {
+  border-color: var(--error);
+}
+
+input:hover {
+  color: var(--black);
+}
+
+input,
+textarea {
+  border: 1px solid var(--grey);
+}
+
+input:focus,
+textarea:focus {
+  box-shadow: 0 0 5px var(--grey-dark);
+  border: 1px solid var(--grey-dark);
+}
+input[type="reset"] {
+  background-color: var(--grey);
+}
+
+input[type="submit"],
+input[type="button"] {
+  background-color: var(--grey);
+}
+
+/* checked */
+input[type="radio"] + label::before {
+  color: var(--ok);
+}
+
+input[type="radio"]:checked + label::before {
+  content: "\f058";
+}
+
+input[type="radio"]:checked + label {
+  color: var(--ok);
+}
+
+input[type="radio"] + label:hover {
+  color: var(--grey);
+}
+input[type="radio"] + label:hover::before {
+}
+
+/* required */
+input[type="radio"][required] + label {
+  color: var(--error);
+}
+
+input[type="radio"][required] + label:hover {
+}
+
+input[type="radio"][required] + label::before {
+  color: var(--error);
+}
+
+input[type="radio"][required] + label::after {
+  content: " - not optional ";
+  color: var(--grey-darker);
+}
+
+input[type="radio"][disabled] + label {
+  color: var(--grey);
+}
+input[type="radio"][disabled] + label::before {
+  color: var(--grey);
+}
+
+select {
+  border: 2px solid var(--grey);
+  background-color: var(--grey-lightest);
+}
+
+select + label {
+  position: relative;
+  color: var(--ok);
+}
+
+select + label::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: normal;
+  content: "\f0c8";
+}
+
+select::placeholder {
+  color: #a2a2a2;
+}
+
+select:hover {
+  border-color: var(--grey);
+}
+
+select:focus,
+select:active {
+  border-color: var(--hover);
+  color: var(--grey-darkest);
+}
+
+select[disabled] {
+  color: var(--grey);
+  background-color: var(--grey-lightest);
+}
+
+select[required] {
+}
+
+/* // multiple */
+select[multiple] {
+  background-color: var(--grey-lightest);
+}
+
+option {
+  border-bottom: 1px solid var(--grey-light);
+}
+
+option[selected]:checked {
+  /* background-image:url('/check.svg'); */
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+option:checked {
+  /* background-image:url('/check.svg'); */
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+textarea {
+  border: 2px solid var(--grey);
+  background-color: var(--white);
+}
+
+textarea::placeholder {
+  color: var(--grey-dark);
+}
+
+textarea:hover {
+  border-color: var(--grey);
+}
+
+textarea:focus,
+textarea:active {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+textarea[disabled] {
+  color: var(--grey);
+  background-color: var(--grey-lighter);
+}
+
+.form-toggle::before {
+  background-color: white;
+  border: 1px solid var(--grey);
+}
+
+.form-toggle input + label::before {
+  background-color: var(--grey-light);
+}
+
+.form-toggle input:checked + label::before {
+  background-color: var(--hover);
+  background-image: none;
+}
+
+.form-toggle label::after {
+  content: " off / on";
+  font-family: mada;
+  color: var(--grey);
+}
+
+.form-toggle input[required] + label::after {
+  font-size: 0.75em;
+  font-family: mada;
+  content: " off / on";
+  color: var(--grey);
+}

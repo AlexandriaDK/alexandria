@@ -1,0 +1,15 @@
+.leftmenu {
+  background-color: var(--grey-lighter);
+  border: 1px solid var(--error);
+  width: 20%;
+}
+
+.nav-hozintal {
+  padding: 1rem;
+  display: flex;
+  border-bottom: 1px solid var(--ok);
+}
+
+.nav-hozintal > a {
+  padding: 0 1rem 1rem 0;
+}

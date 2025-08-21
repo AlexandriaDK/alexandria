@@ -1,0 +1,46 @@
+:root {
+  --black: black;
+  --grey-darkest: #111;
+  --grey-darker: #333;
+  --grey-dark: #666;
+  --grey: #ccc;
+  --grey-light: #ddd;
+  --grey-lighter: #efefef;
+  --grey-lightest: #f9f9f9;
+  --white: white;
+
+  --primary: #990d35;
+  --primary-dark: #d52941;
+  --secondary: #fcce79;
+  --secondary-dark: #ffecc1;
+
+  --ok: green;
+  --error: red;
+  --warning: yellow;
+
+  --hover: blue;
+
+  --headerheight: 6rem;
+  --headerheight-mobile: 3rem;
+}
+
+/*------------------------------------------------------------------------------ 
+  Custon media
+    @s
+    @m
+    @sm
+    @l
+    @xl
+    @lxl
+------------------------------------------------------------------------------*/
+@custom-media --small (max-width: 40em);
+
+@custom-media --medium (min-width: 40em) and (max-width: 48em);
+
+@custom-media --small-medium (max-width: 48em);
+
+@custom-media --large (min-width: 48em) and (max-width: 75em);
+
+@custom-media --largexl (min-width: 48em);
+
+@custom-media --xl (min-width: 75em);
