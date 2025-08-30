@@ -1,5 +1,5 @@
 <?php
-require "adm.inc.php";
+require_once "adm.inc.php";
 if ($con = intval($_REQUEST['con'])) {
   SetCookie("conlock", $con);
 } else {

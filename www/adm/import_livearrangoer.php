@@ -1,10 +1,10 @@
 <?php
 // import data from old table live_arrangoer - not sure of origin
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $title = $_REQUEST['title'] ?? NULL;
 $persons = $_REQUEST['persons'] ?? NULL;

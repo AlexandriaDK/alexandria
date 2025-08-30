@@ -16,8 +16,8 @@ CREATE TABLE `rpgforum_posts` (
  */
 
 chdir("../www/");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 doquery("ALTER TABLE rpgforum_posts DISABLE KEYS");
 

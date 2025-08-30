@@ -1,8 +1,8 @@
 <?php
 // Output CSV with daily stats
 chdir(__DIR__ . "/../www/");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $date = date("Y-m-d");
 $scenarios = getone("SELECT COUNT(*) FROM game WHERE boardgame = 0");

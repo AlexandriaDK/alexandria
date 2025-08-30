@@ -178,7 +178,7 @@ $output = [
   'result' => $output,
   'request' => ["received" => $timestamp_start, "finished" => $timestamp_end],
   'license' => 'The database is owned by Alexandria.dk and protected by the database rights in Danish law of Copyright ("Ophavsretsloven", § 71). You are allowed to use the API and the data for *non-commercial* purposes. Alexandria.dk must be credited, if possible with a link. Game files are not available through this API.',
-  'access' => 'Access to this API does not require login, tokens or other authentication mechanisms. Access can be restricted for various reasons, e.g. if the server is overloaded or if too many requests are sent in a short time.',
+  'access' => 'Access to this API does not require_once login, tokens or other authentication mechanisms. Access can be restricted for various reasons, e.g. if the server is overloaded or if too many requests are sent in a short time.',
   'status' => 'ready'
 ];
 

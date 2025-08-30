@@ -15,8 +15,8 @@
  */
 
 chdir(__DIR__ . "/../www/");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to escapeshellarg()
 $limit = intval($_SERVER['argv']['1'] ?? 1); // How many files should this script check in one run
 

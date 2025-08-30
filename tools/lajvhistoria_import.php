@@ -1,7 +1,7 @@
 <?php
 // Import LARP data from lajvhistoria.se
-require __DIR__ . "/../www/rpgconnect.inc.php";
-require __DIR__ . "/../www/base.inc.php";
+require_once __DIR__ . "/../www/rpgconnect.inc.php";
+require_once __DIR__ . "/../www/base.inc.php";
 
 $url = 'https://lajvhistoria.se/export.php';
 $localfile = __DIR__ . '/lajvhistoria_export.json';

@@ -1,10 +1,10 @@
 <?php
 // save page for users editing tags for scenario
 
-require "base.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $scenario = (int) $_REQUEST['scenario'];
 $action = (string) $_REQUEST['action'];

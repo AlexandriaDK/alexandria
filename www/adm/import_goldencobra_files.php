@@ -2,11 +2,11 @@
 // Download and insert files from Golden Cobra 2020-2023 to Alexandria
 // Based on Evan Torner's permission
 define("DOWNLOAD_PATH", "../../loot.alexandria.dk/files/");
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 chdir("adm/");
 $action = $_REQUEST['action'] ?? '';
 

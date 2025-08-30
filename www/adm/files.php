@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 $this_type = 'files';
 
 ini_set("user_agent", "Alexandria.dk Dungeon Looter Agent");
@@ -303,7 +303,7 @@ if ($data_id && $category) {
 		SELECT COUNT(fd.id) AS pages, f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
 		FROM files f
 		LEFT JOIN filedata fd ON f.id = fd.files_id
-		WHERE f.`$data_field` = '$data_id' 
+		WHERE f.`$data_field` = '$data_id'
 		GROUP BY f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
 		ORDER BY f.id
 	";

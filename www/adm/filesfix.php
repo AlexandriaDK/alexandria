@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $file_id = (int) $_REQUEST['file_id'];
 $game_id = (int) $_REQUEST['game_id'];

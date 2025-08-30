@@ -3,11 +3,11 @@
 // Based on permission from Fred Førde, Spillforeningen Ares, https://spillklubb.org/
 define("PHOBOS_PATH", "../../../loot.alexandria.dk/files/phobos/");
 define("DOWNLOAD_PATH", "../../../loot.alexandria.dk/files/");
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 chdir("adm/");
 
 setlocale(LC_CTYPE, "da_DK.UTF-8"); // due to ImageMagick escapeshellarg() if imagick is not installed as module

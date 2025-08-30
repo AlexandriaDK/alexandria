@@ -1,9 +1,9 @@
 <?php
 // save page for users editing amount of participants for a game
-require "base.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $token = $_REQUEST['token'] ?? '';
 $scenarie = (int) $_REQUEST['scenarie'];
