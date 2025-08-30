@@ -157,7 +157,7 @@ $haslocations = getone("
 			INNER JOIN lrel ON gamerun.id = lrel.gamerun_id
 			INNER JOIN locations ON lrel.location_id = locations.id
 			WHERE tag = '" . dbesc($tag) . "'
-			AND locations.geo IS NOT NULL
+			AND locations.geo IS NOT null
 		)
 			UNION
 		(
@@ -167,7 +167,7 @@ $haslocations = getone("
 			INNER JOIN lrel ON cgrel.convention_id = lrel.convention_id
 			INNER JOIN locations ON lrel.location_id = locations.id
 			WHERE tag = '" . dbesc($tag) . "'
-			AND locations.geo IS NOT NULL
+			AND locations.geo IS NOT null
 		)
 	) x
 ");

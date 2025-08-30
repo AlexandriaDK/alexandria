@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $this_type = 'awards';
 
@@ -17,7 +17,7 @@ if ($tid) {
 if ($ucid == 1) award_achievement(96); // Fastaval conset
 
 $awards = getall("
-	SELECT a.conset_id, a.tag_id, COALESCE(b.name, t.tag) AS type_name, COALESCE(a.conset_id, a.tag_id) AS type_id, CASE WHEN b.id IS NOT NULL THEN 'convention' WHEN t.id IS NOT NULL THEN 'tag' ELSE '' END AS type
+	SELECT a.conset_id, a.tag_id, COALESCE(b.name, t.tag) AS type_name, COALESCE(a.conset_id, a.tag_id) AS type_id, CASE WHEN b.id IS NOT null THEN 'convention' WHEN t.id IS NOT null THEN 'tag' ELSE '' END AS type
 	FROM awards a
 	LEFT JOIN conset b ON a.conset_id = b.id
 	LEFT JOIN convention c ON b.id = c.conset_id
@@ -66,11 +66,11 @@ foreach ($award_nominees as $nominee) {
   $type = $nominee['type'];
   $type_id = $nominee['type_id'];
   $cid = $nominee['conset_id'] ?? 0;
-  $con_id = $nominee['convention_id'] ?? NULL;
+  $con_id = $nominee['convention_id'] ?? null;
   $cat_id = $nominee['category_id'];
 
   $awardnominees[$cid][$con_id]['name'] = $nominee['con_name'] ?? '';
-  $awardnominees[$cid][$con_id]['year'] = yearname($nominee['year'] ?? NULL);
+  $awardnominees[$cid][$con_id]['year'] = yearname($nominee['year'] ?? null);
   $awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
   $awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation'], 'origtitle' => $nominee['title']];
 }

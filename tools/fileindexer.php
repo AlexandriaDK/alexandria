@@ -90,7 +90,7 @@ function indexFile($file, $archivefile = null, $tmpfile = null)
     if ($text) {
       $text = preg_replace('/\s+/u', ' ', $text);
       $numpages++;
-      $archivefilevalue = ($archivefile ? "'" . dbesc($archivefile) . "'" : 'NULL');
+      $archivefilevalue = ($archivefile ? "'" . dbesc($archivefile) . "'" : 'null');
       $label = ($page + 1);
       $sql = "INSERT INTO filedata (files_id, label, content, archivefile) VALUES (" . $file['id'] . ", '" . $label . "', '" . dbesc($text) . "', $archivefilevalue)";
       doquery($sql);
@@ -139,7 +139,7 @@ function OCRFile($file)
 }
 
 // OCR queue
-$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename, language FROM files WHERE indexed = 11 LIMIT $limit");
+$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' WHEN !ISnull(issue_id) THEN 'issue' END AS category, filename, language FROM files WHERE indexed = 11 LIMIT $limit");
 if ($files) {
   $ids = [];
   foreach ($files as $file) {
@@ -153,7 +153,7 @@ if ($files) {
   exit; // Don't OCR and index in the same run
 }
 
-$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename FROM files WHERE indexed IN(0,20) AND downloadable = 1 LIMIT $limit");
+$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' WHEN !ISnull(issue_id) THEN 'issue' END AS category, filename FROM files WHERE indexed IN(0,20) AND downloadable = 1 LIMIT $limit");
 if (! $files) {
   exit;
 }

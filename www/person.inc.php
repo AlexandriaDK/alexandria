@@ -27,9 +27,9 @@ $q = getall("
 		*,
 		LEAST(COALESCE(firstcondatecombined,'9999-99-99'), COALESCE(firstrundatecombined,'9999-99-99')) AS combinedfirstrun,
 		CASE
-		WHEN ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN NULL
-		WHEN NOT ISNULL(firstcondate) AND ISNULL(firstrundatecombined) THEN 'con'
-		WHEN ISNULL(firstcondate) AND NOT ISNULL(firstrundatecombined) THEN 'run'
+		WHEN ISnull(firstcondate) AND ISnull(firstrundatecombined) THEN null
+		WHEN NOT ISnull(firstcondate) AND ISnull(firstrundatecombined) THEN 'con'
+		WHEN ISnull(firstcondate) AND NOT ISnull(firstrundatecombined) THEN 'run'
 		WHEN firstcondate <= firstrundatecombined THEN 'con'
 		ELSE 'run'
 		END AS runtype
@@ -39,13 +39,13 @@ $q = getall("
 			MIN(gamerun.begin) AS firstrundate,
 			MIN(gr2.begin) AS firstownrun,
 			MIN(COALESCE(c2.begin,c2.year)) AS firstowncon,
-			IF(MIN(IFNULL(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)) AS firstrundatecombined,
-			IF(MIN(IFNULL(c2.id, 0)) = 0, MIN(COALESCE(c.begin,c.year)), MIN(COALESCE(c2.begin, c2.year))) AS firstcondatecombined,
+			IF(MIN(IFnull(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)) AS firstrundatecombined,
+			IF(MIN(IFnull(c2.id, 0)) = 0, MIN(COALESCE(c.begin,c.year)), MIN(COALESCE(c2.begin, c2.year))) AS firstcondatecombined,
 			COALESCE(
-				IF(MIN(IFNULL(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)),
-				IF(MIN(IFNULL(c2.id, 0)) = 0, MIN(COALESCE(c.begin,c.year)), MIN(COALESCE(c2.begin, c2.year)))
+				IF(MIN(IFnull(gr2.id, 0)) = 0, MIN(gamerun.begin), MIN(gr2.begin)),
+				IF(MIN(IFnull(c2.id, 0)) = 0, MIN(COALESCE(c.begin,c.year)), MIN(COALESCE(c2.begin, c2.year)))
 			) AS firsteventdatecombined,
-			MIN(IFNULL(COALESCE(gr2.id,c2.id), 0)) AS earliesteventid, -- gives 0 if at least one registration to game without specific run
+			MIN(IFnull(COALESCE(gr2.id,c2.id), 0)) AS earliesteventid, -- gives 0 if at least one registration to game without specific run
 			g.id,
 			g.title AS title,
 			g.boardgame AS boardgame,
@@ -206,7 +206,7 @@ $q = getall("
 	INNER JOIN award_categories b ON a.award_category_id = b.id
 	LEFT JOIN convention c ON b.convention_id = c.id
 	LEFT JOIN tag t ON b.tag_id = t.id
-	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person AND (d.convention_id IS NULL OR d.convention_id = b.convention_id)
+	INNER JOIN pgrel d ON a.game_id = d.game_id AND d.title_id IN (1,4,5) AND d.person_id = $person AND (d.convention_id IS null OR d.convention_id = b.convention_id)
 	INNER JOIN game e ON a.game_id = e.id
 	LEFT JOIN alias f ON e.id = f.game_id AND f.language = '" . LANG . "' AND f.visible = 1
 	)

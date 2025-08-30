@@ -1,6 +1,6 @@
 <?php
-require("../../www/connect.php");
-require("../../www/base.inc.php");
+require_once "../../www/connect.php";
+require_once "../../www/base.inc.php";
 
 $originalurl = 'https://www.spillfestival.no/arcon36/program.php';
 
@@ -13,7 +13,7 @@ function chlog($data_id, $category, $note = "")
 {
   $user = 'Peter Brodersen';
   $authuserid = 4;
-  $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
+  $data_id = ($data_id == null ? 'null' : (int) $data_id);
   $note = dbesc($note);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
@@ -67,7 +67,7 @@ foreach (glob($glob) as $file) {
     $data['internal'] .= 'Maks deltagere: ' . $data['participants'] . PHP_EOL;
   }
   // participants
-  $players_max = "NULL";
+  $players_max = "null";
   if (is_numeric($data['participants'])) {
     $players_max = $data['participants'];
   }

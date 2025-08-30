@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "connect.php";
+require_once "base.inc.php";
 
 if (isset($_SESSION) && isset($_SESSION['user_id'])) {
   $userlog = getuserloggames($_SESSION['user_id']);
@@ -76,7 +76,7 @@ $r = getall("
 
 $xscenlist = "";
 
-// Create preliminary scenario list 
+// Create preliminary scenario list
 $scenarios = [];
 foreach ($r as $row) {
   $game_id = $row['id'];

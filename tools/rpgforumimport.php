@@ -2,11 +2,11 @@
 /*
 
 CREATE TABLE `rpgforum_posts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int NOT null AUTO_INCREMENT,
   `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
   `author` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
-  `timestamp` datetime DEFAULT NULL,
-  `views` int DEFAULT NULL,
+  `timestamp` datetime DEFAULT null,
+  `views` int DEFAULT null,
   `post` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `post_idx` (`author`,`title`,`post`),

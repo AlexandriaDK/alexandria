@@ -26,7 +26,7 @@ if ($scenarie && $auto_players_min) {
 }
 htmladmstart("Participants scrape");
 
-$data = getall("SELECT id, title, internal FROM game WHERE internal REGEXP 'spiller|player|participant|deltager|antal' AND players_min IS NULL");
+$data = getall("SELECT id, title, internal FROM game WHERE internal REGEXP 'spiller|player|participant|deltager|antal' AND players_min IS null");
 foreach ($data as $sce) {
   $lines = explode("\n", $sce['internal']);
   $id = $sce['id'];

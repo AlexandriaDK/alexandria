@@ -75,7 +75,7 @@ if ($action == "update") {
   if ($log) {
     $logtext .= " (" . implode(", ", $log) . ")";
   }
-  chlog(NULL, $this_type, $logtext);
+  chlog(null, $this_type, $logtext);
   $_SESSION['admin']['info'] = "Texts updated! " . dberror();
   rexit($this_type, ['label' => $newlabel]);
 }

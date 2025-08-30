@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $this_type = 'issue';
 
@@ -50,7 +50,7 @@ if ($magazineid) {
     award_achievement(104);
   }
   $internal = (($_SESSION['user_editor'] ?? false) ? $issue['internal'] : ''); // only set internal if editor
-  // two lookups with and without page being NULL could be combined to one
+  // two lookups with and without page being null could be combined to one
   // No need to create article tree with authors as subset. Template already handles that.
   $colophon = getall("
 		SELECT article.id, contributor.person_id, contributor.person_extra, contributor.role, article.page, article.title, article.description, article.articletype, article.game_id, CONCAT(p.firstname, ' ', p.surname) AS name, g.title AS gametitle
@@ -59,7 +59,7 @@ if ($magazineid) {
 		LEFT JOIN person p ON contributor.person_id = p.id
 		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issueid
-		AND page IS NULL AND article.title = ''
+		AND page IS null AND article.title = ''
 		ORDER BY article.id
 	");
   $issue_articles = getall("
@@ -69,7 +69,7 @@ if ($magazineid) {
 		LEFT JOIN person p ON contributor.person_id = p.id
 		LEFT JOIN game g ON article.game_id = g.id
 		WHERE issue_id = $issueid
-		AND (page IS NOT NULL OR article.title != '')
+		AND (page IS NOT null OR article.title != '')
 		ORDER BY page, article.id
 	");
   $lastarticleid = $lastid = false;
@@ -79,7 +79,7 @@ if ($magazineid) {
       $issue_articles[$articleid]['references'] = [];
       $issue_articles[$articleid]['contributorcount'] = 0;
       $lastid = $articleid;
-      $references = getall("SELECT COALESCE(person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(magazine_id) THEN 'magazine' WHEN !ISNULL(issue_id) THEN 'issue' END AS category FROM article_reference WHERE article_id = " . $article['id'] . " ORDER BY category, id");
+      $references = getall("SELECT COALESCE(person_id, game_id, convention_id, conset_id, gamesystem_id, tag_id, magazine_id, issue_id) AS data_id, CASE WHEN !ISnull(person_id) THEN 'person' WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' WHEN !ISnull(magazine_id) THEN 'magazine' WHEN !ISnull(issue_id) THEN 'issue' END AS category FROM article_reference WHERE article_id = " . $article['id'] . " ORDER BY category, id");
       foreach ($references as $reference_id => $reference) {
         $issue_articles[$articleid]['references'][] = getentryhtml($reference['category'], $reference['data_id']);
       }

@@ -7,7 +7,7 @@ require_once "base.inc.php";
 $this_type = 'review';
 
 $review_id = (string) $_REQUEST['review_id'] ?? '';
-$data_id = (int) $_REQUEST['data_id'] ?? NULL;
+$data_id = (int) $_REQUEST['data_id'] ?? null;
 $category = (string) $_REQUEST['category'] ?? 'game';
 $action = (string) $_REQUEST['action'] ?? '';
 $review_title = (string) $_REQUEST['review_title'];
@@ -18,7 +18,7 @@ $syndicatedurl = (string) $_REQUEST['syndicatedurl'];
 $published = (string) ($_REQUEST['published'] ?? date("Y-m-d H:i:s"));
 $visible = (int) (bool) $_REQUEST['visible'];
 $language = (string) $_REQUEST['language'];
-$user_id = (int) $_REQUEST['user_id'] ?? NULL;
+$user_id = (int) $_REQUEST['user_id'] ?? null;
 $gameidtitle = "";
 
 if ($action) {

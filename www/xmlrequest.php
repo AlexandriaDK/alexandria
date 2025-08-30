@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("./base.inc.php");
+require_once "./connect.php";
+require_once "./base.inc.php";
 $output = "";
 
 $action = (string) ($_REQUEST['action'] ?? '');
@@ -80,7 +80,7 @@ if ($action == "lookup") {
     // achievements
     if ($_REQUEST['category'] == 'game') {
       list($gamesystem_id, $boardgame) = getrow("SELECT gamesystem_id, boardgame FROM game WHERE id = " . (int) $_REQUEST['data_id']);
-      $fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN pgrel ON userlog.game_id = pgrel.game_id AND pgrel.title_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.game_id IS NOT NULL AND userlog.type = 'played' AND users.person_id != pgrel.person_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY pgrel.person_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
+      $fanboy_count = getone("SELECT 1 FROM userlog INNER JOIN pgrel ON userlog.game_id = pgrel.game_id AND pgrel.title_id = 1 INNER JOIN users ON userlog.user_id = users.id WHERE userlog.game_id IS NOT null AND userlog.type = 'played' AND users.person_id != pgrel.person_id AND user_id = " . $_SESSION['user_id'] . " GROUP BY pgrel.person_id, userlog.user_id HAVING COUNT(*) >= 10"); // played at least 10 scenario from another author
       $polandsce = getcol("SELECT DISTINCT game_id FROM gamerun WHERE country = 'pl'");
       if ($_REQUEST['type'] == 'read') {
         award_achievement(3);
@@ -123,13 +123,13 @@ if ($action == "lookup") {
   }
 } elseif ($action == "getlocations") {
   $locations = getall("
-		SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT NULL AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS NULL, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS NULL, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS NULL, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), CONCAT(g.title, ' (', IF(YEAR(gr.begin), YEAR(gr.begin), '?'), ')') ) AS data_label, IF(lrel.gamerun_id IS NULL, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS NULL, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime, COALESCE(c.end, c.year, gr.end) AS data_endtime
+		SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT null AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS null, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS null, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS null, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), CONCAT(g.title, ' (', IF(YEAR(gr.begin), YEAR(gr.begin), '?'), ')') ) AS data_label, IF(lrel.gamerun_id IS null, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS null, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime, COALESCE(c.end, c.year, gr.end) AS data_endtime
 		FROM locations l
 		LEFT JOIN lrel ON l.id = lrel.location_id
 		LEFT JOIN convention c ON lrel.convention_id = c.id
 		LEFT JOIN gamerun gr ON lrel.gamerun_id = gr.id
 		LEFT JOIN game g ON gr.game_id = g.id
-		WHERE geo IS NOT NULL
+		WHERE geo IS NOT null
 		ORDER BY data_starttime
 	", false);
 

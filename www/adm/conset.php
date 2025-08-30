@@ -54,7 +54,7 @@ if ($action == "create") {
     $_SESSION['admin']['info'] = "Name is missing!";
   } else {
     $q = "INSERT INTO conset (id, name, description, internal, country) " .
-      "VALUES (NULL, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($internal) . "', " . sqlifnull($country) . ")";
+      "VALUES (null, '" . dbesc($name) . "', '" . dbesc($description) . "', '" . dbesc($internal) . "', " . sqlifnull($country) . ")";
     $r = doquery($q);
     if ($r) {
       $conset = dbid();

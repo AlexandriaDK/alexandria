@@ -98,9 +98,9 @@ if ($searchterm !== '') {
 // Check if SQL structure even exists
 if (!defined('DBERROR') && (getone("SHOW tables LIKE 'installation'") === null || getone("SELECT `value` FROM installation WHERE `key` = 'status'") != 'live')) { // Table does not exist!
   define("INSTALLNOW", true);
-  require("installation.php");
+  require_once "installation.php";
   exit;
-};
+}
 
 // variables used all over the place
 if (!defined('DBERROR')) {
@@ -156,8 +156,8 @@ if (!defined('DBERROR')) {
     WHERE id = " . $_SESSION['user_id']
     );
     if ($_SESSION['user_author_id'] ?? false) {
-      $scenario_missing_participants = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) INNER JOIN cgrel c ON a.id = c.game_id AND c.presentation_id = 1 WHERE a.players_min IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
-      $scenario_missing_tags = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) LEFT JOIN tags c ON a.id = c.game_id AND c.tag != 'English' WHERE c.game_id IS NULL GROUP BY a.id ORDER BY RAND() LIMIT 3");
+      $scenario_missing_participants = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) INNER JOIN cgrel c ON a.id = c.game_id AND c.presentation_id = 1 WHERE a.players_min IS null GROUP BY a.id ORDER BY RAND() LIMIT 3");
+      $scenario_missing_tags = getall("SELECT a.id, a.title FROM game a INNER JOIN pgrel b ON a.id = b.game_id AND b.person_id = " . $_SESSION['user_author_id'] . " AND b.title_id IN (1,4) LEFT JOIN tags c ON a.id = c.game_id AND c.tag != 'English' WHERE c.game_id IS null GROUP BY a.id ORDER BY RAND() LIMIT 3");
       if ($scenario_missing_participants && $scenario_missing_tags) {
         // choose random set to display
         if (rand(0, 1)) {
@@ -238,7 +238,7 @@ function do_sso_login($siteuserid, $name, $site)
     ");
     list($login_days_in_row, $login_count) = getrow("SELECT login_days_in_row, login_count FROM users WHERE id = '$user_id'");
   } else { // create user
-    doquery("INSERT INTO users (id, created, log, name, last_login, login_days_in_row, login_count) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: " . dbesc($name) . "', '" . dbesc($name) . "', NOW(), 0, 1)");
+    doquery("INSERT INTO users (id, created, log, name, last_login, login_days_in_row, login_count) VALUES (null, NOW(), 'Created: $site $siteuserid\nName: " . dbesc($name) . "', '" . dbesc($name) . "', NOW(), 0, 1)");
     $user_id = dbid();
     if ($user_id) {
       doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '" . dbesc($name) . "', '$time')");
@@ -283,7 +283,7 @@ function validate_remote_login($siteuserid, $hash, $time, $site, $name)
     doquery("UPDATE loginmap SET logintime = '$time' WHERE site = '$site' AND siteuserid = '$siteuserid'");
     return $user_id;
   } else { // create user
-    doquery("INSERT INTO users (id, created, log) VALUES (NULL, NOW(), 'Created: $site $siteuserid\nName: " . dbesc($name) . "')");
+    doquery("INSERT INTO users (id, created, log) VALUES (null, NOW(), 'Created: $site $siteuserid\nName: " . dbesc($name) . "')");
     $user_id = dbid();
     doquery("INSERT INTO loginmap (site, siteuserid, user_id, name, logintime) VALUES ('$site', '$siteuserid', '$user_id', '" . dbesc($name) . "', '$time')");
     return $user_id;
@@ -336,7 +336,7 @@ function getAchievementsToDisplay()
 {
   $user_id = (int) $_SESSION['user_id'];
   doquery("SET @c = 0");
-  $achievements = getall("SELECT @c:=@c+1 AS c, achievements.id, label, description FROM achievements INNER JOIN user_achievements ON achievements.id = user_achievements.achievement_id AND user_achievements.user_id = $user_id WHERE completed IS NOT NULL AND shown = 0");
+  $achievements = getall("SELECT @c:=@c+1 AS c, achievements.id, label, description FROM achievements INNER JOIN user_achievements ON achievements.id = user_achievements.achievement_id AND user_achievements.user_id = $user_id WHERE completed IS NOT null AND shown = 0");
   return $achievements;
 }
 
@@ -347,7 +347,7 @@ function check_begin_page_achievements()
   if (strpos($user_agent, ' Edge/') !== false) award_achievement(90);
 
   // referer achievements
-  $referer = $_SERVER['HTTP_REFERER'] ?? NULL;
+  $referer = $_SERVER['HTTP_REFERER'] ?? null;
   if ($referer) {
     $url = parse_url($referer);
     $segments = array_reverse(explode('.', $url['host']));
@@ -433,7 +433,7 @@ function getuserloggames($user_id)
   return getallid("
     SELECT game_id, SUM(userlog.type = 'read') AS `read`, SUM(userlog.type = 'gmed') AS gmed, SUM(userlog.type = 'played') AS played
     FROM userlog
-    WHERE userlog.user_id = '$user_id' AND userlog.game_id IS NOT NULL
+    WHERE userlog.user_id = '$user_id' AND userlog.game_id IS NOT null
     GROUP BY game_id
     ORDER BY game_id
   ");
@@ -444,7 +444,7 @@ function getuserlogconvents($user_id)
   return getcol("
     SELECT convention_id
     FROM userlog
-    WHERE userlog.user_id = '$user_id' AND userlog.convention_id IS NOT NULL
+    WHERE userlog.user_id = '$user_id' AND userlog.convention_id IS NOT null
     GROUP BY convention_id
     ORDER BY convention_id
   ");
@@ -929,11 +929,11 @@ function parseTemplate($string)
 function getuserlogoptions($type)
 {
   if ($type == 'boardgame') {
-    return ['read', NULL, 'played'];
+    return ['read', null, 'played'];
   } elseif ($type == 'scenario') {
     return ['read', 'gmed', 'played'];
   } else {
-    return [NULL, NULL, NULL];
+    return [null, null, null];
   }
 }
 
@@ -1111,7 +1111,6 @@ function getaliaslist($data_id, $cat, $ignore_title = "")
 
 function getfilelist($data_id, $cat)
 {
-  //	global $t;
   $data_field = getFieldFromCategory($cat);
   $files = getall("SELECT filename, description, language FROM files WHERE $data_field = '$data_id' AND downloadable = 1 ORDER BY id");
   $fmt = new NumberFormatter(Locale::getDefault(), NumberFormatter::DECIMAL);
@@ -1161,11 +1160,10 @@ function getlinklist($data_id, $cat)
   return $linklist;
 }
 
-function gettaglist($data_id, $cat)
+function gettaglist($data_id)
 {
   $data_id = (int) $data_id;
-  $tags = getcolid("SELECT tags.id, tags.tag, c.count FROM tags INNER JOIN (SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag) c ON tags.tag = c.tag WHERE tags.game_id = $data_id ORDER BY c.count DESC");
-  return $tags;
+  return getcolid("SELECT tags.id, tags.tag, c.count FROM tags INNER JOIN (SELECT COUNT(*) AS count, tag FROM tags GROUP BY tag) c ON tags.tag = c.tag WHERE tags.game_id = $data_id ORDER BY c.count DESC");
 }
 
 function getalltags($count = false)
@@ -1291,24 +1289,6 @@ function getnexteventstable()
   ");
 
   $calout = '<table class="tableoverview" id="eventsall">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
-  /*
-  $r = getall("
-    SELECT 'convention' AS type, c.id, c.name, c.year, c.description, begin, end, place, conset_id, conset.name AS cname, cancelled
-    FROM convention c
-    LEFT JOIN conset ON c.conset_id = conset.id WHERE end >= '" . date("Y-m-d") . "'
-    ORDER BY begin, end, name
-  ");
-
-  $calout .= '<table class="tableoverview" id="eventsconvent" style="display: none;">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
-
-  $r = getall("
-    SELECT 'game' AS type, g.id, g.title AS name, YEAR(gr.begin) AS year, g.description, gr.begin, gr.end, gr.location, g.id AS conset_id, g.title AS cname, cancelled
-    from gamerun gr
-    INNER JOIN game g ON gr.game_id = g.id
-    WHERE gr.end >= '" . date("Y-m-d") . "'
-    ORDER BY begin, end, name
-  ");
-*/
   $calout .= '<table class="tableoverview" id="eventsscenario" style="display: none;">' . parseupcomingevents($r) . '</table>' . PHP_EOL;
 
   return $calout;
@@ -1319,14 +1299,13 @@ function parseupcomingevents($eventset)
   $calout = "";
   $lastbegin = "";
   foreach ($eventset as $nextevent) {
-    list($type, $id, $name, $year, $description, $begin, $end, $location, $cid, $cname, $cancelled) = $nextevent;
+    list($type, $id, $name, $begin, $end, $cancelled) = $nextevent;
     if ($end == '0000-00-00' || !$end) {
       $end = $begin;
     }
     $beginpart = substr($begin, 0, 7);
     if ($lastbegin != $beginpart) {
       $lastbegin = $beginpart;
-      list($conyear, $conmonth) = explode("-", $beginpart);
       $calout .= "<tr><th colspan=\"2\">" . ucfirst(monthyear($beginpart)) . "</th></tr>\n";
     }
     $coninfo = nicedateset($begin, $end);
@@ -1710,8 +1689,8 @@ function smarty_function_con($con)
   $name = $con['name'] ?? "";
   $year = $con['year'] ?? "";
   $cancelled = $con['cancelled'] ?? 0;
-  $begin = $con['begin'] ?? NULL;
-  $end = $con['end'] ?? NULL;
+  $begin = $con['begin'] ?? null;
+  $end = $con['end'] ?? null;
   $country = $con['country'] ?? "";
   $text = htmlspecialchars($name);
   if ($year) {

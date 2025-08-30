@@ -51,7 +51,7 @@ if ($user_id && $asked) {
 
 // Ret achievement
 if ($action == "update") {
-  if (!$person_id) $person_id = 'NULL';
+  if (!$person_id) $person_id = 'null';
   $q = "UPDATE users SET " .
     "name = '" . dbesc($name) . "', " .
     "person_id = $person_id, " .

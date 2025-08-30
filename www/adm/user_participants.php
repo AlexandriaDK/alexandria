@@ -26,7 +26,7 @@ if ($q != 1) { // check if scenario exists
   header("Location: ../data?scenarie=$scenarie");
   exit;
 }
-$q = getone("SELECT 1 FROM game WHERE id = $scenarie AND gms_min IS NULL AND gms_max IS NULL AND players_min IS NULL AND players_max IS NULL");
+$q = getone("SELECT 1 FROM game WHERE id = $scenarie AND gms_min IS null AND gms_max IS null AND players_min IS null AND players_max IS null");
 
 if (!($_SESSION['user_editor'] || $_SESSION['user_admin'] || $_SESSION['can_edit_participant'][$scenarie] || $r)) {
   header("Location: ../data?scenarie=$scenarie");

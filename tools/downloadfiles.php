@@ -6,7 +6,7 @@ require_once "base.inc.php";
 define('ALEXFILEPATH', '../loot.alexandria.dk/files/');
 define('ALEXURL', 'https://download.alexandria.dk/files/');
 
-$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, filename FROM files WHERE downloadable = 1");
+$files = getall("SELECT id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' WHEN !ISnull(issue_id) THEN 'issue' END AS category, filename FROM files WHERE downloadable = 1");
 
 foreach ($files as $file) {
   $categorydir = getcategorydir($file['category']);

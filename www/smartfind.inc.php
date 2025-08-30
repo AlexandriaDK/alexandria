@@ -127,8 +127,8 @@ function getalphaidbybeta($find, $table, $string, $idfield = "id", $search_alias
 
   // Due to aliases
   if ($search_alias) {
-    $whereextend = " AND $idfield IS NOT NULL";
-    $whereextendshort = " WHERE $idfield IS NOT NULL";
+    $whereextend = " AND $idfield IS NOT null";
+    $whereextendshort = " WHERE $idfield IS NOT null";
   }
 
   // Let's try a direct match ("a" match)

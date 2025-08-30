@@ -59,8 +59,8 @@ function addPersonsToGame($game_id, $persons)
     if ($persondata['event']) {
       list($category, $event_id) = explode("_", ($persondata['event']));
     }
-    $convention_id = ($category == 'c' ? $event_id : NULL);
-    $gamerun_id = ($category == 'r' ? $event_id : NULL);
+    $convention_id = ($category == 'c' ? $event_id : null);
+    $gamerun_id = ($category == 'r' ? $event_id : null);
 
     if ($title_id && $person_id) {
       $q = "INSERT INTO pgrel (game_id, person_id, title_id, convention_id, gamerun_id, note) " .
@@ -207,7 +207,7 @@ if ($action == "create") {
   } else {
     $title = trim($title);
     $q = "INSERT INTO game (id, title, internal, gamesystem_id, gamesystem_extra, person_extra, gms_min, gms_max, players_min, players_max, participants_extra, boardgame) " .
-      "VALUES (NULL, '" . dbesc($title) . "', '" . dbesc($internal) . "', " . sqlifnull($gamesystem_id) . ", '" . dbesc($gamesystem_extra) . "', '" . dbesc($person_extra) . "', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
+      "VALUES (null, '" . dbesc($title) . "', '" . dbesc($internal) . "', " . sqlifnull($gamesystem_id) . ", '" . dbesc($gamesystem_extra) . "', '" . dbesc($person_extra) . "', " . strNullEscape($gms_min) . ", " . strNullEscape($gms_max) . ", " . strNullEscape($players_min) . ", " . strNullEscape($players_max) . ", '" . dbesc($participants_extra) . "', $boardgame)";
     $r = doquery($q);
     if ($r) {
       $game = dbid();
@@ -295,7 +295,7 @@ if ($game) {
   // get all runs
   $events = getall("
 		(
-		SELECT id, '' AS name, NULL AS year, begin, end, location, country, description, cancelled, CONCAT('r_', id) AS combinedid FROM gamerun WHERE game_id = $game
+		SELECT id, '' AS name, null AS year, begin, end, location, country, description, cancelled, CONCAT('r_', id) AS combinedid FROM gamerun WHERE game_id = $game
 		)
 		UNION ALL
 		(

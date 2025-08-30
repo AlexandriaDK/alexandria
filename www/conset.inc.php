@@ -22,7 +22,7 @@ $q = getall("
 	FROM convention c
 	INNER JOIN conset ON c.conset_id = conset.id
 	LEFT JOIN lrel ON c.id = lrel.convention_id
-	LEFT JOIN locations l ON lrel.location_id = l.id AND l.geo IS NOT NULL
+	LEFT JOIN locations l ON lrel.location_id = l.id AND l.geo IS NOT null
 	WHERE c.conset_id = '$conset'
 	GROUP BY c.id
 	ORDER BY year, begin, name
@@ -65,7 +65,7 @@ $haslocations = getone("
 	FROM lrel
 	INNER JOIN locations l ON lrel.location_id = l.id
 	INNER JOIN convention c ON lrel.convention_id = c.id
-	WHERE l.geo IS NOT NULL
+	WHERE l.geo IS NOT null
 	AND c.conset_id = $conset
 ");
 

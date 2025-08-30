@@ -10,7 +10,7 @@ function chlog($data_id, $category, $note = "")
 {
   $user = 'Peter Brodersen';
   $authuserid = 4;
-  $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
+  $data_id = ($data_id == null ? 'null' : (int) $data_id);
   $note = dbesc($note);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
@@ -65,7 +65,7 @@ function create_game($game, $persons, $organizations, $multiple_runs = false, $e
   $internal .= json_encode($game) . PHP_EOL . PHP_EOL;
 
   foreach ((array) $game->genres as $genre) {
-    $gid = $genre_lajv_alexandria_map[$genre->id] ?? NULL;
+    $gid = $genre_lajv_alexandria_map[$genre->id] ?? null;
     if ($gid) {
       $genres[] = $gid;
     } else {

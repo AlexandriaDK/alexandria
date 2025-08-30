@@ -32,7 +32,7 @@ if ($action == "createlocation") {
 // Edit location
 if ($action == "updatelocation" && $id) {
   [$latitude, $longitude] = explode(",", str_replace('°', '', $latlon));
-  $geosql = 'NULL';
+  $geosql = 'null';
   if (is_numeric($latitude) && is_numeric($longitude)) {
     $geosql = "ST_GeomFromText('POINT($latitude $longitude)', 4326)";
   }
@@ -90,9 +90,9 @@ if ($action == "createrelation" && $id) {
   // no duplicates
   $existing = 0;
   if ($convention_id) {
-    $existing = getone("SELECT COUNT(*) FROM lrel WHERE location_id = $id AND convention_id = $convention_id AND gamerun_id IS NULL");
+    $existing = getone("SELECT COUNT(*) FROM lrel WHERE location_id = $id AND convention_id = $convention_id AND gamerun_id IS null");
   } elseif ($gamerun_id) {
-    $existing = getone("SELECT COUNT(*) FROM lrel WHERE location_id = $id AND convention_id IS NULL AND gamerun_id = $gamerun_id");
+    $existing = getone("SELECT COUNT(*) FROM lrel WHERE location_id = $id AND convention_id IS null AND gamerun_id = $gamerun_id");
   }
   if ($existing) {
     $_SESSION['admin']['info'] = "The relation already exists. " . dberror();
@@ -111,7 +111,7 @@ if ($action == "removerelation" && $id && $relation_id) {
     $_SESSION['admin']['info'] = "The relation does not exist. " . dberror();
     rexit($this_type, ['id' => $id]);
   }
-  $relationstring = getone("SELECT IF(convention_id IS NOT NULL, CONCAT('c', convention_id), CONCAT('gr', gamerun_id)) AS relationstring FROM lrel WHERE location_id = $id AND id = $relation_id");
+  $relationstring = getone("SELECT IF(convention_id IS NOT null, CONCAT('c', convention_id), CONCAT('gr', gamerun_id)) AS relationstring FROM lrel WHERE location_id = $id AND id = $relation_id");
   doquery("DELETE FROM lrel WHERE location_id = $id AND id = $relation_id");
   chlog($id, $this_type, "Relation removed: $relationstring");
   $_SESSION['admin']['info'] = "Relation removed! " . dberror();
