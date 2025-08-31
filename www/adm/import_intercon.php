@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 chdir("adm/");
 
 $action = (string) $_REQUEST['action'];
@@ -180,7 +180,7 @@ if ($type == 1) { // HTML scraper
       print "<hr>";
     } else {
       // for manual checks, e.g. special events
-      if (strpos($dataset, '<h3>') !== FALSE) {
+      if (strpos($dataset, '<h3>') !== false) {
         print "<pre>" . htmlspecialchars($dataset) . "</pre><hr>";
       }
     }

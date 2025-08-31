@@ -5,7 +5,7 @@ body {
 }
 
 #leftmenu {
-  background: #ebd7a2 url(gfx/textureback.jpg);
+  background: #ebd7a2 url("gfx/textureback.jpg");
   padding: 2px;
   width: 170px;
   float: left;
@@ -837,7 +837,7 @@ ul.taglist li span.delete a:hover {
 
 #tabs .ui-tabs-nav .ui-state-active,
 .tabsmin .ui-tabs-nav .ui-state-active {
-  background: transparent url(gfx/uiTabsArrow.png) no-repeat bottom center !important;
+  background: transparent url("gfx/uiTabsArrow.png") no-repeat bottom center !important;
   border: none !important;
 }
 

@@ -1,25 +1,25 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $this_type = 'organizers';
 $category = 'convention';
 
-$action = $_REQUEST['action'] ?? FALSE;
-$do = $_REQUEST['do'] ?? FALSE;
+$action = $_REQUEST['action'] ?? false;
+$do = $_REQUEST['do'] ?? false;
 $role = trim((string) ($_REQUEST['role'] ?? ''));
 $person_text = trim((string) ($_REQUEST['person_text'] ?? ''));
-$person_id = (int) ($person_text ?? FALSE);
+$person_id = (int) ($person_text ?? false);
 $person_extra = "";
 if (!$person_id) {
   $person_extra = $person_text;
-  $person_id = NULL;
+  $person_id = null;
 }
 
-$id = $_REQUEST['id'] ?? FALSE;
+$id = $_REQUEST['id'] ?? false;
 $data_id = (int) ($_REQUEST['data_id'] ?? '');
 
 $user_id = $_SESSION['user_id'];
@@ -100,11 +100,14 @@ if ($data_id) {
   <TITLE>Administration - organizers</TITLE>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="/uistyle.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
   <link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+  <script src="//code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
   <script src="adm.js"></script>
   <script type="text/javascript">
     $(function() {
@@ -131,7 +134,7 @@ if ($data_id) {
 
 <body>
   <?php
-  include("links.inc.php");
+  include_once "links.inc.php";
 
   printinfo();
 

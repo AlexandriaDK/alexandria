@@ -15,8 +15,8 @@ $gamelistdata = [
   'gamerush' => ['label' => $t->getTemplateVars('_gamerush'), 'games' => []],
 ];
 
-$oo = $_GET['oo'] ?? FALSE; // sort order for organizers
-$edit = $_GET['edit'] ?? FALSE;
+$oo = $_GET['oo'] ?? false; // sort order for organizers
+$edit = $_GET['edit'] ?? false;
 
 // scenariowritingcompetition tags - should not be hardcoded
 $swctags = [
@@ -50,7 +50,7 @@ if (is_null($convention['id'])) {
 $is_fastaval = ($convention['conset_id'] == 1);
 
 $showtitle = $conventname = $convention['name'];
-$internal = (($_SESSION['user_editor'] ?? FALSE) ? $convention['internal'] : ""); // only set internal if editor
+$internal = (($_SESSION['user_editor'] ?? false) ? $convention['internal'] : ""); // only set internal if editor
 
 // List of files
 $filelist = getfilelist($con, $this_type);
@@ -79,14 +79,14 @@ if ($convention['conset_id']) {
   $arrows = [];
   if ($seriethis) {
     if (isset($seriedata['id'][($seriethis - 1)])) {
-      $arrows['prev'] = ['active' => TRUE, 'conid' => $seriedata['id'][($seriethis - 1)], 'name' => $seriedata['name'][($seriethis - 1)] . " (" . yearname($seriedata['year'][($seriethis - 1)]) . ")"];
+      $arrows['prev'] = ['active' => true, 'conid' => $seriedata['id'][($seriethis - 1)], 'name' => $seriedata['name'][($seriethis - 1)] . " (" . yearname($seriedata['year'][($seriethis - 1)]) . ")"];
     } else {
-      $arrows['prev'] = ['active' => FALSE];
+      $arrows['prev'] = ['active' => false];
     }
     if (isset($seriedata['id'][($seriethis + 1)])) {
-      $arrows['next'] = ['active' => TRUE, 'conid' => $seriedata['id'][($seriethis + 1)], 'name' => $seriedata['name'][($seriethis + 1)] . " (" . yearname($seriedata['year'][($seriethis + 1)]) . ")"];
+      $arrows['next'] = ['active' => true, 'conid' => $seriedata['id'][($seriethis + 1)], 'name' => $seriedata['name'][($seriethis + 1)] . " (" . yearname($seriedata['year'][($seriethis + 1)]) . ")"];
     } else {
-      $arrows['next'] = ['active' => FALSE];
+      $arrows['next'] = ['active' => false];
     }
   }
 }
@@ -111,7 +111,7 @@ $q = getall("
 	WHERE cgrel.convention_id = $con
 	GROUP BY g.id, pr.id, p.id
 	ORDER BY boardgame, title_translation, p.surname, p.firstname
-", FALSE);
+", false);
 
 $gamecount = count($q);
 

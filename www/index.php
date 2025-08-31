@@ -1,6 +1,6 @@
 <?php
-require("connect.php");
-require("base.inc.php");
+require_once "connect.php";
+require_once "base.inc.php";
 
 if (isset($_SESSION['login_after_redirect']) && isset($_SESSION['do_redirect'])) { // assume valid URL
   header("Location: " . $_SESSION['login_after_redirect']);
@@ -22,7 +22,7 @@ foreach (getnews(10) as $data) {
 // for admins
 $recentlog = $translations = [];
 #if (isset($_SESSION['user_editor']) && $_SESSION['user_editor'] ) {
-if ($_SESSION['user_editor'] ?? FALSE) {
+if ($_SESSION['user_editor'] ?? false) {
   $recentlog = getrecentlog(10);
   $translations = getTranslationOverview();
 }

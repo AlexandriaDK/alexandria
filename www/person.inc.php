@@ -14,7 +14,7 @@ if ($r['id'] == 0) {
   exit;
 }
 
-$internal = (($_SESSION['user_editor'] ?? FALSE) ? $r['internal'] : ""); // only set internal if editor
+$internal = (($_SESSION['user_editor'] ?? false) ? $r['internal'] : ""); // only set internal if editor
 // Achievements
 if (isset($_SESSION['user_author_id']) && $r['id'] == $_SESSION['user_author_id']) award_achievement(21); // view own page
 
@@ -92,7 +92,7 @@ if (count($q) > 0) {
       }
       foreach ($options as $type) {
         if ($type) {
-          $slist[$sl][$type] = getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? FALSE);
+          $slist[$sl][$type] = getdynamicgamehtml($rs['id'], $type, $userlog[$rs['id']][$type] ?? false);
         } else {
           $slist[$sl][] = " ";
         }

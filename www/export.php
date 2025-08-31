@@ -1,8 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 $timestamp_start = date("c");
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 $dataset = (string) ($_REQUEST['dataset'] ?? '');
 $setup = (string) ($_REQUEST['setup'] ?? '');
 $newestversion = (string) ($_REQUEST['newestversion'] ?? '');
@@ -80,12 +80,12 @@ if ($dataset) {
     case 'article_reference':
     case 'locations':
     case 'location_reference':
-      $output = getall($exportqueries[$dataset], FALSE);
+      $output = getall($exportqueries[$dataset], false);
       break;
     case 'all':
       $output = [];
       foreach ($exportqueries as $table => $query) {
-        $output[$table] = getall($query, FALSE);
+        $output[$table] = getall($query, false);
       }
       break;
     default:

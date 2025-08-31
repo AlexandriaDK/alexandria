@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $path = '/home/penguin/web/loot.alexandria.dk/files/Scenariedatabasen/Scenarier/';
 
@@ -29,7 +29,7 @@ $result = [];
 
 $filelist = glob($path . '*');
 foreach ($filelist as $file) {
-  $sid = NULL;
+  $sid = null;
   $auts = $files = [];
   $scenario = pathinfo($file)['filename'];
   $basename = pathinfo($file)['basename'];
@@ -66,7 +66,7 @@ foreach ($result as $row) {
     foreach ($row['auts'] as $aut) {
       $authorscore[$aut]++;
     }
-  } elseif (strpos(implode(" ", $row['files']), '.pdf') === FALSE) {
+  } elseif (strpos(implode(" ", $row['files']), '.pdf') === false) {
     $color = "#c90";
     $filecandidates++;
   }

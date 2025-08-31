@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 if (isset($_SESSION) && isset($_SESSION['user_id'])) {
   $userlog = getuserloggames($_SESSION['user_id']);
@@ -38,8 +38,8 @@ foreach ($r as $row) {
 
       foreach ($options as $type) {
         $scenlist .= "<td>";
-        if ($type != NULL) {
-          $scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? FALSE);
+        if ($type != null) {
+          $scenlist .= getdynamicgamehtml($row['id'], $type, $userlog[$row['id']][$type] ?? false);
         }
         $scenlist .= "</td>";
       }
@@ -81,5 +81,5 @@ foreach ($r as $row) {
 }
 
 $t->assign('scenlist', $scenlist);
-$t->assign('boardgamesonly', TRUE);
+$t->assign('boardgamesonly', true);
 $t->display('games.tpl');

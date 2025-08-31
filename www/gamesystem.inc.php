@@ -39,7 +39,6 @@ $gamelist = [];
 
 if (count($q) > 0) {
   foreach ($q as $rs) { // Put all together
-    #		$game_id = $rs['id'];
     if (!isset($gamelist[$rs['id']])) {
       $gamelist[$rs['id']] = ['game' => ['title' => $rs['title_translation'], 'origtitle' => $rs['title'], 'person_extra' => $rs['person_extra'], 'files' => $rs['files']], 'person' => [], 'convention' => []];
     }

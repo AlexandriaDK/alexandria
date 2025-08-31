@@ -7,7 +7,7 @@ mb_internal_encoding("UTF-8");
 // Assume loot.alexandria.dk is two steps up from webroot
 define("DOWNLOAD_PATH", realpath(dirname(__FILE__) . '/../../../loot.alexandria.dk/files/') . '/');
 
-function getlabel($category, $data_id, $link = FALSE, $default = "")
+function getlabel($category, $data_id, $link = false, $default = "")
 {
   switch ($category) {
     case 'game':
@@ -69,13 +69,13 @@ function getlabel($category, $data_id, $link = FALSE, $default = "")
   $label = getone("SELECT $value FROM $category WHERE id = '$data_id'");
   if (!$label) $label = $default;
 
-  if ($link == TRUE) {
+  if ($link == true) {
     $label = '<a href="../' . $url . ($category == 'tag' ? rawurlencode($label) : $data_id) . '">' . $label . '</a> <a href="' . $returl . $data_id . '" accesskey="q">[edit]</a>';
   }
   return $label;
 }
 
-function tr($tekst, $name, $def = "", $opt = "", $placeholder = "", $type = "text", $autofocus = FALSE, $required = FALSE, $id = "")
+function tr($tekst, $name, $def = "", $opt = "", $placeholder = "", $type = "text", $autofocus = false, $required = false, $id = "")
 {
   print "<tr valign=top><td>$tekst</td><td><input type=\"$type\" name=\"$name\" value=\"" . htmlspecialchars($def ?? '') . "\" placeholder=\"" . htmlspecialchars($placeholder ?? '') . "\" size=50" . ($autofocus ? " autofocus" : "") . ($required ? " required" : "") . ($id ? " id=\"$id\"" : "") . "></td><td>$opt</td></tr>\n";
 }
@@ -92,11 +92,10 @@ function chlog($data_id, $category, $note = "")
   $authuserid = $_SESSION['user_id'];
   $user = dbesc($authuser);
   $note = dbesc($note);
-  $data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
+  $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
-  $result = doquery($query);
-  return $result;
+  return doquery($query);
 }
 
 function changelinks($data_id, $category)
@@ -230,7 +229,7 @@ function changeuserlog($data_id, $category)
 function showpicture($data_id, $category)
 {
   $html = "<tr><td>Picture</td><td>";
-  if (($path = getthumbnailpath($data_id, $category)) === FALSE) {
+  if (($path = getthumbnailpath($data_id, $category)) === false) {
     $html .= "No";
   } else {
     $html .= "<a href=\"../$path\">Yes</a>";
@@ -244,8 +243,8 @@ function getthumbnailpath($data_id, $category)
   $folder = getcategorythumbdir($category);
 
   # assuming that script has chdir .. and is in webroot now
-  if ($folder === FALSE || !(file_exists($path = "./gfx/$folder/l_" . $data_id . ".jpg"))) {
-    return FALSE;
+  if ($folder === false || !(file_exists($path = "./gfx/$folder/l_" . $data_id . ".jpg"))) {
+    return false;
   } else {
     return $path;
   }
@@ -268,18 +267,14 @@ function showtickets($data_id, $category)
 
 function strNullEscape($str)
 {
-  if ($str === NULL) {
+  if ($str === null) {
     return 'NULL';
   } else {
-    if (function_exists('dbesc')) {
-      return "'" . dbesc($str) . "'";
-    } else {
-      return "'" . dbesc($str) . "'";
-    }
+    return "'" . dbesc($str) . "'";
   }
 }
 
-function getCount($table, $data_id, $requiresCategoryAndData = FALSE, $category = "")
+function getCount($table, $data_id, $requiresCategoryAndData = false, $category = "")
 {
   if (!$category) {
     $category = "game";
@@ -290,8 +285,7 @@ function getCount($table, $data_id, $requiresCategoryAndData = FALSE, $category 
   } else {
     $result = getone("SELECT COUNT(*) FROM $table WHERE category = '$category' AND data_id = $data_id");
   }
-  $count = $result;
-  return $count;
+  return $result;
 }
 
 function autidextra($person)
@@ -354,8 +348,8 @@ function mojibakefix($string)
 
 function printinfo()
 {
-  $info = $_SESSION['admin']['info'] ?? FALSE;
-  $link = $_SESSION['admin']['link'] ?? FALSE;
+  $info = $_SESSION['admin']['info'] ?? false;
+  $link = $_SESSION['admin']['link'] ?? false;
   if ($info) {
     print "<table border=0><tr><td bgcolor=\"#ffbb88\"><font size=\"+1\">";
     if ($link) {
@@ -392,7 +386,7 @@ function strSplitParticipants($str)
 {
   $str = trim($str);
   if (!preg_match('/^(\d+)\s*([–-]\s*(\d+))?$/u', $str, $match)) {
-    return [NULL, NULL];
+    return [null, null];
   }
   $str_min = $match[1] ?? '';
   $str_max = $match[3] ?? '';
@@ -449,21 +443,21 @@ function htmladmstart($title = "", $headcontent = "")
 <title>Editor $htmltitle</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="/uistyle.css">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
 <link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
 <script
-			  src="https://code.jquery.com/jquery-3.4.1.min.js"
-			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-			  crossorigin="anonymous"></script>
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+<script src="//code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 <script src="adm.js"></script>
 $headcontent
 </head>
 <body>
 EOD;
   print $html;
-  include("links.inc.php");
+  include_once "links.inc.php";
   printinfo();
   return true;
 }
@@ -504,10 +498,10 @@ function get_create_person($name, $internal = "Autoimport")
   return $person_id;
 }
 
-function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $existing_game_id = FALSE)
+function create_game($game, $internal = "Autoimport", $multiple_runs = false, $existing_game_id = false)
 {
   $title = $game['title'];
-  $gamesystem_id = $game['gamesystem_id'] ?? NULL;
+  $gamesystem_id = $game['gamesystem_id'] ?? null;
   $gamesystem_extra = $game['gamesystem_extra'] ?? '';
   $urls = $game['urls'] ?? [];
   $genres = $game['genres'] ?? [];
@@ -518,8 +512,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
   $cons = $game['cons'] ?? []; // list of con ids, e.g. [1, 4, 6] - assuming premiere
   $organizer = $game['organizer'] ?? '';
   $descriptions = $game['descriptions'] ?? [];
-  $players_min = $game['players_min'] ?? NULL;
-  $players_max = $game['players_max'] ?? NULL;
+  $players_min = $game['players_min'] ?? null;
+  $players_max = $game['players_max'] ?? null;
   $participants_extra = $game['participants_extra'] ?? '';
   $person_ids = [];
   $gm_ids = [];
@@ -543,7 +537,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
     }
   }
 
-  if ($gamesystem_id == NULL) { // insert text NULL into SQL
+  if ($gamesystem_id == null) { // insert text NULL into SQL
     $gamesystem_id = 'NULL';
   }
 
@@ -556,22 +550,6 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
   }
   chlog($game_id, 'game', 'Game created');
 
-  /*
-    if ($description) {
-        $language = 'sv';
-        if ($multiple_runs || $existing_game_id) {
-            $language .= " ($year)";
-        }
-        $desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
-        doquery($desc_sql);
-    }
-
-    if ($year) {
-        $begin = $end = $year . '-00-00';
-        $run_sql = "INSERT INTO gamerun (game_id, begin, end, location, country) VALUES ($game_id, '$begin', '$end', '" . dbesc($location) . "', 'se')";
-        doquery($run_sql);        
-    }
-	*/
   $year = '';
 
   foreach ($person_ids as $person) {
@@ -617,7 +595,6 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 
   foreach ($urls as $url) {
     if ($url != '' && !getone("SELECT 1 FROM links WHERE game_id = $game_id AND url = '" . dbesc($url) . "'")) {
-      // $lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
       $lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_links_website}')";
       doquery($lsql);
     }
@@ -630,6 +607,9 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
 
   foreach ($runs as $run) {
     if ($run['begin'] || $run['end'] || $run['location'] || $run['description']) {
+      $begin = $run['begin'] ? $run['begin'] : null;
+      $end = $run['end'] ? $run['end'] : null;
+      $description = $run['description'] ?? '';
       $location = $run['location'];
       $location_id = intval($location);
       if ($location_id) {
@@ -637,7 +617,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = FALSE, $e
       }
       $runsql = "
 				INSERT INTO gamerun (game_id, begin, end, location, description) 
-				VALUES ($game_id, " . strNullEscape($run['begin']) . ", " . strNullEscape($run['end']) . ", '" . dbesc($location) . "', '" . dbesc($run['description']) . "')
+				VALUES ($game_id, " . strNullEscape($begin) . ", " . strNullEscape($end) . ", '" . dbesc($location) . "', '" . dbesc($description) . "')
 			";
       $gamerun_id = doquery($runsql);
       if ($location_id) {

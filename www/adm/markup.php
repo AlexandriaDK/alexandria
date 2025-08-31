@@ -1,15 +1,15 @@
 <?php
-$admonly = TRUE;
-require "adm.inc.php";
-require "base.inc.php";
+$admonly = true;
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
-$action = (string) ($_REQUEST['action'] ?? FALSE);
-$id = (int) ($_REQUEST['id'] ?? FALSE);
-$table = (string) ($_REQUEST['table'] ?? FALSE);
-$text = (string) ($_REQUEST['text'] ?? FALSE);
+$action = (string) ($_REQUEST['action'] ?? false);
+$id = (int) ($_REQUEST['id'] ?? false);
+$table = (string) ($_REQUEST['table'] ?? false);
+$text = (string) ($_REQUEST['text'] ?? false);
 
 if ($action) {
   validatetoken($token);

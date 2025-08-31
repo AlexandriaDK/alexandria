@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 $this_type = 'log';
 $data_id = (int) ($_REQUEST['data_id'] ?? 0);
 $category = (string) ($_REQUEST['category'] ?? '');
@@ -136,7 +136,7 @@ if (isset($result)) {
   print "</table>\n";
 } else {
   print "<table align=\"center\" border=0>" .
-    "<tr><th colspan=5>$listlimit most recent edits" . ($user_name ?? FALSE ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n" .
+    "<tr><th colspan=5>$listlimit most recent edits" . ($user_name ?? false ? " by " . htmlspecialchars($user_name) : "") . ":" . ($listlimit == 100 ? ' <a href="showlog.php?listlimit=1000' . ($user_id ? '&amp;user_id=' . $user_id : '') . '">[show 1,000]</a>' : '') . "</th></tr>\n" .
     "<tr>\n" .
     "<th>Entity</th>" .
     "<th>Edited by</th>" .
@@ -149,7 +149,7 @@ if (isset($result)) {
       $link = admLink($row['category'], $row['data_id']);
     } else {
       $subject = $row['category'];
-      if ($row['data_id'] != NULL) {
+      if ($row['data_id'] != null) {
         $subject .= ": #" . $row['data_id'];
       }
       $link = "";

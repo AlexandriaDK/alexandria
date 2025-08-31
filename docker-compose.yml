@@ -12,11 +12,18 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./alexandria_tables.sql:/docker-entrypoint-initdb.d/1-structure.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   web:
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
       DB_USER: alexuser

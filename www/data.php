@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $person = (int) ($_REQUEST['person'] ?? 0);
 $scenarie = (int) ($_REQUEST['scenarie'] ?? 0);
@@ -13,21 +13,21 @@ $tag = (string) ($_REQUEST['tag'] ?? '');
 $review = (int) ($_REQUEST['review'] ?? 0);
 
 if ($person) {
-  include("person.inc.php");
+  include_once "person.inc.php";
 } elseif ($scenarie || $game) {
-  include("game.inc.php");
+  include_once "game.inc.php";
 } elseif ($con) {
-  include("convention.inc.php");
+  include_once "convention.inc.php";
 } elseif ($conset) {
-  include("conset.inc.php");
+  include_once "conset.inc.php";
 } elseif ($system) {
-  include("gamesystem.inc.php");
+  include_once "gamesystem.inc.php";
 } elseif ($year) {
-  include("year.inc.php");
+  include_once "year.inc.php";
 } elseif ($tag) {
-  include("tag.inc.php");
+  include_once "tag.inc.php";
 } elseif ($review) {
-  include("review.inc.php");
+  include_once "review.inc.php";
 } else {
-  include("default.inc.php");
+  include_once "default.inc.php";
 }

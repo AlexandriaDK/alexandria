@@ -17,6 +17,7 @@
           {if $file.extension == "jpg"}<span title="{$_picture|ucfirst}">🖼️</span>{/if}
           {if $file.extension == "png"}<span title="{$_picture|ucfirst}">🖼️</span>{/if}
           {if $file.extension == "gif"}<span title="{$_picture|ucfirst}">🖼️</span>{/if}
+          {if $file.extension == "xlsx"}<span title="{$_file_spreadsheet|ucfirst}">📈</span>{/if}
         </td>
         <td>
           <a href="/download/{$filedir}/{$id}/{$file.filename|rawurlencode}" {if $file.language|strlen == 2}
