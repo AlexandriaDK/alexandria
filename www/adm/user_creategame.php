@@ -1,9 +1,9 @@
 <?php
 // save page for users creating a game
-require "base.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $token = $_REQUEST['token'] ?? '';
 $user_id = $_SESSION['user_id'];
@@ -40,7 +40,7 @@ if ($useremail) {
 }
 $internal .= "User notes:\n=====\n" . $notes . "\n";
 
-$gamesystem_id = ($gametype == 'larp' ? 73 : NULL);
+$gamesystem_id = ($gametype == 'larp' ? 73 : null);
 $boardgame = ($gametype == 'boardgame');
 
 $runs = [

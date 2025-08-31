@@ -1,6 +1,6 @@
 <?php
-require_once("../../inc/rpgconnect.inc");
-require_once("../base.inc.php");
+require_once "../../inc/rpgconnect.inc";
+require_once "../base.inc.php";
 $q = $_REQUEST['q'];
 
 list($category, $dataid) = explode("_", $q);
@@ -24,8 +24,8 @@ $result = mysql_query($query) or die("ERROR: " . mysql_error());
 while (list($first, $second) = mysql_fetch_row($result)) {
   $firstfound[] = $second;
   $dataset[] = $first . "_" . $second;
-  $names[$first] = TRUE;
-  $names[$second] = TRUE;
+  $names[$first] = true;
+  $names[$second] = true;
 }
 
 if (count($firstfound) > 0) {
@@ -41,8 +41,8 @@ if (count($firstfound) > 0) {
   $result = mysql_query($query) or die("ERROR: " . mysql_error());
   while (list($first, $second) = mysql_fetch_row($result)) {
     $dataset[] = $first . "_" . $second;
-    $names[$first] = TRUE;
-    $names[$second] = TRUE;
+    $names[$first] = true;
+    $names[$second] = true;
   }
 }
 

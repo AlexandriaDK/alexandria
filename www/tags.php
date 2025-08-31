@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $order = ($_SERVER['QUERY_STRING'] == "popular" || isset($_REQUEST['popular']) ? "count desc" : "tag");
 
@@ -23,12 +23,12 @@ $list = "";
 
 $taglist = [];
 foreach ($tags as $tag) {
-  $url = "data?tag=" . rawurlencode($tag['tag']);
-  $tagname = $tag['tag'];
-  $has_article = in_array($tag['tag'], $articles);
-  $count = $tag['count'];
-  $dataset = ['url' => $url, 'tagname' => $tagname, 'has_article' => $has_article, 'count' => $count];
-  $taglist[] = $dataset;
+	$url = "data?tag=" . rawurlencode($tag['tag']);
+	$tagname = $tag['tag'];
+	$has_article = in_array($tag['tag'], $articles);
+	$count = $tag['count'];
+	$dataset = ['url' => $url, 'tagname' => $tagname, 'has_article' => $has_article, 'count' => $count];
+	$taglist[] = $dataset;
 }
 
 // Smarty

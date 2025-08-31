@@ -1,23 +1,23 @@
 <?php
 // from this point on we know that the setup is incomplete
 define('IMPORT_ENDPOINT', 'https://alexandria.dk/en/export');
-define('INSTALLATION_DEBUG', FALSE);
+define('INSTALLATION_DEBUG', false);
 $action = $_POST['action'] ?? '';
 if ($action && ($_SESSION['token'] !== $_POST['token'])) {
   $t->assign('stage', 'tokenerror');
-  $t->assign('installation', TRUE);
+  $t->assign('installation', true);
   $t->assign('dbname', DB_NAME);
   $t->display('installation.tpl');
   exit;
 }
 
-function dbmultiinsert($table, $allvalues, $fields = NULL)
+function dbmultiinsert($table, $allvalues, $fields = null)
 {
   // Special case for spatial data
   if ($table == 'locations') {
     $fields = ['id', 'name', 'address', 'city', 'country', 'note', 'geo'];
   }
-  if ($fields == NULL) {
+  if ($fields == null) {
     $fields = [];
     foreach ($allvalues[0] as $key => $list) {
       $fields[] = $key;
@@ -28,7 +28,7 @@ function dbmultiinsert($table, $allvalues, $fields = NULL)
     $set = [];
     foreach ($list as $key => $part) {
       if ($table == 'locations' && $key == 'latitude') {
-        $latitude = $longitude = NULL;
+        $latitude = $longitude = null;
         $latitude = $part;
         continue;
       } elseif ($table == 'locations' && $key == 'longitude') {
@@ -53,18 +53,18 @@ function dbmultiinsert($table, $allvalues, $fields = NULL)
   }
 
   if ($datasets) {
-    if (INSTALLATION_DEBUG === TRUE) {
+    if (INSTALLATION_DEBUG === true) {
       print "<pre>";
       print "TABLE $table \n";
     }
     doquery("DELETE FROM `$table` ");
     foreach ($datasets as $dataset) {
       $multisql = "INSERT INTO `$table` (" . implode(", ", $fields) . ") VALUES " . implode(", ", $dataset);
-      if (INSTALLATION_DEBUG === TRUE) {
+      if (INSTALLATION_DEBUG === true) {
         print htmlspecialchars($multisql) . "\n";
       }
       doquery($multisql);
-      if (INSTALLATION_DEBUG === TRUE) {
+      if (INSTALLATION_DEBUG === true) {
         $error = dberror();
         if ($error) {
           print "\nMySQL error: " . $error . "\n";
@@ -77,7 +77,7 @@ function dbmultiinsert($table, $allvalues, $fields = NULL)
   }
 }
 
-if (!defined("INSTALLNOW") || INSTALLNOW !== TRUE) { //should not be called directly
+if (!defined("INSTALLNOW") || INSTALLNOW !== true) { //should not be called directly
   header("HTTP/1.1 403 Forbidden");
   header("X-Error: Setup");
 
@@ -99,14 +99,14 @@ if ($action == 'importstructure') {
   } else {
     doquery("SET foreign_key_checks = 0");
     foreach ($sqltables->result as $table => $sqlstatement) {
-      if (INSTALLATION_DEBUG === TRUE) {
+      if (INSTALLATION_DEBUG === true) {
         print "Creating table $table\n";
       }
       doquery("DROP TABLE IF EXISTS `$table`");
       doquery($sqlstatement);
     }
     doquery("SET foreign_key_checks = 1");
-    if (getone("SHOW tables LIKE 'installation'") !== NULL) {
+    if (getone("SHOW tables LIKE 'installation'") !== null) {
       doquery("INSERT INTO `installation` (`key`, `value`) VALUES ('status', 'empty')");
     }
     header("Location: ./");
@@ -182,7 +182,7 @@ if ($action == 'importstructure') {
   doquery("INSERT INTO installation (`key`, `value`) VALUES ('status', 'live')");
   header("Location: ./");
   exit;
-} elseif (getone("SHOW tables LIKE 'installation'") !== NULL) {
+} elseif (getone("SHOW tables LIKE 'installation'") !== null) {
   if (getone("SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'empty'")) {
     $t->assign('stage', 'populate');
   } elseif (getone("SELECT 1 FROM installation WHERE `key` = 'status' AND `value` = 'ready'")) {
@@ -192,7 +192,7 @@ if ($action == 'importstructure') {
   $t->assign('stage', 'dbsetup');
 }
 
-$t->assign('installation', TRUE);
+$t->assign('installation', true);
 $t->assign('dbname', DB_NAME);
 $t->assign('pagetitle', 'Installation');
 $t->display('installation.tpl');

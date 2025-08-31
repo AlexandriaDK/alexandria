@@ -1,12 +1,12 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $systems = getall("SELECT id, name FROM gamesystem ORDER BY name");
 $genres = getall("SELECT id, name FROM genre WHERE genre = 1 ORDER BY name");
 $categories = getall("SELECT id, name FROM genre WHERE genre = 0 ORDER BY name");
 $consets = getall("SELECT id, name FROM conset ORDER BY name");
-$filelanguages = getall("SELECT COUNT(DISTINCT game_id) AS count, language FROM files WHERE language != '' AND downloadable = 1 GROUP BY language HAVING COUNT(DISTINCT game_id) > 0 ORDER BY count DESC", FALSE);
+$filelanguages = getall("SELECT COUNT(DISTINCT game_id) AS count, language FROM files WHERE language != '' AND downloadable = 1 GROUP BY language HAVING COUNT(DISTINCT game_id) > 0 ORDER BY count DESC", false);
 
 $suggestlanguages = [];
 foreach ($filelanguages as $filelanguage) {

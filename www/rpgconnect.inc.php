@@ -9,10 +9,10 @@ $db_connector = DB_CONNECTOR;
 
 mysqli_report(MYSQLI_REPORT_OFF);
 if (!@($dblink = mysqli_connect($db_host, $db_user, $db_pass)) || @$_SERVER['QUERY_STRING'] == "crash") {
-  define('DBERROR', TRUE);
+  define('DBERROR', true);
   header("HTTP/1.1 503 Service Unavailable");
   header("X-Error: Database");
-  require("base.inc.php");
+  require_once "base.inc.php";
   $t->display('dberror.tpl');
   exit;
 }

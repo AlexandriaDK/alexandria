@@ -71,11 +71,11 @@ if (get('action') == 'logout') {
   die();
 }
 
-function apiRequest($url, $post = FALSE, $headers = array())
+function apiRequest($url, $post = false, $headers = array())
 {
   $ch = curl_init($url);
   curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
   $response = curl_exec($ch);
 
@@ -94,12 +94,12 @@ function apiRequest($url, $post = FALSE, $headers = array())
   return json_decode($response);
 }
 
-function get($key, $default = NULL)
+function get($key, $default = null)
 {
   return array_key_exists($key, $_GET) ? $_GET[$key] : $default;
 }
 
-function session($key, $default = NULL)
+function session($key, $default = null)
 {
   return array_key_exists($key, $_SESSION) ? $_SESSION[$key] : $default;
 }

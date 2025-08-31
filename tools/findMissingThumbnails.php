@@ -13,8 +13,8 @@ $logs = getall("SELECT DISTINCT category, data_id from log WHERE note LIKE 'Thum
 
 define("DOWNLOAD_PATH", "../loot.alexandria.dk/files/");
 
-if (! function_exists('mb_basename')) {
-  function mb_basename($path)
+if (! function_exists('mbBasename')) {
+  function mbBasename($path)
   {
     return array_reverse(explode("/", $path))[0];
   }
@@ -24,18 +24,17 @@ function chlog($data_id, $category, $note = "")
 { // should be a separate function
   $user = 'Peter Brodersen';
   $authuserid = 4;
-  $data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
+  $data_id = ($data_id == null ? 'null' : (int) $data_id);
   $note = dbesc($note);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
-  $result = doquery($query);
-  return $result;
+  return doquery($query);
 }
 
 function createThumbnail($category, $data_id, $filename)
 { // from www/adm/files.php - should be a separate function
 
-  $path = $basename =  mb_basename($filename);
+  $path = $basename =  mbBasename($filename);
   $subdir = getcategorydir($category);
   $target_subdir = getcategorythumbdir($category);
 

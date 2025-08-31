@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $id = (int) ($_REQUEST['id'] ?? 0);
 $convention_id = (int) ($_REQUEST['convention_id'] ?? 0);
@@ -9,10 +9,10 @@ $game_id = (int) ($_REQUEST['game_id'] ?? 0);
 $gamerun_id = (int) ($_REQUEST['gamerun_id'] ?? 0);
 $tag = (string) ($_REQUEST['tag'] ?? '');
 $startlocation = [];
-$location_target = FALSE;
+$location_target = false;
 
 if ($id) {
-  $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT NULL", FALSE);
+  $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT NULL", false);
   $location_target = getentryhtml('locations', $id);
 } elseif ($convention_id) {
   $startlocation = getcol("
@@ -94,7 +94,7 @@ $locations = getall("
     LEFT JOIN game g ON gr.game_id = g.id
     WHERE geo IS NOT NULL
     ORDER BY data_starttime
-", FALSE);
+", false);
 
 $aliases = getcolid("
     SELECT location_id, GROUP_CONCAT(label ORDER BY label SEPARATOR ', ') AS label

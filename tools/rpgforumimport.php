@@ -1,23 +1,7 @@
 <?php
-/*
-
-CREATE TABLE `rpgforum_posts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
-  `author` text CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
-  `timestamp` datetime DEFAULT NULL,
-  `views` int DEFAULT NULL,
-  `post` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci,
-  PRIMARY KEY (`id`),
-  FULLTEXT KEY `post_idx` (`author`,`title`,`post`),
-  FULLTEXT KEY `post_aut_idx` (`author`)
-) ENGINE=InnoDB AUTO_INCREMENT=63867 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci
-
- */
-
 chdir("../www/");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 doquery("ALTER TABLE rpgforum_posts DISABLE KEYS");
 
@@ -51,7 +35,7 @@ $views = 0;
 
 $lines = 0;
 $postcount = 0;
-while (($line = fgets($fp)) != FALSE) {
+while (($line = fgets($fp)) != false) {
   $lines++;
   if (! $title) {
     if (preg_match('_^<h1>(.*?)</h1>_', $line, $match)) {

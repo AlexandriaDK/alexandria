@@ -1,10 +1,10 @@
 <?php
-$admonly = TRUE;
-require "adm.inc.php";
-require "base.inc.php";
+$admonly = true;
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 htmladmstart("Debug");
 
@@ -15,12 +15,12 @@ print "</pre>";
 
 print "<h1>Cookie:</h1>";
 print "<pre>";
-print htmlspecialchars(print_r($_COOKIE, TRUE));
+print htmlspecialchars(print_r($_COOKIE, true));
 print "</pre>";
 
 print "<h1>Session:</h1>";
 print "<pre>";
-print htmlspecialchars(print_r($_SESSION, TRUE));
+print htmlspecialchars(print_r($_SESSION, true));
 print "</pre>";
 
 

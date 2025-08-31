@@ -4,7 +4,7 @@ unset($auth, $authuser, $authusers, $authusernames);
 $useridauthed = false;
 
 if (isset($admonly) && $_SESSION['user_editor'] && !$_SESSION['user_admin']) {
-  $must_be_admin = TRUE;
+  $must_be_admin = true;
 }
 
 if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) && !$_SESSION['user_admin'])) {
@@ -51,5 +51,5 @@ if ((!$_SESSION['user_editor'] && !$_SESSION['user_admin']) || (isset($admonly) 
   }
 
   // Should the user be allowed to view the log?
-  $viewlog = TRUE;
+  $viewlog = true;
 }

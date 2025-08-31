@@ -38,12 +38,12 @@ foreach ($descriptions as $d_id => $description) {
     $descriptions[$d_id]['langname'] = getLanguageName($language);
   }
 }
-$internal = (($_SESSION['user_editor'] ?? FALSE) ? $r['internal'] : ""); // only set internal if editor
+$internal = (($_SESSION['user_editor'] ?? false) ? $r['internal'] : ""); // only set internal if editor
 
 // Description of participants
 $participants = [];
 $gms = $players = "";
-if ($r['gms_min'] !== NULL) {
+if ($r['gms_min'] !== null) {
   if ($r['gms_min'] == 0 && $r['gms_max'] == 0) {
     $gms_text = $t->getTemplateVars('_sce_none_gms');
   } else {
@@ -56,7 +56,7 @@ if ($r['gms_min'] !== NULL) {
   $participants[] = $gms_text;
   $gms = ($r['gms_max'] != $r['gms_min'] ? $r['gms_min'] . "-" . $r['gms_max'] : $r['gms_min']);
 }
-if ($r['players_min'] !== NULL) {
+if ($r['players_min'] !== null) {
   $players_text = $r['players_min'];
   if ($r['players_max'] != $r['players_min']) {
     $players_text .= "-" . $r['players_max'];
@@ -88,7 +88,7 @@ if (count($alttitle) == 1) {
 $filelist = getfilelist($game, $this_type);
 
 // List of persons
-$personrungroups = ["" => NULL];
+$personrungroups = ["" => null];
 $q = getall("
 	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.convention_id, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, convention.name AS convention_name, COALESCE(convention.begin,convention.year,gamerun.begin) AS begin, COALESCE(convention.end, gamerun.end) AS end, COALESCE(convention.place, gamerun.location) AS location, COALESCE(convention.country, conset.country, gamerun.country) AS country, COALESCE(convention.cancelled,gamerun.cancelled) AS cancelled, CASE WHEN convention_id IS NOT NULL THEN CONCAT('c_', convention_id) WHEN gamerun_id IS NOT NULL THEN CONCAT('r_', gamerun_id) ELSE NULL END AS combined_id
 	FROM person p
@@ -134,7 +134,7 @@ foreach ($q as $rs) {
     $htmlnote = " (" . textlinks(htmlspecialchars($rs['note'])) . ")";
   }
   if (isset($_SESSION['user_author_id']) && $rs['id'] == $_SESSION['user_author_id']) {
-    $_SESSION['can_edit_participant'][$game] = TRUE;
+    $_SESSION['can_edit_participant'][$game] = true;
   }
   $personhtml .= '<tr><td style="text-align: center">';
   if ($rs['textsymbol']) { // unicode icons
@@ -269,7 +269,7 @@ foreach ($q as $rs) {
   }
   $awardtext .= '</summary>';
   if ($has_nominationtext) {
-    $awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), FALSE) . '</div>' . PHP_EOL;
+    $awardtext .= '<div class="nomtext">' . nl2br(htmlspecialchars(trim($rs['nominationtext'])), false) . '</div>' . PHP_EOL;
   }
   $awardtext .= '</details>';
 
@@ -306,9 +306,9 @@ $genre = join(", ", $genre);
 $linklist = getlinklist($this_id, $this_type);
 $trivialist = gettrivialist($this_id, $this_type);
 $taglist = gettaglist($this_id, $this_type);
-if ($_SESSION['can_edit_participant'][$game] ?? FALSE) {
+if ($_SESSION['can_edit_participant'][$game] ?? false) {
   foreach ($taglist as $tag_id => $tag) {
-    $_SESSION['can_edit_tag'][$tag_id] = TRUE;
+    $_SESSION['can_edit_tag'][$tag_id] = true;
   }
 }
 
@@ -348,7 +348,7 @@ $t->assign('gms', $gms);
 $t->assign('players', $players);
 $t->assign('participants', $participants);
 $t->assign('boardgame', $r['boardgame']);
-$t->assign('user_can_edit_participants', $_SESSION['can_edit_participant'][$game] ?? FALSE);
+$t->assign('user_can_edit_participants', $_SESSION['can_edit_participant'][$game] ?? false);
 $t->assign('conlist', $conlist);
 $t->assign('runlist', $runlist);
 $t->assign('haslocationscount', $haslocationscount);
@@ -359,8 +359,8 @@ $t->assign('articles', $articles);
 $t->assign('trivia', $trivialist);
 $t->assign('link', $linklist);
 $t->assign('tags', $taglist);
-$t->assign('json_tags', TRUE);
-$t->assign('user_can_edit_tag', $_SESSION['can_edit_tag'] ?? FALSE);
+$t->assign('json_tags', true);
+$t->assign('user_can_edit_tag', $_SESSION['can_edit_tag'] ?? false);
 
 $t->assign('user_read', in_array('read', $userlog));
 $t->assign('user_read_html', getdynamicgamehtml($game, 'read', in_array('read', $userlog)));
@@ -368,10 +368,10 @@ $t->assign('user_gmed', in_array('gmed', $userlog));
 $t->assign('user_gmed_html', getdynamicgamehtml($game, 'gmed', in_array('gmed', $userlog)));
 $t->assign('user_played', in_array('played', $userlog));
 $t->assign('user_played_html', getdynamicgamehtml($game, 'played', in_array('played', $userlog)));
-$t->assign('users_entries', $users_entries ?? FALSE);
+$t->assign('users_entries', $users_entries ?? false);
 
 if (in_array('LGBTQ', $taglist) || in_array('Queer', $taglist) || in_array('Queerness', $taglist)) {
-  $t->assign('lgbtmenu', TRUE);
+  $t->assign('lgbtmenu', true);
 }
 
 $t->display('data.tpl');

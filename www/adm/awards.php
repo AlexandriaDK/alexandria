@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $this_type = 'awards';
 
@@ -13,16 +13,16 @@ $do = (string) ($_REQUEST['do'] ?? '');
 $name = trim((string) ($_REQUEST['name'] ?? ''));
 $description = (string) ($_REQUEST['description'] ?? '');
 $nominationtext = trim((string) ($_REQUEST['nominationtext'] ?? ''));
-$id = (int) ($_REQUEST['id'] ?? FALSE);
-$game_id = (int) ($_REQUEST['game_id'] ?? FALSE);
+$id = (int) ($_REQUEST['id'] ?? false);
+$game_id = (int) ($_REQUEST['game_id'] ?? false);
 if (!$game_id) {
-  $game_id = NULL;
+  $game_id = null;
 }
 $award_nominee_entity = (int) ($_REQUEST['award_nominee_entity'] ?? '');
 $award_nominee_entity_extra = $_REQUEST['award_nominee_entity'] ?? '';
-$data_id = (int) ($_REQUEST['data_id'] ?? FALSE);
-$convention_id = (int) ($_REQUEST['convention_id'] ?? FALSE);
-$tag_id = (int) ($_REQUEST['tag_id'] ?? FALSE);
+$data_id = (int) ($_REQUEST['data_id'] ?? false);
+$convention_id = (int) ($_REQUEST['convention_id'] ?? false);
+$tag_id = (int) ($_REQUEST['tag_id'] ?? false);
 $winner = (int) isset($_REQUEST['winner']);
 $ranking = (string) ($_REQUEST['ranking'] ?? '');
 
@@ -167,11 +167,14 @@ if ($action == 'deletenomineeentity') {
   <title>Administration - Awards</title>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="/uistyle.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
   <link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+  <script src="//code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
   <script src="adm.js"></script>
   <script type="text/javascript">
     $(function() {
@@ -193,7 +196,7 @@ if ($action == 'deletenomineeentity') {
 
 <body>
   <?php
-  include("links.inc.php");
+  include_once "links.inc.php";
 
   printinfo();
 
@@ -298,8 +301,8 @@ if ($action == 'deletenomineeentity') {
         $html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;tag_id=' . $tag_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';
         if ($entity['category']) {
           $name = getentry($entity['category'], $entity['data_id']);
-          $link = getdatalink($entity['category'], $entity['data_id'], TRUE);
-          $linkhtml = getdatahtml($entity['category'], $entity['data_id'], $name, TRUE);
+          $link = getdatalink($entity['category'], $entity['data_id'], true);
+          $linkhtml = getdatahtml($entity['category'], $entity['data_id'], $name, true);
           $html_entity .= $linkhtml;
         } else {
           $html_entity .= $entity['label'];

@@ -1,10 +1,10 @@
 <?php
-define('LANGNOREDIRECT', TRUE);
+define('LANGNOREDIRECT', true);
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 session_start();
-require_once('../../connect.php');
-require_once('../../base.inc.php');
+require_once '../../connect.php';
+require_once '../../base.inc.php';
 set_session_redirect_url();
 
 $client = new Google_Client();

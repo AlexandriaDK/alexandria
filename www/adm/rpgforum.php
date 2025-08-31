@@ -1,11 +1,11 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
-$postid = (int) ($_GET['postid'] ?? FALSE);
+$postid = (int) ($_GET['postid'] ?? false);
 $search = trim((string) ($_GET['search'] ?? ''));
 $author = trim((string) ($_GET['author'] ?? ''));
 $order = (string) ($_GET['order'] ?? '');

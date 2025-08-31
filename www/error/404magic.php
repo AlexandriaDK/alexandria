@@ -1,6 +1,6 @@
 <?php
 $string = substr($_SERVER['REQUEST_URI'], 1);
-$magic = TRUE;
+$magic = true;
 
 if (is_dir($_SERVER['DOCUMENT_ROOT'] . "/$string")) {
   $url = "/$string/";
@@ -20,7 +20,7 @@ if (is_dir($_SERVER['DOCUMENT_ROOT'] . "/$string")) {
   }
   #$url = "https://" . $_SERVER['HTTP_HOST'] . "/" . $langpath . "find?find=" . $find;
 } else {
-  $magic = FALSE;
+  $magic = false;
 }
 
 if ($magic) {

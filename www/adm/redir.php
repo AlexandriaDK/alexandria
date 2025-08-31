@@ -1,6 +1,6 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 
 $cat = $_REQUEST['cat'];
 $id = $_REQUEST['data_id'];

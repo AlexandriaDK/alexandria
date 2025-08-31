@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 $this_type = 'gamesystem';
 
 $gamesystem = (int) ($_REQUEST['gamesystem'] ?? '');
@@ -66,8 +66,8 @@ if ($action == "create") {
 
 if ($action == "Delete" && $gamesystem) {
   $error = [];
-  if (getCount('game', $this_id, FALSE, $this_type)) $error[] = "game";
-  if (getCount('article_reference', $this_id, FALSE, $this_type)) $error[] = "article reference";
+  if (getCount('game', $this_id, false, $this_type)) $error[] = "game";
+  if (getCount('article_reference', $this_id, false, $this_type)) $error[] = "article reference";
   if ($error) {
     $_SESSION['admin']['info'] = "Can't delete. The tag still has relations: " . implode(", ", $error);
     rexit($this_type, ['gamesystem' => $gamesystem]);
@@ -100,13 +100,13 @@ print "<table border=0>\n";
 
 if ($gamesystem) {
   print "<tr><td>ID</td><td>$gamesystem - <a href=\"../data?system=$gamesystem\" accesskey=\"q\">Show RPG system page</a>";
-  if ($viewlog == TRUE) {
+  if ($viewlog == true) {
     print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$gamesystem\">Show log</a>";
   }
   print "\n</td></tr>\n";
 }
 
-tr("Name", "name", $name, "", "", "text", TRUE, TRUE);
+tr("Name", "name", $name, "", "", "text", true, true);
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 
 

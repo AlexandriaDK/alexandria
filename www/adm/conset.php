@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 $this_type = 'conset';
 
 $conset = (int) ($_REQUEST['conset'] ?? '');
@@ -26,7 +26,7 @@ if (!$action && $conset) {
     $internal = $row['internal'];
     $country = $row['country'];
   } else {
-    $conset = FALSE;
+    $conset = false;
   }
 }
 
@@ -81,7 +81,7 @@ print "<table border=0>\n";
 
 if ($conset) {
   print "<tr><td>ID</td><td>$conset - <a href=\"../data?conset=$conset\" accesskey=\"q\">Show con series page</a>";
-  if ($viewlog == TRUE) {
+  if ($viewlog == true) {
     print " - <a href=\"showlog.php?category=$this_type&amp;data_id=$conset\">Show log</a>";
   }
   print "\n</td></tr>\n";
@@ -89,7 +89,7 @@ if ($conset) {
 
 $countryname = getCountryName($country);
 
-tr("Name", "name", $name, "", "", "text", TRUE, TRUE);
+tr("Name", "name", $name, "", "", "text", true, true);
 print "<tr valign=top><td>Description</td><td><textarea name=description cols=60 rows=8>\n" . stripslashes(htmlspecialchars($description)) . "</textarea></td></tr>\n";
 print "<tr valign=top><td>Internal note</td><td><textarea name=\"internal\" cols=\"60\" rows=\"6\">\n" . stripslashes(htmlspecialchars($internal)) . "</textarea></td></tr>\n";
 

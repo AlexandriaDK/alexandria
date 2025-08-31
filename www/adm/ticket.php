@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $id = (int) ($_REQUEST['id'] ?? 0);
 $display = (string) ($_REQUEST['display'] ?? '');
@@ -78,7 +78,7 @@ print "</td><td>";
 if ($id) {
   $row = getrow("SELECT id, data_id, category, title, description, submittime, user_name, user_email, internal, status FROM updates WHERE id = '$id'") or die(dberror());
   if ($row['data_id'] && $row['category']) {
-    $label = getlabel($row['category'], $row['data_id'], TRUE, $row['title']);
+    $label = getlabel($row['category'], $row['data_id'], true, $row['title']);
   } else {
     $label = $row['title'];
   }

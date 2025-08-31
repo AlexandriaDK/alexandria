@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 $this_type = 'alias';
 
 $action = (string) ($_REQUEST['action'] ?? '');
@@ -60,7 +60,7 @@ if ($action == "addalias") {
 if ($data_id && $category) {
   $data_id = intval($data_id);
   $data_field = getFieldFromCategory($category);
-  $linktitle = getlabel($category, $data_id, TRUE);
+  $linktitle = getlabel($category, $data_id, true);
 
   $query = "SELECT id, label, language, visible FROM alias WHERE `$data_field` = '$data_id' ORDER BY id";
   $result = getall($query);
