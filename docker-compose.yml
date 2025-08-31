@@ -33,9 +33,9 @@ services:
       # Mount the www directory for live development
       - ./www:/var/www/html
       # Mount only the Smarty templates for live template development
-      - ./smarty/templates:/var/www/html/smarty/templates
+      - ./smarty/templates:/var/www/smarty/templates
       # Mount includes so social/login configs are available during development
-      - ./includes:/var/www/html/includes:ro
+      - ./includes:/var/www/includes:ro
     networks:
       - alexandria_network
 
@@ -46,13 +46,13 @@ services:
     ports:
       - "8080:80"
       - "8443:443"
-      - "8443:443/udp"  # HTTP/3 (QUIC) support
+      - "8443:443/udp" # HTTP/3 (QUIC) support
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/nginx/certs
-      - ./www:/var/www/html:ro
+      - ./www:/var/www:ro
     networks:
       - alexandria_network
     environment:

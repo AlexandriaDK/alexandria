@@ -22,7 +22,7 @@ RUN apt-get update \
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Copy composer files first for better Docker layer caching
 COPY composer.json composer.lock* ./
@@ -31,14 +31,14 @@ COPY composer.json composer.lock* ./
 RUN composer install --optimize-autoloader --no-dev || composer install --optimize-autoloader --disable-tls --no-dev
 
 # Copy includes directory and Smarty assets (templates/configs)
-COPY ./includes /var/www/html/includes
-COPY ./smarty/templates /var/www/html/smarty/templates
+COPY ./includes /var/www/includes
+COPY ./smarty/templates /var/www/smarty/templates
 
 # Create necessary directories for Smarty and set permissions
-RUN mkdir -p /var/www/html/smarty/templates_c \
-  /var/www/html/smarty/cache \
-  /var/www/html/smarty/configs \
-  && chmod -R 777 /var/www/html/smarty
+RUN mkdir -p /var/www/smarty/templates_c \
+  /var/www/smarty/cache \
+  /var/www/smarty/configs \
+  && chmod -R 777 /var/www/smarty
 
 
 # Copy PHP import script
