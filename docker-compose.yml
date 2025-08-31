@@ -54,7 +54,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/nginx/certs
-      - ./www:/var/www:ro
+      - ./www:/var/www/html:ro
     networks:
       - alexandria_network
     environment:
