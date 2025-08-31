@@ -3,10 +3,11 @@ nginx/certs/*.crt
 nginx/certs/*.key
 nginx/certs/*.pem
 
-# Docker volumes and build artifacts
-vendor/
+includes/client.google.json
+includes/db.auth.php
+includes/social.php
+
 smarty/templates_c/
-smarty/cache/
 
 # IDE files
 .vscode/
