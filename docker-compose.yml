@@ -12,6 +12,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./alexandria_tables.sql:/docker-entrypoint-initdb.d/1-structure.sql:ro
+    networks:
+      - alexandria_network
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
@@ -60,15 +62,11 @@ services:
       - NGINX_PORT=80
     command: >
       sh -c "
-        # Generate SSL certificate if it doesn't exist
+        mkdir -p /etc/nginx/certs &&
         if [ ! -f /etc/nginx/certs/localhost.crt ]; then
           echo 'Generating SSL certificate...' &&
           apk add --no-cache openssl &&
-          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout /etc/nginx/certs/localhost.key \
-            -out /etc/nginx/certs/localhost.crt \
-            -subj '/C=DK/ST=Copenhagen/L=Copenhagen/O=Alexandria Local Dev/CN=localhost' \
-            -addext 'subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1' &&
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certs/localhost.key -out /etc/nginx/certs/localhost.crt -subj '/C=DK/ST=Copenhagen/L=Copenhagen/O=Alexandria Local Dev/CN=localhost' -addext 'subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1' &&
           echo 'SSL certificate generated successfully!'
         else
           echo 'SSL certificate already exists.'
