@@ -32,17 +32,19 @@ define('DB_CONNECTOR', 'mysqli');
 2. Start services
 
 ```cmd
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 What this does:
 
 - Starts MariaDB 10.7 with dev credentials
+
 ### VS Code Development with Dev Containers
 
 If you use Visual Studio Code, you can develop directly inside the Docker web container using the Dev Containers extension. This allows you to use the PHP and Composer installed in the container, without installing them on your own machine.
 
 **How to use:**
+
 1. Install the “Dev Containers” extension in VS Code.
 2. Run `docker-compose up -d` to start the containers.
 3. In VS Code, open the Command Palette (`Ctrl+Shift+P`) and select “Dev Containers: Attach to Running Container”.
@@ -51,6 +53,7 @@ If you use Visual Studio Code, you can develop directly inside the Docker web co
 You’ll now have full editor support, autocompletion, and terminal access inside the container, using its PHP environment. This keeps your local system clean and matches your production setup.
 
 3. Open the site
+
 - http://localhost:8080
 
 Notes for development:
