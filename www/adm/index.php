@@ -13,14 +13,14 @@ require_once "base.inc.php";
   <TITLE>Administration - Main page</TITLE>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="/uistyle.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
   <link rel="icon" type="image/png" href="/gfx/favicon_ti_adm.png">
   <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="//code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
   <script src="adm.js"></script>
   <script>
     $(document).ready(function() {
