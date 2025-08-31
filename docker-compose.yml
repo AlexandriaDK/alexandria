@@ -51,21 +51,29 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./nginx/certs:/etc/nginx/certs
       - ./www:/var/www/html:ro
     networks:
       - alexandria_network
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
     command: >
       sh -c "
         # Generate SSL certificate if it doesn't exist
         if [ ! -f /etc/nginx/certs/localhost.crt ]; then
+          echo 'Generating SSL certificate...' &&
           apk add --no-cache openssl &&
           openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
             -keyout /etc/nginx/certs/localhost.key \
             -out /etc/nginx/certs/localhost.crt \
             -subj '/C=DK/ST=Copenhagen/L=Copenhagen/O=Alexandria Local Dev/CN=localhost' \
-            -addext 'subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1'
+            -addext 'subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1' &&
+          echo 'SSL certificate generated successfully!'
+        else
+          echo 'SSL certificate already exists.'
         fi &&
+        echo 'Starting Nginx with HTTP/3 support...' &&
         nginx -g 'daemon off;'
       "
 
