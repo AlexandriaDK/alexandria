@@ -1,0 +1,18 @@
+# Self-signed SSL certificates for local development
+nginx/certs/*.crt
+nginx/certs/*.key
+nginx/certs/*.pem
+
+includes/client.google.json
+includes/db.auth.php
+includes/social.php
+
+smarty/templates_c/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
