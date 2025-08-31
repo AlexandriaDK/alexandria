@@ -1,0 +1,17 @@
+# Self-signed SSL certificates for local development
+nginx/certs/*.crt
+nginx/certs/*.key
+nginx/certs/*.pem
+
+# Docker volumes and build artifacts
+vendor/
+smarty/templates_c/
+smarty/cache/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

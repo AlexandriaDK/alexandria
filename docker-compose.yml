@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 3
 
-  web:
+  php:
     build: .
     depends_on:
       db:
@@ -28,16 +28,50 @@ services:
       DB_HOST: db
       DB_USER: alexuser
       DB_PASS: alexpass
-    ports:
-      - "8080:80"
     restart: unless-stopped
     volumes:
       # Mount the www directory for live development
       - ./www:/var/www/html
       # Mount only the Smarty templates for live template development
-      - ./smarty/templates:/var/www/smarty/templates
+      - ./smarty/templates:/var/www/html/smarty/templates
       # Mount includes so social/login configs are available during development
-      - ./includes:/var/www/includes:ro
+      - ./includes:/var/www/html/includes:ro
+    networks:
+      - alexandria_network
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - php
+    ports:
+      - "8080:80"
+      - "8443:443"
+      - "8443:443/udp"  # HTTP/3 (QUIC) support
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./www:/var/www/html:ro
+    networks:
+      - alexandria_network
+    command: >
+      sh -c "
+        # Generate SSL certificate if it doesn't exist
+        if [ ! -f /etc/nginx/certs/localhost.crt ]; then
+          apk add --no-cache openssl &&
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout /etc/nginx/certs/localhost.key \
+            -out /etc/nginx/certs/localhost.crt \
+            -subj '/C=DK/ST=Copenhagen/L=Copenhagen/O=Alexandria Local Dev/CN=localhost' \
+            -addext 'subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1'
+        fi &&
+        nginx -g 'daemon off;'
+      "
+
+networks:
+  alexandria_network:
+    driver: bridge
 
 volumes:
   db_data:
