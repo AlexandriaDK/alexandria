@@ -37,7 +37,7 @@ docker-compose up -d --build
 
 What this does:
 
-- Starts MariaDB 10.7 with dev credentials
+- Starts MariaDB 11.8 with dev credentials
 
 ### VS Code Development with Dev Containers
 

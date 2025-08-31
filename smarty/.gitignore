@@ -1,4 +1,0 @@
-# Do not commit compiled templates or cache
-/templates_c/
-/cache/
-/configs/
