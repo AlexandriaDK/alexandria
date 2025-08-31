@@ -2,8 +2,8 @@
 // få til at virke på rollespil.dk
 // få til at validere
 
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 $articles = getall("SELECT a.owner, a.name, a.person_id, b.title, b.link, b.pubdate, b.content FROM feeds a, feedcontent b WHERE a.id = b.feed_id ORDER BY b.pubdate DESC LIMIT 0,40");
 

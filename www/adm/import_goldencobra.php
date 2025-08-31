@@ -34,7 +34,7 @@ if ($action == 'creategame') {
     'persons' => $author_list,
     'participants_extra' => $participants_extra,
     'organizer' => $organizer,
-    'gamesystem_id' => ($larp ? 73 : null), // LARP, assuming games are LARPs
+    'gamesystem_id' => ($larp ? 73 : NULL), // LARP, assuming games are LARPs
     'cons' => [$con_id],
     'descriptions' => ['en' => trim($description)],
     'urls' => [$url],
@@ -173,7 +173,7 @@ foreach (preg_split($outerpattern, $data) as $dataset) {
     $description = html_entity_decode(strip_tags(str_replace("</a>", "</a>\r\n", str_replace("</p>", "</p>\n\n", $fulldescription))));
     $description = preg_replace('_^\(.*?\)_', "\\0\r\n", $description);
     $internal = '';
-    $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'") + getone("SELECT COUNT(*) FROM alias WHERE game_id IS NOT null AND label = '" . dbesc($title) . "'");
+    $existing = getone("SELECT COUNT(*) FROM game WHERE title = '" . dbesc($title) . "'") + getone("SELECT COUNT(*) FROM alias WHERE game_id IS NOT NULL AND label = '" . dbesc($title) . "'");
     print "<p>" . htmlspecialchars($title) . ($existing > 0 ? ' <a href="find.php?find=' . rawurlencode($title) . '" target="_blank" title="' . $existing . ' existing">⚠️</a>' : '') . "</p>";
     print create_game_form($title, $authors, $organization, $players, $participants_extra, $description, $fulldescription, $internal, $dataset, $link);
     print "<hr>";

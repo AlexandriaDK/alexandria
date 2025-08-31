@@ -90,7 +90,7 @@ $filelist = getfilelist($game, $this_type);
 // List of persons
 $personrungroups = ["" => null];
 $q = getall("
-	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.convention_id, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, convention.name AS convention_name, COALESCE(convention.begin,convention.year,gamerun.begin) AS begin, COALESCE(convention.end, gamerun.end) AS end, COALESCE(convention.place, gamerun.location) AS location, COALESCE(convention.country, conset.country, gamerun.country) AS country, COALESCE(convention.cancelled,gamerun.cancelled) AS cancelled, CASE WHEN convention_id IS NOT null THEN CONCAT('c_', convention_id) WHEN gamerun_id IS NOT null THEN CONCAT('r_', gamerun_id) ELSE null END AS combined_id
+	SELECT p.id, CONCAT(p.firstname,' ',p.surname) AS name, pgrel.title_id, pgrel.note, pgrel.convention_id, pgrel.gamerun_id, title.title_label, title.title, title.iconfile, title.iconwidth, title.iconheight, title.textsymbol, convention.name AS convention_name, COALESCE(convention.begin,convention.year,gamerun.begin) AS begin, COALESCE(convention.end, gamerun.end) AS end, COALESCE(convention.place, gamerun.location) AS location, COALESCE(convention.country, conset.country, gamerun.country) AS country, COALESCE(convention.cancelled,gamerun.cancelled) AS cancelled, CASE WHEN convention_id IS NOT NULL THEN CONCAT('c_', convention_id) WHEN gamerun_id IS NOT NULL THEN CONCAT('r_', gamerun_id) ELSE NULL END AS combined_id
 	FROM person p
 	INNER JOIN pgrel ON p.id = pgrel.person_id
 	LEFT JOIN title ON pgrel.title_id = title.id
@@ -98,7 +98,7 @@ $q = getall("
 	LEFT JOIN convention ON pgrel.convention_id = convention.id
 	LEFT JOIN conset ON convention.conset_id = conset.id
 	WHERE pgrel.game_id = $game
-	ORDER BY COALESCE(gamerun_id, convention_id) IS null DESC, begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
+	ORDER BY COALESCE(gamerun_id, convention_id) IS NULL DESC, begin, title.priority, title.id, pgrel.note = '' DESC, pgrel.note, p.surname, p.firstname, p.id
 ");
 foreach ($q as $rs) {
   $gamerun_id = $rs['gamerun_id'];
@@ -206,7 +206,7 @@ $q = getall("
 	SELECT gr.id, gr.begin, gr.end, gr.location, gr.country, gr.description, gr.cancelled, COUNT(DISTINCT l.id) AS haslocations
 	FROM gamerun gr
 	LEFT JOIN lrel ON gr.id = lrel.gamerun_id
-	LEFT JOIN locations l ON lrel.location_id = l.id AND l.geo IS NOT null
+	LEFT JOIN locations l ON lrel.location_id = l.id AND l.geo IS NOT NULL
 	WHERE game_id = '$game'
 	GROUP BY gr.id
 	ORDER BY gr.begin, gr.end, gr.id
@@ -305,7 +305,7 @@ $genre = join(", ", $genre);
 // Links, trivia, tags
 $linklist = getlinklist($this_id, $this_type);
 $trivialist = gettrivialist($this_id, $this_type);
-$taglist = gettaglist($this_id);
+$taglist = gettaglist($this_id, $this_type);
 if ($_SESSION['can_edit_participant'][$game] ?? false) {
   foreach ($taglist as $tag_id => $tag) {
     $_SESSION['can_edit_tag'][$tag_id] = true;

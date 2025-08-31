@@ -96,13 +96,13 @@ if ($convention['conset_id']) {
 $sce_new = $sce_rerun = $sce_cancelled = $board_new = $board_rerun = $board_cancelled = 0;
 
 $q = getall("
-	SELECT g.id, g.title, g.boardgame, pr.id AS presentation_id, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation, NOT ISnull(ggrel.id) AS fastaval_junior, JSON_ARRAYAGG(tags.tag) AS tags
+	SELECT g.id, g.title, g.boardgame, pr.id AS presentation_id, pr.event, pr.event_label, pr.iconfile, pr.textsymbol, g.gamesystem_extra, gs.id AS gamesystem_id, gs.name AS sys_name, COUNT(f.id) AS files, p.id AS person_id, CONCAT(firstname,' ',surname) AS person_name, a.label, COALESCE(a.label, g.title) AS title_translation, COALESCE(a2.label, gs.name) AS system_translation, NOT ISNULL(ggrel.id) AS fastaval_junior, JSON_ARRAYAGG(tags.tag) AS tags
 	FROM cgrel
 	INNER JOIN game g ON g.id = cgrel.game_id
 	LEFT JOIN presentation pr ON cgrel.presentation_id = pr.id 
 	LEFT JOIN gamesystem gs ON g.gamesystem_id = gs.id
 	LEFT JOIN files f ON g.id = f.game_id AND f.downloadable = 1
-	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5) AND (COALESCE(pgrel.convention_id, pgrel.gamerun_id) IS null OR pgrel.convention_id = $con)
+	LEFT JOIN pgrel ON g.id = pgrel.game_id AND pgrel.title_id IN(1,4,5) AND (COALESCE(pgrel.convention_id, pgrel.gamerun_id) IS NULL OR pgrel.convention_id = $con)
 	LEFT JOIN person p ON p.id = pgrel.person_id 
 	LEFT JOIN alias a ON g.id = a.game_id AND a.language = '" . LANG . "' AND a.visible = 1
 	LEFT JOIN alias a2 ON gs.id = a2.gamesystem_id AND a2.language = '" . LANG . "' AND a2.visible = 1
@@ -125,14 +125,14 @@ foreach ($q as $r) {
       'game' => [
         'title' => $r['title'],
         'title_translation' => $r['title_translation'],
-        'person_extra' => $r['person_extra'] ?? null,
+        'person_extra' => $r['person_extra'] ?? NULL,
         'files' => (int) $r['files'],
         'boardgame' => (int) $r['boardgame'],
         'system_id' => $r['gamesystem_id'],
         'system_name' => $r['sys_name'],
         'system_translation' => $r['system_translation'],
         'system_ext' => $r['gamesystem_extra'],
-        'presentation_id' => $r['presentation_id'] ?? null,
+        'presentation_id' => $r['presentation_id'] ?? NULL,
         'pre_event' => $r['event'],
         'pre_event_label' => $r['event_label'],
         'pre_iconfile' => $r['iconfile'],
@@ -326,7 +326,7 @@ $haslocations = getone("
 	SELECT COUNT(*)
 	FROM lrel
 	INNER JOIN locations l ON lrel.location_id = l.id
-	WHERE l.geo IS NOT null
+	WHERE l.geo IS NOT NULL
 	AND lrel.convention_id = $con
 ");
 

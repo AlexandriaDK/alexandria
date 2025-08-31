@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 $result = getall("
 	SELECT gamesystem.id, name, COALESCE(alias.label, gamesystem.name) AS translation_name
@@ -11,7 +11,7 @@ $result = getall("
 ");
 $syslist = [];
 foreach ($result as $r) {
-	$syslist[$r['id']] = $r['translation_name'];
+  $syslist[$r['id']] = $r['translation_name'];
 }
 
 // Smarty

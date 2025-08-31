@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 $id = (int) ($_REQUEST['id'] ?? 0);
 $convention_id = (int) ($_REQUEST['convention_id'] ?? 0);
@@ -12,7 +12,7 @@ $startlocation = [];
 $location_target = false;
 
 if ($id) {
-  $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT null", false);
+  $startlocation = getcol("SELECT id FROM locations WHERE id = $id AND locations.geo IS NOT NULL", false);
   $location_target = getentryhtml('locations', $id);
 } elseif ($convention_id) {
   $startlocation = getcol("
@@ -20,7 +20,7 @@ if ($id) {
         FROM locations
         INNER JOIN lrel ON locations.id = lrel.location_id
         WHERE convention_id = $convention_id
-        AND locations.geo IS NOT null
+        AND locations.geo IS NOT NULL
         ORDER BY lrel.id
     ");
   $location_target = getentryhtml('convention', $convention_id);
@@ -31,7 +31,7 @@ if ($id) {
         INNER JOIN lrel ON locations.id = lrel.location_id
         INNER JOIN convention ON lrel.convention_id = convention.id
         WHERE conset_id = $conset_id
-        AND locations.geo IS NOT null
+        AND locations.geo IS NOT NULL
     ");
   $location_target = getentryhtml('conset', $conset_id);
 } elseif ($gamerun_id) {
@@ -40,7 +40,7 @@ if ($id) {
         FROM locations
         INNER JOIN lrel ON locations.id = lrel.location_id
         WHERE gamerun_id = $gamerun_id
-        AND locations.geo IS NOT null
+        AND locations.geo IS NOT NULL
         ORDER BY lrel.id
     ");
   $gamerun_data = getrow("SELECT game_id, begin, end FROM gamerun WHERE id = $gamerun_id");
@@ -57,7 +57,7 @@ if ($id) {
         LEFT JOIN cgrel ON convention.id = cgrel.convention_id
         LEFT JOIN gamerun ON lrel.gamerun_id = gamerun.id
         WHERE (cgrel.game_id = $game_id OR gamerun.game_id = $game_id)
-        AND locations.geo IS NOT null
+        AND locations.geo IS NOT NULL
     ");
   $location_target = getentryhtml('game', $game_id);
 } elseif ($tag) {
@@ -69,7 +69,7 @@ if ($id) {
         INNER JOIN lrel ON gamerun.id = lrel.gamerun_id
         INNER JOIN locations ON lrel.location_id = locations.id
         WHERE tag = '" . dbesc($tag) . "'
-        AND locations.geo IS NOT null
+        AND locations.geo IS NOT NULL
         )
         UNION 
         (
@@ -79,27 +79,27 @@ if ($id) {
         INNER JOIN lrel ON cgrel.convention_id = lrel.convention_id
         INNER JOIN locations ON lrel.location_id = locations.id
         WHERE tag = '" . dbesc($tag) . "'
-        AND locations.geo IS NOT null
+        AND locations.geo IS NOT NULL
         )
     ");
   $location_target = getentryhtml('tags', $tag);
 }
 
 $locations = getall("
-    SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT null AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS null, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS null, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS null, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), CONCAT(g.title, ' (', IF(YEAR(gr.begin), YEAR(gr.begin), '?'), ')') ) AS data_label, IF(lrel.gamerun_id IS null, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS null, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime, COALESCE(c.end, c.year, gr.end) AS data_endtime
+    SELECT l.id, l.name, l.address, l.city, l.country, l.note, geo IS NOT NULL AS hasGeo, ST_X(geo) AS latitude, ST_Y(geo) AS longitude, IF(lrel.gamerun_id IS NULL, 'convention', 'gamerun') AS type, IF(lrel.gamerun_id IS NULL, lrel.convention_id, gr.game_id) AS data_id, c.conset_id AS conset_id, IF(lrel.gamerun_id IS NULL, CONCAT(c.name, ' (', IF(c.year, c.year, '?'), ')'), CONCAT(g.title, ' (', IF(YEAR(gr.begin), YEAR(gr.begin), '?'), ')') ) AS data_label, IF(lrel.gamerun_id IS NULL, c.begin, gr.begin) AS data_begin, IF(lrel.gamerun_id IS NULL, c.cancelled, gr.cancelled) AS data_cancelled, COALESCE(c.begin, c.year, gr.begin) AS data_starttime, COALESCE(c.end, c.year, gr.end) AS data_endtime
     FROM locations l
     LEFT JOIN lrel ON l.id = lrel.location_id
     LEFT JOIN convention c ON lrel.convention_id = c.id
     LEFT JOIN gamerun gr ON lrel.gamerun_id = gr.id
     LEFT JOIN game g ON gr.game_id = g.id
-    WHERE geo IS NOT null
+    WHERE geo IS NOT NULL
     ORDER BY data_starttime
 ", false);
 
 $aliases = getcolid("
     SELECT location_id, GROUP_CONCAT(label ORDER BY label SEPARATOR ', ') AS label
     FROM alias
-    WHERE location_id IS NOT null AND visible = 1
+    WHERE location_id IS NOT NULL AND visible = 1
     GROUP BY location_id
 ");
 

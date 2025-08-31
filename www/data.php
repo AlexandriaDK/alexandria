@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 $person = (int) ($_REQUEST['person'] ?? 0);
 $scenarie = (int) ($_REQUEST['scenarie'] ?? 0);

@@ -49,7 +49,7 @@ if ($action == "calculate") {
   $authors = getall("SELECT id, firstname, surname FROM person ORDER BY id");
   foreach ($authors as $author) {
     $aid = $author['id'];
-    $scenarios = getcol("SELECT game_id FROM pgrel LEFT JOIN files ON pgrel.game_id = files.game_id WHERE files.id IS null AND pgrel.title_id = 1 AND pgrel.person_id = $aid");
+    $scenarios = getcol("SELECT game_id FROM pgrel LEFT JOIN files ON pgrel.game_id = files.game_id WHERE files.id IS NULL AND pgrel.title_id = 1 AND pgrel.person_id = $aid");
     $count_scenarios = count($scenarios);
     if ($count_scenarios) {
       $in = implode(",", $scenarios);

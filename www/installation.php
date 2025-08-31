@@ -36,10 +36,10 @@ function dbmultiinsert($table, $allvalues, $fields = null)
         if ($latitude && $longitude) {
           $set[] = "ST_GeomFromText('POINT($latitude $longitude)', 4326)";
         } else {
-          $set[] = 'null';
+          $set[] = 'NULL';
         }
       } else {
-        $set[] = (is_null($part) ? 'null' : (is_numeric($part) ? $part : "'" . dbesc($part) . "'"));
+        $set[] = (is_null($part) ? 'NULL' : (is_numeric($part) ? $part : "'" . dbesc($part) . "'"));
       }
     }
     $dataset[] = "(" . implode(", ", $set) . ")";

@@ -2,7 +2,7 @@
   "name": "alexandria/alexandria",
   "description": "Online gaming library Alexandria, containing information about Role-Playing scenarios, LARPs, conventions, board game designers, and much more.",
   "type": "project",
-  "license": "MIT",
+  "license": "n/a",
   "minimum-stability": "stable",
   "require": {
     "php": ">=8.4",

@@ -1,5 +1,5 @@
 <?php
-require_once "./connect.php";
+require("./connect.php");
 require_once("base.inc.php");
 
 $name = (string) $_REQUEST['name'];

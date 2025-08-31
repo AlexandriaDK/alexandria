@@ -92,7 +92,7 @@ if ($action == "create") {
     $_SESSION['admin']['info'] = "You are missing a name!";
   } else {
     $q = "INSERT INTO person (id, firstname, surname, internal, birth, death) " .
-      "VALUES (null, '" . dbesc($firstname) . "', '" . dbesc($surname) . "', '" . dbesc($internal) . "', " . sqlifnull($birth) . ", " . sqlifnull($death) . ")";
+      "VALUES (NULL, '" . dbesc($firstname) . "', '" . dbesc($surname) . "', '" . dbesc($internal) . "', " . sqlifnull($birth) . ", " . sqlifnull($death) . ")";
     $r = doquery($q);
     if ($r) {
       $person = dbid();

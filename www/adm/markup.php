@@ -51,7 +51,7 @@ print "<h1>Markup fixes</h1>" . PHP_EOL;
 $regexp_sql = '\\\[\\\[\\\[[^|]+\\\]\\\]\\\]';
 $regexp_php = '_\\\[\\\[\\\[([^|]+)\\\]\\\]\\\]_';
 
-$trivias = getall("select id, fact, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id) AS data_id, CASE WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' END AS category from trivia where fact regexp '$regexp_sql'");
+$trivias = getall("select id, fact, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' END AS category from trivia where fact regexp '$regexp_sql'");
 $tags = getall("select id, tag, description from tag where description regexp '$regexp_sql'");
 $scenarios = getall("select gd.id, gd.game_id, g.title, gd.description from game_description gd inner join game g ON gd.game_id = g.id where gd.description regexp '$regexp_sql'");
 $cons = getall("select id, description from convention where description regexp '$regexp_sql'");

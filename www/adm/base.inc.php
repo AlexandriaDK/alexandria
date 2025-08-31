@@ -92,7 +92,7 @@ function chlog($data_id, $category, $note = "")
   $authuserid = $_SESSION['user_id'];
   $user = dbesc($authuser);
   $note = dbesc($note);
-  $data_id = ($data_id == null ? 'null' : (int) $data_id);
+  $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
   $result = doquery($query);
@@ -269,7 +269,7 @@ function showtickets($data_id, $category)
 function strNullEscape($str)
 {
   if ($str === null) {
-    return 'null';
+    return 'NULL';
   } else {
     if (function_exists('dbesc')) {
       return "'" . dbesc($str) . "'";
@@ -374,7 +374,7 @@ function printinfo()
 function sqlifnull($string)
 {
   if ($string == "" || $string == 0) {
-    return "null";
+    return "NULL";
   }
   return "'" . dbesc($string) . "'";
 }
@@ -392,7 +392,7 @@ function strSplitParticipants($str)
 {
   $str = trim($str);
   if (!preg_match('/^(\d+)\s*([–-]\s*(\d+))?$/u', $str, $match)) {
-    return [null, null];
+    return [NULL, NULL];
   }
   $str_min = $match[1] ?? '';
   $str_max = $match[3] ?? '';
@@ -507,7 +507,7 @@ function get_create_person($name, $internal = "Autoimport")
 function create_game($game, $internal = "Autoimport", $multiple_runs = false, $existing_game_id = false)
 {
   $title = $game['title'];
-  $gamesystem_id = $game['gamesystem_id'] ?? null;
+  $gamesystem_id = $game['gamesystem_id'] ?? NULL;
   $gamesystem_extra = $game['gamesystem_extra'] ?? '';
   $urls = $game['urls'] ?? [];
   $genres = $game['genres'] ?? [];
@@ -518,8 +518,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
   $cons = $game['cons'] ?? []; // list of con ids, e.g. [1, 4, 6] - assuming premiere
   $organizer = $game['organizer'] ?? '';
   $descriptions = $game['descriptions'] ?? [];
-  $players_min = $game['players_min'] ?? null;
-  $players_max = $game['players_max'] ?? null;
+  $players_min = $game['players_min'] ?? NULL;
+  $players_max = $game['players_max'] ?? NULL;
   $participants_extra = $game['participants_extra'] ?? '';
   $person_ids = [];
   $gm_ids = [];
@@ -543,8 +543,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
     }
   }
 
-  if ($gamesystem_id == null) { // insert text null into SQL
-    $gamesystem_id = 'null';
+  if ($gamesystem_id == null) { // insert text NULL into SQL
+    $gamesystem_id = 'NULL';
   }
 
   // insert game

@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 // Threshold:
 $act_person = 25;
@@ -227,7 +227,7 @@ foreach ($yearstat as $year => $row) {
 $concountry = [];
 $place = 0;
 $lastcount = 0;
-$r = getall("SELECT COUNT(*) AS count, COALESCE(a.country, b.country) AS ccountry FROM convention a INNER JOIN conset b ON a.conset_id = b.id GROUP BY COALESCE(a.country, b.country) HAVING ccountry IS NOT null ORDER BY count DESC, ISnull(ccountry), ccountry");
+$r = getall("SELECT COUNT(*) AS count, COALESCE(a.country, b.country) AS ccountry FROM convention a INNER JOIN conset b ON a.conset_id = b.id GROUP BY COALESCE(a.country, b.country) HAVING ccountry IS NOT NULL ORDER BY count DESC, ISNULL(ccountry), ccountry");
 foreach ($r as $row) {
 	$place++;
 	$placeout = ($lastcount != $row['count'] ? "$place." : "");
@@ -239,7 +239,7 @@ foreach ($r as $row) {
 $runcountry = [];
 $place = 0;
 $lastcount = 0;
-$r = getall("SELECT COUNT(*) AS count, country FROM gamerun WHERE country IS NOT null AND country != '' GROUP BY country ORDER BY count DESC, country");
+$r = getall("SELECT COUNT(*) AS count, country FROM gamerun WHERE country IS NOT NULL AND country != '' GROUP BY country ORDER BY count DESC, country");
 foreach ($r as $row) {
 	$place++;
 	$placeout = ($lastcount != $row['count'] ? "$place." : "");

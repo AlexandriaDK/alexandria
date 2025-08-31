@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 // redirect if no user
 if (!isset($_SESSION['user_id']) && !$user_id) {
@@ -70,7 +70,7 @@ function getmysce($user_id, $o = 0)
 	     FROM userlog
 		 INNER JOIN game g ON userlog.game_id = g.id
 		 LEFT JOIN alias ON g.id = alias.game_id AND alias.language = '" . LANG . "' AND alias.visible = 1
-	     WHERE userlog.user_id = '$user_id' AND userlog.game_id IS NOT null
+	     WHERE userlog.user_id = '$user_id' AND userlog.game_id IS NOT NULL
 	     GROUP BY userlog.game_id
 	     ORDER BY $order";
   $data = getall($q);

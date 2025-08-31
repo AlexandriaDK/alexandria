@@ -2,8 +2,8 @@
 // due to blog.com
 ini_set("user_agent", "Alexandria.dk feedfetcher");
 chdir(__DIR__ . '/../www/');
-require_once "./connect.php";
-require_once "./base.inc.php";
+require("./connect.php");
+require("./base.inc.php");
 $blog_id = intval($_SERVER['argv']['1'] ?? 0);
 
 function utf8_decode_enhanced($string)

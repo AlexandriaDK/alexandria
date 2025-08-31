@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 $recipient = 'peter@alexandria.dk';
 
@@ -52,7 +52,7 @@ if (strtolower(trim($_REQUEST['human'])) != "l") {
 
 $query = "
 	INSERT INTO updates (id, data_id, category, title, description, submittime, user_name, user_email, user_id)
-	VALUES (null, '" . dbesc($data_id) . "', '" . dbesc($cat) . "', '" . dbesc($data_label) . "', '" . dbesc($output) . "', NOW(), '" . dbesc($user_name) . "', '" . dbesc($user_email) . "', '$user_id' )";
+	VALUES (NULL, '" . dbesc($data_id) . "', '" . dbesc($cat) . "', '" . dbesc($data_label) . "', '" . dbesc($output) . "', NOW(), '" . dbesc($user_name) . "', '" . dbesc($user_email) . "', '$user_id' )";
 $last_id = doquery($query);
 
 award_achievement(20);

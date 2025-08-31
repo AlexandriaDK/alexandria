@@ -6,9 +6,9 @@ if ($rredirect == 'no') $redirect = false;
 
 $debug = false;
 
-require_once "./connect.php";
-require_once "base.inc.php";
-require_once "smartfind.inc.php";
+require("./connect.php");
+require("base.inc.php");
+require("smartfind.inc.php");
 
 $cat = $_REQUEST['cat'] ?? '';
 $find = $_GET['find'] ?? $_GET['q'] ?? '';
@@ -64,12 +64,12 @@ function search_files($find, $category = '')
 {
   global $t;
   $data_field = getFieldFromCategory($category);
-  $where_category = ($category ? "AND a.$data_field IS NOT null" : "");
+  $where_category = ($category ? "AND a.$data_field IS NOT NULL" : "");
   $preview_length = 30;
   $output = "";
 
   $sql = "
-		SELECT a.id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' WHEN !ISnull(issue_id) THEN 'issue' END AS category, a.description, a.language, b.label, b.archivefile, GROUP_CONCAT(b.label ORDER BY b.id SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('" . dbesc($find) . "',content)-" . $preview_length . ", LENGTH('" . dbesc($find) . "')+" . ($preview_length * 2) . ") AS preview, b.content
+		SELECT a.id, COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, a.description, a.language, b.label, b.archivefile, GROUP_CONCAT(b.label ORDER BY b.id SEPARATOR ', ') AS page, SUBSTRING(b.content, LOCATE('" . dbesc($find) . "',content)-" . $preview_length . ", LENGTH('" . dbesc($find) . "')+" . ($preview_length * 2) . ") AS preview, b.content
 		FROM files a
 		INNER JOIN filedata b ON a.id = b.files_id
 		WHERE MATCH(content) AGAINST ('\"" . dbesc($find) . "\"' IN BOOLEAN MODE)

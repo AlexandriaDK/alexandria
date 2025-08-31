@@ -8,7 +8,7 @@ require_once "base.inc.php";
 htmladmstart("Checkup");
 
 $htmlisocodes = "<b>Possible wrong codes for countries and languages:</b><br>\n";
-$languages = getall("SELECT COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISnull(game_id) THEN 'game' WHEN !ISnull(convention_id) THEN 'convention' WHEN !ISnull(conset_id) THEN 'conset' WHEN !ISnull(gamesystem_id) THEN 'gamesystem' WHEN !ISnull(tag_id) THEN 'tag' WHEN !ISnull(issue_id) THEN 'issue' END AS category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
+$languages = getall("SELECT COALESCE(game_id, convention_id, conset_id, gamesystem_id, tag_id, issue_id) AS data_id, CASE WHEN !ISNULL(game_id) THEN 'game' WHEN !ISNULL(convention_id) THEN 'convention' WHEN !ISNULL(conset_id) THEN 'conset' WHEN !ISNULL(gamesystem_id) THEN 'gamesystem' WHEN !ISNULL(tag_id) THEN 'tag' WHEN !ISNULL(issue_id) THEN 'issue' END AS category, language FROM files WHERE language REGEXP('^(dk|se|no)') OR language REGEXP '^..[a-z]'");
 foreach ($languages as $language) {
   $htmlisocodes .= 'File <a href="files.php?category=' . $language['category'] . '&data_id=' . $language['data_id'] . '">' . $language['category'] . " " . $language['data_id'] . "</a> (" . htmlspecialchars($language['language']) . ")<br>";
 }
@@ -143,7 +143,7 @@ foreach ($result as $row) {
 $htmlgamenotregistered = "<b>Most used non-registered systems:</b><br>\n";
 
 $minantal = 2;
-$query = "SELECT COUNT(*) AS antal, gamesystem_extra FROM game g WHERE (gamesystem_id IS null OR gamesystem_id = 0) AND gamesystem_extra != '' GROUP BY gamesystem_extra HAVING antal >= $minantal ORDER BY antal DESC ";
+$query = "SELECT COUNT(*) AS antal, gamesystem_extra FROM game g WHERE (gamesystem_id IS NULL OR gamesystem_id = 0) AND gamesystem_extra != '' GROUP BY gamesystem_extra HAVING antal >= $minantal ORDER BY antal DESC ";
 $result = getall($query);
 foreach ($result as $row) {
   $htmlgamenotregistered .= $row['gamesystem_extra'] . " ($row[antal])<br>\n";
@@ -171,7 +171,7 @@ foreach ($result as $row) {
 // CHECK CONS WITHOUT START DATE
 $htmlcondate = "<b>Conventions missing exact start date:</b><br>\n";
 
-$query = "SELECT c.id, c.name, year, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id WHERE begin IS null OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
+$query = "SELECT c.id, c.name, year, conset.name AS setname FROM convention c LEFT JOIN conset ON c.conset_id = conset.id WHERE begin IS NULL OR begin = '0000-00-00' ORDER BY setname, year, begin, name";
 
 $result = getall($query);
 foreach ($result as $row) {
@@ -185,7 +185,7 @@ $query = "
 	FROM person p
 	INNER JOIN pgrel ON p.id = pgrel.person_id AND pgrel.title_id = 1
 	LEFT JOIN files ON pgrel.game_id = files.game_id
-	WHERE files.id IS null
+	WHERE files.id IS NULL
 	GROUP BY p.id
 	ORDER BY missing DESC
 	LIMIT 40

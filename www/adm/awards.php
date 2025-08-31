@@ -292,7 +292,7 @@ if ($action == 'deletenomineeentity') {
       $html_entity .= ($nominee['count_entity'] == 1 ? '1 connection' : $nominee['count_entity'] . " connections");
       $html_entity .= ' <a href="#" onclick="this.nextSibling.style.display=\'block\'; this.nextSibling.focus(); this.style.display=\'none\'; return false;">[+]</a>';
       $html_entity .= '<input name="award_nominee_entity" style="font-size: 0.7em; display: none;" class="peopletags" placeholder="Name of individual nominee">';
-      $entities = getall("SELECT id, COALESCE(person_id, game_id) AS data_id, CASE WHEN !ISnull(person_id) THEN 'person' WHEN !ISnull(game_id) THEN 'game' END AS category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
+      $entities = getall("SELECT id, COALESCE(person_id, game_id) AS data_id, CASE WHEN !ISNULL(person_id) THEN 'person' WHEN !ISNULL(game_id) THEN 'game' END AS category, label FROM award_nominee_entities WHERE award_nominee_id = " . $nominee['id'] . " ORDER BY id");
       $html_entity .= '<br>';
       foreach ($entities as $entity) {
         $html_entity .= '<a href="#" onclick="if (confirm(\'Do you want to delete this connection?\') ) { location.href=\'awards.php?category=awardcategory&amp;data_id=' . $data_id . '&amp;convention_id=' . $convention_id . '&amp;tag_id=' . $tag_id . '&amp;action=deletenomineeentity&amp;id=' . $entity['id'] . '\'; } else { return false; }">[delete]</a> ';

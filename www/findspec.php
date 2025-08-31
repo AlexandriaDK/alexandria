@@ -1,6 +1,6 @@
 <?php
-require_once "./connect.php";
-require_once "base.inc.php";
+require("./connect.php");
+require("base.inc.php");
 
 $systems = getall("SELECT id, name FROM gamesystem ORDER BY name");
 $genres = getall("SELECT id, name FROM genre WHERE genre = 1 ORDER BY name");

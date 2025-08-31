@@ -3,8 +3,8 @@
 # Popularity helps order search results and previews for a result (e.g. most popular games for an author and so on)
 # This script should be run nightly
 
-require_once __DIR__ . "/../www/connect.php";
-require_once __DIR__ . "/../www/base.inc.php";
+require(__DIR__ . "/../www/connect.php");
+require(__DIR__ . "/../www/base.inc.php");
 
 // Update popularity for persons
 // Simply award 1 point for every distinct user who has added any of the person's game to their log (read, gmed, played)

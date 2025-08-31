@@ -78,7 +78,7 @@ if ($action == "edit" && $con) {
     $_SESSION['admin']['info'] = "Name is missing!";
   } else {
     $year = intval($year);
-    $year = ($year > 1950 && $year < 2050) ? "'$year'" : "null";
+    $year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
     $q = "UPDATE convention SET " .
       "name = '" . dbesc($name) . "', " .
       "year = $year, " .
@@ -139,9 +139,9 @@ if ($action == "create") {
     $_SESSION['admin']['info'] = "Name is missing!";
   } else {
     $year = intval($year);
-    $year = ($year > 1950 && $year < 2050) ? "'$year'" : "null";
+    $year = ($year > 1950 && $year < 2050) ? "'$year'" : "NULL";
     $q = "INSERT INTO convention (id, name, year, begin, end, place, conset_id, description, internal, confirmed, cancelled, country) " .
-      "VALUES (null, " .
+      "VALUES (NULL, " .
       "'" . dbesc($name) . "', " .
       "$year, " .
       sqlifnull($begin) . ", " .

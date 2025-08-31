@@ -1,6 +1,6 @@
 <?php
-require_once "../connect.php";
-require_once "../base.inc.php";
+require("../connect.php");
+require("../base.inc.php");
 
 if ($_REQUEST['remote']) {
   if ($loginurl = getone("SELECT loginurl FROM remotelogin WHERE site = '" . $_REQUEST['remote'] . "'")) {
