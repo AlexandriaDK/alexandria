@@ -95,8 +95,7 @@ function chlog($data_id, $category, $note = "")
   $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
-  $result = doquery($query);
-  return $result;
+  return doquery($query);
 }
 
 function changelinks($data_id, $category)
@@ -271,11 +270,7 @@ function strNullEscape($str)
   if ($str === null) {
     return 'NULL';
   } else {
-    if (function_exists('dbesc')) {
-      return "'" . dbesc($str) . "'";
-    } else {
-      return "'" . dbesc($str) . "'";
-    }
+    return "'" . dbesc($str) . "'";
   }
 }
 
@@ -290,8 +285,7 @@ function getCount($table, $data_id, $requiresCategoryAndData = false, $category 
   } else {
     $result = getone("SELECT COUNT(*) FROM $table WHERE category = '$category' AND data_id = $data_id");
   }
-  $count = $result;
-  return $count;
+  return $result;
 }
 
 function autidextra($person)
@@ -507,7 +501,7 @@ function get_create_person($name, $internal = "Autoimport")
 function create_game($game, $internal = "Autoimport", $multiple_runs = false, $existing_game_id = false)
 {
   $title = $game['title'];
-  $gamesystem_id = $game['gamesystem_id'] ?? NULL;
+  $gamesystem_id = $game['gamesystem_id'] ?? null;
   $gamesystem_extra = $game['gamesystem_extra'] ?? '';
   $urls = $game['urls'] ?? [];
   $genres = $game['genres'] ?? [];
@@ -518,8 +512,8 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
   $cons = $game['cons'] ?? []; // list of con ids, e.g. [1, 4, 6] - assuming premiere
   $organizer = $game['organizer'] ?? '';
   $descriptions = $game['descriptions'] ?? [];
-  $players_min = $game['players_min'] ?? NULL;
-  $players_max = $game['players_max'] ?? NULL;
+  $players_min = $game['players_min'] ?? null;
+  $players_max = $game['players_max'] ?? null;
   $participants_extra = $game['participants_extra'] ?? '';
   $person_ids = [];
   $gm_ids = [];
@@ -556,22 +550,6 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
   }
   chlog($game_id, 'game', 'Game created');
 
-  /*
-    if ($description) {
-        $language = 'sv';
-        if ($multiple_runs || $existing_game_id) {
-            $language .= " ($year)";
-        }
-        $desc_sql = "INSERT INTO game_description (game_id, description, language) VALUES ($game_id, '" . dbesc($description) . "', '$language')";
-        doquery($desc_sql);
-    }
-
-    if ($year) {
-        $begin = $end = $year . '-00-00';
-        $run_sql = "INSERT INTO gamerun (game_id, begin, end, location, country) VALUES ($game_id, '$begin', '$end', '" . dbesc($location) . "', 'se')";
-        doquery($run_sql);        
-    }
-	*/
   $year = '';
 
   foreach ($person_ids as $person) {
@@ -617,7 +595,6 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
 
   foreach ($urls as $url) {
     if ($url != '' && !getone("SELECT 1 FROM links WHERE game_id = $game_id AND url = '" . dbesc($url) . "'")) {
-      // $lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_sce_file_scenario}')";
       $lsql = "INSERT INTO links (game_id, url, description) VALUES ($game_id, '" . dbesc($url) . "', '{\$_links_website}')";
       doquery($lsql);
     }
@@ -630,6 +607,9 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
 
   foreach ($runs as $run) {
     if ($run['begin'] || $run['end'] || $run['location'] || $run['description']) {
+      $begin = $run['begin'] ? $run['begin'] : null;
+      $end = $run['end'] ? $run['end'] : null;
+      $description = $run['description'] ?? '';
       $location = $run['location'];
       $location_id = intval($location);
       if ($location_id) {
@@ -637,7 +617,7 @@ function create_game($game, $internal = "Autoimport", $multiple_runs = false, $e
       }
       $runsql = "
 				INSERT INTO gamerun (game_id, begin, end, location, description) 
-				VALUES ($game_id, " . strNullEscape($run['begin']) . ", " . strNullEscape($run['end']) . ", '" . dbesc($location) . "', '" . dbesc($run['description']) . "')
+				VALUES ($game_id, " . strNullEscape($begin) . ", " . strNullEscape($end) . ", '" . dbesc($location) . "', '" . dbesc($description) . "')
 			";
       $gamerun_id = doquery($runsql);
       if ($location_id) {
