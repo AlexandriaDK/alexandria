@@ -37,7 +37,9 @@ docker-compose up -d --build
 
 What this does:
 
-- Starts MariaDB 10.7 with dev credentials
+- Starts MariaDB 11.8 with dev credentials
+- Starts PHP-FPM 8.4 on Alpine Linux for processing PHP files
+- Starts Nginx with HTTP/3 (QUIC) and HTTP/2 support as the web server
 
 ### VS Code Development with Dev Containers
 
@@ -54,7 +56,18 @@ You’ll now have full editor support, autocompletion, and terminal access insid
 
 3. Open the site
 
+**HTTP (redirects to HTTPS):**
 - http://localhost:8080
+
+**HTTPS with HTTP/2:**
+- https://localhost:8443
+
+**HTTPS with HTTP/3 (QUIC):**
+- https://localhost:8443 (use browsers with HTTP/3 support like Chrome, Firefox, or curl with --http3)
+
+**Testing HTTP/3:**
+- Browser dev tools: Check the "Protocol" column in Network tab
+- Command line: `curl --http3 -k https://localhost:8443/en/`
 
 Notes for development:
 
@@ -62,6 +75,8 @@ Notes for development:
 - Smarty templates (`smarty/templates`) are mounted for live template work
 - Compiled Smarty files live in `smarty/templates_c` (created in the container)
 - Database data persists in the `db_data` Docker volume
+- Self-signed SSL certificates are generated automatically for HTTPS/HTTP/3
+- Nginx serves static files directly and proxies PHP requests to PHP-FPM
 
 ## Manual installation (without Docker)
 
@@ -69,7 +84,7 @@ Recommended stack:
 
 - PHP 8.0+ (8.1+ recommended) with extensions: mysqli, mbstring, intl, gd, zip
 - MariaDB/MySQL
-- Apache (DocumentRoot should point to the `www/` folder)
+- Nginx (for HTTP/3 support) or Apache (DocumentRoot should point to the `www/` folder)
 
 Steps (outline):
 

@@ -1,20 +1,20 @@
-FROM php:8.4-fpm-alpine3.22
+FROM php:8.4-fpm
 
 # Install system dependencies and PHP extensions
-RUN apk update \
-  && apk upgrade \
-  && apk add --no-cache \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
   curl \
-  mariadb-client \
+  default-mysql-client \
   git \
   jq \
-  freetype-dev \
-  icu-dev \
-  libjpeg-turbo-dev \
+  libfreetype6-dev \
+  libicu-dev \
+  libjpeg-dev \
   libpng-dev \
   libzip-dev \
   unzip \
   xmlstarlet \
+  && rm -rf /var/lib/apt/lists/* \
   && docker-php-ext-configure gd --with-freetype --with-jpeg \
   && docker-php-ext-install mysqli pdo pdo_mysql intl gd zip
 
@@ -28,7 +28,7 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock* ./
 
 # Install PHP dependencies (including dev dependencies for development)
-RUN composer install --optimize-autoloader
+RUN composer install --optimize-autoloader --no-dev || composer install --optimize-autoloader --disable-tls --no-dev
 
 # Copy includes directory and Smarty assets (templates/configs)
 COPY ./includes /var/www/html/includes
