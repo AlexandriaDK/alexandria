@@ -1,6 +1,6 @@
 <?php
 require_once "./connect.php";
-require_once("base.inc.php");
+require_once "base.inc.php";
 
 $name = (string) $_REQUEST['name'];
 $auto = (string) $_REQUEST['auto'];

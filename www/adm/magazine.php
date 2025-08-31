@@ -344,7 +344,7 @@ if ($action == "duplicatearticle" && $original_article_id && $issue_id) {
 
 <body>
   <?php
-  include("links.inc.php");
+  include_once "links.inc.php";
   printinfo();
 
   if ($magazine_id && $issue_id) {

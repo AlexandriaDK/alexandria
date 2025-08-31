@@ -347,7 +347,7 @@ function check_begin_page_achievements()
   if (strpos($user_agent, ' Edge/') !== false) award_achievement(90);
 
   // referer achievements
-  $referer = $_SERVER['HTTP_REFERER'] ?? NULL;
+  $referer = $_SERVER['HTTP_REFERER'] ?? null;
   if ($referer) {
     $url = parse_url($referer);
     $segments = array_reverse(explode('.', $url['host']));

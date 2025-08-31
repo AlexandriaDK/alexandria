@@ -4,4 +4,4 @@ require_once "base.inc.php";
 
 $year = date("Y");
 
-include("year.inc.php");
+include_once "year.inc.php";

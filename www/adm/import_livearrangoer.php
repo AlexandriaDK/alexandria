@@ -6,8 +6,8 @@ chdir("..");
 require_once "rpgconnect.inc.php";
 require_once "base.inc.php";
 
-$title = $_REQUEST['title'] ?? NULL;
-$persons = $_REQUEST['persons'] ?? NULL;
+$title = $_REQUEST['title'] ?? null;
+$persons = $_REQUEST['persons'] ?? null;
 $internal = "Autoimport from table live_arrangoer /pb";
 
 if ($title) {

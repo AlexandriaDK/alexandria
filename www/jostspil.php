@@ -1,7 +1,7 @@
 <?php
 require_once "./connect.php";
-require_once("base.inc.php");
-require_once("smartfind.inc.php");
+require_once "base.inc.php";
+require_once "smartfind.inc.php";
 
 function getjostid($name)
 {

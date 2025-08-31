@@ -40,7 +40,7 @@ if ($useremail) {
 }
 $internal .= "User notes:\n=====\n" . $notes . "\n";
 
-$gamesystem_id = ($gametype == 'larp' ? 73 : NULL);
+$gamesystem_id = ($gametype == 'larp' ? 73 : null);
 $boardgame = ($gametype == 'boardgame');
 
 $runs = [

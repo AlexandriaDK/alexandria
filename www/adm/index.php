@@ -37,7 +37,7 @@ require_once "base.inc.php";
 <body>
 
   <?php
-  include("links.inc.php");
+  include_once "links.inc.php";
   printinfo();
   ?>
 

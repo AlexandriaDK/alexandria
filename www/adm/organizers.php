@@ -134,7 +134,7 @@ if ($data_id) {
 
 <body>
   <?php
-  include("links.inc.php");
+  include_once "links.inc.php";
 
   printinfo();
 

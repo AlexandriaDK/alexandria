@@ -14,7 +14,9 @@ if ($tid) {
 } else {
   $type = 'convention';
 }
-if ($ucid == 1) award_achievement(96); // Fastaval conset
+if ($ucid == 1) {
+  award_achievement(96); // Fastaval conset
+}
 
 $awards = getall("
 	SELECT a.conset_id, a.tag_id, COALESCE(b.name, t.tag) AS type_name, COALESCE(a.conset_id, a.tag_id) AS type_id, CASE WHEN b.id IS NOT NULL THEN 'convention' WHEN t.id IS NOT NULL THEN 'tag' ELSE '' END AS type
@@ -22,15 +24,14 @@ $awards = getall("
 	LEFT JOIN conset b ON a.conset_id = b.id
 	LEFT JOIN convention c ON b.id = c.conset_id
 	LEFT JOIN tag t ON a.tag_id = t.id
-	LEFT JOIN award_categories ac ON (t.id = ac.tag_id OR c.id = ac.convention_id) 
+	LEFT JOIN award_categories ac ON (t.id = ac.tag_id OR c.id = ac.convention_id)
 	GROUP BY a.conset_id, a.tag_id, COALESCE(b.name, t.tag), COALESCE(a.conset_id, a.tag_id), type
 	HAVING COUNT(ac.id) > 0
 	ORDER BY type_name, a.conset_id, a.tag_id
 ");
 
-// $award_categories = getall("SELECT a.id, a.name, a.convention_id, a.description, b.name AS con_name, b.year FROM award_categories a LEFT JOIN convention b ON a.convention_id = b.id ORDER BY b.year DESC, a.id");
+
 if (!$cid && !$tid) {
-  //$award_nominees = getall("SELECT a.id, a.name, a.award_category_id, a.nominationtext, a.winner, a.game_id, b.id AS category_id, b.convention_id, b.name AS category_name, c.year, c.name AS con_name, c.conset_id, d.title FROM award_nominees a INNER JOIN award_categories b ON a.award_category_id = b.id LEFT JOIN convention c ON b.convention_id = c.id LEFT JOIN sce d ON a.game_id = d.id ORDER BY c.year DESC, a.winner DESC, a.id");
   $award_nominees = [];
 } elseif ($tid) {
   $award_nominees = getall("
@@ -66,11 +67,11 @@ foreach ($award_nominees as $nominee) {
   $type = $nominee['type'];
   $type_id = $nominee['type_id'];
   $cid = $nominee['conset_id'] ?? 0;
-  $con_id = $nominee['convention_id'] ?? NULL;
+  $con_id = $nominee['convention_id'] ?? null;
   $cat_id = $nominee['category_id'];
 
   $awardnominees[$cid][$con_id]['name'] = $nominee['con_name'] ?? '';
-  $awardnominees[$cid][$con_id]['year'] = yearname($nominee['year'] ?? NULL);
+  $awardnominees[$cid][$con_id]['year'] = yearname($nominee['year'] ?? null);
   $awardnominees[$cid][$con_id]['categories'][$cat_id]['name'] = $nominee['category_name'];
   $awardnominees[$cid][$con_id]['categories'][$cat_id]['nominees'][] = ['id' => $nominee['id'], 'name' => $nominee['name'], 'nominationtext' => $nominee['nominationtext'], 'winner' => $nominee['winner'], 'ranking' => $nominee['ranking'], 'game_id' => $nominee['game_id'], 'title' => $nominee['title_translation'], 'origtitle' => $nominee['title']];
 }

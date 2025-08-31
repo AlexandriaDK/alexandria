@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once('../../connect.php');
-require_once('../../base.inc.php');
+require_once "../../connect.php";
+require_once "../../base.inc.php";
 require_once '../../../includes/social.php';
 set_session_redirect_url();
 
-require_once('includes/sa_init.php');
+require_once "includes/sa_init.php";
 
 $steam_web_api_key = STEAM_WEB_API_KEY;
 

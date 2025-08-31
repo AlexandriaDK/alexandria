@@ -65,7 +65,7 @@ function create_game($game, $persons, $organizations, $multiple_runs = false, $e
   $internal .= json_encode($game) . PHP_EOL . PHP_EOL;
 
   foreach ((array) $game->genres as $genre) {
-    $gid = $genre_lajv_alexandria_map[$genre->id] ?? NULL;
+    $gid = $genre_lajv_alexandria_map[$genre->id] ?? null;
     if ($gid) {
       $genres[] = $gid;
     } else {

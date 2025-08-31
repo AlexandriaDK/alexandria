@@ -59,8 +59,8 @@ function addPersonsToGame($game_id, $persons)
     if ($persondata['event']) {
       list($category, $event_id) = explode("_", ($persondata['event']));
     }
-    $convention_id = ($category == 'c' ? $event_id : NULL);
-    $gamerun_id = ($category == 'r' ? $event_id : NULL);
+    $convention_id = ($category == 'c' ? $event_id : null);
+    $gamerun_id = ($category == 'r' ? $event_id : null);
 
     if ($title_id && $person_id) {
       $q = "INSERT INTO pgrel (game_id, person_id, title_id, convention_id, gamerun_id, note) " .
@@ -535,7 +535,7 @@ $titles = getcolid("SELECT id, title FROM title ORDER BY id");
 <body>
 
   <?php
-  include("links.inc.php");
+  include_once "links.inc.php";
 
   printinfo();
 

@@ -37,7 +37,7 @@ if ($action == "lookup") {
   }
   exit;
 } elseif ($action == "titlesearch" && $q) {
-  include("smartfind.inc.php");
+  include_once "smartfind.inc.php";
   $match = [];
   $id_data = [];
   $result = [];

@@ -392,7 +392,7 @@ function strSplitParticipants($str)
 {
   $str = trim($str);
   if (!preg_match('/^(\d+)\s*([–-]\s*(\d+))?$/u', $str, $match)) {
-    return [NULL, NULL];
+    return [null, null];
   }
   $str_min = $match[1] ?? '';
   $str_max = $match[3] ?? '';
@@ -463,7 +463,7 @@ $headcontent
 <body>
 EOD;
   print $html;
-  include("links.inc.php");
+  include_once "links.inc.php";
   printinfo();
   return true;
 }

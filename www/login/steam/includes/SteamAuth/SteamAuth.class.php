@@ -4,7 +4,7 @@ if (session_id() == '') {
   session_start();
 }
 
-include("openid.php");
+include_once "openid.php";
 
 class SteamAuth
 {
