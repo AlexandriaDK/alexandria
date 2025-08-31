@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 // redirect if no user
 if (!isset($_SESSION['user_id']) && !$user_id) {

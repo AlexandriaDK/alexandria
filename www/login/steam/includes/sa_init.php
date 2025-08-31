@@ -1,6 +1,6 @@
 <?php
 
-require("SteamAuth/SteamAuth.class.php");
+require_once "SteamAuth/SteamAuth.class.php";
 
 $auth = new SteamAuth();
 $auth->SetOnLoginCallback(function ($steamid) {

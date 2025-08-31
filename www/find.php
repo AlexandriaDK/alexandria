@@ -6,9 +6,9 @@ if ($rredirect == 'no') $redirect = false;
 
 $debug = false;
 
-require("./connect.php");
-require("base.inc.php");
-require("smartfind.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
+require_once "smartfind.inc.php";
 
 $cat = $_REQUEST['cat'] ?? '';
 $find = $_GET['find'] ?? $_GET['q'] ?? '';

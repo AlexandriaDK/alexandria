@@ -1,8 +1,8 @@
 <?php
 // Find possible duplicate names based on middle names
 chdir(__DIR__ . '/../www/');
-require("./connect.php");
-require("./base.inc.php");
+require_once "./connect.php";
+require_once "./base.inc.php";
 
 $names = getcolid("SELECT id, CONCAT(firstname, ' ', surname) AS name FROM person");
 $namesclean = [];

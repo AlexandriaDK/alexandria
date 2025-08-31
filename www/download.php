@@ -1,7 +1,7 @@
 <?php
 define('LANGNOREDIRECT', true);
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 list($category, $data_id, $filename) = preg_split('_/_', $_SERVER['PATH_INFO'], -1, PREG_SPLIT_NO_EMPTY);
 $data_id = intval($data_id);

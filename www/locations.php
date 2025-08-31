@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $id = (int) ($_REQUEST['id'] ?? 0);
 $convention_id = (int) ($_REQUEST['convention_id'] ?? 0);

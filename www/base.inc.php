@@ -98,7 +98,7 @@ if ($searchterm !== '') {
 // Check if SQL structure even exists
 if (!defined('DBERROR') && (getone("SHOW tables LIKE 'installation'") === null || getone("SELECT `value` FROM installation WHERE `key` = 'status'") != 'live')) { // Table does not exist!
   define("INSTALLNOW", true);
-  require("installation.php");
+  require_once "installation.php";
   exit;
 };
 
@@ -759,24 +759,21 @@ function fulldate($dateString)
 
   $formatter = new IntlDateFormatter(LANG, IntlDateFormatter::LONG, IntlDateFormatter::NONE);
   $datetime = new DateTime($dateString);
-  $output = $formatter->format($datetime);
-  return $output;
+  return $formatter->format($datetime);
 }
 
 function fulldatetime($dateString)
 {
   $formatter = new IntlDateFormatter(LANG, IntlDateFormatter::RELATIVE_LONG, IntlDateFormatter::SHORT);
   $datetime = new DateTime($dateString);
-  $output = $formatter->format($datetime);
-  return $output;
+  return $formatter->format($datetime);
 }
 
 function customdateformat($lang, $pattern, $dateString)
 {
   $formatter = new IntlDateFormatter($lang, 0, 0, null, null, $pattern);
   $datetime = new DateTime($dateString);
-  $output = $formatter->format($datetime);
-  return $output;
+  return $formatter->format($datetime);
 }
 
 function monthyear($dateString)

@@ -1,6 +1,6 @@
 <?php
-require("../../www/connect.php");
-require("../../www/base.inc.php");
+require_once "../../www/connect.php";
+require_once "../../www/base.inc.php";
 
 $originalurl = 'https://www.spillfestival.no/arcon36/program.php';
 

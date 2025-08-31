@@ -157,6 +157,7 @@ function importData($mysqli, $data)
     'feeds',
     'magazines',
     'awards',
+    'genre_game_relations',
     'locations',
     'sitetexts',
     'games',
