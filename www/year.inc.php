@@ -2,7 +2,7 @@
 $this_type = 'year';
 
 list($conventionminyear, $conventionmaxyear) = getrow("SELECT MIN(year), MAX(year) FROM convention");
-list($gamerunminyear, $gamerunmaxyear) = getrow("SELECT MIN(YEAR(begin)), MAX(YEAR(begin)) FROM gamerun");
+list($gamerunminyear, $gamerunmaxyear) = getrow("SELECT MIN(YEAR(begin)), MAX(YEAR(begin)) FROM gamerun WHERE begin != '0000-00-00'");
 
 // Normalize to integers and handle potential NULL/0 values from the DB
 $cmin = (int) ($conventionminyear ?: 0);

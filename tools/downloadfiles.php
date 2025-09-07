@@ -1,8 +1,8 @@
 <?php
 // Download missing files from download.alexandria.dk
 chdir(__DIR__ . "/../www/");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 define('ALEXFILEPATH', '../loot.alexandria.dk/files/');
 define('ALEXURL', 'https://download.alexandria.dk/files/');
 
@@ -27,7 +27,7 @@ foreach ($files as $file) {
       print "Error: File is empty." . PHP_EOL;
     } else {
       $saved = file_put_contents($filepath, $filedata);
-      if ($saved === FALSE) {
+      if ($saved === false) {
         print "Error: Could not save file." . PHP_EOL;
       }
     }

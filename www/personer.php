@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $b = (string) ($_REQUEST['b'] ?? ""); // search letter
 $s = (string) ($_REQUEST['s'] ?? ""); // sort; "f" = first name, "e" = surname

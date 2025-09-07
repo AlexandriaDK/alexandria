@@ -11,8 +11,8 @@ $_SESSION = [
   'user_author_id' => 1,
   'user_site' => 'Admin Service',
   'user_name' => 'User Admin',
-  'user_editor' => TRUE,
-  'user_admin' => TRUE,
+  'user_editor' => true,
+  'user_admin' => true,
   'token' => md5(rand())
 ];
 header("Content-Type: text/plain");

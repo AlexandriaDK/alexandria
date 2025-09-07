@@ -1,11 +1,11 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 $term = (string) ($_REQUEST['query'] ?? $_REQUEST['term'] ?? '');
 $result = (string) ($_REQUEST['result'] ?? 'website');
 $type = (string) ($_REQUEST['type'] ?? '');
-$with_id = (bool) ($_REQUEST['with_id'] ?? FALSE);
+$with_id = (bool) ($_REQUEST['with_id'] ?? false);
 
 $escapequery = dbesc($term);
 $likeescapequery = likeesc($term);
@@ -68,7 +68,7 @@ if (strlen($term) >= 2) {
     exit;
   }
   $query = implode(' UNION ALL ', $queryparts);
-  $all = getall($query, FALSE);
+  $all = getall($query, false);
   print dberror();
 
   foreach ($all as &$data) {

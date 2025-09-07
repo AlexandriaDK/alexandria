@@ -1,10 +1,10 @@
 <?php
 // save page for users editing tags for scenario
 
-require "base.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $scenario = (int) $_REQUEST['scenario'];
 $action = (string) $_REQUEST['action'];
@@ -42,7 +42,7 @@ if ($action == 'add') {
 	");
   $r = doquery($q);
   if ($scetag_id = dbid($dblink)) {
-    $_SESSION['can_edit_tag'][$scetag_id] = TRUE;
+    $_SESSION['can_edit_tag'][$scetag_id] = true;
     // award_achievement(91);
     chlog($scenario, 'game', 'Tag added: ' . $tag);
     award_achievement(100);

@@ -18,8 +18,8 @@
   <link rel="alternate" type="application/rss+xml" title="Alexandria" href="https://alexandria.dk/rss.php" />
   <link rel="icon" type="image/png" href="/gfx/favicon_ti.png">
   <link rel="search" type="application/opensearchdescription+xml" title="Alexandria" href="/opensearch.xml" />
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
   {if isset($URLLANG) }
     {foreach $ALEXLANGUAGES as $altlanguage => $altlanguagelocalname}
       {if $URLLANG != $altlanguage}
@@ -27,9 +27,9 @@
       {/if}
     {/foreach}
   {/if}
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="//code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
   <script src="/helper.js"></script>
   {if isset($json_tags) }
     <script>

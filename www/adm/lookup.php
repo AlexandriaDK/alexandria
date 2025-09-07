@@ -1,11 +1,11 @@
 <?php
 // Lookup service for various editor pages.
 
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 
 $type = (string) ($_REQUEST['type'] ?? '');
 $label = trim((string) ($_REQUEST['label'] ?? ''));
@@ -192,7 +192,7 @@ if ($type == 'addperson' && $label != "") {
   }
   $result = [];
   $name = $label;
-  if (strpos($name, " ") === FALSE) {
+  if (strpos($name, " ") === false) {
     resultexit(["new" => false, "error" => true, "msg" => "No space in name"]);
   }
   $pos = strrpos($name, " ");

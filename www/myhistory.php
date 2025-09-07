@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 // redirect if no user
 if (!isset($_SESSION['user_id']) && !$user_id) {
@@ -115,7 +115,7 @@ if ($conventions) {
   foreach ($conventions as $convention) {
     $spanid = "convent_" . $convention['id'] . "_visited";
     $content_myconvents .= "<tr>";
-    $content_myconvents .= "<td>" . getdynamicconventionhtml($convention['id'], 'visited', TRUE) . "</td>";
+    $content_myconvents .= "<td>" . getdynamicconventionhtml($convention['id'], 'visited', true) . "</td>";
     $content_myconvents .= "<td>" . getdatahtml('convention', $convention['id'], $convention['name']) . "</td>";
     $content_myconvents .= "<td style=\"text-align: left\">" . $convention['conset_name'] . "</td>";
     $content_myconvents .= "<td style=\"text-align: right\">" . yearname($convention['year']) . "</td>";

@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("./base.inc.php");
+require_once "./connect.php";
+require_once "./base.inc.php";
 $output = "";
 
 $action = (string) ($_REQUEST['action'] ?? '');
@@ -37,7 +37,7 @@ if ($action == "lookup") {
   }
   exit;
 } elseif ($action == "titlesearch" && $q) {
-  include("smartfind.inc.php");
+  include_once "smartfind.inc.php";
   $match = [];
   $id_data = [];
   $result = [];
@@ -131,7 +131,7 @@ if ($action == "lookup") {
 		LEFT JOIN game g ON gr.game_id = g.id
 		WHERE geo IS NOT NULL
 		ORDER BY data_starttime
-	", FALSE);
+	", false);
 
   $events = [];
   foreach ($locations as $event) {

@@ -1,6 +1,6 @@
 <?php
-require("./connect.php");
-require("base.inc.php");
+require_once "./connect.php";
+require_once "base.inc.php";
 
 if (isset($_SESSION) && isset($_SESSION['user_id'])) {
   $userlog = getuserloggames($_SESSION['user_id']);
@@ -99,8 +99,8 @@ foreach ($scenarios as $scenario_id => $scenario) {
 
     foreach ($options as $type) {
       $xscenlist .= "<td>";
-      if ($type != NULL) {
-        $xscenlist .= getdynamicgamehtml($scenario_id, $type, $userlog[$scenario_id][$type] ?? FALSE);
+      if ($type != null) {
+        $xscenlist .= getdynamicgamehtml($scenario_id, $type, $userlog[$scenario_id][$type] ?? false);
       }
       $xscenlist .= "</td>";
     }

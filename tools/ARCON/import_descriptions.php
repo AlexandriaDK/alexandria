@@ -1,6 +1,6 @@
 <?php
-require("../../www/connect.php");
-require("../../www/base.inc.php");
+require_once "../../www/connect.php";
+require_once "../../www/base.inc.php";
 
 $originalurl = 'https://www.spillfestival.no/arcon36/program.php';
 
@@ -13,7 +13,7 @@ function chlog($data_id, $category, $note = "")
 {
   $user = 'Peter Brodersen';
   $authuserid = 4;
-  $data_id = ($data_id == NULL ? 'NULL' : (int) $data_id);
+  $data_id = ($data_id == null ? 'NULL' : (int) $data_id);
   $note = dbesc($note);
   $query = "INSERT INTO log (data_id,category,time,user,user_id,note) " .
     "VALUES ($data_id,'$category',NOW(),'$user','$authuserid','$note')";
@@ -73,9 +73,9 @@ foreach (glob($glob) as $file) {
   }
 
   // persons
-  $person_id = NULL;
+  $person_id = null;
   $person_extra = '';
-  if (strpos($data['organizer'], " ") === FALSE) {
+  if (strpos($data['organizer'], " ") === false) {
     $person_extra = $data['organizer'];
     print "EXTRA: " . $person_extra . PHP_EOL;
   } else { // find person

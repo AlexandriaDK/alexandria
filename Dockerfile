@@ -52,7 +52,6 @@ RUN chmod +x /usr/local/bin/db_and_news_import.php
 # Expose port 80
 EXPOSE 80
 
-
 COPY ./tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]

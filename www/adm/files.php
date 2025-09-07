@@ -1,9 +1,9 @@
 <?php
-require "adm.inc.php";
-require "base.inc.php";
+require_once "adm.inc.php";
+require_once "base.inc.php";
 chdir("..");
-require "rpgconnect.inc.php";
-require "base.inc.php";
+require_once "rpgconnect.inc.php";
+require_once "base.inc.php";
 $this_type = 'files';
 
 ini_set("user_agent", "Alexandria.dk Dungeon Looter Agent");
@@ -20,7 +20,7 @@ $downloadable = (string) ($_REQUEST['downloadable'] ?? '');
 $language = trim((string) ($_REQUEST['language'] ?? ''));
 $remoteurl = (string) ($_REQUEST['remoteurl'] ?? '');
 $pages = (string) ($_REQUEST['pages'] ?? '');
-$allowed_extensions = ["pdf", "txt", "doc", "docx", "zip", "rar", "mp3", "pps", "jpg", "jpeg", "png", "gif", "webp"];
+$allowed_extensions = ["pdf", "txt", "doc", "docx", "zip", "rar", "mp3", "pps", "jpg", "jpeg", "png", "gif", "webp", "xlsx"];
 $allowed_schemes = ['http', 'https', 'ftp', 'ftps'];
 $thumbnailpage = (int) ($_REQUEST['thumbnailpage'] ?? 1);
 
@@ -273,17 +273,17 @@ if ($action == "addfile") {
   rexit($this_type, ['category' => $category, 'data_id' => $data_id]);
 } elseif ($action == 'deletethumbnail') {
   $folder = getcategorythumbdir($category);
-  $deleted = FALSE;
+  $deleted = false;
   // Ingen ../ idet vi har chdir()'et et trin ud fra adm-mappen
   $path_large = "gfx/$folder/l_" . $data_id . ".jpg";
   $path_small = "gfx/$folder/s_" . $data_id . ".jpg";
   if (file_exists($path_large)) {
     unlink($path_large);
-    $deleted = TRUE;
+    $deleted = true;
   }
   if (file_exists($path_small)) {
     unlink($path_small);
-    $deleted = TRUE;
+    $deleted = true;
   }
   if ($deleted) {
     $_SESSION['admin']['info'] = "Thumbnail deleted! ";
@@ -297,13 +297,13 @@ if ($action == "addfile") {
 if ($data_id && $category) {
   $data_id = intval($data_id);
   $data_field = getFieldFromCategory($category);
-  $linktitle = getlabel($category, $data_id, TRUE);
+  $linktitle = getlabel($category, $data_id, true);
 
   $query = "
 		SELECT COUNT(fd.id) AS pages, f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
 		FROM files f
 		LEFT JOIN filedata fd ON f.id = fd.files_id
-		WHERE f.`$data_field` = '$data_id' 
+		WHERE f.`$data_field` = '$data_id'
 		GROUP BY f.id, f.filename, f.description, f.downloadable, f.language, f.indexed
 		ORDER BY f.id
 	";
@@ -332,28 +332,24 @@ if ($data_id && $category) {
     $selected = ($row['downloadable'] == 1 ? 'checked="checked"' : '');
     $path = DOWNLOAD_PATH . getcategorydir($category) . '/' . $data_id . '/' . $row['filename'];
     $OCRpossible = ($row['pages'] == 0 && in_array($row['indexed'], [1]) && strtolower(pathinfo($path)['extension']) == 'pdf'); // only indexed PDFs with no text content
+    $statusTexts = [
+      0  => 'Ready to be indexed',
+      1  => 'Indexed',
+      2  => 'Currently being indexing',
+      3  => 'Skipped',
+      4  => 'Error while indexing',
+      5  => 'File was not found when indexing',
+      11 => 'In queue for OCR\'ing',
+      12 => 'Currently OCR\'ing',
+      20 => 'OCR done, in queue for indexing',
+    ];
+
     if ($OCRpossible && $row['language']) {
       $ocrhtml = 'Indexed; no text in file <input type="submit" name="ocr" value="Queue for OCR" title="Mark file to be OCR\'ed - takes a couple of minutes">';
     } elseif ($OCRpossible) {
       $ocrhtml = 'Indexed; no text in file. Add language code for OCR.';
-    } elseif ($row['indexed'] == 0) {
-      $ocrhtml = 'Ready to be indexed';
-    } elseif ($row['indexed'] == 1) {
-      $ocrhtml = 'Indexed';
-    } elseif ($row['indexed'] == 2) {
-      $ocrhtml = 'Currently being indexing';
-    } elseif ($row['indexed'] == 3) {
-      $ocrhtml = 'Skipped';
-    } elseif ($row['indexed'] == 4) {
-      $ocrhtml = 'Error while indexing';
-    } elseif ($row['indexed'] == 5) {
-      $ocrhtml = 'File was not found when indexing';
-    } elseif ($row['indexed'] == 11) {
-      $ocrhtml = 'In queue for OCR\'ing';
-    } elseif ($row['indexed'] == 12) {
-      $ocrhtml = 'Currently OCR\'ing';
-    } elseif ($row['indexed'] == 20) {
-      $ocrhtml = 'OCR done, in queue for indexing';
+    } elseif (isset($statusTexts[$row['indexed']])) {
+      $ocrhtml = $statusTexts[$row['indexed']];
     } else {
       $ocrhtml = '';
     }
@@ -367,7 +363,7 @@ if ($data_id && $category) {
       '<td>' .
       htmlspecialchars($row['filename']) .
       (file_exists($path) ? '' : ' <span style="color: #c00" title="File does not exist">⚠</span>') .
-      (strpos($path, '#') === FALSE ? '' : ' <span style="color: #c00" title="File contains # character - please rename">⚠</span>') .
+      (strpos($path, '#') === false ? '' : ' <span style="color: #c00" title="File contains # character - please rename">⚠</span>') .
       '</td>' .
       '<td ><input type="text" name="description" value="' . htmlspecialchars($row['description']) . '" size="40"></td>' .
       '<td style="text-align: center"><input type="checkbox" name="downloadable" ' . $selected . '></td>' .
@@ -396,10 +392,10 @@ if ($data_id && $category) {
 
   print "<tr valign=\"top\"><td></td><td>Available files:</td><td>Default descriptions:</td></tr><tr valign=\"top\"><td></td><td>";
 
-  $thumbshortcut = TRUE;
+  $thumbshortcut = true;
   foreach (glob(DOWNLOAD_PATH . getcategorydir($category) . "/" . $data_id . "/*") as $file) {
     $accesskey = ($thumbshortcut ? 'accesskey="t"' : '');
-    $thumbshortcut = FALSE;
+    $thumbshortcut = false;
     $basename = mb_basename($file);
     $extension = strtolower(pathinfo($basename,  PATHINFO_EXTENSION));
     $createthumbnailurl = 'files.php?category=' . htmlspecialchars($category) . '&data_id=' . $data_id . '&action=thumbnail&filename=' . rawurlencode($basename);
@@ -471,7 +467,7 @@ if ($data_id && $category) {
     }
   }
 
-  if (($path = getthumbnailpath($data_id, $category)) !== FALSE) {
+  if (($path = getthumbnailpath($data_id, $category)) !== false) {
     print '<form action="files.php" method="post" onsubmit="return confirm(\'Delete thumbnail?\');">' .
       '<input type="hidden" name="action" value="deletethumbnail">' .
       '<input type="hidden" name="category" value="' . htmlspecialchars($category) . '">' .

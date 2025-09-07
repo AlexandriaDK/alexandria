@@ -5,7 +5,7 @@ if (!@($dblink = mysqli_connect($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PA
   define('DBERROR', TRUE);
   header("HTTP/1.1 503 Service Unavailable");
   header("X-Error: Database");
-  require("base.inc.php");
+  require_once "base.inc.php";
   $t->display('dberror.tpl');
   exit;
 }

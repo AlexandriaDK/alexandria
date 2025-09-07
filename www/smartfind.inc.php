@@ -83,7 +83,7 @@ function category_search($find, $searchfield, $category)
   }
   $match[$category] = array_merge($match[$category], $d);
 
-  return TRUE; // Uses global variables for search - yuck
+  return true; // Uses global variables for search - yuck
 }
 
 // find every key in array with specific value
@@ -118,7 +118,7 @@ function array_larger($array, $fixedvalue)
 // $match['b'] are good matches,
 // $match['c'] are mediocre matches
 // $match_all is a unique list of all three matches
-function getalphaidbybeta($find, $table, $string, $idfield = "id", $search_alias = FALSE)
+function getalphaidbybeta($find, $table, $string, $idfield = "id", $search_alias = false)
 {
   $match = [];
   $match['a'] = $match['b'] = $match['c'] = [];
@@ -284,5 +284,5 @@ function getidbyalias($find, $category)
   if ($data_field == '') { // no alias for issue
     return [[], [], [], []];
   }
-  return getalphaidbybeta($find, "alias", "label", $data_field, TRUE);
+  return getalphaidbybeta($find, "alias", "label", $data_field, true);
 }

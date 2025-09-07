@@ -1,5 +1,5 @@
 <?php
-require_once("../../inc/rpgconnect.inc");
+require_once "../../inc/rpgconnect.inc";
 
 $q = $_REQUEST['q'];
 
