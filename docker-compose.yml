@@ -21,6 +21,7 @@ services:
       DB_HOST: db
       DB_USER: alexuser
       DB_PASS: alexpass
+      DB_NAME: alexandria
     ports:
       - "8080:80"
     restart: unless-stopped
