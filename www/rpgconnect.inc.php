@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__ . '/../includes/db.auth.php');
 
-$db_connector = DB_CONNECTOR;
-
 mysqli_report(MYSQLI_REPORT_OFF);
 
 if (!@($dblink = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, 3306)) || @$_SERVER['QUERY_STRING'] == "crash") {
