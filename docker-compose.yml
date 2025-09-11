@@ -28,6 +28,7 @@ services:
       DB_HOST: db
       DB_USER: alexuser
       DB_PASS: alexpass
+      DB_NAME: alexandria
       DB_PORT: "${DB_PORT:-3306}"
     ports:
       - "8080:80"

@@ -51,5 +51,6 @@ $t->assign('html_nextevents', $nextevents);
 $t->assign('latest_downloads', $latest_downloads);
 
 ob_start();
+
 $t->display('frontpage.tpl');
 exit;
