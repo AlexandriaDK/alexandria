@@ -1066,3 +1066,18 @@ div.popupeventlist {
   max-height: 300px;
   scrollbar-width: thin;
 }
+
+@media (prefers-color-scheme: light) {
+    body {
+        background: top left no-repeat #fff;
+    }
+
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: top left no-repeat #000;
+        filter: invert(1) hue-rotate(180deg);
+    }
+
+}
